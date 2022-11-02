@@ -8,12 +8,12 @@ import Blog, { BlogDocument } from './models/blog.schema';
 @Injectable()
 export default class BlogsRepository {
   constructor(
-    @InjectModel(Blog.name) private readonly blogs: Model<BlogDocument>,
+    @InjectModel(Blog.name) private readonly model: Model<BlogDocument>,
   ) { }
 
   public async get(id: string): Promise<BlogModel | undefined> {
     try {
-      const result: Blog | null = await this.blogs.findById(id).exec();
+      const result: Blog | null = await this.model.findById(id).exec();
       return result ? BlogMapper.toDomain(result) : undefined;
     } catch (error) {
       console.log(error);
@@ -22,7 +22,7 @@ export default class BlogsRepository {
   }
   public async create(blog: BlogModel): Promise<string | undefined> {
     try {
-      const newBlog = new this.blogs(BlogMapper.fromDomain(blog));
+      const newBlog = new this.model(BlogMapper.fromDomain(blog));
       const result = await newBlog.save();
       return result ? result._id : undefined;
     } catch (error) {
@@ -32,7 +32,7 @@ export default class BlogsRepository {
   }
   public async update(id: string, data: Partial<Blog>): Promise<boolean> {
     try {
-      await this.blogs.findOneAndUpdate({ _id: id }, data).exec();
+      await this.model.findOneAndUpdate({ _id: id }, data).exec();
       return true;
     } catch (error) {
       console.log(error);
@@ -41,7 +41,7 @@ export default class BlogsRepository {
   }
   public async delete(id: string): Promise<boolean> {
     try {
-      const result: Blog | null = await this.blogs.findByIdAndDelete(id).exec();
+      const result: Blog | null = await this.model.findByIdAndDelete(id).exec();
       return !!result;
     } catch (error) {
       console.log(error);

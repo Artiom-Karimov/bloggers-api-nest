@@ -8,10 +8,12 @@ export default class GetPostsQuery extends PageQueryParams {
     'content',
     'blogName',
   ];
-  public userId: string | undefined;
-  constructor(query: any, userId: string | undefined) {
+  constructor(
+    query: any,
+    public blogId: string | undefined,
+    public userId: string | undefined,
+  ) {
     super(query);
-    this.userId = userId;
     if (!query) return;
     this.assignSortBy(query.sortBy);
   }
