@@ -16,7 +16,7 @@ export default class BlogsRepository {
       const result: Blog | null = await this.model.findById(id).exec();
       return result ? BlogMapper.toDomain(result) : undefined;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return undefined;
     }
   }
@@ -26,7 +26,7 @@ export default class BlogsRepository {
       const result = await newBlog.save();
       return result ? result._id : undefined;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return undefined;
     }
   }
@@ -35,7 +35,7 @@ export default class BlogsRepository {
       await this.model.findOneAndUpdate({ _id: id }, data).exec();
       return true;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return false;
     }
   }
@@ -44,7 +44,7 @@ export default class BlogsRepository {
       const result: Blog | null = await this.model.findByIdAndDelete(id).exec();
       return !!result;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return false;
     }
   }
