@@ -5,7 +5,7 @@ import Blog, { BlogDocument } from '../blogs/models/blog.schema';
 import Post, { PostDocument } from '../posts/models/post.schema';
 
 @Injectable()
-export default class TestingRepository {
+export default class TestRepository {
   constructor(
     @InjectModel(Blog.name) private readonly blogModel: Model<BlogDocument>,
     @InjectModel(Post.name) private readonly postModel: Model<PostDocument>,

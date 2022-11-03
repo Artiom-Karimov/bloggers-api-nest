@@ -5,12 +5,12 @@ import { BlogsModule } from './modules/blogs/blogs.module';
 import * as config from './config/database';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PostsModule } from './modules/posts/posts.module';
-import { TestingModule } from './modules/testing/testing.module';
+import { TestModule } from './modules/test/test.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(config.mongoUri),
-    TestingModule,
+    TestModule,
     BlogsModule,
     PostsModule,
   ],
