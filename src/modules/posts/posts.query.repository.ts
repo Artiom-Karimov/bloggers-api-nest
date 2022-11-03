@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from 'src/common/models/page.view.model';
+import BlogMapper from '../blogs/models/blog.mapper';
+import Blog, { BlogDocument } from '../blogs/models/blog.schema';
+import BlogViewModel from '../blogs/models/blog.view.model';
 import GetPostsQuery from './models/get.posts.query';
 import PostMapper from './models/post.mapper';
 import Post, { PostDocument } from './models/post.schema';
@@ -11,6 +14,7 @@ import PostViewModel from './models/post.view.model';
 export default class PostsQueryRepository {
   constructor(
     @InjectModel(Post.name) private readonly model: Model<PostDocument>,
+    @InjectModel(Blog.name) private readonly blogModel: Model<BlogDocument>,
   ) { }
 
   public async getPosts(
@@ -24,6 +28,14 @@ export default class PostsQueryRepository {
     try {
       const result = await this.model.findOne({ _id: id });
       return result ? PostMapper.toView(result) : undefined;
+    } catch (error) {
+      return undefined;
+    }
+  }
+  public async getBlog(id: string): Promise<BlogViewModel | undefined> {
+    try {
+      const result = await this.blogModel.findOne({ _id: id });
+      return result ? BlogMapper.toView(result) : undefined;
     } catch (error) {
       return undefined;
     }
