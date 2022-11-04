@@ -10,6 +10,7 @@ export default class UserMapper {
     user.email = model.email;
     user.passwordHash = model.passwordHash;
     user.salt = model.salt;
+    user.createdAt = model.createdAt;
     return user;
   }
   public static toDomain(model: User): UserModel {

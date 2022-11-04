@@ -1,5 +1,3 @@
-import { ExtendedLikesInfoModel } from '../../../common/models/likes.info.model';
-
 export default class PostViewModel {
   constructor(
     public id: string,
@@ -8,7 +6,6 @@ export default class PostViewModel {
     public content: string,
     public blogId: string,
     public blogName: string,
-    public createdAt: string,
-    public extendedLikesInfo: ExtendedLikesInfoModel = new ExtendedLikesInfoModel(),
+    public createdAt: string, //public extendedLikesInfo: ExtendedLikesInfoModel = new ExtendedLikesInfoModel(),
   ) { }
 }

@@ -14,9 +14,13 @@ export default class PostsService {
     return this.repo.create(newPost);
   }
   public async update(id: string, data: PostInputModel): Promise<boolean> {
+    const post = await this.repo.get(id);
+    if (!post) return false;
     return this.repo.update(id, data);
   }
   public async delete(id: string): Promise<boolean> {
+    const post = await this.repo.get(id);
+    if (!post) return false;
     const deleted = await this.repo.delete(id);
     return deleted;
   }
