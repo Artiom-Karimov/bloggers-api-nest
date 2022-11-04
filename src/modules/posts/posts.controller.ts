@@ -36,7 +36,7 @@ export default class PostsController {
   }
   @Get(':id')
   async getOne(@Param('id') id: string): Promise<PostViewModel> {
-    const result = this.queryRepo.getPost(id);
+    const result = await this.queryRepo.getPost(id);
     if (!result) throw new NotFoundException();
     return result;
   }
@@ -46,6 +46,7 @@ export default class PostsController {
     const blog = await this.queryRepo.getBlog(data.blogId);
     if (!blog) throw new BadRequestException();
 
+    data.blogName = blog.name;
     const created = await this.service.create(data);
     if (!created) throw new BadRequestException();
 
