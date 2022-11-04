@@ -12,6 +12,9 @@ import {
   Query,
 } from '@nestjs/common';
 import PageViewModel from '../../common/models/page.view.model';
+import CommentsQueryRepository from '../comments/comments.query.repository';
+import CommentViewModel from '../comments/models/comment.view.model';
+import GetCommentsQuery from '../comments/models/get.comments.query';
 import GetPostsQuery from './models/get.posts.query';
 import { PostInputModel } from './models/post.model';
 import PostViewModel from './models/post.view.model';
@@ -23,6 +26,7 @@ export default class PostsController {
   constructor(
     private readonly service: PostsService,
     private readonly queryRepo: PostsQueryRepository,
+    private readonly commentsQueryRepo: CommentsQueryRepository,
   ) { }
 
   @Get()
@@ -66,5 +70,13 @@ export default class PostsController {
     const deleted = await this.service.delete(id);
     if (!deleted) throw new NotFoundException();
     return;
+  }
+  @Get(':id/comments')
+  async getComments(
+    @Param('id') id: string,
+    @Query() reqQuery: any,
+  ): Promise<PageViewModel<CommentViewModel>> {
+    const query = new GetCommentsQuery(reqQuery, id, undefined);
+    return this.commentsQueryRepo.getComments(query);
   }
 }

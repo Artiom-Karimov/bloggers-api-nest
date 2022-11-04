@@ -15,7 +15,6 @@ import Blog, { BlogSchema } from './models/blog.schema';
   imports: [
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
-    PostsModule,
   ],
   controllers: [BlogsController],
   providers: [
