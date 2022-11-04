@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
-import PageViewModel from 'src/common/models/page.view.model';
+import PageViewModel from '../../common/models/page.view.model';
 import BlogMapper from './models/blog.mapper';
 import Blog, { BlogDocument } from './models/blog.schema';
 import BlogViewModel from './models/blog.view.model';

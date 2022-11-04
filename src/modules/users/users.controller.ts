@@ -10,7 +10,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import PageViewModel from 'src/common/models/page.view.model';
+import PageViewModel from '../../common/models/page.view.model';
 import GetUsersQuery from './models/get.users.query';
 import { UserInputModel } from './models/user.model';
 import UserViewModel from './models/user.view.model';

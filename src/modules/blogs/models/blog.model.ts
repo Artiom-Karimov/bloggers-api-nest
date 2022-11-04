@@ -1,5 +1,5 @@
-import DateGenerator from 'src/common/utils/date.generator';
-import IdGenerator from 'src/common/utils/id.generator';
+import DateGenerator from '../../../common/utils/date.generator';
+import IdGenerator from '../../../common/utils/id.generator';
 
 export type BlogInputModel = {
   name: string;

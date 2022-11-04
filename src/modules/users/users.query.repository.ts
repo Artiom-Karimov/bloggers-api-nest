@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
-import PageViewModel from 'src/common/models/page.view.model';
+import PageViewModel from '../../common/models/page.view.model';
 import GetUsersQuery from './models/get.users.query';
 import UserMapper from './models/user.mapper';
 import User, { UserDocument } from './models/user.schema';

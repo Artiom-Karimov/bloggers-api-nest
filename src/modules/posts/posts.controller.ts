@@ -11,8 +11,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import PageViewModel from 'src/common/models/page.view.model';
-import BlogsQueryRepository from '../blogs/blogs.query.repository';
+import PageViewModel from '../../common/models/page.view.model';
 import GetPostsQuery from './models/get.posts.query';
 import { PostInputModel } from './models/post.model';
 import PostViewModel from './models/post.view.model';

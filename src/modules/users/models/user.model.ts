@@ -1,6 +1,6 @@
-import DateGenerator from 'src/common/utils/date.generator';
-import Hasher from 'src/common/utils/hasher';
-import IdGenerator from 'src/common/utils/id.generator';
+import DateGenerator from '../../../common/utils/date.generator';
+import Hasher from '../../../common/utils/hasher';
+import IdGenerator from '../../../common/utils/id.generator';
 
 export type UserInputModel = {
   login: string;

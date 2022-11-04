@@ -1,5 +1,5 @@
+import IdGenerator from '../../../common/utils/id.generator';
 import * as config from '../../../config/users';
-import IdGenerator from 'src/common/utils/id.generator';
 
 export default class EmailConfirmationModel {
   constructor(
