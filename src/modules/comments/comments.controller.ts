@@ -7,7 +7,7 @@ export default class CommentsController {
   constructor(private readonly queryRepo: CommentsQueryRepository) { }
   @Get(':id')
   async getOne(@Param('id') id: string): Promise<CommentViewModel> {
-    const result = this.queryRepo.getComment(id);
+    const result = await this.queryRepo.getComment(id);
     if (!result) throw new NotFoundException();
     return result;
   }
