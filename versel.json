@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "name": "nest",
+  "builds": [
+    {
+      "src": "src/main.ts",
+      "use": "@versel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/main.ts"
+    }
+  ]
+}
