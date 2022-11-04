@@ -1,4 +1,4 @@
-import PageQueryParams from 'src/common/models/page.query.params';
+import PageQueryParams from '../../../common/models/page.query.params';
 
 export default class GetUsersQuery extends PageQueryParams {
   public searchLoginTerm: string | null = null;
