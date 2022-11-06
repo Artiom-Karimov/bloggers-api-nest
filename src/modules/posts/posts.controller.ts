@@ -16,7 +16,7 @@ import CommentsQueryRepository from '../comments/comments.query.repository';
 import CommentViewModel from '../comments/models/comment.view.model';
 import GetCommentsQuery from '../comments/models/get.comments.query';
 import GetPostsQuery from './models/get.posts.query';
-import { PostInputModel } from './models/post.model';
+import PostInputModel from './models/post.input.model';
 import PostViewModel from './models/post.view.model';
 import PostsQueryRepository from './posts.query.repository';
 import PostsService from './posts.service';

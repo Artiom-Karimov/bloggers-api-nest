@@ -1,13 +1,6 @@
 import DateGenerator from '../../../common/utils/date.generator';
 import IdGenerator from '../../../common/utils/id.generator';
-
-export type PostInputModel = {
-  title: string;
-  shortDescription: string;
-  content: string;
-  blogId: string;
-  blogName: string;
-};
+import PostInputModel from './post.input.model';
 
 export default class PostModel {
   constructor(

@@ -1,10 +1,6 @@
 import DateGenerator from '../../../common/utils/date.generator';
 import IdGenerator from '../../../common/utils/id.generator';
-
-export type BlogInputModel = {
-  name: string;
-  youtubeUrl: string;
-};
+import BlogInputModel from './blog.input.model';
 
 export default class BlogModel {
   constructor(

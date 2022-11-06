@@ -13,13 +13,13 @@ import {
 } from '@nestjs/common';
 import PageViewModel from '../../common/models/page.view.model';
 import GetPostsQuery from '../posts/models/get.posts.query';
-import { PostInputModel } from '../posts/models/post.model';
+import PostInputModel from '../posts/models/post.input.model';
 import PostViewModel from '../posts/models/post.view.model';
 import PostsQueryRepository from '../posts/posts.query.repository';
 import PostsService from '../posts/posts.service';
 import BlogsQueryRepository from './blogs.query.repository';
 import BlogsService from './blogs.service';
-import { BlogInputModel } from './models/blog.model';
+import BlogInputModel from './models/blog.input.model';
 import BlogViewModel from './models/blog.view.model';
 import GetBlogsQuery from './models/get.blogs.query';
 

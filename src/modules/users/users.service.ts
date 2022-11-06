@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import UserModel, { UserInputModel } from './models/user.model';
+import UserInputModel from './models/user.input.model';
+import UserModel from './models/user.model';
 import UsersRepository from './users.repository';
 
 @Injectable()
@@ -10,7 +11,12 @@ export default class UsersService {
     return this.repo.get(id);
   }
   public async create(data: UserInputModel): Promise<string | undefined> {
-    // Check existance
+    const loginExists = await this.repo.getByLoginOrEmail(data.login);
+    if (loginExists) return undefined;
+
+    const emailExists = await this.repo.getByLoginOrEmail(data.email);
+    if (emailExists) return undefined;
+
     const user = await UserModel.create(data);
     //const emailConfirmation = EmailConfirmationModel.createConfirmed(user.id);
     // Save emailConfirmation

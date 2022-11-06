@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import BlogsRepository from './blogs.repository';
-import BlogModel, { BlogInputModel } from './models/blog.model';
+import BlogInputModel from './models/blog.input.model';
+import BlogModel from './models/blog.model';
 
 @Injectable()
 export default class BlogsService {

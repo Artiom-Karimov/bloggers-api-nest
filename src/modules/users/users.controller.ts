@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import PageViewModel from '../../common/models/page.view.model';
 import GetUsersQuery from './models/get.users.query';
-import { UserInputModel } from './models/user.model';
+import UserInputModel from './models/user.input.model';
 import UserViewModel from './models/user.view.model';
 import UsersQueryRepository from './users.query.repository';
 import UsersService from './users.service';
