@@ -10,7 +10,9 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { BasicAuthGuard } from '../../auth/basic.auth.guard';
 import PageViewModel from '../../common/models/page.view.model';
 import GetPostsQuery from '../posts/models/get.posts.query';
 import PostInputModel from '../posts/models/post.input.model';
@@ -44,6 +46,7 @@ export default class BlogsController {
     throw new NotFoundException();
   }
   @Post()
+  @UseGuards(BasicAuthGuard)
   async create(@Body() data: BlogInputModel): Promise<BlogViewModel> {
     const created = await this.service.create(data);
     if (!created) throw new BadRequestException();
@@ -52,6 +55,7 @@ export default class BlogsController {
     return retrieved;
   }
   @Put(':id')
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async update(
     @Param('id') id: string,
@@ -62,6 +66,7 @@ export default class BlogsController {
     return;
   }
   @Delete(':id')
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async delete(@Param('id') id: string): Promise<void> {
     const deleted = await this.service.delete(id);
@@ -80,6 +85,7 @@ export default class BlogsController {
     return this.postsQueryRepo.getPosts(query);
   }
   @Post(':id/posts')
+  @UseGuards(BasicAuthGuard)
   async createPost(
     @Body() data: PostInputModel,
     @Param('id') id: string,
