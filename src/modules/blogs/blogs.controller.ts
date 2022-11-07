@@ -45,6 +45,7 @@ export default class BlogsController {
     if (blog) return blog;
     throw new NotFoundException();
   }
+
   @Post()
   @UseGuards(BasicAuthGuard)
   async create(@Body() data: BlogInputModel): Promise<BlogViewModel> {
@@ -54,6 +55,7 @@ export default class BlogsController {
     if (!retrieved) throw new NotFoundException();
     return retrieved;
   }
+
   @Put(':id')
   @UseGuards(BasicAuthGuard)
   @HttpCode(204)
@@ -65,6 +67,7 @@ export default class BlogsController {
     if (!updated) throw new NotFoundException();
     return;
   }
+
   @Delete(':id')
   @UseGuards(BasicAuthGuard)
   @HttpCode(204)
@@ -84,6 +87,7 @@ export default class BlogsController {
     const query = new GetPostsQuery(reqQuery, id, undefined);
     return this.postsQueryRepo.getPosts(query);
   }
+
   @Post(':id/posts')
   @UseGuards(BasicAuthGuard)
   async createPost(
