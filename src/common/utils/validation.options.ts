@@ -3,7 +3,8 @@ import { ValidationError } from 'class-validator';
 import APIErrorResult, { FieldError } from '../models/api.error.result';
 
 const getMessage = (err: ValidationError): string => {
-  if (!err.constraints) return '';
+  if (!err.constraints || Object.values(err.constraints).length === 0)
+    return '';
   return Object.values(err.constraints)[0];
 };
 
@@ -12,6 +13,7 @@ const getFieldError = (err: ValidationError): FieldError => {
 };
 
 export const validationOptions = {
+  transform: true,
   stopAtFirstError: true,
   exceptionFactory: (errors: ValidationError[]) => {
     const result = new APIErrorResult();
