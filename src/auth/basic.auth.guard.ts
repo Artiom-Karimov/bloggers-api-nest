@@ -9,6 +9,16 @@ import * as config from '../config/admin';
 
 @Injectable()
 export class BasicAuthGuard implements CanActivate {
+  private readonly rightHeader: string;
+
+  constructor() {
+    const base64Creds = Buffer.from(
+      `${config.userName}:${config.password}`,
+      'utf-8',
+    ).toString('base64');
+    this.rightHeader = `Basic ${base64Creds}`;
+  }
+
   canActivate(context: ExecutionContext): boolean {
     const request: Request = context.switchToHttp().getRequest();
     if (!request.headers.authorization)
@@ -19,8 +29,7 @@ export class BasicAuthGuard implements CanActivate {
     if (!authHeader.startsWith('Basic '))
       throw new UnauthorizedException('You should use Basic auth');
 
-    const rightCreds = `${config.userName}:${config.password}`;
-    if (!authHeader.includes(` ${rightCreds}`))
+    if (authHeader !== this.rightHeader)
       throw new UnauthorizedException('Wrong credentials');
 
     return true;
