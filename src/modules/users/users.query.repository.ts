@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../common/models/page.view.model';
+import UserBanMapper from './models/ban/user.ban.mapper';
+import UserBan, { UserBanDocument } from './models/ban/user.ban.schema';
+import UserBanViewModel from './models/ban/user.ban.view.model';
 import GetUsersQuery from './models/get.users.query';
 import UserMapper from './models/user.mapper';
 import User, { UserDocument } from './models/user.schema';
@@ -11,6 +14,8 @@ import UserViewModel from './models/user.view.model';
 export default class UsersQueryRepository {
   constructor(
     @InjectModel(User.name) private readonly model: Model<UserDocument>,
+    @InjectModel(UserBan.name)
+    private readonly banModel: Model<UserBanDocument>,
   ) { }
 
   public async getUsers(
@@ -22,8 +27,10 @@ export default class UsersQueryRepository {
   }
   public async getUser(id: string): Promise<UserViewModel | undefined> {
     try {
-      const result = await this.model.findOne({ _id: id });
-      return result ? UserMapper.toView(result) : undefined;
+      const user = await this.model.findOne({ _id: id });
+      if (!user) return undefined;
+      const banView = await this.getBanView(id);
+      return UserMapper.toView(user, banView);
     } catch (error) {
       console.error(error);
       return undefined;
@@ -82,10 +89,27 @@ export default class UsersQueryRepository {
         .skip(page.calculateSkip())
         .limit(page.pageSize)
         .exec();
-      const viewModels = users.map((b) => UserMapper.toView(b));
+      const viewModels = await this.mergeManyWithBanInfo(users);
       return page.add(...viewModels);
     } catch (error) {
       return page;
+    }
+  }
+  private async mergeManyWithBanInfo(users: User[]): Promise<UserViewModel[]> {
+    const promises = users.map((u) => this.mergeWithBanInfo(u));
+    return Promise.all(promises);
+  }
+  private async mergeWithBanInfo(user: User): Promise<UserViewModel> {
+    const banView = await this.getBanView(user._id);
+    return UserMapper.toView(user, banView);
+  }
+  private async getBanView(id: string): Promise<UserBanViewModel> {
+    try {
+      const banInfo = await this.banModel.findById(id);
+      if (banInfo) return UserBanMapper.toView(banInfo);
+      return UserBanMapper.emptyView();
+    } catch (error) {
+      return UserBanMapper.emptyView();
     }
   }
 }

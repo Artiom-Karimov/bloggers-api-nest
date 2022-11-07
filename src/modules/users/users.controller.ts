@@ -8,10 +8,14 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { BasicAuthGuard } from '../../auth/basic.auth.guard';
 import PageViewModel from '../../common/models/page.view.model';
 import GetUsersQuery from './models/get.users.query';
+import UserBanInputModel from './models/ban/user.ban.input.model';
 import UserInputModel from './models/user.input.model';
 import UserViewModel from './models/user.view.model';
 import UsersQueryRepository from './users.query.repository';
@@ -30,6 +34,7 @@ export default class UsersController {
     return this.queryRepo.getUsers(query);
   }
   @Post()
+  @UseGuards(BasicAuthGuard)
   async create(@Body() data: UserInputModel): Promise<UserViewModel> {
     const created = await this.service.create(data);
     if (!created) throw new BadRequestException();
@@ -38,10 +43,20 @@ export default class UsersController {
     return retrieved;
   }
   @Delete(':id')
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async delete(@Param('id') id: string): Promise<void> {
     const deleted = await this.service.delete(id);
     if (!deleted) throw new NotFoundException();
+    return;
+  }
+  @Put(':id/ban')
+  @UseGuards(BasicAuthGuard)
+  @HttpCode(204)
+  async ban(@Param('id') id: string, @Body() data: UserBanInputModel) {
+    data.userId = id;
+    const result = await this.service.putBanInfo(data);
+    if (!result) throw new NotFoundException();
     return;
   }
 }
