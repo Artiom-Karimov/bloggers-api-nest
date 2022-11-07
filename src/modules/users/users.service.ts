@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import EmailConfirmationRepository from './email.confirmation.repository';
 import UserBanInputModel from './models/ban/user.ban.input.model';
 import UserBanModel from './models/ban/user.ban.model';
 import EmailConfirmationModel from './models/email/email.confirmation.model';
@@ -12,6 +13,7 @@ export default class UsersService {
   constructor(
     private readonly repo: UsersRepository,
     private readonly banRepo: UsersBanRepository,
+    private readonly emailRepo: EmailConfirmationRepository,
   ) { }
 
   public async get(id: string): Promise<UserModel | undefined> {
@@ -29,7 +31,7 @@ export default class UsersService {
     if (!created) return undefined;
 
     const emailConfirmation = EmailConfirmationModel.createConfirmed(user.id);
-    //await this.repo.createEmailConfirmation(emailConfirmation);
+    await this.emailRepo.create(emailConfirmation);
 
     return created;
   }
@@ -40,7 +42,7 @@ export default class UsersService {
     const result = await this.repo.delete(id);
     if (!result) return false;
 
-    //await this.repo.deleteEmailConfirmation(id);
+    await this.emailRepo.delete(id);
     await this.banRepo.delete(id);
 
     return true;

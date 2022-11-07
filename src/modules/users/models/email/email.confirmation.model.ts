@@ -4,14 +4,12 @@ import * as config from '../../../../config/users';
 export default class EmailConfirmationModel {
   constructor(
     public id: string,
-    public userId: string,
     public confirmed: boolean,
     public code: string,
     public expiration: number,
   ) { }
   public static createNew(userId: string): EmailConfirmationModel {
     return new EmailConfirmationModel(
-      IdGenerator.generate(),
       userId,
       false,
       IdGenerator.generate(),
@@ -19,13 +17,7 @@ export default class EmailConfirmationModel {
     );
   }
   public static createConfirmed(userId: string): EmailConfirmationModel {
-    return new EmailConfirmationModel(
-      IdGenerator.generate(),
-      userId,
-      true,
-      '<none>',
-      0,
-    );
+    return new EmailConfirmationModel(userId, true, '<none>', 0);
   }
   public static setConfirmed(
     model: EmailConfirmationModel,
