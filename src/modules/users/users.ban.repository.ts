@@ -21,16 +21,10 @@ export default class UsersBanRepository {
   }
   public async createOrUpdate(model: UserBanModel): Promise<boolean> {
     try {
-      let ban = await this.model.findById(model.id);
-      if (ban) {
-        ban.isBanned = model.isBanned;
-        ban.banReason = model.banReason;
-        ban.banDate = model.banDate;
-      } else {
-        ban = new this.model(UserBanMapper.fromDomain(model));
-      }
-      const result = await ban.save();
-      return result ? result._id : undefined;
+      await this.model.findByIdAndDelete(model.id);
+      const newBan = new this.model(UserBanMapper.fromDomain(model));
+      await newBan.save();
+      return true;
     } catch (error) {
       console.error(error);
       return false;
@@ -38,8 +32,8 @@ export default class UsersBanRepository {
   }
   public async delete(id: string): Promise<boolean> {
     try {
-      await this.model.findByIdAndDelete(id);
-      return true;
+      const result = await this.model.findByIdAndDelete(id);
+      return result.$isDeleted();
     } catch (error) {
       console.error(error);
       return false;
