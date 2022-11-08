@@ -12,7 +12,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { BasicAuthGuard } from '../../auth/basic.auth.guard';
+import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 import PageViewModel from '../../common/models/page.view.model';
 import CommentsQueryRepository from '../comments/comments.query.repository';
 import CommentViewModel from '../comments/models/comment.view.model';

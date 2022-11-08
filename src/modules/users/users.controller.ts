@@ -12,7 +12,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { BasicAuthGuard } from '../../auth/basic.auth.guard';
+import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 import PageViewModel from '../../common/models/page.view.model';
 import GetUsersQuery from './models/get.users.query';
 import UserBanInputModel from './models/ban/user.ban.input.model';
