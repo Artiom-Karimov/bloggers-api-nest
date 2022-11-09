@@ -12,12 +12,18 @@ const getFieldError = (err: ValidationError): FieldError => {
   return { field: err.property, message: getMessage(err) };
 };
 
+const exceptionFactory = (errors: ValidationError[]) => {
+  const result = new APIErrorResult();
+  errors.forEach((e) => result.push(getFieldError(e)));
+  throw new BadRequestException(result);
+};
+
 export const validationOptions = {
   transform: true,
   stopAtFirstError: true,
-  exceptionFactory: (errors: ValidationError[]) => {
-    const result = new APIErrorResult();
-    errors.forEach((e) => result.push(getFieldError(e)));
-    throw new BadRequestException(result);
-  },
+  exceptionFactory: exceptionFactory,
+};
+
+export const throwValidationException = (field: string, message: string) => {
+  exceptionFactory([{ property: field, constraints: { message: message } }]);
 };

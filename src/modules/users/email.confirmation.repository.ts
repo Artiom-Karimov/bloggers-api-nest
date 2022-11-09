@@ -14,9 +14,21 @@ export default class EmailConfirmationRepository {
     private readonly model: Model<EmailConfirmationDocument>,
   ) { }
 
-  public async get(id: string): Promise<EmailConfirmationModel | undefined> {
+  public async getByUser(
+    id: string,
+  ): Promise<EmailConfirmationModel | undefined> {
     try {
       const result = await this.model.findById(id);
+      return result ? EmailConfirmationMapper.toDomain(result) : undefined;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  public async getByCode(
+    code: string,
+  ): Promise<EmailConfirmationModel | undefined> {
+    try {
+      const result = await this.model.findOne({ code });
       return result ? EmailConfirmationMapper.toDomain(result) : undefined;
     } catch (error) {
       console.error(error);

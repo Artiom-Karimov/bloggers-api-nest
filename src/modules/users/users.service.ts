@@ -19,7 +19,16 @@ export default class UsersService {
   public async get(id: string): Promise<UserModel | undefined> {
     return this.repo.get(id);
   }
+  public getByLoginOrEmail(input: string): Promise<UserModel | undefined> {
+    return this.repo.getByLoginOrEmail(input);
+  }
   public async create(data: UserInputModel): Promise<string | undefined> {
+    const user = await UserModel.create(data);
+    return this.repo.create(user);
+  }
+  public async createConfirmed(
+    data: UserInputModel,
+  ): Promise<string | undefined> {
     const loginExists = await this.repo.getByLoginOrEmail(data.login);
     if (loginExists) return undefined;
 
@@ -46,6 +55,10 @@ export default class UsersService {
     await this.banRepo.delete(id);
 
     return true;
+  }
+  public async loginOrEmailExists(input: string): Promise<boolean> {
+    const result = await this.repo.getByLoginOrEmail(input);
+    return !!result;
   }
   public async putBanInfo(data: UserBanInputModel): Promise<boolean> {
     if (!data.isBanned) {

@@ -9,7 +9,7 @@ export default class EmailConfirmationModel {
     public code: string,
     public expiration: number,
   ) { }
-  public static createNew(userId: string): EmailConfirmationModel {
+  public static create(userId: string): EmailConfirmationModel {
     return new EmailConfirmationModel(
       userId,
       false,

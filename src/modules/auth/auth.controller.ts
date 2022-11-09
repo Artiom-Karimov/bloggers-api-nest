@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -11,30 +12,43 @@ import UserViewModel from '../users/models/user.view.model';
 import UsersQueryRepository from '../users/users.query.repository';
 import AuthService from './auth.service';
 import { DdosGuard } from './guards/ddos.guard';
+import { AuthError } from './models/auth.error';
 import CodeInputModel from './models/input/code.input.model';
 import EmailInputModel from './models/input/email.input.model';
 import LoginInputModel from './models/input/login.input.model';
 import NewPasswordInputModel from './models/input/new.password.input.model';
+import { throwValidationException } from '../../common/utils/validation.options';
 
 @Controller('auth')
 export default class AuthController {
-  constructor(
-    private readonly service: AuthService,
-    private readonly queryRepo: UsersQueryRepository,
-  ) { }
+  constructor(private readonly service: AuthService) { }
 
   @Post('registration')
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async register(@Body() data: UserInputModel): Promise<void> {
-    return;
+    const result = await this.service.register(data);
+
+    switch (result) {
+      case AuthError.NoError:
+        return;
+      case AuthError.LoginExists:
+        throwValidationException('login', 'login already exists');
+      case AuthError.EmailExists:
+        throwValidationException('email', 'email already exists');
+      default:
+        throw new BadRequestException();
+    }
   }
 
   @Post('registration-email-resending')
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async resendEmail(@Body() data: EmailInputModel): Promise<void> {
-    return;
+    const result = await this.service.resendEmail(data.email);
+
+    if (result === AuthError.NoError) return;
+    throwValidationException('email', 'email is wrong or already confirmed');
   }
 
   @Post('registration-confirmation')

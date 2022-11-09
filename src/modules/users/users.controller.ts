@@ -36,7 +36,7 @@ export default class UsersController {
   @Post()
   @UseGuards(BasicAuthGuard)
   async create(@Body() data: UserInputModel): Promise<UserViewModel> {
-    const created = await this.service.create(data);
+    const created = await this.service.createConfirmed(data);
     if (!created) throw new BadRequestException();
     const retrieved = this.queryRepo.getUser(created);
     if (!retrieved) throw new BadRequestException();

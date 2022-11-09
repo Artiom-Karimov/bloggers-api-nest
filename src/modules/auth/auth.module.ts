@@ -1,8 +1,15 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import EmailConfirmationRepository from '../users/email.confirmation.repository';
 import UserBan, { UserBanSchema } from '../users/models/ban/user.ban.schema';
+import EmailConfirmation, {
+  EmailConfirmationSchema,
+} from '../users/models/email/email.confirmation.schema';
 import User, { UserSchema } from '../users/models/user.schema';
+import UsersBanRepository from '../users/users.ban.repository';
 import UsersQueryRepository from '../users/users.query.repository';
+import UsersRepository from '../users/users.repository';
+import UsersService from '../users/users.service';
 import AuthController from './auth.controller';
 import AuthService from './auth.service';
 import { DdosGuard } from './guards/ddos.guard';
@@ -20,6 +27,9 @@ import SessionsRepository from './sessions.repository';
     MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forFeature([{ name: UserBan.name, schema: UserBanSchema }]),
+    MongooseModule.forFeature([
+      { name: EmailConfirmation.name, schema: EmailConfirmationSchema },
+    ]),
   ],
   controllers: [AuthController],
   providers: [
@@ -27,8 +37,12 @@ import SessionsRepository from './sessions.repository';
     RecoveryRepository,
     SessionsRepository,
     SessionsQueryRepository,
+    UsersBanRepository,
+    EmailConfirmationRepository,
+    UsersRepository,
     UsersQueryRepository,
     AuthService,
+    UsersService,
   ],
 })
 export class AuthModule { }
