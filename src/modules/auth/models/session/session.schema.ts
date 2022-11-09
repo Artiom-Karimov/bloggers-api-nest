@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type SessionDocument = Session & Document;
 
-@Schema()
+@Schema({ collection: 'device-sessions' })
 export default class Session {
   constructor(
     _id: string,

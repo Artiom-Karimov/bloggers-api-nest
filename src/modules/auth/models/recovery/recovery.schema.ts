@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type RecoveryDocument = Recovery & Document;
 
-@Schema()
+@Schema({ collection: 'password-recovery' })
 export default class Recovery {
   constructor(_id: string, code: string, expiresAt: number) {
     this._id = _id;
