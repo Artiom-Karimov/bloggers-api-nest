@@ -56,6 +56,13 @@ export default class UsersService {
 
     return true;
   }
+  public async updatePassword(id: string, password: string): Promise<boolean> {
+    let user = await this.get(id);
+    if (!user) return false;
+
+    user = await UserModel.updatePassword(user, password);
+    return this.repo.update(user.id, user);
+  }
   public async loginOrEmailExists(input: string): Promise<boolean> {
     const result = await this.repo.getByLoginOrEmail(input);
     return !!result;

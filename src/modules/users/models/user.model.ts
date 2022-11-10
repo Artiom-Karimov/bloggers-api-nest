@@ -24,4 +24,13 @@ export default class UserModel {
       DateGenerator.generate(),
     );
   }
+  public static async updatePassword(
+    user: UserModel,
+    newPassword: string,
+  ): Promise<UserModel> {
+    const hashPair = await Hasher.hash(newPassword);
+    user.passwordHash = hashPair.hash;
+    user.salt = hashPair.salt;
+    return user;
+  }
 }

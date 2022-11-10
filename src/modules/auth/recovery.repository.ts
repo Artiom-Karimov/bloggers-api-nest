@@ -19,6 +19,14 @@ export default class RecoveryRepository {
       console.error(error);
     }
   }
+  public async getByCode(code: string): Promise<RecoveryModel | undefined> {
+    try {
+      const result = await this.model.findOne({ code });
+      return result ? RecoveryMapper.toDomain(result) : undefined;
+    } catch (error) {
+      console.error(error);
+    }
+  }
   public async createOrUpdate(model: RecoveryModel): Promise<boolean> {
     try {
       await this.model.findByIdAndDelete(model.userId);

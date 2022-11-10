@@ -5,7 +5,9 @@ import UserInputModel from '../users/models/user.input.model';
 import UsersBanRepository from '../users/users.ban.repository';
 import UsersService from '../users/users.service';
 import { AuthError } from './models/auth.error';
-import EmailInputModel from './models/input/email.input.model';
+import NewPasswordInputModel from './models/input/new.password.input.model';
+import RecoveryModel from './models/recovery/recovery.model';
+import RecoveryRepository from './recovery.repository';
 
 @Injectable()
 export default class AuthService {
@@ -13,6 +15,7 @@ export default class AuthService {
     private readonly usersService: UsersService,
     private readonly banRepo: UsersBanRepository,
     private readonly emailRepo: EmailConfirmationRepository,
+    private readonly recoveryRepo: RecoveryRepository,
   ) { }
 
   public async register(data: UserInputModel): Promise<AuthError> {
@@ -36,9 +39,33 @@ export default class AuthService {
     const emailSent = await this.createEmailConfirmation(user.id);
     return emailSent ? AuthError.NoError : AuthError.AlreadyConfirmed;
   }
+
   public async confirmEmail(code: string): Promise<boolean> {
-    const ec = await this.emailRepo.getByCode(code);
-    if (!ec || ec.expiration > new Date().getTime()) return false;
+    let ec = await this.emailRepo.getByCode(code);
+    if (!ec || ec.expiration > new Date().getTime() || ec.confirmed)
+      return false;
+
+    ec = EmailConfirmationModel.setConfirmed(ec);
+    return this.emailRepo.update(ec);
+  }
+
+  public async recoverPassword(email: string): Promise<boolean> {
+    const user = await this.usersService.getByLoginOrEmail(email);
+    if (!user) return false;
+
+    const recovery = RecoveryModel.create(user.id);
+    await this.recoveryRepo.createOrUpdate(recovery);
+
+    // Send email
+
+    return true;
+  }
+
+  public async setNewPassword(data: NewPasswordInputModel): Promise<boolean> {
+    const recovery = await this.recoveryRepo.getByCode(data.recoveryCode);
+    if (!recovery || recovery.expiresAt > new Date().getTime()) return false;
+
+    return this.usersService.updatePassword(recovery.userId, data.newPassword);
   }
 
   private async createEmailConfirmation(userId: string) {

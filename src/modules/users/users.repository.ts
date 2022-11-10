@@ -45,8 +45,10 @@ export default class UsersRepository {
   }
   public async update(id: string, data: Partial<User>): Promise<boolean> {
     try {
-      await this.model.findOneAndUpdate({ _id: id }, data).exec();
-      return true;
+      const result = await this.model
+        .findOneAndUpdate({ _id: id }, data)
+        .exec();
+      return result.isModified();
     } catch (error) {
       console.error(error);
       return false;

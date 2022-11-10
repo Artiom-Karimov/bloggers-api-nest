@@ -55,6 +55,9 @@ export default class AuthController {
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async confirmEmail(@Body() data: CodeInputModel): Promise<void> {
+    const result = await this.service.confirmEmail(data.code);
+    if (!result)
+      throwValidationException('code', 'wrong code or already confirmed');
     return;
   }
 
@@ -62,6 +65,7 @@ export default class AuthController {
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async recover(@Body() data: EmailInputModel): Promise<void> {
+    await this.service.recoverPassword(data.email);
     return;
   }
 
@@ -69,6 +73,9 @@ export default class AuthController {
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async changePassword(@Body() data: NewPasswordInputModel): Promise<void> {
+    const result = await this.service.setNewPassword(data);
+    if (!result)
+      throwValidationException('recoveryCode', 'wrong or outdated code');
     return;
   }
 
