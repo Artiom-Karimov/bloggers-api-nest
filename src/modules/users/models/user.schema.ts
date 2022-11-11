@@ -5,6 +5,21 @@ export type UserDocument = User & Document;
 
 @Schema({ collection: 'users' })
 export default class User {
+  constructor(
+    _id: string,
+    login: string,
+    email: string,
+    passwordHash: string,
+    salt: string,
+    createdAt: string,
+  ) {
+    this._id = _id;
+    this.login = login;
+    this.email = email;
+    this.passwordHash = passwordHash;
+    this.salt = salt;
+    this.createdAt = createdAt;
+  }
   @Prop()
   _id: string;
 

@@ -35,7 +35,7 @@ export default class UsersService {
     const emailExists = await this.repo.getByLoginOrEmail(data.email);
     if (emailExists) return undefined;
 
-    const user = await UserModel.create(data);
+    const user = await UserModel.create(data); 
     const created = await this.repo.create(user);
     if (!created) return undefined;
 
@@ -72,6 +72,8 @@ export default class UsersService {
       await this.banRepo.delete(data.userId);
       return true;
     }
+    const user = await this.get(data.userId);
+    if (!user) return false;
 
     const model = UserBanModel.create(data);
     return this.banRepo.createOrUpdate(model);

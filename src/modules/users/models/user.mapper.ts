@@ -5,13 +5,14 @@ import UserViewModel from './user.view.model';
 
 export default class UserMapper {
   public static fromDomain(model: UserModel): User {
-    const user = new User();
-    user._id = model.id;
-    user.login = model.login;
-    user.email = model.email;
-    user.passwordHash = model.passwordHash;
-    user.salt = model.salt;
-    user.createdAt = model.createdAt;
+    const user = new User(
+      model.id,
+      model.login,
+      model.email,
+      model.passwordHash,
+      model.salt,
+      model.createdAt,
+    );
     return user;
   }
   public static toDomain(model: User): UserModel {

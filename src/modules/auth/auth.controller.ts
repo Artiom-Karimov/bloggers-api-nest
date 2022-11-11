@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import UserInputModel from '../users/models/user.input.model';
 import UserViewModel from '../users/models/user.view.model';
-import UsersQueryRepository from '../users/users.query.repository';
 import AuthService from './auth.service';
 import { DdosGuard } from './guards/ddos.guard';
 import { AuthError } from './models/auth.error';

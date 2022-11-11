@@ -5,6 +5,7 @@ import UserInputModel from '../users/models/user.input.model';
 import UsersBanRepository from '../users/users.ban.repository';
 import UsersService from '../users/users.service';
 import { AuthError } from './models/auth.error';
+import LoginInputModel from './models/input/login.input.model';
 import NewPasswordInputModel from './models/input/new.password.input.model';
 import RecoveryModel from './models/recovery/recovery.model';
 import RecoveryRepository from './recovery.repository';
@@ -64,9 +65,12 @@ export default class AuthService {
   public async setNewPassword(data: NewPasswordInputModel): Promise<boolean> {
     const recovery = await this.recoveryRepo.getByCode(data.recoveryCode);
     if (!recovery || recovery.expiresAt > new Date().getTime()) return false;
+    await this.recoveryRepo.delete(recovery.userId);
 
     return this.usersService.updatePassword(recovery.userId, data.newPassword);
   }
+
+  public async login(data: LoginInputModel): Promise<void> { }
 
   private async createEmailConfirmation(userId: string) {
     const ec = EmailConfirmationModel.create(userId);

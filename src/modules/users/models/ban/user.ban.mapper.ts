@@ -5,7 +5,7 @@ import UserBanViewModel from './user.ban.view.model';
 export default class UserBanMapper {
   public static fromDomain(model: UserBanModel): UserBan {
     return new UserBan(
-      model.id,
+      model.userId,
       model.isBanned,
       model.banReason,
       model.banDate,

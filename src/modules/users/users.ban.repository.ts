@@ -21,7 +21,7 @@ export default class UsersBanRepository {
   }
   public async createOrUpdate(model: UserBanModel): Promise<boolean> {
     try {
-      await this.model.findByIdAndDelete(model.id);
+      await this.model.findByIdAndDelete(model.userId);
       const newBan = new this.model(UserBanMapper.fromDomain(model));
       await newBan.save();
       return true;

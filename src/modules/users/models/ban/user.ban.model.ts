@@ -3,7 +3,7 @@ import UserBanInputModel from './user.ban.input.model';
 
 export default class UserBanModel {
   constructor(
-    public id: string,
+    public userId: string,
     public isBanned: boolean,
     public banReason: string,
     public banDate: string,
