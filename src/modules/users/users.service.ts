@@ -35,7 +35,7 @@ export default class UsersService {
     const emailExists = await this.repo.getByLoginOrEmail(data.email);
     if (emailExists) return undefined;
 
-    const user = await UserModel.create(data); 
+    const user = await UserModel.create(data);
     const created = await this.repo.create(user);
     if (!created) return undefined;
 
