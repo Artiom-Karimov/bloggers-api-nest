@@ -53,9 +53,18 @@ export default class SessionsRepository {
   public async deleteAllButOne(userId: string, id: string): Promise<number> {
     try {
       const result = await this.model.deleteMany({
-        userId: userId,
+        userId,
         _id: { $ne: id },
       });
+      return result.deletedCount;
+    } catch (error) {
+      console.error(error);
+      return 0;
+    }
+  }
+  public async deleteAll(userId: string): Promise<number> {
+    try {
+      const result = await this.model.deleteMany({ userId });
       return result.deletedCount;
     } catch (error) {
       console.error(error);

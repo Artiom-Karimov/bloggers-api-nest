@@ -24,6 +24,12 @@ export default class UserModel {
       DateGenerator.generate(),
     );
   }
+  public static async checkPassword(
+    user: UserModel,
+    password: string,
+  ): Promise<boolean> {
+    return Hasher.check(password, { hash: user.passwordHash, salt: user.salt });
+  }
   public static async updatePassword(
     user: UserModel,
     newPassword: string,

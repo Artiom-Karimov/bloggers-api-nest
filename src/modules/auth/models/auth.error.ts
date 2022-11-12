@@ -6,4 +6,6 @@ export enum AuthError {
   InvalidCode,
   WrongCredentials,
   AlreadyConfirmed,
+  Unconfirmed,
+  Banned,
 }

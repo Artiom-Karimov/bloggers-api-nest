@@ -8,4 +8,7 @@ export default class LoginInputModel {
   @MinLength(6)
   @MaxLength(20)
   password: string;
+
+  ip?: string;
+  deviceName?: string;
 }

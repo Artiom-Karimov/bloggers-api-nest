@@ -11,13 +11,14 @@ import UsersQueryRepository from '../users/users.query.repository';
 import UsersRepository from '../users/users.repository';
 import UsersService from '../users/users.service';
 import AuthController from './auth.controller';
-import AuthService from './auth.service';
 import { DdosGuard } from './guards/ddos.guard';
 import Recovery, { RecoverySchema } from './models/recovery/recovery.schema';
 import Session, { SessionSchema } from './models/session/session.schema';
 import RecoveryRepository from './recovery.repository';
 import SessionsQueryRepository from './sessions.query.repository';
 import SessionsRepository from './sessions.repository';
+import SessionsService from './sessions.service';
+import RegistrationService from './registration.service';
 
 @Module({
   imports: [
@@ -41,8 +42,9 @@ import SessionsRepository from './sessions.repository';
     EmailConfirmationRepository,
     UsersRepository,
     UsersQueryRepository,
-    AuthService,
+    RegistrationService,
     UsersService,
+    SessionsService,
   ],
 })
 export class AuthModule { }

@@ -2,19 +2,16 @@ import { Injectable } from '@nestjs/common';
 import EmailConfirmationRepository from '../users/email.confirmation.repository';
 import EmailConfirmationModel from '../users/models/email/email.confirmation.model';
 import UserInputModel from '../users/models/user.input.model';
-import UsersBanRepository from '../users/users.ban.repository';
 import UsersService from '../users/users.service';
 import { AuthError } from './models/auth.error';
-import LoginInputModel from './models/input/login.input.model';
 import NewPasswordInputModel from './models/input/new.password.input.model';
 import RecoveryModel from './models/recovery/recovery.model';
 import RecoveryRepository from './recovery.repository';
 
 @Injectable()
-export default class AuthService {
+export default class RegistrationService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly banRepo: UsersBanRepository,
     private readonly emailRepo: EmailConfirmationRepository,
     private readonly recoveryRepo: RecoveryRepository,
   ) { }
@@ -69,8 +66,6 @@ export default class AuthService {
 
     return this.usersService.updatePassword(recovery.userId, data.newPassword);
   }
-
-  public async login(data: LoginInputModel): Promise<void> { }
 
   private async createEmailConfirmation(userId: string) {
     const ec = EmailConfirmationModel.create(userId);
