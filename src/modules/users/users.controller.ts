@@ -20,6 +20,7 @@ import UserInputModel from './models/user.input.model';
 import UserViewModel from './models/user.view.model';
 import UsersQueryRepository from './users.query.repository';
 import UsersService from './users.service';
+import { throwValidationException } from '../../common/utils/validation.options';
 
 @Controller('users')
 export default class UsersController {
@@ -36,6 +37,7 @@ export default class UsersController {
   @Post()
   @UseGuards(BasicAuthGuard)
   async create(@Body() data: UserInputModel): Promise<UserViewModel> {
+    await this.checkLoginEmailExists(data.login, data.email);
     const created = await this.service.createConfirmed(data);
     if (!created) throw new BadRequestException();
     const retrieved = this.queryRepo.getUser(created);
@@ -58,5 +60,15 @@ export default class UsersController {
     const result = await this.service.putBanInfo(data);
     if (!result) throw new NotFoundException();
     return;
+  }
+
+  private async checkLoginEmailExists(
+    login: string,
+    email: string,
+  ): Promise<void> {
+    const loginExists = await this.service.loginOrEmailExists(login);
+    if (loginExists) throwValidationException('login', 'login already exists');
+    const emailExists = await this.service.loginOrEmailExists(email);
+    if (emailExists) throwValidationException('email', 'email already exists');
   }
 }

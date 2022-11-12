@@ -31,12 +31,6 @@ export default class UsersService {
   public async createConfirmed(
     data: UserInputModel,
   ): Promise<string | undefined> {
-    const loginExists = await this.repo.getByLoginOrEmail(data.login);
-    if (loginExists) return undefined;
-
-    const emailExists = await this.repo.getByLoginOrEmail(data.email);
-    if (emailExists) return undefined;
-
     const user = await UserModel.create(data);
     const created = await this.repo.create(user);
     if (!created) return undefined;
