@@ -24,10 +24,13 @@ export default class PostsQueryRepository {
     const query = this.getQuery(params);
     return this.loadPagePosts(page, query);
   }
-  public async getPost(id: string): Promise<PostViewModel | undefined> {
+  public async getPost(
+    id: string,
+    userId: string | undefined,
+  ): Promise<PostViewModel | undefined> {
     try {
-      const result = await this.model.findOne({ _id: id });
-      return result ? PostMapper.toView(result) : undefined;
+      const post = await this.model.findOne({ _id: id });
+      return post ? this.mergeWithLikes(post) : undefined;
     } catch (error) {
       return undefined;
     }
@@ -83,4 +86,5 @@ export default class PostsQueryRepository {
       return page;
     }
   }
+  private async mergeWithLikes(post: Post): Promise<PostViewModel> { }
 }

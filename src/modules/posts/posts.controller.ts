@@ -22,6 +22,7 @@ import PostInputModel from './models/post.input.model';
 import PostViewModel from './models/post.view.model';
 import PostsQueryRepository from './posts.query.repository';
 import PostsService from './posts.service';
+import { OptionalBearerAuthGuard } from '../auth/guards/optional.bearer.auth.guard';
 
 @Controller('posts')
 export default class PostsController {
@@ -32,13 +33,21 @@ export default class PostsController {
   ) { }
 
   @Get()
-  async get(@Query() reqQuery: any): Promise<PageViewModel<PostViewModel>> {
-    const query = new GetPostsQuery(reqQuery, undefined, undefined);
+  @UseGuards(OptionalBearerAuthGuard)
+  async get(
+    @Query() reqQuery: any,
+    @Body() body: any,
+  ): Promise<PageViewModel<PostViewModel>> {
+    const query = new GetPostsQuery(reqQuery, undefined, body.userId);
     return this.queryRepo.getPosts(query);
   }
   @Get(':id')
-  async getOne(@Param('id') id: string): Promise<PostViewModel> {
-    const result = await this.queryRepo.getPost(id);
+  @UseGuards(OptionalBearerAuthGuard)
+  async getOne(
+    @Param('id') id: string,
+    @Body() body: any,
+  ): Promise<PostViewModel> {
+    const result = await this.queryRepo.getPost(id, body.userId);
     if (!result) throw new NotFoundException();
     return result;
   }
@@ -54,7 +63,7 @@ export default class PostsController {
     const created = await this.service.create(data);
     if (!created) throw new BadRequestException();
 
-    const retrieved = await this.queryRepo.getPost(created);
+    const retrieved = await this.queryRepo.getPost(created, undefined);
     if (!retrieved) throw new BadRequestException();
 
     return retrieved;

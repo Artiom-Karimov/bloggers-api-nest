@@ -1,6 +1,7 @@
 import IdGenerator from '../../../../common/utils/id.generator';
 import * as config from '../../../../config/users';
 import add from 'date-fns/add';
+import { Duration } from 'date-fns';
 
 export default class EmailConfirmationModel {
   constructor(
@@ -14,7 +15,9 @@ export default class EmailConfirmationModel {
       userId,
       false,
       IdGenerator.generate(),
-      add(new Date(), { minutes: config.confirmationMinutes }).getTime(),
+      add(new Date(), {
+        minutes: config.confirmationMinutes,
+      } as Duration).getTime(),
     );
   }
   public static createConfirmed(userId: string): EmailConfirmationModel {

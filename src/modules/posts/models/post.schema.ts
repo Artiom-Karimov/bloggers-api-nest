@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type PostDocument = Post & Document;
 
-@Schema({ collection: 'pots' })
+@Schema({ collection: 'posts' })
 export default class Post {
   @Prop()
   _id: string;
