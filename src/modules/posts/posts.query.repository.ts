@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../common/models/page.view.model';
@@ -86,5 +86,7 @@ export default class PostsQueryRepository {
       return page;
     }
   }
-  private async mergeWithLikes(post: Post): Promise<PostViewModel> { }
+  private async mergeWithLikes(post: Post): Promise<PostViewModel> {
+    throw new NotImplementedException();
+  }
 }

@@ -103,7 +103,7 @@ export default class BlogsController {
     const created = await this.postsService.create(data);
     if (!created) throw new BadRequestException();
 
-    const retrieved = this.postsQueryRepo.getPost(created);
+    const retrieved = this.postsQueryRepo.getPost(created, undefined);
     if (!retrieved) throw new BadRequestException();
 
     return retrieved;
