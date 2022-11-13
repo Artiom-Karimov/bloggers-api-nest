@@ -29,9 +29,9 @@ export default class CommentsRepository {
       return undefined;
     }
   }
-  public async update(id: string, data: Partial<Comment>): Promise<boolean> {
+  public async update(id: string, content: string): Promise<boolean> {
     try {
-      await this.model.findOneAndUpdate({ _id: id }, data).exec();
+      await this.model.findOneAndUpdate({ _id: id }, { content }).exec();
       return true;
     } catch (error) {
       console.error(error);
