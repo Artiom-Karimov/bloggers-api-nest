@@ -29,12 +29,12 @@ export default class SessionsService {
       data.deviceName,
       userResult.id,
     );
-    return this.createTokenPair(session);
+    return this.createTokenPair(session, userResult.login);
   }
   public async refreshToken(
     data: RefreshTokenInputModel,
   ): Promise<TokenPair | AuthError> {
-    const payload = TokenPair.unpackRefreshToken(data.token);
+    const payload = TokenPair.unpackToken(data.token);
     if (!payload) return AuthError.InvalidCode;
 
     if (!(await this.checkAndDeleteSession(payload.deviceId, payload.userId)))
@@ -48,10 +48,10 @@ export default class SessionsService {
       data.deviceName,
       payload.userId,
     );
-    return this.createTokenPair(session);
+    return this.createTokenPair(session, payload.userLogin);
   }
   public async logout(refreshToken: string): Promise<boolean> {
-    const payload = TokenPair.unpackRefreshToken(refreshToken);
+    const payload = TokenPair.unpackToken(refreshToken);
     if (!payload) return false;
 
     const result = await this.checkAndDeleteSession(
@@ -64,7 +64,7 @@ export default class SessionsService {
   public async getSessionUserView(
     refreshToken: string,
   ): Promise<SessionUserViewModel> {
-    const payload = TokenPair.unpackRefreshToken(refreshToken);
+    const payload = TokenPair.unpackToken(refreshToken);
     if (!payload) return undefined;
 
     const user = await this.usersService.get(payload.userId);
@@ -130,9 +130,14 @@ export default class SessionsService {
     await this.sessionsRepo.create(session);
     return session;
   }
-  private createTokenPair(session: SessionModel): TokenPair {
+  private createTokenPair(session: SessionModel, userLogin: string): TokenPair {
     return TokenPair.create(
-      new TokenPayload(session.userId, session.deviceId, session.expiresAt),
+      new TokenPayload(
+        session.userId,
+        userLogin,
+        session.deviceId,
+        session.expiresAt,
+      ),
     );
   }
   private async checkAndDeleteSession(

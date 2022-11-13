@@ -4,6 +4,7 @@ import Blog, { BlogSchema } from '../blogs/models/blog.schema';
 import CommentsController from './comments/comments.controller';
 import CommentsQueryRepository from './comments/comments.query.repository';
 import CommentsRepository from './comments/comments.repository';
+import CommentsService from './comments/comments.service';
 import Comment, { CommentSchema } from './models/comments/comment.schema';
 import Post, { PostSchema } from './models/posts/post.schema';
 import PostsController from './posts.controller';
@@ -24,6 +25,7 @@ import PostsService from './posts.service';
     PostsService,
     CommentsRepository,
     CommentsQueryRepository,
+    CommentsService,
   ],
 })
 export class PostsModule { }

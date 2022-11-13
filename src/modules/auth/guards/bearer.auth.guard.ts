@@ -6,26 +6,27 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import TokenPair from '../models/jwt/token.pair';
+import TokenPayload from '../models/jwt/token.payload';
 
 @Injectable()
 export class BearerAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
-    const request: Request = context.switchToHttp().getRequest();
-    if (!request.headers.authorization)
+    const req: Request = context.switchToHttp().getRequest();
+    if (!req.headers.authorization)
       throw new UnauthorizedException('You should use Bearer auth');
-    request.body.userId = this.authorize(request.headers.authorization);
+    req.body.tokenPayload = this.authorize(req.headers.authorization);
 
     return true;
   }
-  private authorize(authHeader: string): string {
+  private authorize(authHeader: string): TokenPayload {
     if (!authHeader.startsWith('Bearer '))
       throw new UnauthorizedException('You should use Bearer auth');
 
     const token = authHeader.split(' ')[1];
-    const id = TokenPair.unpackAccessToken(token);
-    if (!id)
+    const payload = TokenPair.unpackToken(token);
+    if (!payload)
       throw new UnauthorizedException('accessToken is invalid or expired');
 
-    return id;
+    return payload;
   }
 }

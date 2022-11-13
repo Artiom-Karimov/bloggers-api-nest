@@ -24,6 +24,9 @@ import PostsQueryRepository from './posts.query.repository';
 import PostsService from './posts.service';
 import { OptionalBearerAuthGuard } from '../auth/guards/optional.bearer.auth.guard';
 import { throwValidationException } from '../../common/utils/validation.options';
+import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
+import CommentInputModel from './models/comments/comment.input.model';
+import CommentsService from './comments/comments.service';
 
 @Controller('posts')
 export default class PostsController {
@@ -31,6 +34,7 @@ export default class PostsController {
     private readonly service: PostsService,
     private readonly queryRepo: PostsQueryRepository,
     private readonly commentsQueryRepo: CommentsQueryRepository,
+    private readonly commentsService: CommentsService,
   ) { }
 
   @Get()
@@ -104,5 +108,19 @@ export default class PostsController {
   ): Promise<PageViewModel<CommentViewModel>> {
     const query = new GetCommentsQuery(reqQuery, id, body.userId);
     return this.commentsQueryRepo.getComments(query);
+  }
+
+  @Post(':id/comments')
+  @UseGuards(BearerAuthGuard)
+  async createComment(
+    @Param('id') postId: string,
+    @Body() data: CommentInputModel,
+  ): Promise<CommentViewModel> {
+    data.postId = postId;
+
+    const created = await this.commentsService.create(data);
+    if (!created) throw new BadRequestException();
+
+    return created;
   }
 }
