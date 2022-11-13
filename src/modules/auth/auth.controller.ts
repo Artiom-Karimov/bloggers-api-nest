@@ -24,6 +24,7 @@ import RefreshTokenInputModel from './models/input/refresh.token.input.model';
 import RegistrationService from './registration.service';
 import SessionsService from './sessions.service';
 import SessionUserViewModel from './models/session.user.view.model';
+import { RefreshTokenGuard } from './guards/refresh.token.guard';
 
 @Controller('auth')
 export default class AuthController {
@@ -106,15 +107,14 @@ export default class AuthController {
 
   @Post('refresh-token')
   @HttpCode(200)
-  @UseGuards(DdosGuard)
+  @UseGuards(DdosGuard, RefreshTokenGuard)
   async refresh(
+    @Body('refreshToken') token: string,
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<{ accessToken: string }> {
-    if (!req.cookies['refreshToken']) throw new UnauthorizedException();
-
     const data: RefreshTokenInputModel = {
-      token: req.cookies.refreshToken,
+      token,
       ip: req.ip || '<unknown>',
       deviceName: req.headers['user-agent'] || '<unknown>',
     };
@@ -126,20 +126,19 @@ export default class AuthController {
 
   @Post('logout')
   @HttpCode(204)
-  async logout(@Req() req: Request): Promise<void> {
-    if (!req.cookies['refreshToken']) throw new UnauthorizedException();
-
-    const result = this.sessionsService.logout(req.cookies['refreshToken']);
+  @UseGuards(RefreshTokenGuard)
+  async logout(@Body('refreshToken') token: string): Promise<void> {
+    const result = this.sessionsService.logout(token);
     if (!result) throw new UnauthorizedException();
     return;
   }
 
   @Get('me')
-  async getMe(@Req() req: Request): Promise<SessionUserViewModel> {
-    if (!req.cookies['refreshToken']) throw new UnauthorizedException();
-    const result = await this.sessionsService.getSessionUserView(
-      req.cookies['refreshToken'],
-    );
+  @UseGuards(RefreshTokenGuard)
+  async getMe(
+    @Body('refreshToken') token: string,
+  ): Promise<SessionUserViewModel> {
+    const result = await this.sessionsService.getSessionUserView(token);
     if (!result) throw new UnauthorizedException();
     return result;
   }
