@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import Blog, { BlogDocument } from '../blogs/models/blog.schema';
-import Comment, { CommentDocument } from '../comments/models/comment.schema';
-import Post, { PostDocument } from '../posts/models/post.schema';
+import Comment, { CommentDocument } from '../posts/models/comments/comment.schema';
+import Post, { PostDocument } from '../posts/models/posts/post.schema';
 import User, { UserDocument } from '../users/models/user.schema';
 
 @Injectable()

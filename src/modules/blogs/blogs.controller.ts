@@ -14,9 +14,9 @@ import {
 } from '@nestjs/common';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 import PageViewModel from '../../common/models/page.view.model';
-import GetPostsQuery from '../posts/models/get.posts.query';
-import PostInputModel from '../posts/models/post.input.model';
-import PostViewModel from '../posts/models/post.view.model';
+import GetPostsQuery from '../posts/models/posts/get.posts.query';
+import PostInputModel from '../posts/models/posts/post.input.model';
+import PostViewModel from '../posts/models/posts/post.view.model';
 import PostsQueryRepository from '../posts/posts.query.repository';
 import PostsService from '../posts/posts.service';
 import BlogsQueryRepository from './blogs.query.repository';

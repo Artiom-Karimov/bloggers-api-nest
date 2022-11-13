@@ -8,7 +8,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PostsModule } from './modules/posts/posts.module';
 import { TestModule } from './modules/test/test.module';
 import { UsersModule } from './modules/users/users.module';
-import { CommentsModule } from './modules/comments/comments.module';
 import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
@@ -19,7 +18,6 @@ import { AuthModule } from './modules/auth/auth.module';
     BlogsModule,
     PostsModule,
     UsersModule,
-    CommentsModule,
     AuthModule,
   ],
   controllers: [AppController],

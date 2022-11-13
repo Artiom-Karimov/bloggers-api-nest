@@ -14,12 +14,12 @@ import {
 } from '@nestjs/common';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 import PageViewModel from '../../common/models/page.view.model';
-import CommentsQueryRepository from '../comments/comments.query.repository';
-import CommentViewModel from '../comments/models/comment.view.model';
-import GetCommentsQuery from '../comments/models/get.comments.query';
-import GetPostsQuery from './models/get.posts.query';
-import PostInputModel from './models/post.input.model';
-import PostViewModel from './models/post.view.model';
+import CommentsQueryRepository from './comments/comments.query.repository';
+import CommentViewModel from './models/comments/comment.view.model';
+import GetCommentsQuery from './models/comments/get.comments.query';
+import GetPostsQuery from './models/posts/get.posts.query';
+import PostInputModel from './models/posts/post.input.model';
+import PostViewModel from './models/posts/post.view.model';
 import PostsQueryRepository from './posts.query.repository';
 import PostsService from './posts.service';
 import { OptionalBearerAuthGuard } from '../auth/guards/optional.bearer.auth.guard';

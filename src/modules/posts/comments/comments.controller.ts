@@ -1,6 +1,6 @@
 import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
 import CommentsQueryRepository from './comments.query.repository';
-import CommentViewModel from './models/comment.view.model';
+import CommentViewModel from '../models/comments/comment.view.model';
 
 @Controller('comments')
 export default class CommentsController {

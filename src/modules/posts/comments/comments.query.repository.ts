@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
-import PageViewModel from '../../common/models/page.view.model';
-import CommentMapper from './models/comment.mapper';
-import Comment, { CommentDocument } from './models/comment.schema';
-import CommentViewModel from './models/comment.view.model';
-import GetCommentsQuery from './models/get.comments.query';
+import PageViewModel from '../../../common/models/page.view.model';
+import CommentMapper from '../models/comments/comment.mapper';
+import Comment, { CommentDocument } from '../models/comments/comment.schema';
+import CommentViewModel from '../models/comments/comment.view.model';
+import GetCommentsQuery from '../models/comments/get.comments.query';
 
 @Injectable()
 export default class CommentsQueryRepository {
