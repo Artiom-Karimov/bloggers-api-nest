@@ -23,6 +23,7 @@ import PostViewModel from './models/posts/post.view.model';
 import PostsQueryRepository from './posts.query.repository';
 import PostsService from './posts.service';
 import { OptionalBearerAuthGuard } from '../auth/guards/optional.bearer.auth.guard';
+import { throwValidationException } from '../../common/utils/validation.options';
 
 @Controller('posts')
 export default class PostsController {
@@ -57,7 +58,7 @@ export default class PostsController {
   @HttpCode(201)
   async create(@Body() data: PostInputModel): Promise<PostViewModel> {
     const blog = await this.queryRepo.getBlog(data.blogId);
-    if (!blog) throw new BadRequestException();
+    if (!blog) throwValidationException('blogId', 'blog does not exist');
 
     data.blogName = blog.name;
     const created = await this.service.create(data);
@@ -76,6 +77,10 @@ export default class PostsController {
     @Param('id') id: string,
     @Body() data: PostInputModel,
   ): Promise<void> {
+    const blog = await this.queryRepo.getBlog(data.blogId);
+    if (!blog) throwValidationException('blogId', 'blog does not exist');
+
+    data.blogName = blog.name;
     const updated = await this.service.update(id, data);
     if (!updated) throw new NotFoundException();
     return;
@@ -91,11 +96,13 @@ export default class PostsController {
   }
 
   @Get(':id/comments')
+  @UseGuards(OptionalBearerAuthGuard)
   async getComments(
     @Param('id') id: string,
     @Query() reqQuery: any,
+    @Body() body: any,
   ): Promise<PageViewModel<CommentViewModel>> {
-    const query = new GetCommentsQuery(reqQuery, id, undefined);
+    const query = new GetCommentsQuery(reqQuery, id, body.userId);
     return this.commentsQueryRepo.getComments(query);
   }
 }
