@@ -1,4 +1,4 @@
-import { ExtendedLikesInfoModel } from '../../../../common/models/likes.info.model';
+import { ExtendedLikesInfoModel } from '../likes/likes.info.model';
 
 export default class PostViewModel {
   constructor(
