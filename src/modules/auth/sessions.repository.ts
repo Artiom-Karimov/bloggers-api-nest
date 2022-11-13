@@ -11,9 +11,9 @@ export default class SessionsRepository {
     @InjectModel(Session.name) private readonly model: Model<SessionDocument>,
   ) { }
 
-  public async get(id: string): Promise<SessionModel | undefined> {
+  public async get(deviceId: string): Promise<SessionModel | undefined> {
     try {
-      const result: Session | null = await this.model.findById(id).exec();
+      const result: Session | null = await this.model.findById(deviceId).exec();
       return result ? SessionMapper.toDomain(result) : undefined;
     } catch (error) {
       console.error(error);
@@ -39,10 +39,10 @@ export default class SessionsRepository {
       return false;
     }
   }
-  public async delete(id: string): Promise<boolean> {
+  public async delete(deviceId: string): Promise<boolean> {
     try {
       const result: Session | null = await this.model
-        .findByIdAndDelete(id)
+        .findByIdAndDelete(deviceId)
         .exec();
       return !!result;
     } catch (error) {
@@ -50,11 +50,14 @@ export default class SessionsRepository {
       return false;
     }
   }
-  public async deleteAllButOne(userId: string, id: string): Promise<number> {
+  public async deleteAllButOne(
+    userId: string,
+    deviceId: string,
+  ): Promise<number> {
     try {
       const result = await this.model.deleteMany({
         userId,
-        _id: { $ne: id },
+        _id: { $ne: deviceId },
       });
       return result.deletedCount;
     } catch (error) {

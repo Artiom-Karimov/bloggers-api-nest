@@ -72,6 +72,28 @@ export default class SessionsService {
 
     return SessionUserViewModel.fromDomain(user);
   }
+  public async deleteAllButOne(
+    userId: string,
+    deviceId: string,
+  ): Promise<number> {
+    return this.sessionsRepo.deleteAllButOne(userId, deviceId);
+  }
+  public async deleteOne(userId: string, deviceId: string): Promise<AuthError> {
+    const session = await this.sessionsRepo.get(deviceId);
+    if (!session) return AuthError.NotFound;
+    if (session.userId !== userId) return AuthError.WrongCredentials;
+    await this.sessionsRepo.delete(deviceId);
+    return AuthError.NoError;
+  }
+  public async sessionExists(deviceId: string): Promise<boolean> {
+    const session = await this.sessionsRepo.get(deviceId);
+    if (!session) return false;
+    if (session.expiresAt < new Date().getTime()) {
+      await this.sessionsRepo.delete(deviceId);
+      return false;
+    }
+    return true;
+  }
 
   private async checkLoginGetUser(
     login: string,

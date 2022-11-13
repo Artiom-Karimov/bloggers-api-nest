@@ -19,6 +19,7 @@ import SessionsQueryRepository from './sessions.query.repository';
 import SessionsRepository from './sessions.repository';
 import SessionsService from './sessions.service';
 import RegistrationService from './registration.service';
+import SecurityDevicesController from './security.devices.controller';
 
 @Module({
   imports: [
@@ -32,7 +33,7 @@ import RegistrationService from './registration.service';
       { name: EmailConfirmation.name, schema: EmailConfirmationSchema },
     ]),
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, SecurityDevicesController],
   providers: [
     DdosGuard,
     RecoveryRepository,

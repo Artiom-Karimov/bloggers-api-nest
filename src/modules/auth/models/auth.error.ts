@@ -8,4 +8,5 @@ export enum AuthError {
   AlreadyConfirmed,
   Unconfirmed,
   Banned,
+  NotFound,
 }
