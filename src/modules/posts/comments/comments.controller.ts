@@ -20,6 +20,7 @@ import CommentInputModel from '../models/comments/comment.input.model';
 import CommentsService, { CommentError } from './comments.service';
 import TokenPayload from '../../auth/models/jwt/token.payload';
 import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.guard';
+import LikeInputModel from '../models/likes/like.input.model';
 
 @Controller('comments')
 export default class CommentsController {
@@ -65,5 +66,22 @@ export default class CommentsController {
     if (result === CommentError.NotFound) throw new NotFoundException();
     if (result === CommentError.Forbidden) throw new ForbiddenException();
     throw new BadRequestException();
+  }
+
+  @Put(':id/like-status')
+  @UseGuards(BearerAuthGuard)
+  @HttpCode(204)
+  async putLike(
+    @Param('id') commentId: string,
+    @Body() data: LikeInputModel,
+    @Body('tokenPayload') payload: TokenPayload,
+  ) {
+    data.entityId = commentId;
+    data.userId = payload.userId;
+    data.userLogin = payload.userLogin;
+
+    const result = await this.service.putLike(data);
+    if (!result) throw new NotFoundException();
+    return;
   }
 }

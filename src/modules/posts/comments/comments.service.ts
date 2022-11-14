@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import CommentLikesRepository from '../likes/comment.likes.repository';
 import CommentInputModel from '../models/comments/comment.input.model';
 import CommentModel from '../models/comments/comment.model';
+import LikeInputModel from '../models/likes/like.input.model';
+import LikeModel from '../models/likes/like.model';
 import CommentsRepository from './comments.repository';
 
 export enum CommentError {
@@ -12,7 +15,10 @@ export enum CommentError {
 
 @Injectable()
 export default class CommentsService {
-  constructor(private readonly repo: CommentsRepository) { }
+  constructor(
+    private readonly repo: CommentsRepository,
+    private readonly likeRepo: CommentLikesRepository,
+  ) { }
 
   public async create(data: CommentInputModel): Promise<string> {
     const comment = CommentModel.create(data);
@@ -37,5 +43,17 @@ export default class CommentsService {
 
     const deleted = await this.repo.delete(id);
     return deleted ? CommentError.NoError : CommentError.Unknown;
+  }
+  public async putLike(data: LikeInputModel): Promise<boolean> {
+    const comment = await this.repo.get(data.entityId);
+    if (!comment) return false;
+
+    let like = await this.likeRepo.get(data.entityId, data.userId);
+    if (like) {
+      like = LikeModel.update(like, data.likeStatus);
+      return this.likeRepo.update(like);
+    }
+    like = LikeModel.create(data);
+    return this.likeRepo.create(like);
   }
 }

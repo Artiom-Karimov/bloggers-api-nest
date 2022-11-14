@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import PostLikesQueryRepository from '../posts/likes/post.likes.query.repository';
+import PostLikesRepository from '../posts/likes/post.likes.repository';
 import { PostLike, PostLikeSchema } from '../posts/models/likes/like.schema';
 import Post, { PostSchema } from '../posts/models/posts/post.schema';
 import PostsQueryRepository from '../posts/posts/posts.query.repository';
@@ -26,6 +27,7 @@ import Blog, { BlogSchema } from './models/blog.schema';
     BlogsQueryRepository,
     BlogsService,
     PostsRepository,
+    PostLikesRepository,
     PostsQueryRepository,
     PostLikesQueryRepository,
     PostsService,

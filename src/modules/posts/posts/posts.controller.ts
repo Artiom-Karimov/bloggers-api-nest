@@ -28,6 +28,7 @@ import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import CommentInputModel from '../models/comments/comment.input.model';
 import CommentsService from '../comments/comments.service';
 import TokenPayload from '../../auth/models/jwt/token.payload';
+import LikeInputModel from '../models/likes/like.input.model';
 
 @Controller('posts')
 export default class PostsController {
@@ -116,7 +117,7 @@ export default class PostsController {
   async createComment(
     @Param('id') postId: string,
     @Body() data: CommentInputModel,
-    @Body('tokenPayload') payload?: TokenPayload,
+    @Body('tokenPayload') payload: TokenPayload,
   ): Promise<CommentViewModel> {
     data.postId = postId;
     data.userId = payload.userId;
@@ -132,5 +133,22 @@ export default class PostsController {
     if (!retrieved) throw new BadRequestException();
 
     return retrieved;
+  }
+
+  @Put(':id/like-status')
+  @UseGuards(BearerAuthGuard)
+  @HttpCode(204)
+  async putLike(
+    @Param('id') postId: string,
+    @Body() data: LikeInputModel,
+    @Body('tokenPayload') payload: TokenPayload,
+  ) {
+    data.entityId = postId;
+    data.userId = payload.userId;
+    data.userLogin = payload.userLogin;
+
+    const result = await this.service.putLike(data);
+    if (!result) throw new NotFoundException();
+    return;
   }
 }
