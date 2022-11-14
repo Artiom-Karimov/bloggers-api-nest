@@ -6,21 +6,23 @@ export default class LikeModel {
     public id: string,
     public entityId: string,
     public userId: string,
+    public userLogin: string,
     public status: LikeStatus,
-    public lastModified: number,
+    public lastModified: string,
   ) { }
   public static create(data: LikeInputModel): LikeModel {
     return new LikeModel(
       IdGenerator.generate(),
       data.entityId,
       data.userId,
+      data.userLogin,
       data.likeStatus,
-      new Date().getTime(),
+      new Date().toISOString(),
     );
   }
   public static update(model: LikeModel, status: LikeStatus): LikeModel {
     model.status = status;
-    model.lastModified = new Date().getTime();
+    model.lastModified = new Date().toISOString();
     return model;
   }
 }
