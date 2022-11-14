@@ -1,3 +1,5 @@
+import { LikesInfoModel } from '../likes/likes.info.model';
+
 export default class CommentViewModel {
   constructor(
     public id: string,
@@ -5,5 +7,6 @@ export default class CommentViewModel {
     public userId: string,
     public userLogin: string,
     public createdAt: string,
+    public likesInfo: LikesInfoModel = new LikesInfoModel(),
   ) { }
 }

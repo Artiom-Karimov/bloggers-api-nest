@@ -5,6 +5,10 @@ import CommentsController from './comments/comments.controller';
 import CommentsQueryRepository from './comments/comments.query.repository';
 import CommentsRepository from './comments/comments.repository';
 import CommentsService from './comments/comments.service';
+import CommentLikesQueryRepository from './likes/comment.likes.query.repository';
+import CommentLikesRepository from './likes/comment.likes.repository';
+import PostLikesQueryRepository from './likes/post.likes.query.repository';
+import PostLikesRepository from './likes/post.likes.repository';
 import Comment, { CommentSchema } from './models/comments/comment.schema';
 import {
   CommentLike,
@@ -34,9 +38,13 @@ import PostsService from './posts/posts.service';
   providers: [
     PostsRepository,
     PostsQueryRepository,
+    PostLikesRepository,
+    PostLikesQueryRepository,
     PostsService,
     CommentsRepository,
     CommentsQueryRepository,
+    CommentLikesRepository,
+    CommentLikesQueryRepository,
     CommentsService,
   ],
 })

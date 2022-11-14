@@ -14,11 +14,10 @@ export enum CommentError {
 export default class CommentsService {
   constructor(private readonly repo: CommentsRepository) { }
 
-  public async create(data: CommentInputModel): Promise<CommentModel> {
+  public async create(data: CommentInputModel): Promise<string> {
     const comment = CommentModel.create(data);
     const created = await this.repo.create(comment);
-    if (!created) return undefined;
-    return this.repo.get(created);
+    return created ?? undefined;
   }
   public async update(
     id: string,

@@ -11,7 +11,7 @@ import {
 
 @Injectable()
 export default class LikesQueryRepository {
-  constructor(private readonly model: Model<LikeDocument>) { }
+  constructor(protected readonly model: Model<LikeDocument>) { }
 
   public async getExtendedLikesInfo(
     entityId: string,

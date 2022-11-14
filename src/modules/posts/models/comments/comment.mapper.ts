@@ -1,3 +1,4 @@
+import { LikesInfoModel } from '../likes/likes.info.model';
 import CommentModel from './comment.model';
 import Comment from './comment.schema';
 import CommentViewModel from './comment.view.model';
@@ -23,13 +24,17 @@ export default class CommentMapper {
       model.createdAt,
     );
   }
-  public static toView(model: Comment): CommentViewModel {
+  public static toView(
+    model: Comment,
+    likesInfo: LikesInfoModel | undefined,
+  ): CommentViewModel {
     return new CommentViewModel(
       model._id,
       model.content,
       model.userId,
       model.userLogin,
       model.createdAt,
+      likesInfo,
     );
   }
 }

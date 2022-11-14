@@ -6,7 +6,7 @@ import { LikeDocument } from '../models/likes/like.schema';
 
 @Injectable()
 export default class LikesRepository {
-  constructor(private readonly model: Model<LikeDocument>) { }
+  constructor(protected readonly model: Model<LikeDocument>) { }
 
   public async get(entityId: string, userId: string): Promise<LikeModel> {
     try {

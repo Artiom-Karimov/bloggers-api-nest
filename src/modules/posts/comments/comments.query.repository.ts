@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../../common/models/page.view.model';
+import CommentLikesQueryRepository from '../likes/comment.likes.query.repository';
 import CommentMapper from '../models/comments/comment.mapper';
 import Comment, { CommentDocument } from '../models/comments/comment.schema';
 import CommentViewModel from '../models/comments/comment.view.model';
@@ -11,6 +12,7 @@ import GetCommentsQuery from '../models/comments/get.comments.query';
 export default class CommentsQueryRepository {
   constructor(
     @InjectModel(Comment.name) private readonly model: Model<CommentDocument>,
+    private readonly likesQueryRepo: CommentLikesQueryRepository,
   ) { }
 
   public async getComments(
@@ -18,12 +20,15 @@ export default class CommentsQueryRepository {
   ): Promise<PageViewModel<CommentViewModel>> {
     const page = await this.getPage(params);
     const query = this.getDbQuery(params);
-    return this.loadPageComments(page, query);
+    return this.loadPageComments(page, query, params.userId);
   }
-  public async getComment(id: string): Promise<CommentViewModel | undefined> {
+  public async getComment(
+    id: string,
+    userId: string | undefined,
+  ): Promise<CommentViewModel | undefined> {
     try {
       const result = await this.model.findOne({ _id: id });
-      return result ? CommentMapper.toView(result) : undefined;
+      return result ? this.mergeWithLikes(result, userId) : undefined;
     } catch (error) {
       console.log(error);
       return undefined;
@@ -55,16 +60,31 @@ export default class CommentsQueryRepository {
   private async loadPageComments(
     page: PageViewModel<CommentViewModel>,
     query: any,
+    userId: string | undefined,
   ): Promise<PageViewModel<CommentViewModel>> {
     try {
       const comments: Comment[] = await query
         .skip(page.calculateSkip())
         .limit(page.pageSize)
         .exec();
-      const viewModels = comments.map((b) => CommentMapper.toView(b));
+      const viewModels = await this.mergeManyWithLikes(comments, userId);
       return page.add(...viewModels);
     } catch (error) {
       return page;
     }
+  }
+  private async mergeManyWithLikes(
+    comments: Comment[],
+    userId: string | undefined,
+  ): Promise<CommentViewModel[]> {
+    const promises = comments.map((c) => this.mergeWithLikes(c, userId));
+    return Promise.all(promises);
+  }
+  private async mergeWithLikes(
+    post: Comment,
+    userId: string | undefined,
+  ): Promise<CommentViewModel> {
+    const likeInfo = await this.likesQueryRepo.getLikesInfo(post._id, userId);
+    return CommentMapper.toView(post, likeInfo);
   }
 }

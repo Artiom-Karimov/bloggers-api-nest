@@ -27,6 +27,7 @@ import { throwValidationException } from '../../../common/utils/validation.optio
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import CommentInputModel from '../models/comments/comment.input.model';
 import CommentsService from '../comments/comments.service';
+import TokenPayload from '../../auth/models/jwt/token.payload';
 
 @Controller('posts')
 export default class PostsController {
@@ -41,18 +42,18 @@ export default class PostsController {
   @UseGuards(OptionalBearerAuthGuard)
   async get(
     @Query() reqQuery: any,
-    @Body() body: any,
+    @Body('tokenPayload') payload?: TokenPayload,
   ): Promise<PageViewModel<PostViewModel>> {
-    const query = new GetPostsQuery(reqQuery, undefined, body.userId);
+    const query = new GetPostsQuery(reqQuery, undefined, payload?.userId);
     return this.queryRepo.getPosts(query);
   }
   @Get(':id')
   @UseGuards(OptionalBearerAuthGuard)
   async getOne(
     @Param('id') id: string,
-    @Body() body: any,
+    @Body('tokenPayload') payload?: TokenPayload,
   ): Promise<PostViewModel> {
-    const result = await this.queryRepo.getPost(id, body.userId);
+    const result = await this.queryRepo.getPost(id, payload?.userId);
     if (!result) throw new NotFoundException();
     return result;
   }
@@ -104,9 +105,9 @@ export default class PostsController {
   async getComments(
     @Param('id') id: string,
     @Query() reqQuery: any,
-    @Body() body: any,
+    @Body('tokenPayload') payload?: TokenPayload,
   ): Promise<PageViewModel<CommentViewModel>> {
-    const query = new GetCommentsQuery(reqQuery, id, body.userId);
+    const query = new GetCommentsQuery(reqQuery, id, payload?.userId);
     return this.commentsQueryRepo.getComments(query);
   }
 
@@ -115,12 +116,21 @@ export default class PostsController {
   async createComment(
     @Param('id') postId: string,
     @Body() data: CommentInputModel,
+    @Body('tokenPayload') payload?: TokenPayload,
   ): Promise<CommentViewModel> {
     data.postId = postId;
+    data.userId = payload.userId;
+    data.userLogin = payload.userLogin;
 
     const created = await this.commentsService.create(data);
     if (!created) throw new BadRequestException();
 
-    return created;
+    const retrieved = await this.commentsQueryRepo.getComment(
+      created,
+      data.userId,
+    );
+    if (!retrieved) throw new BadRequestException();
+
+    return retrieved;
   }
 }

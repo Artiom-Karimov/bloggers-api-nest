@@ -1,10 +1,11 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../../common/models/page.view.model';
 import BlogMapper from '../../blogs/models/blog.mapper';
 import Blog, { BlogDocument } from '../../blogs/models/blog.schema';
 import BlogViewModel from '../../blogs/models/blog.view.model';
+import PostLikesQueryRepository from '../likes/post.likes.query.repository';
 import GetPostsQuery from '../models/posts/get.posts.query';
 import PostMapper from '../models/posts/post.mapper';
 import Post, { PostDocument } from '../models/posts/post.schema';
@@ -15,6 +16,7 @@ export default class PostsQueryRepository {
   constructor(
     @InjectModel(Post.name) private readonly model: Model<PostDocument>,
     @InjectModel(Blog.name) private readonly blogModel: Model<BlogDocument>,
+    private readonly likesQueryRepo: PostLikesQueryRepository,
   ) { }
 
   public async getPosts(
@@ -22,7 +24,7 @@ export default class PostsQueryRepository {
   ): Promise<PageViewModel<PostViewModel>> {
     const page = await this.getPage(params);
     const query = this.getQuery(params);
-    return this.loadPagePosts(page, query);
+    return this.loadPagePosts(page, query, params.userId);
   }
   public async getPost(
     id: string,
@@ -30,7 +32,7 @@ export default class PostsQueryRepository {
   ): Promise<PostViewModel | undefined> {
     try {
       const post = await this.model.findOne({ _id: id });
-      return post ? this.mergeWithLikes(post) : undefined;
+      return post ? this.mergeWithLikes(post, userId) : undefined;
     } catch (error) {
       return undefined;
     }
@@ -74,19 +76,34 @@ export default class PostsQueryRepository {
   private async loadPagePosts(
     page: PageViewModel<PostViewModel>,
     query: any,
+    userId: string | undefined,
   ): Promise<PageViewModel<PostViewModel>> {
     try {
       const posts: Post[] = await query
         .skip(page.calculateSkip())
         .limit(page.pageSize)
         .exec();
-      const viewModels = posts.map((p) => PostMapper.toView(p));
+      const viewModels = await this.mergeManyWithLikes(posts, userId);
       return page.add(...viewModels);
     } catch (error) {
       return page;
     }
   }
-  private async mergeWithLikes(post: Post): Promise<PostViewModel> {
-    throw new NotImplementedException();
+  private async mergeManyWithLikes(
+    posts: Post[],
+    userId: string | undefined,
+  ): Promise<PostViewModel[]> {
+    const promises = posts.map((p) => this.mergeWithLikes(p, userId));
+    return Promise.all(promises);
+  }
+  private async mergeWithLikes(
+    post: Post,
+    userId: string | undefined,
+  ): Promise<PostViewModel> {
+    const likeInfo = await this.likesQueryRepo.getExtendedLikesInfo(
+      post._id,
+      userId,
+    );
+    return PostMapper.toView(post, likeInfo);
   }
 }

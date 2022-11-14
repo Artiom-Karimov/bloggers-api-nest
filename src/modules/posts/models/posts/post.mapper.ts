@@ -1,3 +1,4 @@
+import { ExtendedLikesInfoModel } from '../likes/likes.info.model';
 import PostModel from './post.model';
 import Post from './post.schema';
 import PostViewModel from './post.view.model';
@@ -25,7 +26,10 @@ export default class PostMapper {
       model.createdAt,
     );
   }
-  public static toView(model: Post): PostViewModel {
+  public static toView(
+    model: Post,
+    likesInfo: ExtendedLikesInfoModel,
+  ): PostViewModel {
     return new PostViewModel(
       model._id,
       model.title,
@@ -34,6 +38,7 @@ export default class PostMapper {
       model.blogId,
       model.blogName,
       model.createdAt,
+      likesInfo,
     );
   }
 }

@@ -19,6 +19,7 @@ import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import CommentInputModel from '../models/comments/comment.input.model';
 import CommentsService, { CommentError } from './comments.service';
 import TokenPayload from '../../auth/models/jwt/token.payload';
+import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.guard';
 
 @Controller('comments')
 export default class CommentsController {
@@ -28,8 +29,12 @@ export default class CommentsController {
   ) { }
 
   @Get(':id')
-  async getOne(@Param('id') id: string): Promise<CommentViewModel> {
-    const result = await this.queryRepo.getComment(id);
+  @UseGuards(OptionalBearerAuthGuard)
+  async getOne(
+    @Param('id') id: string,
+    @Body('tokenPayload') payload?: TokenPayload,
+  ): Promise<CommentViewModel> {
+    const result = await this.queryRepo.getComment(id, payload?.userId);
     if (!result) throw new NotFoundException();
     return result;
   }
