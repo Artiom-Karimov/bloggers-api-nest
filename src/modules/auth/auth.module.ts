@@ -20,6 +20,7 @@ import SessionsRepository from './sessions.repository';
 import SessionsService from './sessions.service';
 import RegistrationService from './registration.service';
 import SecurityDevicesController from './security.devices.controller';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import SecurityDevicesController from './security.devices.controller';
     MongooseModule.forFeature([
       { name: EmailConfirmation.name, schema: EmailConfirmationSchema },
     ]),
+    MailModule,
   ],
   controllers: [AuthController, SecurityDevicesController],
   providers: [
