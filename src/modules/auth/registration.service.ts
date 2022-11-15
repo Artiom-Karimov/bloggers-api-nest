@@ -39,9 +39,9 @@ export default class RegistrationService {
     const user = await this.usersService.getByLoginOrEmail(email);
     if (!user) return AuthError.WrongCredentials;
 
-    await this.createEmailConfirmation(user);
+    const created = await this.createEmailConfirmation(user);
 
-    return AuthError.NoError;
+    return created ? AuthError.NoError : AuthError.AlreadyConfirmed;
   }
 
   public async confirmEmail(code: string): Promise<boolean> {
@@ -73,7 +73,7 @@ export default class RegistrationService {
     return this.usersService.updatePassword(recovery.userId, data.newPassword);
   }
 
-  private async createEmailConfirmation(user: UserModel) {
+  private async createEmailConfirmation(user: UserModel): Promise<boolean> {
     const ec = EmailConfirmationModel.create(user.id);
     const existing = await this.emailRepo.getByUser(user.id);
 
@@ -83,5 +83,6 @@ export default class RegistrationService {
     } else await this.emailRepo.create(ec);
 
     await this.mailService.sendEmailConfirmation(user, ec.code);
+    return true;
   }
 }
