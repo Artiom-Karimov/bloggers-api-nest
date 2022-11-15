@@ -18,6 +18,7 @@ export class DdosGuard implements CanActivate {
   private history: Action[] = [];
 
   canActivate(context: ExecutionContext): boolean {
+    if (config.ddosGuardDisable) return true;
     this.flushOutdated();
     const req: Request = context.switchToHttp().getRequest();
     const action = this.getAction(req);
