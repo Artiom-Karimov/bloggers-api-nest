@@ -1,5 +1,8 @@
-import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+// Leave this at the top for correct .env loading
+const configModule = ConfigModule.forRoot();
+
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BlogsModule } from './modules/blogs/blogs.module';
@@ -13,7 +16,7 @@ import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    configModule,
     MongooseModule.forRoot(config.mongoUri),
     TestModule,
     BlogsModule,
