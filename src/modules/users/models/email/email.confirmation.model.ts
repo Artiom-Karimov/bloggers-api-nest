@@ -1,6 +1,6 @@
 import IdGenerator from '../../../../common/utils/id.generator';
 import * as config from '../../../../config/users';
-import add from 'date-fns/add';
+import { add } from 'date-fns';
 import { Duration } from 'date-fns';
 
 export default class EmailConfirmationModel {

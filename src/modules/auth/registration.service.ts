@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { MailService } from '../mail/mail.service';
 import EmailConfirmationRepository from '../users/email.confirmation.repository';
 import EmailConfirmationModel from '../users/models/email/email.confirmation.model';
 import UserInputModel from '../users/models/user.input.model';
+import UserModel from '../users/models/user.model';
 import UsersService from '../users/users.service';
 import { AuthError } from './models/auth.error';
 import NewPasswordInputModel from './models/input/new.password.input.model';
@@ -14,6 +16,7 @@ export default class RegistrationService {
     private readonly usersService: UsersService,
     private readonly emailRepo: EmailConfirmationRepository,
     private readonly recoveryRepo: RecoveryRepository,
+    private readonly mailService: MailService,
   ) { }
 
   public async register(data: UserInputModel): Promise<AuthError> {
@@ -24,18 +27,21 @@ export default class RegistrationService {
 
     const created = await this.usersService.create(data);
     if (!created) return AuthError.Unknown;
+    const retrieved = await this.usersService.get(created);
+    if (!retrieved) return AuthError.Unknown;
 
-    const emailSent = await this.createEmailConfirmation(created);
+    await this.createEmailConfirmation(retrieved);
 
-    return emailSent ? AuthError.NoError : AuthError.AlreadyConfirmed;
+    return AuthError.NoError;
   }
 
   public async resendEmail(email: string): Promise<AuthError> {
     const user = await this.usersService.getByLoginOrEmail(email);
     if (!user) return AuthError.WrongCredentials;
 
-    const emailSent = await this.createEmailConfirmation(user.id);
-    return emailSent ? AuthError.NoError : AuthError.AlreadyConfirmed;
+    await this.createEmailConfirmation(user);
+
+    return AuthError.NoError;
   }
 
   public async confirmEmail(code: string): Promise<boolean> {
@@ -54,7 +60,7 @@ export default class RegistrationService {
     const recovery = RecoveryModel.create(user.id);
     await this.recoveryRepo.createOrUpdate(recovery);
 
-    // Send email
+    await this.mailService.sendPasswordRecovery(user, recovery.code);
 
     return true;
   }
@@ -67,15 +73,15 @@ export default class RegistrationService {
     return this.usersService.updatePassword(recovery.userId, data.newPassword);
   }
 
-  private async createEmailConfirmation(userId: string) {
-    const ec = EmailConfirmationModel.create(userId);
-    const existing = await this.emailRepo.getByUser(userId);
+  private async createEmailConfirmation(user: UserModel) {
+    const ec = EmailConfirmationModel.create(user.id);
+    const existing = await this.emailRepo.getByUser(user.id);
 
     if (existing) {
       if (existing.confirmed) return false;
       await this.emailRepo.update(ec);
     } else await this.emailRepo.create(ec);
 
-    // Send email
+    await this.mailService.sendEmailConfirmation(user, ec.code);
   }
 }

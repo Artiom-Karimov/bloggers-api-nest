@@ -27,7 +27,7 @@ export class MailService {
     await this.mailerService.sendMail({
       to: user.email,
       subject: 'Password recovery',
-      template: './confirmation',
+      template: './recovery',
       context: {
         userLogin: user.login,
         url,

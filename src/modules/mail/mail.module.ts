@@ -17,7 +17,7 @@ import * as config from '../../config/email';
       },
 
       defaults: {
-        from: config.senderName,
+        from: `${config.senderName} <${config.user}>`,
       },
       template: {
         dir: join(__dirname, 'templates'),
