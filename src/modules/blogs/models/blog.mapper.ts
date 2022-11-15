@@ -12,13 +12,12 @@ export default class BlogMapper {
     return blog;
   }
   public static toDomain(model: Blog): BlogModel {
-    const blog = new BlogModel(
+    return new BlogModel(
       model._id,
       model.name,
       model.youtubeUrl,
       model.createdAt,
     );
-    return blog;
   }
   public static toView(model: Blog): BlogViewModel {
     return new BlogViewModel(
