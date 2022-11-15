@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import Session, { SessionSchema } from '../auth/models/session/session.schema';
 import SessionsRepository from '../auth/sessions.repository';
+import { PostsModule } from '../posts/posts.module';
 import EmailConfirmationRepository from './email.confirmation.repository';
 import UserBan, { UserBanSchema } from './models/ban/user.ban.schema';
 import EmailConfirmation, {
@@ -22,6 +23,7 @@ import UsersService from './users.service';
       { name: EmailConfirmation.name, schema: EmailConfirmationSchema },
     ]),
     MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
+    PostsModule,
   ],
   controllers: [UsersController],
   providers: [

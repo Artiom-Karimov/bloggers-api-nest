@@ -10,6 +10,7 @@ export default class CommentMapper {
     comment.postId = model.postId;
     comment.userId = model.userId;
     comment.userLogin = model.userLogin;
+    comment.userBanned = model.userBanned;
     comment.content = model.content;
     comment.createdAt = model.createdAt;
     return comment;
@@ -20,6 +21,7 @@ export default class CommentMapper {
       model.postId,
       model.userId,
       model.userLogin,
+      model.userBanned,
       model.content,
       model.createdAt,
     );

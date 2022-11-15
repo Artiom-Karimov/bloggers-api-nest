@@ -46,4 +46,14 @@ export default class LikesRepository {
       return false;
     }
   }
+  public async setUserBanned(
+    userId: string,
+    userBanned: boolean,
+  ): Promise<void> {
+    try {
+      await this.model.updateMany({ userId }, { userBanned }).exec();
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }

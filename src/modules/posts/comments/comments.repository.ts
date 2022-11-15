@@ -49,4 +49,14 @@ export default class CommentsRepository {
       return false;
     }
   }
+  public async setUserBanned(
+    userId: string,
+    userBanned: boolean,
+  ): Promise<void> {
+    try {
+      await this.model.updateMany({ userId }, { userBanned }).exec();
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }

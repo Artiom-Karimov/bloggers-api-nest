@@ -18,6 +18,9 @@ export default class Comment {
   userLogin: string;
 
   @Prop()
+  userBanned: boolean;
+
+  @Prop()
   content: string;
 
   @Prop()

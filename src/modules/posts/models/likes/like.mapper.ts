@@ -10,6 +10,7 @@ export default class LikeMapper {
       model.entityId,
       model.userId,
       model.userLogin,
+      model.userBanned,
       model.status,
       model.lastModified,
     );
@@ -20,6 +21,7 @@ export default class LikeMapper {
       model.entityId,
       model.userId,
       model.userLogin,
+      model.userBanned,
       model.status as LikeStatus,
       model.lastModified,
     );

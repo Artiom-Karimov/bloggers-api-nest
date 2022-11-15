@@ -43,4 +43,10 @@ export default class PostsService {
     like = LikeModel.create(data);
     return this.likeRepo.create(like);
   }
+  public async setUserBanned(
+    userId: string,
+    userBanned: boolean,
+  ): Promise<void> {
+    await this.likeRepo.setUserBanned(userId, userBanned);
+  }
 }

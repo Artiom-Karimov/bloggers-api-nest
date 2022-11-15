@@ -47,7 +47,10 @@ export default class CommentsQueryRepository {
   }
   private async getCount(postId: string): Promise<number> {
     try {
-      return this.model.countDocuments({ postId }).exec();
+      return this.model
+        .countDocuments({ postId })
+        .where({ userBanned: false })
+        .exec();
     } catch (error) {
       return 0;
     }
@@ -55,6 +58,7 @@ export default class CommentsQueryRepository {
   private getDbQuery(params: GetCommentsQuery): any {
     return this.model
       .find({ postId: params.postId })
+      .where({ userBanned: false })
       .sort({ [params.sortBy]: params.sortDirection as SortOrder });
   }
   private async loadPageComments(

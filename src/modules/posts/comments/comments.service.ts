@@ -56,4 +56,11 @@ export default class CommentsService {
     like = LikeModel.create(data);
     return this.likeRepo.create(like);
   }
+  public async setUserBanned(
+    userId: string,
+    userBanned: boolean,
+  ): Promise<void> {
+    await this.repo.setUserBanned(userId, userBanned);
+    await this.likeRepo.setUserBanned(userId, userBanned);
+  }
 }

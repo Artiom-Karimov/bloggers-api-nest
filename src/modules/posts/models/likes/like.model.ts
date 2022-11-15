@@ -7,6 +7,7 @@ export default class LikeModel {
     public entityId: string,
     public userId: string,
     public userLogin: string,
+    public userBanned: boolean,
     public status: LikeStatus,
     public lastModified: string,
   ) { }
@@ -16,6 +17,7 @@ export default class LikeModel {
       data.entityId,
       data.userId,
       data.userLogin,
+      false,
       data.likeStatus,
       new Date().toISOString(),
     );

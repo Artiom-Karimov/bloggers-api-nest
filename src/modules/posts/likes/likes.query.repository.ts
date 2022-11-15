@@ -39,14 +39,14 @@ export default class LikesQueryRepository {
   protected async getLikesCount(entityId: string): Promise<number> {
     return this.model
       .countDocuments({ entityId: entityId })
-      .where('status')
-      .equals('Like');
+      .where({ userBanned: false })
+      .where({ status: 'Like' });
   }
   protected async getDislikesCount(entityId: string): Promise<number> {
     return this.model
       .countDocuments({ entityId: entityId })
-      .where('status')
-      .equals('Dislike');
+      .where({ userBanned: false })
+      .where({ status: 'Dislike' });
   }
   protected async getUserLike(
     entityId: string,
@@ -71,8 +71,8 @@ export default class LikesQueryRepository {
     try {
       return this.model
         .find({ entityId: entityId })
-        .where('status')
-        .equals('Like')
+        .where({ userBanned: false })
+        .where({ status: 'Like' })
         .sort({ lastModified: -1 })
         .limit(3)
         .exec();

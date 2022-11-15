@@ -9,6 +9,7 @@ export class Like {
     entityId: string,
     userId: string,
     userLogin: string,
+    userBanned: boolean,
     status: string,
     lastModified: string,
   ) {
@@ -16,6 +17,7 @@ export class Like {
     this.entityId = entityId;
     this.userId = userId;
     this.userLogin = userLogin;
+    this.userBanned = userBanned;
     this.status = status;
     this.lastModified = lastModified;
   }
@@ -31,6 +33,9 @@ export class Like {
 
   @Prop()
   userLogin: string;
+
+  @Prop()
+  userBanned: boolean;
 
   @Prop()
   status: string;
