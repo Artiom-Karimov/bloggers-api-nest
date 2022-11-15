@@ -32,5 +32,12 @@ import UsersService from './users.service';
     EmailConfirmationRepository,
     SessionsRepository,
   ],
+  exports: [
+    UsersRepository,
+    UsersQueryRepository,
+    UsersService,
+    UsersBanRepository,
+    EmailConfirmationRepository,
+  ],
 })
 export class UsersModule { }

@@ -21,6 +21,7 @@ import SessionsService from './sessions.service';
 import RegistrationService from './registration.service';
 import SecurityDevicesController from './security.devices.controller';
 import { MailModule } from '../mail/mail.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
@@ -28,11 +29,7 @@ import { MailModule } from '../mail/mail.module';
       { name: Recovery.name, schema: RecoverySchema },
     ]),
     MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    MongooseModule.forFeature([{ name: UserBan.name, schema: UserBanSchema }]),
-    MongooseModule.forFeature([
-      { name: EmailConfirmation.name, schema: EmailConfirmationSchema },
-    ]),
+    UsersModule,
     MailModule,
   ],
   controllers: [AuthController, SecurityDevicesController],
@@ -41,12 +38,7 @@ import { MailModule } from '../mail/mail.module';
     RecoveryRepository,
     SessionsRepository,
     SessionsQueryRepository,
-    UsersBanRepository,
-    EmailConfirmationRepository,
-    UsersRepository,
-    UsersQueryRepository,
     RegistrationService,
-    UsersService,
     SessionsService,
   ],
 })

@@ -47,5 +47,6 @@ import PostsService from './posts/posts.service';
     CommentLikesQueryRepository,
     CommentsService,
   ],
+  exports: [PostsService, PostsQueryRepository],
 })
 export class PostsModule { }
