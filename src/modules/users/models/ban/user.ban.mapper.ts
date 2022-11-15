@@ -23,6 +23,6 @@ export default class UserBanMapper {
     return new UserBanViewModel(model.isBanned, model.banDate, model.banReason);
   }
   public static emptyView(): UserBanViewModel {
-    return new UserBanViewModel(false, '<none>', '<none>');
+    return new UserBanViewModel(false, null, null);
   }
 }

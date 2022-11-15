@@ -8,8 +8,8 @@ export default class UserBan {
   constructor(
     _id: string,
     isBanned: boolean,
-    banReason: string,
-    banDate: string,
+    banReason: string | null,
+    banDate: string | null,
   ) {
     this._id = _id;
     this.isBanned = isBanned;
@@ -24,10 +24,10 @@ export default class UserBan {
   isBanned: boolean;
 
   @Prop()
-  banReason: string;
+  banReason: string | null;
 
   @Prop()
-  banDate: string;
+  banDate: string | null;
 }
 
 export const UserBanSchema = SchemaFactory.createForClass(UserBan);

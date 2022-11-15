@@ -6,7 +6,7 @@ export default class UserBanInputModel {
 
   @MinLength(20)
   @MaxLength(1000)
-  banReason: string;
+  banReason?: string;
 
   userId?: string;
 }
