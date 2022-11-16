@@ -47,8 +47,8 @@ export default class EmailConfirmationRepository {
   public async update(model: EmailConfirmationModel): Promise<boolean> {
     try {
       const ec = EmailConfirmationMapper.fromDomain(model);
-      const result = await this.model.findByIdAndUpdate(model.id, ec);
-      return result.isModified();
+      await this.model.findByIdAndUpdate(model.id, ec);
+      return true;
     } catch (error) {
       console.error(error);
       return false;
