@@ -46,7 +46,10 @@ export default class CommentsController {
   async update(
     @Param('id') id: string,
     @Body() data: CommentInputModel,
+    @Body('tokenPayload') payload: TokenPayload,
   ): Promise<void> {
+    data.userId = payload.userId;
+    data.userLogin = payload.userLogin;
     const result = await this.service.update(id, data);
     if (result === CommentError.NoError) return;
     if (result === CommentError.NotFound) throw new NotFoundException();

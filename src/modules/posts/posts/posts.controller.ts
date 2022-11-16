@@ -108,6 +108,9 @@ export default class PostsController {
     @Query() reqQuery: any,
     @Body('tokenPayload') payload?: TokenPayload,
   ): Promise<PageViewModel<CommentViewModel>> {
+    const post = await this.service.get(id);
+    if (!post) throw new NotFoundException();
+
     const query = new GetCommentsQuery(reqQuery, id, payload?.userId);
     return this.commentsQueryRepo.getComments(query);
   }
