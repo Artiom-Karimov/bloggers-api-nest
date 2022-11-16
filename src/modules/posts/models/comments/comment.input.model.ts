@@ -1,3 +1,4 @@
+import { Transform, TransformFnParams } from 'class-transformer';
 import { MaxLength, MinLength } from 'class-validator';
 
 export default class CommentInputModel {
@@ -5,6 +6,7 @@ export default class CommentInputModel {
   userId?: string;
   userLogin?: string;
 
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   @MinLength(20)
   @MaxLength(300)
   content: string;
