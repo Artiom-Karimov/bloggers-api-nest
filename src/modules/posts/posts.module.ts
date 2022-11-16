@@ -16,6 +16,7 @@ import {
   PostLike,
   PostLikeSchema,
 } from './models/likes/like.schema';
+import { BlogIdValidator } from './models/posts/blog.id.validator';
 import Post, { PostSchema } from './models/posts/post.schema';
 import PostsController from './posts/posts.controller';
 import PostsQueryRepository from './posts/posts.query.repository';
@@ -46,6 +47,7 @@ import PostsService from './posts/posts.service';
     CommentLikesRepository,
     CommentLikesQueryRepository,
     CommentsService,
+    BlogIdValidator,
   ],
   exports: [PostsService, PostsQueryRepository, CommentsService],
 })

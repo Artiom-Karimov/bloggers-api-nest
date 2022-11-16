@@ -1,5 +1,6 @@
 import { Transform, TransformFnParams } from 'class-transformer';
-import { MaxLength, MinLength } from 'class-validator';
+import { MaxLength, MinLength, Validate, ValidateIf } from 'class-validator';
+import { BlogIdValidator } from './blog.id.validator';
 
 export default class PostInputModel {
   @Transform(({ value }: TransformFnParams) => value?.trim())
@@ -17,6 +18,8 @@ export default class PostInputModel {
   @MaxLength(1000)
   content: string;
 
+  @ValidateIf((p) => p.blogId)
+  @Validate(BlogIdValidator)
   blogId?: string;
 
   blogName?: string;
