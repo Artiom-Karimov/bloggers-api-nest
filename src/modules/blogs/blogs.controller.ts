@@ -24,6 +24,8 @@ import BlogsService from './blogs.service';
 import BlogInputModel from './models/blog.input.model';
 import BlogViewModel from './models/blog.view.model';
 import GetBlogsQuery from './models/get.blogs.query';
+import { OptionalBearerAuthGuard } from '../auth/guards/optional.bearer.auth.guard';
+import TokenPayload from '../auth/models/jwt/token.payload';
 
 @Controller('blogs')
 export default class BlogsController {
@@ -78,13 +80,15 @@ export default class BlogsController {
   }
 
   @Get(':id/posts')
+  @UseGuards(OptionalBearerAuthGuard)
   async getPosts(
     @Query() reqQuery: any,
     @Param('id') id: string,
+    @Body('tokenPayload') payload: TokenPayload,
   ): Promise<PageViewModel<PostViewModel>> {
     const blog = await this.queryRepo.getBlog(id);
     if (!blog) throw new NotFoundException();
-    const query = new GetPostsQuery(reqQuery, id, undefined);
+    const query = new GetPostsQuery(reqQuery, id, payload.userId);
     return this.postsQueryRepo.getPosts(query);
   }
 
