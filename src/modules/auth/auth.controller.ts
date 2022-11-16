@@ -96,12 +96,16 @@ export default class AuthController {
     @Body() data: LoginInputModel,
     @Req() req: Request,
     @Res() res: Response,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<void> {
     data.ip = req.ip || '<unknown>';
     data.deviceName = req.headers['user-agent'] || '<unknown>';
 
     const result = await this.sessionsService.login(data);
-    if (result instanceof TokenPair) return this.sendBackTokens(res, result);
+    if (result instanceof TokenPair) {
+      this.setCookie(res, result.refreshToken);
+      res.status(200).send({ accessToken: result.accessToken });
+      return;
+    }
     throw new UnauthorizedException();
   }
 
@@ -112,7 +116,7 @@ export default class AuthController {
     @Body('refreshToken') token: string,
     @Req() req: Request,
     @Res() res: Response,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<void> {
     const data: RefreshTokenInputModel = {
       token,
       ip: req.ip || '<unknown>',
@@ -120,7 +124,11 @@ export default class AuthController {
     };
 
     const result = await this.sessionsService.refreshToken(data);
-    if (result instanceof TokenPair) return this.sendBackTokens(res, result);
+    if (result instanceof TokenPair) {
+      this.setCookie(res, result.refreshToken);
+      res.status(200).send({ accessToken: result.accessToken });
+      return;
+    }
     throw new UnauthorizedException();
   }
 
@@ -143,14 +151,10 @@ export default class AuthController {
     return result;
   }
 
-  private sendBackTokens(
-    res: Response,
-    data: TokenPair,
-  ): { accessToken: string } {
-    res.cookie('refreshToken', data.refreshToken, {
+  private setCookie(res: Response, token: string) {
+    res.cookie('refreshToken', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV !== 'development',
     });
-    return { accessToken: data.accessToken };
   }
 }

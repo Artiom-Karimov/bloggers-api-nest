@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import * as config from '../../../../config/users';
 import TokenPayload from './token.payload';
 
@@ -13,7 +13,7 @@ export default class TokenPair {
   }
   public static unpackToken(token: string): TokenPayload {
     try {
-      const result: any = jwt.verify(token, config.jwtSecret);
+      const result: any = verify(token, config.jwtSecret);
       return {
         userId: result.userId,
         userLogin: result.userLogin,
@@ -28,11 +28,17 @@ export default class TokenPair {
   private static createAccess(payload: TokenPayload): string {
     let exp = new Date().getTime();
     exp += config.accessExpireMinutes * 60_000;
-    exp /= 1000;
 
-    return jwt.sign({ ...payload, exp }, config.jwtSecret);
+    return TokenPair.sign(payload, exp);
   }
   private static createRefresh(payload: TokenPayload): string {
-    return jwt.sign({ ...payload, exp: payload.exp / 1000 }, config.jwtSecret);
+    return TokenPair.sign(payload);
+  }
+  private static sign(
+    payload: TokenPayload,
+    exp: number = payload.exp,
+  ): string {
+    exp = Math.floor(exp / 1000);
+    return sign({ ...payload, exp }, config.jwtSecret);
   }
 }
