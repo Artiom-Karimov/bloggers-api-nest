@@ -13,9 +13,7 @@ export default class PostInputModel {
   @MaxLength(1000)
   content: string;
 
-  @MinLength(3)
-  @MaxLength(100)
-  blogId: string;
+  blogId?: string;
 
   blogName?: string;
 }

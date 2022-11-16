@@ -64,7 +64,7 @@ export default class PostsController {
   @HttpCode(201)
   async create(@Body() data: PostInputModel): Promise<PostViewModel> {
     const blog = await this.queryRepo.getBlog(data.blogId);
-    if (!blog) throwValidationException('blogId', 'blog does not exist');
+    if (!blog) throw new NotFoundException();
 
     data.blogName = blog.name;
     const created = await this.service.create(data);

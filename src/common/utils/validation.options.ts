@@ -20,7 +20,6 @@ const exceptionFactory = (errors: ValidationError[]) => {
 
 export const validationOptions = {
   transform: true,
-  stopAtFirstError: true,
   exceptionFactory: exceptionFactory,
 };
 
