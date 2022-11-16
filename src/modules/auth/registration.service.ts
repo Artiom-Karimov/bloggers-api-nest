@@ -46,7 +46,7 @@ export default class RegistrationService {
 
   public async confirmEmail(code: string): Promise<boolean> {
     let ec = await this.emailRepo.getByCode(code);
-    if (!ec || ec.expiration > new Date().getTime() || ec.confirmed)
+    if (!ec || ec.expiration < new Date().getTime() || ec.confirmed)
       return false;
 
     ec = EmailConfirmationModel.setConfirmed(ec);
