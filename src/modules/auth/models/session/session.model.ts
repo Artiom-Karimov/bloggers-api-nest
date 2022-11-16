@@ -1,5 +1,4 @@
 import IdGenerator from '../../../../common/utils/id.generator';
-import { add } from 'date-fns';
 import * as config from '../../../../config/users';
 
 export type SessionCreateType = {
@@ -24,7 +23,7 @@ export default class SessionModel {
       data.deviceName,
       data.userId,
       new Date().getTime(),
-      add(new Date(), { minutes: config.refreshExpireMinutes }).getTime(),
+      new Date().getTime() + config.refreshExpireMillis,
     );
   }
 }

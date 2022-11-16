@@ -27,7 +27,7 @@ export default class TokenPair {
 
   private static createAccess(payload: TokenPayload): string {
     let exp = new Date().getTime();
-    exp += config.accessExpireMinutes * 60_000;
+    exp += config.accessExpireMillis;
 
     return TokenPair.sign(payload, exp);
   }
