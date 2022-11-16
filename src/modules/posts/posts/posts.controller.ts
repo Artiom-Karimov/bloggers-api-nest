@@ -122,6 +122,9 @@ export default class PostsController {
     @Body() data: CommentInputModel,
     @Body('tokenPayload') payload: TokenPayload,
   ): Promise<CommentViewModel> {
+    const post = await this.service.get(postId);
+    if (!post) throw new NotFoundException();
+
     data.postId = postId;
     data.userId = payload.userId;
     data.userLogin = payload.userLogin;
