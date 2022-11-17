@@ -25,6 +25,8 @@ import RegistrationService from './registration.service';
 import SessionsService from './sessions.service';
 import SessionUserViewModel from './models/session.user.view.model';
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
+import { BearerAuthGuard } from './guards/bearer.auth.guard';
+import TokenPayload from './models/jwt/token.payload';
 
 @Controller('auth')
 export default class AuthController {
@@ -142,11 +144,13 @@ export default class AuthController {
   }
 
   @Get('me')
-  @UseGuards(RefreshTokenGuard)
+  @UseGuards(BearerAuthGuard)
   async getMe(
-    @Body('refreshToken') token: string,
+    @Body('tokenPayload') payload: TokenPayload,
   ): Promise<SessionUserViewModel> {
-    const result = await this.sessionsService.getSessionUserView(token);
+    const result = await this.sessionsService.getSessionUserView(
+      payload.userId,
+    );
     if (!result) throw new UnauthorizedException();
     return result;
   }

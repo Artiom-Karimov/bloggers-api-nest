@@ -62,12 +62,9 @@ export default class SessionsService {
     return result;
   }
   public async getSessionUserView(
-    refreshToken: string,
+    userId: string,
   ): Promise<SessionUserViewModel> {
-    const payload = TokenPair.unpackToken(refreshToken);
-    if (!payload) return undefined;
-
-    const user = await this.usersService.get(payload.userId);
+    const user = await this.usersService.get(userId);
     if (!user) return undefined;
 
     return SessionUserViewModel.fromDomain(user);
