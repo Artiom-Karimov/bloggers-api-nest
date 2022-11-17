@@ -27,8 +27,8 @@ export class RefreshTokenGuard implements CanActivate {
     const payload = TokenPair.unpackToken(token);
     if (!payload)
       throw new UnauthorizedException('refreshToken is invalid or expired');
-    const exists = await this.service.sessionExists(payload.deviceId);
-    if (!exists)
+    const session = await this.service.get(payload.deviceId);
+    if (!session || session.issuedAt !== payload.issuedAt)
       throw new UnauthorizedException('refreshToken is invalid or expired');
 
     return payload;

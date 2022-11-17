@@ -26,4 +26,14 @@ export default class SessionModel {
       new Date().getTime() + config.refreshExpireMillis,
     );
   }
+  public static refresh(id: string, data: SessionCreateType): SessionModel {
+    return new SessionModel(
+      data.ip,
+      id,
+      data.deviceName,
+      data.userId,
+      new Date().getTime(),
+      new Date().getTime() + config.refreshExpireMillis,
+    );
+  }
 }

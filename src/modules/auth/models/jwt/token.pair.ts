@@ -18,6 +18,7 @@ export default class TokenPair {
         userId: result.userId,
         userLogin: result.userLogin,
         deviceId: result.deviceId,
+        issuedAt: result.issuedAt,
         exp: result.exp,
       };
     } catch (error) {
