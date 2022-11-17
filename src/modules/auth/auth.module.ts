@@ -1,15 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import EmailConfirmationRepository from '../users/email.confirmation.repository';
-import UserBan, { UserBanSchema } from '../users/models/ban/user.ban.schema';
-import EmailConfirmation, {
-  EmailConfirmationSchema,
-} from '../users/models/email/email.confirmation.schema';
-import User, { UserSchema } from '../users/models/user.schema';
-import UsersBanRepository from '../users/users.ban.repository';
-import UsersQueryRepository from '../users/users.query.repository';
-import UsersRepository from '../users/users.repository';
-import UsersService from '../users/users.service';
 import AuthController from './auth.controller';
 import { DdosGuard } from './guards/ddos.guard';
 import Recovery, { RecoverySchema } from './models/recovery/recovery.schema';
