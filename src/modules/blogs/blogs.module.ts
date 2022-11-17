@@ -12,10 +12,6 @@ import Blog, { BlogSchema } from './models/blog.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
-    MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
-    MongooseModule.forFeature([
-      { name: PostLike.name, schema: PostLikeSchema },
-    ]),
     PostsModule,
   ],
   controllers: [BlogsController],
