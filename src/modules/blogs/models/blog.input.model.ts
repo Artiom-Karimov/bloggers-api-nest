@@ -12,5 +12,5 @@ export default class BlogInputModel {
   @Matches(
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/,
   )
-  youtubeUrl: string;
+  websiteUrl: string;
 }

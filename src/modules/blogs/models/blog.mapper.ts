@@ -7,7 +7,7 @@ export default class BlogMapper {
     const blog = new Blog();
     blog._id = model.id;
     blog.name = model.name;
-    blog.youtubeUrl = model.youtubeUrl;
+    blog.websiteUrl = model.websiteUrl;
     blog.createdAt = model.createdAt;
     return blog;
   }
@@ -15,7 +15,7 @@ export default class BlogMapper {
     return new BlogModel(
       model._id,
       model.name,
-      model.youtubeUrl,
+      model.websiteUrl,
       model.createdAt,
     );
   }
@@ -23,7 +23,7 @@ export default class BlogMapper {
     return new BlogViewModel(
       model._id,
       model.name,
-      model.youtubeUrl,
+      model.websiteUrl,
       model.createdAt,
     );
   }

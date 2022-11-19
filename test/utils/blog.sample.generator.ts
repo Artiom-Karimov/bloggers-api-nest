@@ -13,7 +13,7 @@ export default class BlogSampleGenerator extends TestSampleGenerator<
       const rand = this.rand();
       this.samples.push({
         name: `sampleBlog ${rand}`,
-        youtubeUrl: `https://blog${rand}.com`,
+        websiteUrl: `https://blog${rand}.com`,
       });
     }
     return this.getLastSamples(length);

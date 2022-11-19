@@ -12,7 +12,7 @@ export default class Blog {
   name: string;
 
   @Prop()
-  youtubeUrl: string;
+  websiteUrl: string;
 
   @Prop()
   createdAt: string;

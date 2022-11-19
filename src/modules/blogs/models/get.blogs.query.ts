@@ -3,7 +3,7 @@ import PageQueryParams from '../../../common/models/page.query.params';
 export default class GetBlogsQuery extends PageQueryParams {
   public searchNameTerm: string | null = null;
 
-  protected override sortByValues = ['createdAt', 'name', 'youtubeUrl'];
+  protected override sortByValues = ['createdAt', 'name', 'websiteUrl'];
 
   constructor(query: any) {
     super(query);

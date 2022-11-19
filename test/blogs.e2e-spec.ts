@@ -40,7 +40,7 @@ describe('BlogsController (e2e)', () => {
     expect(response.statusCode).toBe(201);
     const body = response.body as BlogViewModel;
     expect(body.name).toBe(sample.name);
-    expect(body.youtubeUrl).toBe(sample.youtubeUrl);
+    expect(body.websiteUrl).toBe(sample.websiteUrl);
     expect(body.createdAt).toBeTruthy();
     blogId = body.id;
   });
@@ -54,7 +54,7 @@ describe('BlogsController (e2e)', () => {
     const blog = body.items[0];
     const sample = samples.samples[0];
     expect(blog.name).toBe(sample.name);
-    expect(blog.youtubeUrl).toBe(sample.youtubeUrl);
+    expect(blog.websiteUrl).toBe(sample.websiteUrl);
     expect(blog.id).toBe(blogId);
 
     const retrieved = await request(app.getHttpServer()).get(
@@ -83,7 +83,7 @@ describe('BlogsController (e2e)', () => {
     );
     const newBlog = newResult.body as BlogViewModel;
     expect(newBlog.name).toBe(newSample.name);
-    expect(newBlog.youtubeUrl).toBe(newSample.youtubeUrl);
+    expect(newBlog.websiteUrl).toBe(newSample.websiteUrl);
   });
 
   it('shuld delete blog', async () => {

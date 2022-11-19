@@ -6,14 +6,14 @@ export default class BlogModel {
   constructor(
     public id: string,
     public name: string,
-    public youtubeUrl: string,
+    public websiteUrl: string,
     public createdAt: string,
   ) { }
   public static create(data: BlogInputModel): BlogModel {
     return new BlogModel(
       IdGenerator.generate(),
       data.name,
-      data.youtubeUrl,
+      data.websiteUrl,
       DateGenerator.generate(),
     );
   }
