@@ -12,6 +12,9 @@ export default class Blog {
   name: string;
 
   @Prop()
+  description: string;
+
+  @Prop()
   websiteUrl: string;
 
   @Prop()
