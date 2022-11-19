@@ -23,7 +23,7 @@ export default class SessionsService {
     private readonly sessionsRepo: SessionsRepository,
   ) { }
   public async login(data: LoginInputModel): Promise<TokenPair | AuthError> {
-    const userResult = await this.checkLoginGetUser(data.login, data.password);
+    const userResult = await this.checkLoginGetUser(data.loginOrEmail, data.password);
     if (!(userResult instanceof UserModel)) return userResult;
 
     const session = await this.createSession({
@@ -85,10 +85,10 @@ export default class SessionsService {
   }
 
   private async checkLoginGetUser(
-    login: string,
+    loginOrEmail: string,
     password: string,
   ): Promise<UserModel | AuthError> {
-    const user = await this.usersService.getByLoginOrEmail(login);
+    const user = await this.usersService.getByLoginOrEmail(loginOrEmail);
     if (!user) return AuthError.WrongCredentials;
 
     const loginAllowed = await this.checkLoginAllowed(user.id);
