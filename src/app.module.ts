@@ -13,6 +13,7 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { MailModule } from './modules/mail/mail.module';
 import { AppService } from './app.service';
+import { BloggerModule } from './modules/blogger/blogger.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AppService } from './app.service';
     UsersModule,
     AuthModule,
     MailModule,
+    BloggerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
