@@ -14,7 +14,7 @@ export class BearerAuthGuard implements CanActivate {
     const req: Request = context.switchToHttp().getRequest();
     if (!req.headers.authorization)
       throw new UnauthorizedException('You should use Bearer auth');
-    req.body.tokenPayload = this.authorize(req.headers.authorization);
+    req.user = this.authorize(req.headers.authorization);
 
     return true;
   }

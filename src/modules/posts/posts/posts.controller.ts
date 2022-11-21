@@ -10,6 +10,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
@@ -29,6 +30,7 @@ import CommentInputModel from '../models/comments/comment.input.model';
 import CommentsService from '../comments/comments.service';
 import TokenPayload from '../../auth/models/jwt/token.payload';
 import LikeInputModel from '../models/likes/like.input.model';
+import { Request } from 'express';
 
 @Controller('posts')
 export default class PostsController {
@@ -43,18 +45,18 @@ export default class PostsController {
   @UseGuards(OptionalBearerAuthGuard)
   async get(
     @Query() reqQuery: any,
-    @Body('tokenPayload') payload?: TokenPayload,
+    @Req() req: Request,
   ): Promise<PageViewModel<PostViewModel>> {
-    const query = new GetPostsQuery(reqQuery, undefined, payload?.userId);
+    const query = new GetPostsQuery(reqQuery, undefined, req.user?.userId);
     return this.queryRepo.getPosts(query);
   }
   @Get(':id')
   @UseGuards(OptionalBearerAuthGuard)
   async getOne(
     @Param('id') id: string,
-    @Body('tokenPayload') payload?: TokenPayload,
+    @Req() req: Request,
   ): Promise<PostViewModel> {
-    const result = await this.queryRepo.getPost(id, payload?.userId);
+    const result = await this.queryRepo.getPost(id, req.user?.userId);
     if (!result) throw new NotFoundException();
     return result;
   }
@@ -106,12 +108,12 @@ export default class PostsController {
   async getComments(
     @Param('id') id: string,
     @Query() reqQuery: any,
-    @Body('tokenPayload') payload?: TokenPayload,
+    @Req() req: Request,
   ): Promise<PageViewModel<CommentViewModel>> {
     const post = await this.service.get(id);
     if (!post) throw new NotFoundException();
 
-    const query = new GetCommentsQuery(reqQuery, id, payload?.userId);
+    const query = new GetCommentsQuery(reqQuery, id, req.user?.userId);
     return this.commentsQueryRepo.getComments(query);
   }
 
@@ -120,14 +122,14 @@ export default class PostsController {
   async createComment(
     @Param('id') postId: string,
     @Body() data: CommentInputModel,
-    @Body('tokenPayload') payload: TokenPayload,
+    @Req() req: Request,
   ): Promise<CommentViewModel> {
     const post = await this.service.get(postId);
     if (!post) throw new NotFoundException();
 
     data.postId = postId;
-    data.userId = payload.userId;
-    data.userLogin = payload.userLogin;
+    data.userId = req.user.userId;
+    data.userLogin = req.user.userLogin;
 
     const created = await this.commentsService.create(data);
     if (!created) throw new BadRequestException();
@@ -147,11 +149,11 @@ export default class PostsController {
   async putLike(
     @Param('id') postId: string,
     @Body() data: LikeInputModel,
-    @Body('tokenPayload') payload: TokenPayload,
+    @Req() req: Request,
   ) {
     data.entityId = postId;
-    data.userId = payload.userId;
-    data.userLogin = payload.userLogin;
+    data.userId = req.user.userId;
+    data.userLogin = req.user.userLogin;
 
     const result = await this.service.putLike(data);
     if (!result) throw new NotFoundException();

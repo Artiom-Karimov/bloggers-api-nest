@@ -114,13 +114,9 @@ export default class AuthController {
   @Post('refresh-token')
   @HttpCode(200)
   @UseGuards(DdosGuard, RefreshTokenGuard)
-  async refresh(
-    @Body('refreshToken') token: string,
-    @Req() req: Request,
-    @Res() res: Response,
-  ): Promise<void> {
+  async refresh(@Req() req: Request, @Res() res: Response): Promise<void> {
     const data: RefreshTokenInputModel = {
-      token,
+      token: req.refreshToken,
       ip: req.ip || '<unknown>',
       deviceName: req.headers['user-agent'] || '<unknown>',
     };
@@ -137,19 +133,17 @@ export default class AuthController {
   @Post('logout')
   @HttpCode(204)
   @UseGuards(RefreshTokenGuard)
-  async logout(@Body('refreshToken') token: string): Promise<void> {
-    const result = this.sessionsService.logout(token);
+  async logout(@Req() req: Request): Promise<void> {
+    const result = this.sessionsService.logout(req.refreshToken);
     if (!result) throw new UnauthorizedException();
     return;
   }
 
   @Get('me')
   @UseGuards(BearerAuthGuard)
-  async getMe(
-    @Body('tokenPayload') payload: TokenPayload,
-  ): Promise<SessionUserViewModel> {
+  async getMe(@Req() req: Request): Promise<SessionUserViewModel> {
     const result = await this.sessionsService.getSessionUserView(
-      payload.userId,
+      req.user.userId,
     );
     if (!result) throw new UnauthorizedException();
     return result;

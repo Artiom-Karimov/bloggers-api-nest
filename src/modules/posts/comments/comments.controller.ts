@@ -5,6 +5,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  Req,
 } from '@nestjs/common';
 import CommentsQueryRepository from './comments.query.repository';
 import CommentViewModel from '../models/comments/comment.view.model';
@@ -21,6 +22,7 @@ import CommentsService, { CommentError } from './comments.service';
 import TokenPayload from '../../auth/models/jwt/token.payload';
 import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.guard';
 import LikeInputModel from '../models/likes/like.input.model';
+import { Request } from 'express';
 
 @Controller('comments')
 export default class CommentsController {
@@ -33,9 +35,9 @@ export default class CommentsController {
   @UseGuards(OptionalBearerAuthGuard)
   async getOne(
     @Param('id') id: string,
-    @Body('tokenPayload') payload?: TokenPayload,
+    @Req() req: Request,
   ): Promise<CommentViewModel> {
-    const result = await this.queryRepo.getComment(id, payload?.userId);
+    const result = await this.queryRepo.getComment(id, req.user?.userId);
     if (!result) throw new NotFoundException();
     return result;
   }
@@ -46,10 +48,10 @@ export default class CommentsController {
   async update(
     @Param('id') id: string,
     @Body() data: CommentInputModel,
-    @Body('tokenPayload') payload: TokenPayload,
+    @Req() req: Request,
   ): Promise<void> {
-    data.userId = payload.userId;
-    data.userLogin = payload.userLogin;
+    data.userId = req.user.userId;
+    data.userLogin = req.user.userLogin;
     const result = await this.service.update(id, data);
     if (result === CommentError.NoError) return;
     if (result === CommentError.NotFound) throw new NotFoundException();
@@ -60,11 +62,8 @@ export default class CommentsController {
   @Delete(':id')
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
-  async delete(
-    @Param('id') id: string,
-    @Body('tokenPayload') body: TokenPayload,
-  ): Promise<void> {
-    const result = await this.service.delete(id, body.userId);
+  async delete(@Param('id') id: string, @Req() req: Request): Promise<void> {
+    const result = await this.service.delete(id, req.user.userId);
     if (result === CommentError.NoError) return;
     if (result === CommentError.NotFound) throw new NotFoundException();
     if (result === CommentError.Forbidden) throw new ForbiddenException();
@@ -77,11 +76,11 @@ export default class CommentsController {
   async putLike(
     @Param('id') commentId: string,
     @Body() data: LikeInputModel,
-    @Body('tokenPayload') payload: TokenPayload,
+    @Req() req: Request,
   ) {
     data.entityId = commentId;
-    data.userId = payload.userId;
-    data.userLogin = payload.userLogin;
+    data.userId = req.user.userId;
+    data.userLogin = req.user.userLogin;
 
     const result = await this.service.putLike(data);
     if (!result) throw new NotFoundException();

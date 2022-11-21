@@ -17,8 +17,8 @@ export class RefreshTokenGuard implements CanActivate {
     const req: Request = context.switchToHttp().getRequest();
     const token = req.cookies['refreshToken'];
     if (!token) throw new UnauthorizedException('No refreshToken in cookies');
-    req.body.tokenPayload = await this.authorize(token);
-    req.body.refreshToken = token;
+    req.user = await this.authorize(token);
+    req.refreshToken = token;
 
     return true;
   }
