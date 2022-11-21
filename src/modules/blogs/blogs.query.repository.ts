@@ -20,6 +20,14 @@ export default class BlogsQueryRepository {
     const query = this.getDbQuery(params);
     return this.loadPageBlogs(page, query);
   }
+  public async getBloggerBlogs(
+    params: GetBlogsQuery,
+    bloggerId: string,
+  ): Promise<PageViewModel<BlogViewModel>> {
+    const page = await this.getPage(params, bloggerId);
+    const query = this.getDbQuery(params, bloggerId);
+    return this.loadPageBlogs(page, query);
+  }
   public async getBlog(id: string): Promise<BlogViewModel | undefined> {
     try {
       const result = await this.model.findOne({ _id: id });
@@ -32,30 +40,41 @@ export default class BlogsQueryRepository {
 
   private async getPage(
     params: GetBlogsQuery,
+    bloggerId?: string,
   ): Promise<PageViewModel<BlogViewModel>> {
-    const count = await this.getCount(params);
+    const count = await this.getCount(params, bloggerId);
     return new PageViewModel<BlogViewModel>(
       params.pageNumber,
       params.pageSize,
       count,
     );
   }
-  private async getCount(params: GetBlogsQuery): Promise<number> {
+  private async getCount(
+    params: GetBlogsQuery,
+    bloggerId?: string,
+  ): Promise<number> {
     try {
-      const filter = this.getFilter(params.searchNameTerm);
+      const filter = this.getFilter(params.searchNameTerm, bloggerId);
       return this.model.countDocuments(filter).exec();
     } catch (error) {
       return 0;
     }
   }
-  private getDbQuery(params: GetBlogsQuery): any {
-    const filter = this.getFilter(params.searchNameTerm);
+  private getDbQuery(params: GetBlogsQuery, bloggerId?: string): any {
+    const filter = this.getFilter(params.searchNameTerm, bloggerId);
     return this.model
       .find(filter)
       .sort({ [params.sortBy]: params.sortDirection as SortOrder });
   }
-  private getFilter(searchNameTerm: string | null): any {
-    return searchNameTerm ? { name: RegExp(searchNameTerm, 'i') } : {};
+  private getFilter(searchNameTerm?: string, bloggerId?: string): any {
+    const filter: { name?: RegExp; 'ownerInfo.userId'?: string } = {};
+    if (searchNameTerm) {
+      filter.name = RegExp(searchNameTerm, 'i');
+    }
+    if (bloggerId) {
+      filter['ownerInfo.userId'] = bloggerId;
+    }
+    return filter;
   }
   private async loadPageBlogs(
     page: PageViewModel<BlogViewModel>,
