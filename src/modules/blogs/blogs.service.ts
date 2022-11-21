@@ -46,4 +46,15 @@ export default class BlogsService {
     if (!blog) return false;
     return this.repo.delete(id);
   }
+  public async deleteForBlogger(
+    blogId: string,
+    bloggerId: string,
+  ): Promise<BlogError> {
+    const blog = await this.repo.get(blogId);
+    if (!blog) return BlogError.NotFound;
+    if (!blog.ownerInfo || blog.ownerInfo.userId !== bloggerId)
+      return BlogError.Forbidden;
+    const result = await this.repo.delete(blogId);
+    return result ? BlogError.NoError : BlogError.Unknown;
+  }
 }

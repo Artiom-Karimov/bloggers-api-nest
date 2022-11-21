@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   NotFoundException,
@@ -71,6 +72,23 @@ export default class BloggerController {
     const result = await this.blogsService.updateForBlogger(
       blogId,
       data,
+      req.user.userId,
+    );
+    if (result === BlogError.NoError) return;
+    if (result === BlogError.NotFound) throw new NotFoundException();
+    if (result === BlogError.Forbidden) throw new ForbiddenException();
+    throw new BadRequestException();
+  }
+
+  @Delete(':id')
+  @UseGuards(BearerAuthGuard)
+  @HttpCode(204)
+  public async deleteBlog(
+    @Param('id') blogId: string,
+    @Req() req: Request,
+  ): Promise<void> {
+    const result = await this.blogsService.deleteForBlogger(
+      blogId,
       req.user.userId,
     );
     if (result === BlogError.NoError) return;
