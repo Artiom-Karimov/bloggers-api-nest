@@ -13,6 +13,7 @@ import { AuthModule } from '../src/modules/auth/auth.module';
 import { MailModule } from '../src/modules/mail/mail.module';
 import { AppService } from '../src/app.service';
 import * as config from '../src/config/database';
+import { BloggerModule } from '../src/modules/blogger/blogger.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import * as config from '../src/config/database';
     UsersModule,
     AuthModule,
     MailModule,
+    BloggerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

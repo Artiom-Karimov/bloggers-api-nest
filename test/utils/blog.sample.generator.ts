@@ -14,6 +14,7 @@ export default class BlogSampleGenerator extends TestSampleGenerator<
       this.samples.push({
         name: `sampleBlog ${rand}`,
         websiteUrl: `https://blog${rand}.com`,
+        description: `Blog description\nNumber ${rand}`,
       });
     }
     return this.getLastSamples(length);
@@ -21,7 +22,7 @@ export default class BlogSampleGenerator extends TestSampleGenerator<
   public override async createOne(
     sample: BlogInputModel,
   ): Promise<BlogViewModel> {
-    const created = await request(this.app.getHttpServer)
+    const created = await request(this.app.getHttpServer())
       .post('/blogs')
       .auth(config.userName, config.password)
       .send(sample);
