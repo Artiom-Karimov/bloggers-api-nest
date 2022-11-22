@@ -24,6 +24,16 @@ export default class BlogsService {
     const newBlog = BlogModel.create(data, blogger);
     return this.repo.create(newBlog);
   }
+  public async assignOwner(
+    blogId: string,
+    ownerInfo: BlogOwnerInfo,
+  ): Promise<BlogError> {
+    const blog = await this.repo.get(blogId);
+    if (!blog) return BlogError.NotFound;
+    if (blog.ownerInfo) return BlogError.Forbidden;
+    const result = await this.repo.update(blogId, { ownerInfo });
+    return result ? BlogError.NoError : BlogError.Unknown;
+  }
   public async update(id: string, data: BlogInputModel): Promise<boolean> {
     const blog = await this.repo.get(id);
     if (!blog) return false;

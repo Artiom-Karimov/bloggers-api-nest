@@ -14,6 +14,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { MailModule } from './modules/mail/mail.module';
 import { AppService } from './app.service';
 import { BloggerModule } from './modules/blogger/blogger.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { BloggerModule } from './modules/blogger/blogger.module';
     AuthModule,
     MailModule,
     BloggerModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

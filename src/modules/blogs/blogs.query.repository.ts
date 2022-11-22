@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../common/models/page.view.model';
+import AdminBlogViewModel from './models/admin.blog.view.model';
 import BlogMapper from './models/blog.mapper';
 import Blog, { BlogDocument } from './models/blog.schema';
 import BlogViewModel from './models/blog.view.model';
@@ -28,6 +29,13 @@ export default class BlogsQueryRepository {
     const query = this.getDbQuery(params, bloggerId);
     return this.loadPageBlogs(page, query);
   }
+  public async getAdminBlogs(
+    params: GetBlogsQuery,
+  ): Promise<PageViewModel<AdminBlogViewModel>> {
+    const page = await this.getAdminPage(params);
+    const query = this.getDbQuery(params);
+    return this.loadPageAdminBlogs(page, query);
+  }
   public async getBlog(id: string): Promise<BlogViewModel | undefined> {
     try {
       const result = await this.model.findOne({ _id: id });
@@ -44,6 +52,17 @@ export default class BlogsQueryRepository {
   ): Promise<PageViewModel<BlogViewModel>> {
     const count = await this.getCount(params, bloggerId);
     return new PageViewModel<BlogViewModel>(
+      params.pageNumber,
+      params.pageSize,
+      count,
+    );
+  }
+  private async getAdminPage(
+    params: GetBlogsQuery,
+    bloggerId?: string,
+  ): Promise<PageViewModel<AdminBlogViewModel>> {
+    const count = await this.getCount(params, bloggerId);
+    return new PageViewModel<AdminBlogViewModel>(
       params.pageNumber,
       params.pageSize,
       count,
@@ -86,6 +105,21 @@ export default class BlogsQueryRepository {
         .limit(page.pageSize)
         .exec();
       const viewModels = blogs.map((b) => BlogMapper.toView(b));
+      return page.add(...viewModels);
+    } catch (error) {
+      return page;
+    }
+  }
+  private async loadPageAdminBlogs(
+    page: PageViewModel<AdminBlogViewModel>,
+    query: any,
+  ): Promise<PageViewModel<AdminBlogViewModel>> {
+    try {
+      const blogs: Blog[] = await query
+        .skip(page.calculateSkip())
+        .limit(page.pageSize)
+        .exec();
+      const viewModels = blogs.map((b) => BlogMapper.toAdminView(b));
       return page.add(...viewModels);
     } catch (error) {
       return page;
