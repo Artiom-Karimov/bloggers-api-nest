@@ -10,7 +10,6 @@ import EmailConfirmation, {
 } from './models/email/email.confirmation.schema';
 import User, { UserSchema } from './models/user.schema';
 import UsersBanRepository from './users.ban.repository';
-import UsersController from './users.controller';
 import UsersQueryRepository from './users.query.repository';
 import UsersRepository from './users.repository';
 import UsersService from './users.service';
@@ -25,7 +24,6 @@ import UsersService from './users.service';
     MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
     PostsModule,
   ],
-  controllers: [UsersController],
   providers: [
     UsersRepository,
     UsersQueryRepository,
