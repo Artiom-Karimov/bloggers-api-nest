@@ -25,7 +25,7 @@ export default class UserSampleGenerator extends TestSampleGenerator<
     sample: UserInputModel,
   ): Promise<UserViewModel> {
     const created = await request(this.app.getHttpServer())
-      .post('/users')
+      .post('/sa/users')
       .auth(config.userName, config.password)
       .send(sample);
     return created.body as UserViewModel;

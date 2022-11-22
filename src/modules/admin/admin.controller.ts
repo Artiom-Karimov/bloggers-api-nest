@@ -89,7 +89,7 @@ export default class AdminController {
     if (!deleted) throw new NotFoundException();
     return;
   }
-  @Put(':id/ban')
+  @Put('users/:id/ban')
   @HttpCode(204)
   async ban(@Param('id') id: string, @Body() data: UserBanInputModel) {
     data.userId = id;

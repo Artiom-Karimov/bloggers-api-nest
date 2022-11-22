@@ -9,7 +9,6 @@ import * as config from './config/database';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PostsModule } from './modules/posts/posts.module';
 import { TestModule } from './modules/test/test.module';
-import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { MailModule } from './modules/mail/mail.module';
 import { AppService } from './app.service';
@@ -23,7 +22,6 @@ import { AdminModule } from './modules/admin/admin.module';
     TestModule,
     BlogsModule,
     PostsModule,
-    UsersModule,
     AuthModule,
     MailModule,
     BloggerModule,

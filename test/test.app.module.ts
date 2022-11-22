@@ -14,6 +14,7 @@ import { MailModule } from '../src/modules/mail/mail.module';
 import { AppService } from '../src/app.service';
 import * as config from '../src/config/database';
 import { BloggerModule } from '../src/modules/blogger/blogger.module';
+import { AdminModule } from '../src/modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -22,10 +23,10 @@ import { BloggerModule } from '../src/modules/blogger/blogger.module';
     TestModule,
     BlogsModule,
     PostsModule,
-    UsersModule,
     AuthModule,
     MailModule,
     BloggerModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
