@@ -32,8 +32,8 @@ export default class UsersBanRepository {
   }
   public async delete(id: string): Promise<boolean> {
     try {
-      const result = await this.model.findByIdAndDelete(id);
-      return result.$isDeleted();
+      await this.model.findByIdAndDelete(id);
+      return true;
     } catch (error) {
       console.error(error);
       return false;

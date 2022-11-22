@@ -1,8 +1,6 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { init, stop } from './utils/test.init';
-import PageViewModel from '../src/common/models/page.view.model';
-import BlogViewModel from '../src/modules/blogs/models/blog.view.model';
 import BlogSampleGenerator from './utils/blog.sample.generator';
 import * as config from '../src/config/admin';
 import { dateRegex } from '../src/common/utils/date.generator';
@@ -74,5 +72,141 @@ describe('AdminController (e2e)', () => {
     for (const res of noAuthResults) {
       expect(res.statusCode).toBe(401);
     }
+  });
+
+  it('should get empty blogs', async () => {
+    const response = await request(app.getHttpServer())
+      .get(blogBase)
+      .auth(config.userName, config.password);
+    expect(response.body).toEqual(emptyPage);
+  });
+  it('should get created blog', async () => {
+    blogSamples.generateSamples(1);
+    await blogSamples.createSamples();
+
+    const response = await request(app.getHttpServer())
+      .get(blogBase)
+      .auth(config.userName, config.password);
+
+    const expectedPage = {
+      pagesCount: 1,
+      page: 1,
+      pageSize: expect.any(Number),
+      totalCount: 1,
+      items: expect.arrayContaining([
+        {
+          id: expect.any(String),
+          name: blogSamples.samples[0].name,
+          description: blogSamples.samples[0].description,
+          websiteUrl: blogSamples.samples[0].websiteUrl,
+          createdAt: expect.stringMatching(dateRegex),
+          blogOwnerInfo: {
+            userId: expect.any(String),
+            userLogin: blogSamples.user.login,
+          },
+        },
+      ]),
+    };
+
+    expect(response.body).toEqual(expectedPage);
+  });
+
+  it('should create user', async () => {
+    const sample = userSamples.generateSamples(1)[0];
+    await userSamples.createSamples();
+    expect(userSamples.outputs.length).toBe(1);
+
+    const expected = {
+      id: expect.any(String),
+      login: sample.login,
+      email: sample.email,
+      createdAt: expect.stringMatching(dateRegex),
+      banInfo: {
+        isBanned: false,
+        banDate: null,
+        banReason: null,
+      },
+    };
+    expect(userSamples.outputs[0]).toEqual(expected);
+  });
+  it('should ban user', async () => {
+    const user = userSamples.outputs[0];
+    const response = await request(app.getHttpServer())
+      .put(`${userBase}/${user.id}/ban`)
+      .auth(config.userName, config.password)
+      .send({
+        isBanned: true,
+        banReason: 'Do not ask, he is just an asshole.',
+      });
+    expect(response.statusCode).toBe(204);
+  });
+  it('should get user ban info', async () => {
+    const user = userSamples.outputs[0];
+    const response = await request(app.getHttpServer())
+      .get(`${userBase}/${user.id}`)
+      .auth(config.userName, config.password);
+
+    const expected = {
+      id: user.id,
+      login: user.login,
+      email: user.email,
+      createdAt: expect.stringMatching(dateRegex),
+      banInfo: {
+        isBanned: true,
+        banDate: expect.stringMatching(dateRegex),
+        banReason: expect.any(String),
+      },
+    };
+    expect(response.body).toEqual(expected);
+  });
+  it('banned user should not login', async () => {
+    const user = userSamples.samples[0];
+    const response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ loginOrEmail: user.login, password: user.password });
+    expect(response.statusCode).toBe(401);
+  });
+  it('should unban user', async () => {
+    const user = userSamples.outputs[0];
+    const response = await request(app.getHttpServer())
+      .put(`${userBase}/${user.id}/ban`)
+      .auth(config.userName, config.password)
+      .send({
+        isBanned: false,
+        banReason: 'Do not ask, he is just an asshole.',
+      });
+    expect(response.statusCode).toBe(204);
+  });
+  it('should get unbanned user', async () => {
+    const user = userSamples.outputs[0];
+    const response = await request(app.getHttpServer())
+      .get(`${userBase}/${user.id}`)
+      .auth(config.userName, config.password);
+
+    const expected = {
+      id: user.id,
+      login: user.login,
+      email: user.email,
+      createdAt: expect.stringMatching(dateRegex),
+      banInfo: {
+        isBanned: false,
+        banDate: null,
+        banReason: null,
+      },
+    };
+    expect(response.body).toEqual(expected);
+  });
+  it('should delete user', async () => {
+    const user = userSamples.outputs[0];
+    let response = await request(app.getHttpServer())
+      .delete(`${userBase}/${user.id}`)
+      .auth(config.userName, config.password);
+    expect(response.statusCode).toBe(204);
+
+    response = await request(app.getHttpServer())
+      .get(`${userBase}/${user.id}`)
+      .auth(config.userName, config.password);
+
+    expect(response.statusCode).toBe(404);
   });
 });

@@ -73,6 +73,12 @@ export default class AdminController {
     const query = new GetUsersQuery(reqQuery);
     return this.usersQueryRepo.getUsers(query);
   }
+  @Get('users/:id')
+  async getUser(@Param('id') id: string): Promise<UserViewModel> {
+    const user = await this.usersQueryRepo.getUser(id);
+    if (!user) throw new NotFoundException();
+    return user;
+  }
   @Post('users')
   async create(@Body() data: UserInputModel): Promise<UserViewModel> {
     await this.checkLoginEmailExists(data.login, data.email);
