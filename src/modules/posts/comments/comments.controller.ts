@@ -19,7 +19,6 @@ import {
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import CommentInputModel from '../models/comments/comment.input.model';
 import CommentsService, { CommentError } from './comments.service';
-import TokenPayload from '../../auth/models/jwt/token.payload';
 import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.guard';
 import LikeInputModel from '../models/likes/like.input.model';
 import { Request } from 'express';
