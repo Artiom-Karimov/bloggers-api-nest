@@ -45,6 +45,17 @@ export default class BlogsQueryRepository {
       return undefined;
     }
   }
+  public async getAdminBlog(
+    id: string,
+  ): Promise<AdminBlogViewModel | undefined> {
+    try {
+      const result = await this.model.findOne({ _id: id });
+      return result ? BlogMapper.toAdminView(result) : undefined;
+    } catch (error) {
+      console.log(error);
+      return undefined;
+    }
+  }
 
   private async getPage(
     params: GetBlogsQuery,

@@ -4,6 +4,7 @@ import LikeInputModel from '../models/likes/like.input.model';
 import LikeModel from '../models/likes/like.model';
 import PostInputModel from '../models/posts/post.input.model';
 import PostModel from '../models/posts/post.model';
+import PostUpdateModel from '../models/posts/post.update.model';
 import PostsRepository from './posts.repository';
 
 @Injectable()
@@ -20,7 +21,7 @@ export default class PostsService {
     const newPost = PostModel.create(data);
     return this.repo.create(newPost);
   }
-  public async update(id: string, data: PostInputModel): Promise<boolean> {
+  public async update(id: string, data: PostUpdateModel): Promise<boolean> {
     const post = await this.repo.get(id);
     if (!post) return false;
     return this.repo.update(id, data);
