@@ -12,6 +12,8 @@ import RegistrationService from './registration.service';
 import SecurityDevicesController from './security.devices.controller';
 import { MailModule } from '../mail/mail.module';
 import { UsersModule } from '../users/users.module';
+import UserBan, { UserBanSchema } from '../users/models/ban/user.ban.schema';
+import UsersBanQueryRepository from './users.ban.query.repository';
 
 @Module({
   imports: [
@@ -19,6 +21,7 @@ import { UsersModule } from '../users/users.module';
       { name: Recovery.name, schema: RecoverySchema },
     ]),
     MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
+    MongooseModule.forFeature([{ name: UserBan.name, schema: UserBanSchema }]),
     UsersModule,
     MailModule,
   ],
@@ -30,6 +33,8 @@ import { UsersModule } from '../users/users.module';
     SessionsQueryRepository,
     RegistrationService,
     SessionsService,
+    UsersBanQueryRepository,
   ],
+  exports: [UsersBanQueryRepository],
 })
 export class AuthModule { }

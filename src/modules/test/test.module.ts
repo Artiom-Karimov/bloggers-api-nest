@@ -4,7 +4,7 @@ import Recovery, {
   RecoverySchema,
 } from '../auth/models/recovery/recovery.schema';
 import Session, { SessionSchema } from '../auth/models/session/session.schema';
-import Blog, { BlogSchema } from '../blogs/models/blog.schema';
+import Blog, { BlogSchema } from '../posts/models/blogs/blog.schema';
 import Comment, {
   CommentSchema,
 } from '../posts/models/comments/comment.schema';

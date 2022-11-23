@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import Blog, { BlogSchema } from '../blogs/models/blog.schema';
+import { AuthModule } from '../auth/auth.module';
+import BlogsController from './blogs/blogs.controller';
+import BlogsQueryRepository from './blogs/blogs.query.repository';
+import BlogsRepository from './blogs/blogs.repository';
+import BlogsService from './blogs/blogs.service';
 import CommentsController from './comments/comments.controller';
 import CommentsQueryRepository from './comments/comments.query.repository';
 import CommentsRepository from './comments/comments.repository';
@@ -9,6 +13,7 @@ import CommentLikesQueryRepository from './likes/comment.likes.query.repository'
 import CommentLikesRepository from './likes/comment.likes.repository';
 import PostLikesQueryRepository from './likes/post.likes.query.repository';
 import PostLikesRepository from './likes/post.likes.repository';
+import Blog, { BlogSchema } from './models/blogs/blog.schema';
 import Comment, { CommentSchema } from './models/comments/comment.schema';
 import {
   CommentLike,
@@ -25,8 +30,8 @@ import PostsService from './posts/posts.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
+    MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
     MongooseModule.forFeature([
       { name: PostLike.name, schema: PostLikeSchema },
@@ -34,9 +39,13 @@ import PostsService from './posts/posts.service';
     MongooseModule.forFeature([
       { name: CommentLike.name, schema: CommentLikeSchema },
     ]),
+    AuthModule,
   ],
-  controllers: [PostsController, CommentsController],
+  controllers: [BlogsController, PostsController, CommentsController],
   providers: [
+    BlogsRepository,
+    BlogsQueryRepository,
+    BlogsService,
     PostsRepository,
     PostsQueryRepository,
     PostLikesRepository,
@@ -49,6 +58,12 @@ import PostsService from './posts/posts.service';
     CommentsService,
     BlogIdValidator,
   ],
-  exports: [PostsService, PostsQueryRepository, CommentsService],
+  exports: [
+    BlogsService,
+    BlogsQueryRepository,
+    PostsService,
+    PostsQueryRepository,
+    CommentsService,
+  ],
 })
 export class PostsModule { }

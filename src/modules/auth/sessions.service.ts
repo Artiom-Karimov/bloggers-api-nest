@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import EmailConfirmationRepository from '../users/email.confirmation.repository';
 import UserModel from '../users/models/user.model';
-import UsersBanRepository from '../users/users.ban.repository';
 import UsersService from '../users/users.service';
 import { AuthError } from './models/auth.error';
 import LoginInputModel from './models/input/login.input.model';
@@ -13,17 +12,21 @@ import SessionModel, {
   SessionCreateType,
 } from './models/session/session.model';
 import SessionsRepository from './sessions.repository';
+import UsersBanQueryRepository from './users.ban.query.repository';
 
 @Injectable()
 export default class SessionsService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly banRepo: UsersBanRepository,
+    private readonly banRepo: UsersBanQueryRepository,
     private readonly emailRepo: EmailConfirmationRepository,
     private readonly sessionsRepo: SessionsRepository,
   ) { }
   public async login(data: LoginInputModel): Promise<TokenPair | AuthError> {
-    const userResult = await this.checkLoginGetUser(data.loginOrEmail, data.password);
+    const userResult = await this.checkLoginGetUser(
+      data.loginOrEmail,
+      data.password,
+    );
     if (!(userResult instanceof UserModel)) return userResult;
 
     const session = await this.createSession({

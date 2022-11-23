@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import BlogInputModel from '../models/blogs/blog.input.model';
+import BlogModel, { BlogOwnerInfo } from '../models/blogs/blog.model';
 import BlogsRepository from './blogs.repository';
-import BlogInputModel from './models/blog.input.model';
-import BlogModel, { BlogOwnerInfo } from './models/blog.model';
 
 export enum BlogError {
   NoError,

@@ -3,9 +3,9 @@ import { BearerAuthGuard } from './bearer.auth.guard';
 
 @Injectable()
 export class OptionalBearerAuthGuard extends BearerAuthGuard {
-  override canActivate(context: ExecutionContext): boolean {
+  override async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
-      return super.canActivate(context);
+      return await super.canActivate(context);
     } catch (error) {
       return true;
     }

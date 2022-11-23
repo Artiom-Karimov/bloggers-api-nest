@@ -4,7 +4,6 @@ const configModule = ConfigModule.forRoot();
 
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { BlogsModule } from './modules/blogs/blogs.module';
 import * as config from './config/database';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PostsModule } from './modules/posts/posts.module';
@@ -14,18 +13,19 @@ import { MailModule } from './modules/mail/mail.module';
 import { AppService } from './app.service';
 import { BloggerModule } from './modules/blogger/blogger.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
     configModule,
     MongooseModule.forRoot(config.mongoUri),
     TestModule,
-    BlogsModule,
     PostsModule,
     AuthModule,
     MailModule,
     BloggerModule,
     AdminModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

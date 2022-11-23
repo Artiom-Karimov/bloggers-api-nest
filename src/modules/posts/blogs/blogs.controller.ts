@@ -7,15 +7,15 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import PageViewModel from '../../common/models/page.view.model';
-import GetPostsQuery from '../posts/models/posts/get.posts.query';
-import PostViewModel from '../posts/models/posts/post.view.model';
-import PostsQueryRepository from '../posts/posts/posts.query.repository';
 import BlogsQueryRepository from './blogs.query.repository';
-import BlogViewModel from './models/blog.view.model';
-import GetBlogsQuery from './models/get.blogs.query';
-import { OptionalBearerAuthGuard } from '../auth/guards/optional.bearer.auth.guard';
 import { Request } from 'express';
+import PostsQueryRepository from '../posts/posts.query.repository';
+import PageViewModel from '../../../common/models/page.view.model';
+import BlogViewModel from '../models/blogs/blog.view.model';
+import GetBlogsQuery from '../models/blogs/get.blogs.query';
+import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.guard';
+import PostViewModel from '../models/posts/post.view.model';
+import GetPostsQuery from '../models/posts/get.posts.query';
 
 @Controller('blogs')
 export default class BlogsController {

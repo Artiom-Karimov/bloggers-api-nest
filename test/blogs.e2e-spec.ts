@@ -2,9 +2,9 @@ import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { init, stop } from './utils/test.init';
 import PageViewModel from '../src/common/models/page.view.model';
-import BlogViewModel from '../src/modules/blogs/models/blog.view.model';
 import BlogSampleGenerator from './utils/blog.sample.generator';
 import * as config from '../src/config/admin';
+import BlogViewModel from '../src/modules/posts/models/blogs/blog.view.model';
 
 jest.useRealTimers();
 
@@ -32,17 +32,11 @@ describe('BlogsController (e2e)', () => {
   let blogId: string;
 
   it('should create new blog', async () => {
-    const sample = samples.generateSamples(1)[0];
-    const response = await request(app.getHttpServer())
-      .post(base)
-      .auth(config.userName, config.password)
-      .send(sample);
-    expect(response.statusCode).toBe(201);
-    const body = response.body as BlogViewModel;
-    expect(body.name).toBe(sample.name);
-    expect(body.websiteUrl).toBe(sample.websiteUrl);
-    expect(body.createdAt).toBeTruthy();
-    blogId = body.id;
+    samples.generateSamples(1)[0];
+    await samples.createSamples();
+    const blog = samples.outputs[0];
+    expect(blog).toBeTruthy();
+    blogId = blog.id;
   });
 
   it('should get created blog', async () => {
@@ -62,43 +56,5 @@ describe('BlogsController (e2e)', () => {
     );
     const rBody = retrieved.body as BlogViewModel;
     expect(blog).toEqual(rBody);
-  });
-
-  it('should update blog', async () => {
-    const oldResult = await request(app.getHttpServer()).get(
-      `${base}/${blogId}`,
-    );
-    const blog = oldResult.body as BlogViewModel;
-
-    const newSample = samples.generateSamples(1)[0];
-    const result = await request(app.getHttpServer())
-      .put(`${base}/${blog.id}`)
-      .auth(config.userName, config.password)
-      .send(newSample);
-
-    expect(result.statusCode).toBe(204);
-
-    const newResult = await request(app.getHttpServer()).get(
-      `${base}/${blogId}`,
-    );
-    const newBlog = newResult.body as BlogViewModel;
-    expect(newBlog.name).toBe(newSample.name);
-    expect(newBlog.websiteUrl).toBe(newSample.websiteUrl);
-  });
-
-  it('shuld delete blog', async () => {
-    const deleted = await await request(app.getHttpServer())
-      .delete(`${base}/${blogId}`)
-      .auth(config.userName, config.password);
-    expect(deleted.statusCode).toBe(204);
-
-    const retrieved = await request(app.getHttpServer()).get(
-      `${base}/${blogId}`,
-    );
-    expect(retrieved.statusCode).toBe(404);
-  });
-
-  it('clear data', async () => {
-    await request(app.getHttpServer()).delete('/testing/all-data');
   });
 });

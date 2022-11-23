@@ -14,19 +14,19 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
-import BlogsQueryRepository from '../blogs/blogs.query.repository';
-import BlogsService, { BlogError } from '../blogs/blogs.service';
 import PostsQueryRepository from '../posts/posts/posts.query.repository';
 import PostsService from '../posts/posts/posts.service';
 import { Request } from 'express';
-import GetBlogsQuery from '../blogs/models/get.blogs.query';
 import PageViewModel from '../../common/models/page.view.model';
-import BlogViewModel from '../blogs/models/blog.view.model';
-import BlogInputModel from '../blogs/models/blog.input.model';
+import BlogInputModel from '../posts/models/blogs/blog.input.model';
 import { ForbiddenException } from '@nestjs/common/exceptions';
 import PostInputModel from '../posts/models/posts/post.input.model';
 import PostViewModel from '../posts/models/posts/post.view.model';
 import PostUpdateModel from '../posts/models/posts/post.update.model';
+import BlogsService, { BlogError } from '../posts/blogs/blogs.service';
+import BlogsQueryRepository from '../posts/blogs/blogs.query.repository';
+import BlogViewModel from '../posts/models/blogs/blog.view.model';
+import GetBlogsQuery from '../posts/models/blogs/get.blogs.query';
 
 @Controller('blogger/blogs')
 @UseGuards(BearerAuthGuard)

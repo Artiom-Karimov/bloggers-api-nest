@@ -22,7 +22,6 @@ import UsersService from './users.service';
       { name: EmailConfirmation.name, schema: EmailConfirmationSchema },
     ]),
     MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
-    PostsModule,
   ],
   providers: [
     UsersRepository,
@@ -36,7 +35,6 @@ import UsersService from './users.service';
     UsersRepository,
     UsersQueryRepository,
     UsersService,
-    UsersBanRepository,
     EmailConfirmationRepository,
   ],
 })

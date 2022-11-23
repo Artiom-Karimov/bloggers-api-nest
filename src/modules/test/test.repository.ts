@@ -7,7 +7,7 @@ import Recovery, {
 import Session, {
   SessionDocument,
 } from '../auth/models/session/session.schema';
-import Blog, { BlogDocument } from '../blogs/models/blog.schema';
+import Blog, { BlogDocument } from '../posts/models/blogs/blog.schema';
 import Comment, {
   CommentDocument,
 } from '../posts/models/comments/comment.schema';

@@ -17,10 +17,12 @@ import {
 import PageViewModel from '../../common/models/page.view.model';
 import { throwValidationException } from '../../common/utils/validation.options';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
-import BlogsQueryRepository from '../blogs/blogs.query.repository';
-import BlogsService, { BlogError } from '../blogs/blogs.service';
-import AdminBlogViewModel from '../blogs/models/admin.blog.view.model';
-import GetBlogsQuery from '../blogs/models/get.blogs.query';
+import BlogsQueryRepository from '../posts/blogs/blogs.query.repository';
+import BlogsService, { BlogError } from '../posts/blogs/blogs.service';
+import CommentsService from '../posts/comments/comments.service';
+import AdminBlogViewModel from '../posts/models/blogs/admin.blog.view.model';
+import GetBlogsQuery from '../posts/models/blogs/get.blogs.query';
+import PostsService from '../posts/posts/posts.service';
 import UserBanInputModel from '../users/models/ban/user.ban.input.model';
 import GetUsersQuery from '../users/models/get.users.query';
 import UserInputModel from '../users/models/user.input.model';
@@ -36,6 +38,8 @@ export default class AdminController {
     private readonly blogsQueryRepo: BlogsQueryRepository,
     private readonly usersService: UsersService,
     private readonly usersQueryRepo: UsersQueryRepository,
+    private readonly postsService: PostsService,
+    private readonly commentsService: CommentsService,
   ) { }
 
   @Get('blogs')
@@ -101,6 +105,9 @@ export default class AdminController {
     data.userId = id;
     const result = await this.usersService.putBanInfo(data);
     if (!result) throw new NotFoundException();
+
+    await this.putContentBan(data.userId, data.isBanned);
+
     return;
   }
 
@@ -112,5 +119,12 @@ export default class AdminController {
     if (loginExists) throwValidationException('login', 'login already exists');
     const emailExists = await this.usersService.loginOrEmailExists(email);
     if (emailExists) throwValidationException('email', 'email already exists');
+  }
+  private async putContentBan(
+    userId: string,
+    isBanned: boolean,
+  ): Promise<void> {
+    await this.postsService.setUserBanned(userId, isBanned);
+    await this.commentsService.setUserBanned(userId, isBanned);
   }
 }
