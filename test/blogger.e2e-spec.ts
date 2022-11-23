@@ -7,6 +7,8 @@ import BlogSampleGenerator from './utils/blog.sample.generator';
 import UserSampleGenerator, { Tokens } from './utils/user.sample.generator';
 import { dateRegex } from '../src/common/utils/date.generator';
 import BlogInputModel from '../src/modules/blogs/models/blog.input.model';
+import PostInputModel from '../src/modules/posts/models/posts/post.input.model';
+import PostUpdateModel from '../src/modules/posts/models/posts/post.update.model';
 
 jest.useRealTimers();
 
@@ -40,6 +42,11 @@ describe('BloggerController (e2e)', () => {
       request(app.getHttpServer()).put(`${base}/12345`).send({ data: 'data' }),
       request(app.getHttpServer()).post(`${base}`).send({ data: 'data' }),
       request(app.getHttpServer()).get(`${base}`),
+      request(app.getHttpServer()).post(`${base}/ijtijt/posts`).send('hello'),
+      request(app.getHttpServer())
+        .put(`${base}/6497236/posts/htw84t`)
+        .send('hello'),
+      request(app.getHttpServer()).delete(`${base}/6497236/posts/htw84t`),
     ];
     const responses = await Promise.all(requests);
     for (const r of responses) {
@@ -67,6 +74,13 @@ describe('BloggerController (e2e)', () => {
 
     expect(body).toEqual(emptyPage);
   });
+  it('get posts should return 404', async () => {
+    const result = await request(app.getHttpServer())
+      .get(`${base}/greghrghi/posts`)
+      .set('Authorization', `Bearer ${bloggerTokens.access}`);
+
+    expect(result.statusCode).toBe(404);
+  });
 
   let sample: BlogInputModel;
   let expectedBlog: any;
@@ -91,7 +105,7 @@ describe('BloggerController (e2e)', () => {
     createdBlog = response.body;
   });
   it('should get created blog', async () => {
-    const response = await await request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .get(base)
       .set('Authorization', `Bearer ${bloggerTokens.access}`);
 
@@ -110,6 +124,81 @@ describe('BloggerController (e2e)', () => {
       .set('Authorization', `Bearer ${userTokens.access}`);
 
     expect(response.body).toEqual(emptyPage);
+  });
+
+  let postId: string;
+  it('should create post for blog', async () => {
+    const sample: PostInputModel = {
+      title: 'samplePost',
+      shortDescription: 'the description',
+      content: 'post contentus',
+    };
+
+    const response = await request(app.getHttpServer())
+      .post(`${base}/${createdBlog.id}/posts`)
+      .set('Authorization', `Bearer ${bloggerTokens.access}`)
+      .send(sample);
+    expect(response.statusCode).toBe(201);
+
+    const expected = {
+      id: expect.any(String),
+      title: sample.title,
+      shortDescription: sample.shortDescription,
+      content: sample.content,
+      blogId: createdBlog.id,
+      blogName: createdBlog.name,
+      createdAt: expect.stringMatching(dateRegex),
+      extendedLikesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: 'None',
+        newestLikes: [],
+      },
+    };
+    expect(response.body).toEqual(expected);
+    postId = response.body.id;
+  });
+  it('should update post', async () => {
+    const sample: PostUpdateModel = {
+      title: 'updatedTitle',
+      shortDescription: 'dooscreeption',
+      content: 'brand new content',
+    };
+
+    let response = await request(app.getHttpServer())
+      .put(`${base}/${createdBlog.id}/posts/${postId}`)
+      .set('Authorization', `Bearer ${bloggerTokens.access}`)
+      .send(sample);
+    expect(response.statusCode).toBe(204);
+
+    response = await request(app.getHttpServer()).get(`/posts/${postId}`);
+    expect(response.statusCode).toBe(200);
+
+    const expected = {
+      id: expect.any(String),
+      title: sample.title,
+      shortDescription: sample.shortDescription,
+      content: sample.content,
+      blogId: createdBlog.id,
+      blogName: createdBlog.name,
+      createdAt: expect.stringMatching(dateRegex),
+      extendedLikesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: 'None',
+        newestLikes: [],
+      },
+    };
+    expect(response.body).toEqual(expected);
+  });
+  it('should delete post', async () => {
+    let response = await request(app.getHttpServer())
+      .delete(`${base}/${createdBlog.id}/posts/${postId}`)
+      .set('Authorization', `Bearer ${bloggerTokens.access}`);
+    expect(response.statusCode).toBe(204);
+
+    response = await request(app.getHttpServer()).get(`/posts/${postId}`);
+    expect(response.statusCode).toBe(404);
   });
 
   let changedBlogSample: BlogInputModel;
