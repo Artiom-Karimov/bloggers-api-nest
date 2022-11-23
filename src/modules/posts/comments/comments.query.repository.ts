@@ -28,7 +28,8 @@ export default class CommentsQueryRepository {
   ): Promise<CommentViewModel | undefined> {
     try {
       const result = await this.model.findOne({ _id: id });
-      return result ? this.mergeWithLikes(result, userId) : undefined;
+      if (!result || result.userBanned) return undefined;
+      return this.mergeWithLikes(result, userId);
     } catch (error) {
       console.log(error);
       return undefined;
