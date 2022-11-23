@@ -1,4 +1,4 @@
-import { LikesInfoModel } from '../likes/likes.info.model';
+import { LikesInfoModel } from '../../likes/models/likes.info.model';
 import CommentModel from './comment.model';
 import Comment from './comment.schema';
 import CommentViewModel from './comment.view.model';

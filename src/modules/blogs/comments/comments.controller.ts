@@ -8,7 +8,7 @@ import {
   Req,
 } from '@nestjs/common';
 import CommentsQueryRepository from './comments.query.repository';
-import CommentViewModel from '../models/comments/comment.view.model';
+import CommentViewModel from '../comments/models/comment.view.model';
 import {
   Body,
   Delete,
@@ -17,10 +17,10 @@ import {
   UseGuards,
 } from '@nestjs/common/decorators';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
-import CommentInputModel from '../models/comments/comment.input.model';
+import CommentInputModel from './models/comment.input.model';
 import CommentsService, { CommentError } from './comments.service';
 import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.guard';
-import LikeInputModel from '../models/likes/like.input.model';
+import LikeInputModel from '../likes/models/like.input.model';
 import { Request } from 'express';
 
 @Controller('comments')

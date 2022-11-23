@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../../common/models/page.view.model';
-import AdminBlogViewModel from '../models/blogs/admin.blog.view.model';
-import BlogMapper from '../models/blogs/blog.mapper';
-import Blog, { BlogDocument } from '../models/blogs/blog.schema';
-import BlogViewModel from '../models/blogs/blog.view.model';
-import GetBlogsQuery from '../models/blogs/get.blogs.query';
+import AdminBlogViewModel from './models/admin.blog.view.model';
+import BlogMapper from '../blogs/models/blog.mapper';
+import Blog, { BlogDocument } from '../blogs/models/blog.schema';
+import BlogViewModel from '../blogs/models/blog.view.model';
+import GetBlogsQuery from '../blogs/models/get.blogs.query';
 
 @Injectable()
 export default class BlogsQueryRepository {

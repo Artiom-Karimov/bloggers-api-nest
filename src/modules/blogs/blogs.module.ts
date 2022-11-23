@@ -13,16 +13,16 @@ import CommentLikesQueryRepository from './likes/comment.likes.query.repository'
 import CommentLikesRepository from './likes/comment.likes.repository';
 import PostLikesQueryRepository from './likes/post.likes.query.repository';
 import PostLikesRepository from './likes/post.likes.repository';
-import Blog, { BlogSchema } from './models/blogs/blog.schema';
-import Comment, { CommentSchema } from './models/comments/comment.schema';
+import Blog, { BlogSchema } from './blogs/models/blog.schema';
+import Comment, { CommentSchema } from './comments/models/comment.schema';
 import {
   CommentLike,
   CommentLikeSchema,
   PostLike,
   PostLikeSchema,
-} from './models/likes/like.schema';
-import { BlogIdValidator } from './models/posts/blog.id.validator';
-import Post, { PostSchema } from './models/posts/post.schema';
+} from './likes/models/like.schema';
+import { BlogIdValidator } from './posts/models/blog.id.validator';
+import Post, { PostSchema } from './posts/models/post.schema';
 import PostsController from './posts/posts.controller';
 import PostsQueryRepository from './posts/posts.query.repository';
 import PostsRepository from './posts/posts.repository';

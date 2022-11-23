@@ -4,7 +4,7 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
 } from 'class-validator';
-import PostsQueryRepository from '../../posts/posts.query.repository';
+import PostsQueryRepository from '../posts.query.repository';
 
 @ValidatorConstraint({ name: 'blogId', async: true })
 @Injectable()
@@ -17,7 +17,6 @@ export class BlogIdValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(args: ValidationArguments) {
-    // here you can provide default error message if validation failed
     return 'Blog does not exist';
   }
 }

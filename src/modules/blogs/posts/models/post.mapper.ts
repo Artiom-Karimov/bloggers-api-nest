@@ -1,4 +1,4 @@
-import { ExtendedLikesInfoModel } from '../likes/likes.info.model';
+import { ExtendedLikesInfoModel } from '../../likes/models/likes.info.model';
 import PostModel from './post.model';
 import Post from './post.schema';
 import PostViewModel from './post.view.model';

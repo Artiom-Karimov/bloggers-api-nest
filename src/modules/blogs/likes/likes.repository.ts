@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import LikeMapper from '../models/likes/like.mapper';
-import LikeModel from '../models/likes/like.model';
-import { LikeDocument } from '../models/likes/like.schema';
+import LikeMapper from '../likes/models/like.mapper';
+import LikeModel from '../likes/models/like.model';
+import { LikeDocument } from '../likes/models/like.schema';
 
 @Injectable()
 export default class LikesRepository {

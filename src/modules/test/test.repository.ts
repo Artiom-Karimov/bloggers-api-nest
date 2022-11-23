@@ -7,16 +7,16 @@ import Recovery, {
 import Session, {
   SessionDocument,
 } from '../auth/models/session/session.schema';
-import Blog, { BlogDocument } from '../blogs/models/blogs/blog.schema';
+import Blog, { BlogDocument } from '../blogs/blogs/models/blog.schema';
 import Comment, {
   CommentDocument,
-} from '../blogs/models/comments/comment.schema';
+} from '../blogs/comments/models/comment.schema';
 import {
   CommentLike,
   LikeDocument,
   PostLike,
-} from '../blogs/models/likes/like.schema';
-import Post, { PostDocument } from '../blogs/models/posts/post.schema';
+} from '../blogs/likes/models/like.schema';
+import Post, { PostDocument } from '../blogs/posts/models/post.schema';
 import UserBan, { UserBanDocument } from '../users/models/ban/user.ban.schema';
 import EmailConfirmation, {
   EmailConfirmationDocument,

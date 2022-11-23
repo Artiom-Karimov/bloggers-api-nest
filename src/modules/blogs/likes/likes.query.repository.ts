@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { LikeStatus } from '../models/likes/like.input.model';
-import LikeMapper from '../models/likes/like.mapper';
-import { Like, LikeDocument } from '../models/likes/like.schema';
+import { LikeStatus } from './models/like.input.model';
+import LikeMapper from '../likes/models/like.mapper';
+import { Like, LikeDocument } from '../likes/models/like.schema';
 import {
   ExtendedLikesInfoModel,
   LikesInfoModel,
   LikeViewModel,
-} from '../models/likes/likes.info.model';
+} from '../likes/models/likes.info.model';
 
 @Injectable()
 export default class LikesQueryRepository {

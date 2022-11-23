@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import PostLikesRepository from '../likes/post.likes.repository';
-import LikeInputModel from '../models/likes/like.input.model';
-import LikeModel from '../models/likes/like.model';
-import PostInputModel from '../models/posts/post.input.model';
-import PostModel from '../models/posts/post.model';
-import PostUpdateModel from '../models/posts/post.update.model';
+import LikeInputModel from '../likes/models/like.input.model';
+import LikeModel from '../likes/models/like.model';
+import PostInputModel from '../posts/models/post.input.model';
+import PostModel from '../posts/models/post.model';
+import PostUpdateModel from '../posts/models/post.update.model';
 import PostsRepository from './posts.repository';
 
 @Injectable()

@@ -11,11 +11,11 @@ import BlogsQueryRepository from './blogs.query.repository';
 import { Request } from 'express';
 import PostsQueryRepository from '../posts/posts.query.repository';
 import PageViewModel from '../../../common/models/page.view.model';
-import BlogViewModel from '../models/blogs/blog.view.model';
-import GetBlogsQuery from '../models/blogs/get.blogs.query';
+import BlogViewModel from '../blogs/models/blog.view.model';
+import GetBlogsQuery from '../blogs/models/get.blogs.query';
 import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.guard';
-import PostViewModel from '../models/posts/post.view.model';
-import GetPostsQuery from '../models/posts/get.posts.query';
+import PostViewModel from '../posts/models/post.view.model';
+import GetPostsQuery from '../posts/models/get.posts.query';
 
 @Controller('blogs')
 export default class BlogsController {

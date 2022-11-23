@@ -3,13 +3,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../../common/models/page.view.model';
 import PostLikesQueryRepository from '../likes/post.likes.query.repository';
-import BlogMapper from '../models/blogs/blog.mapper';
-import Blog, { BlogDocument } from '../models/blogs/blog.schema';
-import BlogViewModel from '../models/blogs/blog.view.model';
-import GetPostsQuery from '../models/posts/get.posts.query';
-import PostMapper from '../models/posts/post.mapper';
-import Post, { PostDocument } from '../models/posts/post.schema';
-import PostViewModel from '../models/posts/post.view.model';
+import BlogMapper from '../blogs/models/blog.mapper';
+import Blog, { BlogDocument } from '../blogs/models/blog.schema';
+import BlogViewModel from '../blogs/models/blog.view.model';
+import GetPostsQuery from '../posts/models/get.posts.query';
+import PostMapper from '../posts/models/post.mapper';
+import Post, { PostDocument } from '../posts/models/post.schema';
+import PostViewModel from '../posts/models/post.view.model';
 
 @Injectable()
 export default class PostsQueryRepository {
