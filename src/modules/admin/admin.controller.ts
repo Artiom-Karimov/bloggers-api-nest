@@ -17,12 +17,12 @@ import {
 import PageViewModel from '../../common/models/page.view.model';
 import { throwValidationException } from '../../common/utils/validation.options';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
-import BlogsQueryRepository from '../posts/blogs/blogs.query.repository';
-import BlogsService, { BlogError } from '../posts/blogs/blogs.service';
-import CommentsService from '../posts/comments/comments.service';
-import AdminBlogViewModel from '../posts/models/blogs/admin.blog.view.model';
-import GetBlogsQuery from '../posts/models/blogs/get.blogs.query';
-import PostsService from '../posts/posts/posts.service';
+import BlogsQueryRepository from '../blogs/blogs/blogs.query.repository';
+import BlogsService, { BlogError } from '../blogs/blogs/blogs.service';
+import CommentsService from '../blogs/comments/comments.service';
+import AdminBlogViewModel from '../blogs/models/blogs/admin.blog.view.model';
+import GetBlogsQuery from '../blogs/models/blogs/get.blogs.query';
+import PostsService from '../blogs/posts/posts.service';
 import UserBanInputModel from '../users/models/ban/user.ban.input.model';
 import GetUsersQuery from '../users/models/get.users.query';
 import UserInputModel from '../users/models/user.input.model';

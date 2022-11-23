@@ -5,10 +5,10 @@ import PageViewModel from '../src/common/models/page.view.model';
 import BlogSampleGenerator from './utils/blog.sample.generator';
 import UserSampleGenerator, { Tokens } from './utils/user.sample.generator';
 import { dateRegex } from '../src/common/utils/date.generator';
-import BlogInputModel from '../src/modules/posts/models/blogs/blog.input.model';
-import PostInputModel from '../src/modules/posts/models/posts/post.input.model';
-import PostUpdateModel from '../src/modules/posts/models/posts/post.update.model';
-import BlogViewModel from '../src/modules/posts/models/blogs/blog.view.model';
+import BlogInputModel from '../src/modules/blogs/models/blogs/blog.input.model';
+import PostInputModel from '../src/modules/blogs/models/posts/post.input.model';
+import PostUpdateModel from '../src/modules/blogs/models/posts/post.update.model';
+import BlogViewModel from '../src/modules/blogs/models/blogs/blog.view.model';
 
 jest.useRealTimers();
 

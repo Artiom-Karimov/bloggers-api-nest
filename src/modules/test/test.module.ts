@@ -4,17 +4,17 @@ import Recovery, {
   RecoverySchema,
 } from '../auth/models/recovery/recovery.schema';
 import Session, { SessionSchema } from '../auth/models/session/session.schema';
-import Blog, { BlogSchema } from '../posts/models/blogs/blog.schema';
+import Blog, { BlogSchema } from '../blogs/models/blogs/blog.schema';
 import Comment, {
   CommentSchema,
-} from '../posts/models/comments/comment.schema';
+} from '../blogs/models/comments/comment.schema';
 import {
   CommentLike,
   CommentLikeSchema,
   PostLike,
   PostLikeSchema,
-} from '../posts/models/likes/like.schema';
-import Post, { PostSchema } from '../posts/models/posts/post.schema';
+} from '../blogs/models/likes/like.schema';
+import Post, { PostSchema } from '../blogs/models/posts/post.schema';
 import UserBan, { UserBanSchema } from '../users/models/ban/user.ban.schema';
 import EmailConfirmation, {
   EmailConfirmationSchema,

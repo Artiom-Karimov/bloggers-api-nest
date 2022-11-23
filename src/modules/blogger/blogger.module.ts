@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
-import { PostsModule } from '../posts/posts.module';
+import { BlogsModule } from '../blogs/blogs.module';
 import BloggerController from './blogger.controller';
 
 @Module({
-  imports: [PostsModule, AuthModule],
+  imports: [BlogsModule, AuthModule],
   controllers: [BloggerController],
 })
 export class BloggerModule { }

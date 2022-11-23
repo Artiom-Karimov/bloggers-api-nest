@@ -6,7 +6,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import * as config from './config/database';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PostsModule } from './modules/posts/posts.module';
+import { BlogsModule } from './modules/blogs/blogs.module';
 import { TestModule } from './modules/test/test.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { MailModule } from './modules/mail/mail.module';
@@ -20,7 +20,7 @@ import { UsersModule } from './modules/users/users.module';
     configModule,
     MongooseModule.forRoot(config.mongoUri),
     TestModule,
-    PostsModule,
+    BlogsModule,
     AuthModule,
     MailModule,
     BloggerModule,

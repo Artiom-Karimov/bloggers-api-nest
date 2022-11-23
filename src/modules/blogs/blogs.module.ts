@@ -66,4 +66,4 @@ import PostsService from './posts/posts.service';
     CommentsService,
   ],
 })
-export class PostsModule { }
+export class BlogsModule { }
