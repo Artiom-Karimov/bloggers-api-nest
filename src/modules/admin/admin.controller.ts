@@ -18,7 +18,7 @@ import PageViewModel from '../../common/models/page.view.model';
 import { throwValidationException } from '../../common/utils/validation.options';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 import BlogsQueryRepository from '../blogs/blogs/blogs.query.repository';
-import BlogsService, { BlogError } from '../blogs/blogs/blogs.service';
+import BlogsService from '../blogs/blogs/blogs.service';
 import CommentsService from '../blogs/comments/comments.service';
 import AdminBlogViewModel from '../blogs/blogs/models/admin.blog.view.model';
 import GetBlogsQuery from '../blogs/blogs/models/get.blogs.query';
@@ -29,6 +29,7 @@ import UserInputModel from '../users/models/user.input.model';
 import UserViewModel from '../users/models/user.view.model';
 import UsersQueryRepository from '../users/users.query.repository';
 import UsersService from '../users/users.service';
+import { BlogError } from '../blogs/blogs/models/blog.error';
 
 @Controller('sa')
 @UseGuards(BasicAuthGuard)

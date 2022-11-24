@@ -28,6 +28,14 @@ import PostsQueryRepository from './posts/posts.query.repository';
 import PostsRepository from './posts/posts.repository';
 import PostsService from './posts/posts.service';
 import { CreateBlogHandler } from './blogs/commands/create.blog.handler';
+import { UpdateBlogHandler } from './blogs/commands/update.blog.handler';
+import { DeleteBlogHandler } from './blogs/commands/delete.blog.handler';
+
+const commandHandlers = [
+  CreateBlogHandler,
+  UpdateBlogHandler,
+  DeleteBlogHandler,
+];
 
 @Module({
   imports: [
@@ -58,7 +66,7 @@ import { CreateBlogHandler } from './blogs/commands/create.blog.handler';
     CommentLikesQueryRepository,
     CommentsService,
     BlogIdValidator,
-    CreateBlogHandler,
+    ...commandHandlers,
   ],
   exports: [
     BlogsService,

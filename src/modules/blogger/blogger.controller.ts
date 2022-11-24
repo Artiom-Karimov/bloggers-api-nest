@@ -23,12 +23,16 @@ import { ForbiddenException } from '@nestjs/common/exceptions';
 import PostInputModel from '../blogs/posts/models/post.input.model';
 import PostViewModel from '../blogs/posts/models/post.view.model';
 import PostUpdateModel from '../blogs/posts/models/post.update.model';
-import BlogsService, { BlogError } from '../blogs/blogs/blogs.service';
+import BlogsService from '../blogs/blogs/blogs.service';
 import BlogsQueryRepository from '../blogs/blogs/blogs.query.repository';
 import BlogViewModel from '../blogs/blogs/models/blog.view.model';
 import GetBlogsQuery from '../blogs/blogs/models/get.blogs.query';
 import { CommandBus } from '@nestjs/cqrs';
 import CreateBlogCommand from '../blogs/blogs/commands/create.blog.command';
+import UpdateBlogCommand from '../blogs/blogs/commands/update.blog.command';
+import { BlogError } from '../blogs/blogs/models/blog.error';
+import DeleteBlogCommand from '../blogs/blogs/commands/delete.blog.command';
+import { BlogOwnerInfo } from '../blogs/blogs/models/blog.model';
 
 @Controller('blogger/blogs')
 @UseGuards(BearerAuthGuard)
@@ -56,7 +60,7 @@ export default class BloggerController {
     @Body() data: BlogInputModel,
     @Req() req: Request,
   ): Promise<BlogViewModel> {
-    const owner = {
+    const owner: BlogOwnerInfo = {
       userId: req.user.userId,
       userLogin: req.user.userLogin,
     };
@@ -76,10 +80,8 @@ export default class BloggerController {
     @Param('id') blogId: string,
     @Req() req: Request,
   ): Promise<void> {
-    const result = await this.blogsService.update(
-      blogId,
-      data,
-      req.user.userId,
+    const result = await this.commandBus.execute(
+      new UpdateBlogCommand(blogId, data, req.user.userId),
     );
     if (result === BlogError.NoError) return;
     if (result === BlogError.NotFound) throw new NotFoundException();
@@ -93,7 +95,9 @@ export default class BloggerController {
     @Param('id') blogId: string,
     @Req() req: Request,
   ): Promise<void> {
-    const result = await this.blogsService.delete(blogId, req.user.userId);
+    const result = await this.commandBus.execute(
+      new DeleteBlogCommand(blogId, req.user.userId),
+    );
     if (result === BlogError.NoError) return;
     if (result === BlogError.NotFound) throw new NotFoundException();
     if (result === BlogError.Forbidden) throw new ForbiddenException();
