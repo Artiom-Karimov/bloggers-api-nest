@@ -27,6 +27,8 @@ import BlogsService, { BlogError } from '../blogs/blogs/blogs.service';
 import BlogsQueryRepository from '../blogs/blogs/blogs.query.repository';
 import BlogViewModel from '../blogs/blogs/models/blog.view.model';
 import GetBlogsQuery from '../blogs/blogs/models/get.blogs.query';
+import { CommandBus } from '@nestjs/cqrs';
+import CreateBlogCommand from '../blogs/blogs/commands/create.blog.command';
 
 @Controller('blogger/blogs')
 @UseGuards(BearerAuthGuard)
@@ -36,6 +38,7 @@ export default class BloggerController {
     private readonly postsService: PostsService,
     private readonly blogsQueryRepo: BlogsQueryRepository,
     private readonly postsQueryRepo: PostsQueryRepository,
+    private readonly commandBus: CommandBus,
   ) { }
 
   @Get()
@@ -53,10 +56,13 @@ export default class BloggerController {
     @Body() data: BlogInputModel,
     @Req() req: Request,
   ): Promise<BlogViewModel> {
-    const created = await this.blogsService.create(data, {
+    const owner = {
       userId: req.user.userId,
       userLogin: req.user.userLogin,
-    });
+    };
+    const created = await this.commandBus.execute(
+      new CreateBlogCommand(data, owner),
+    );
     if (!created) throw new BadRequestException();
     const retrieved = await this.blogsQueryRepo.getBlog(created);
     if (!retrieved) throw new NotFoundException();

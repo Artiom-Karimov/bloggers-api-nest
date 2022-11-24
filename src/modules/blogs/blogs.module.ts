@@ -27,6 +27,7 @@ import PostsController from './posts/posts.controller';
 import PostsQueryRepository from './posts/posts.query.repository';
 import PostsRepository from './posts/posts.repository';
 import PostsService from './posts/posts.service';
+import { CreateBlogHandler } from './blogs/commands/create.blog.handler';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import PostsService from './posts/posts.service';
     CommentLikesQueryRepository,
     CommentsService,
     BlogIdValidator,
+    CreateBlogHandler,
   ],
   exports: [
     BlogsService,

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import BlogInputModel from '../blogs/models/blog.input.model';
-import BlogModel, { BlogOwnerInfo } from '../blogs/models/blog.model';
+import { BlogOwnerInfo } from '../blogs/models/blog.model';
 import BlogsRepository from './blogs.repository';
 
 export enum BlogError {
@@ -13,10 +13,6 @@ export enum BlogError {
 @Injectable()
 export default class BlogsService {
   constructor(private readonly repo: BlogsRepository) { }
-  public async create(data: BlogInputModel, blogger: BlogOwnerInfo) {
-    const newBlog = BlogModel.create(data, blogger);
-    return this.repo.create(newBlog);
-  }
   public async assignOwner(
     blogId: string,
     ownerInfo: BlogOwnerInfo,
