@@ -53,7 +53,7 @@ export default class BloggerController {
     @Body() data: BlogInputModel,
     @Req() req: Request,
   ): Promise<BlogViewModel> {
-    const created = await this.blogsService.createForBlogger(data, {
+    const created = await this.blogsService.create(data, {
       userId: req.user.userId,
       userLogin: req.user.userLogin,
     });
@@ -70,7 +70,7 @@ export default class BloggerController {
     @Param('id') blogId: string,
     @Req() req: Request,
   ): Promise<void> {
-    const result = await this.blogsService.updateForBlogger(
+    const result = await this.blogsService.update(
       blogId,
       data,
       req.user.userId,
@@ -87,10 +87,7 @@ export default class BloggerController {
     @Param('id') blogId: string,
     @Req() req: Request,
   ): Promise<void> {
-    const result = await this.blogsService.deleteForBlogger(
-      blogId,
-      req.user.userId,
-    );
+    const result = await this.blogsService.delete(blogId, req.user.userId);
     if (result === BlogError.NoError) return;
     if (result === BlogError.NotFound) throw new NotFoundException();
     if (result === BlogError.Forbidden) throw new ForbiddenException();

@@ -13,7 +13,7 @@ export enum BlogError {
 @Injectable()
 export default class BlogsService {
   constructor(private readonly repo: BlogsRepository) { }
-  public async createForBlogger(data: BlogInputModel, blogger: BlogOwnerInfo) {
+  public async create(data: BlogInputModel, blogger: BlogOwnerInfo) {
     const newBlog = BlogModel.create(data, blogger);
     return this.repo.create(newBlog);
   }
@@ -27,7 +27,7 @@ export default class BlogsService {
     const result = await this.repo.update(blogId, { ownerInfo });
     return result ? BlogError.NoError : BlogError.Unknown;
   }
-  public async updateForBlogger(
+  public async update(
     id: string,
     data: BlogInputModel,
     bloggerId: string,
@@ -39,10 +39,7 @@ export default class BlogsService {
     const result = await this.repo.update(id, data);
     return result ? BlogError.NoError : BlogError.Unknown;
   }
-  public async deleteForBlogger(
-    blogId: string,
-    bloggerId: string,
-  ): Promise<BlogError> {
+  public async delete(blogId: string, bloggerId: string): Promise<BlogError> {
     const blog = await this.repo.get(blogId);
     if (!blog) return BlogError.NotFound;
     if (!blog.ownerInfo || blog.ownerInfo.userId !== bloggerId)
