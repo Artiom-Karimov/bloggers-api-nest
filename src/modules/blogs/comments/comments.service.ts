@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import CommentLikesRepository from '../likes/comment.likes.repository';
 import CommentInputModel from './models/comment.input.model';
 import CommentModel from '../comments/models/comment.model';
-import LikeInputModel from '../likes/models/like.input.model';
-import LikeModel from '../likes/models/like.model';
 import CommentsRepository from './comments.repository';
 
 export enum CommentError {
@@ -43,18 +41,6 @@ export default class CommentsService {
 
     const deleted = await this.repo.delete(id);
     return deleted ? CommentError.NoError : CommentError.Unknown;
-  }
-  public async putLike(data: LikeInputModel): Promise<boolean> {
-    const comment = await this.repo.get(data.entityId);
-    if (!comment) return false;
-
-    let like = await this.likeRepo.get(data.entityId, data.userId);
-    if (like) {
-      like = LikeModel.update(like, data.likeStatus);
-      return this.likeRepo.update(like);
-    }
-    like = LikeModel.create(data);
-    return this.likeRepo.create(like);
   }
   public async setUserBanned(
     userId: string,

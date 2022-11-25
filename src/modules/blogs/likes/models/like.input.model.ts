@@ -7,10 +7,6 @@ export enum LikeStatus {
 }
 
 export default class LikeInputModel {
-  entityId?: string;
-  userId?: string;
-  userLogin?: string;
-
   @IsNotEmpty()
   @IsEnum(LikeStatus)
   likeStatus: LikeStatus;

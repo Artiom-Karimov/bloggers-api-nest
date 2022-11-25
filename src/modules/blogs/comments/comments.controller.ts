@@ -22,10 +22,14 @@ import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.
 import LikeInputModel from '../likes/models/like.input.model';
 import { User } from '../../auth/guards/user.decorator';
 import TokenPayload from '../../auth/models/jwt/token.payload';
+import PutCommentLikeCommand from './commands/put.comment.like.command';
+import { CommandBus } from '@nestjs/cqrs';
+import { PostError } from '../posts/models/post.error';
 
 @Controller('comments')
 export default class CommentsController {
   constructor(
+    private readonly commandBus: CommandBus,
     private readonly service: CommentsService,
     private readonly queryRepo: CommentsQueryRepository,
   ) { }
@@ -80,12 +84,16 @@ export default class CommentsController {
     @Body() data: LikeInputModel,
     @User() user: TokenPayload,
   ) {
-    data.entityId = commentId;
-    data.userId = user.userId;
-    data.userLogin = user.userLogin;
-
-    const result = await this.service.putLike(data);
-    if (!result) throw new NotFoundException();
-    return;
+    const result = await this.commandBus.execute(
+      new PutCommentLikeCommand({
+        entityId: commentId,
+        userId: user.userId,
+        userLogin: user.userLogin,
+        likeStatus: data.likeStatus,
+      }),
+    );
+    if (result === PostError.NoError) return;
+    if (result === PostError.NotFound) throw new NotFoundException();
+    throw new BadRequestException();
   }
 }

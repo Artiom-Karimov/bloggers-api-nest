@@ -1,5 +1,6 @@
 import IdGenerator from '../../../../common/utils/id.generator';
-import LikeInputModel, { LikeStatus } from './like.input.model';
+import LikeCreateModel from './like.create.model';
+import { LikeStatus } from './like.input.model';
 
 export default class LikeModel {
   constructor(
@@ -11,7 +12,7 @@ export default class LikeModel {
     public status: LikeStatus,
     public lastModified: string,
   ) { }
-  public static create(data: LikeInputModel): LikeModel {
+  public static create(data: LikeCreateModel): LikeModel {
     return new LikeModel(
       IdGenerator.generate(),
       data.entityId,

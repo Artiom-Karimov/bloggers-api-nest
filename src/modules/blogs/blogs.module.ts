@@ -33,6 +33,9 @@ import { DeleteBlogHandler } from './blogs/commands/delete.blog.handler';
 import { CreatePostHandler } from './posts/commands/create.post.handler';
 import { UpdatePostHandler } from './posts/commands/update.post.handler';
 import { DeletePostHandler } from './posts/commands/delete.post.handler';
+import { PutPostLikeHandler } from './posts/commands/put.post.like.handler';
+import { PutCommentLikeHandler } from './comments/commands/put.comment.like.handler';
+import { CqrsModule } from '@nestjs/cqrs';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -41,10 +44,13 @@ const commandHandlers = [
   CreatePostHandler,
   UpdatePostHandler,
   DeletePostHandler,
+  PutPostLikeHandler,
+  PutCommentLikeHandler,
 ];
 
 @Module({
   imports: [
+    CqrsModule,
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),

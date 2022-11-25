@@ -18,7 +18,6 @@ import GetCommentsQuery from '../comments/models/get.comments.query';
 import GetPostsQuery from '../posts/models/get.posts.query';
 import PostViewModel from '../posts/models/post.view.model';
 import PostsQueryRepository from './posts.query.repository';
-import PostsService from './posts.service';
 import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.guard';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import CommentInputModel from '../comments/models/comment.input.model';
@@ -26,11 +25,14 @@ import CommentsService from '../comments/comments.service';
 import LikeInputModel from '../likes/models/like.input.model';
 import TokenPayload from '../../auth/models/jwt/token.payload';
 import { User } from '../../auth/guards/user.decorator';
+import { CommandBus } from '@nestjs/cqrs';
+import PutPostLikeCommand from './commands/put.post.like.command';
+import { PostError } from './models/post.error';
 
 @Controller('posts')
 export default class PostsController {
   constructor(
-    private readonly service: PostsService,
+    private readonly commandBus: CommandBus,
     private readonly queryRepo: PostsQueryRepository,
     private readonly commentsQueryRepo: CommentsQueryRepository,
     private readonly commentsService: CommentsService,
@@ -104,12 +106,16 @@ export default class PostsController {
     @Body() data: LikeInputModel,
     @User() user: TokenPayload,
   ) {
-    data.entityId = postId;
-    data.userId = user.userId;
-    data.userLogin = user.userLogin;
-
-    const result = await this.service.putLike(data);
-    if (!result) throw new NotFoundException();
-    return;
+    const result = await this.commandBus.execute(
+      new PutPostLikeCommand({
+        entityId: postId,
+        userId: user.userId,
+        userLogin: user.userLogin,
+        likeStatus: data.likeStatus,
+      }),
+    );
+    if (result === PostError.NoError) return;
+    if (result === PostError.NotFound) throw new NotFoundException();
+    throw new BadRequestException();
   }
 }
