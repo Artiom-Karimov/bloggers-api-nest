@@ -35,6 +35,7 @@ import TokenPayload from '../auth/models/jwt/token.payload';
 import CreatePostCommand from '../blogs/posts/commands/create.post.command';
 import { PostError } from '../blogs/posts/models/post.error';
 import UpdatePostCommand from '../blogs/posts/commands/update.post.command';
+import DeletePostCommand from '../blogs/posts/commands/delete.post.command';
 
 @Controller('blogger/blogs')
 @UseGuards(BearerAuthGuard)
@@ -161,18 +162,16 @@ export default class BloggerController {
     @Param('postId') postId: string,
     @User() user: TokenPayload,
   ): Promise<void> {
-    const blog = await this.blogsQueryRepo.getAdminBlog(blogId);
-    if (!blog) throw new NotFoundException();
-    if (!blog.blogOwnerInfo || blog.blogOwnerInfo.userId !== user.userId)
-      throw new ForbiddenException();
-
-    const post = await this.postsQueryRepo.getPost(postId, undefined);
-    if (!post) throw new NotFoundException();
-    if (post.blogId !== blog.id) throw new NotFoundException();
-
-    const result = await this.postsService.delete(postId);
-    if (!result) throw new NotFoundException();
-
-    return;
+    const deleted = await this.commandBus.execute(
+      new DeletePostCommand({
+        blogId,
+        postId,
+        bloggerId: user.userId,
+      }),
+    );
+    if (deleted === PostError.NoError) return;
+    if (deleted === PostError.NotFound) throw new NotFoundException();
+    if (deleted === PostError.Forbidden) throw new ForbiddenException();
+    throw new BadRequestException();
   }
 }

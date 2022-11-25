@@ -11,12 +11,6 @@ export default class PostsService {
     private readonly likeRepo: PostLikesRepository,
   ) { }
 
-  public async delete(id: string): Promise<boolean> {
-    const post = await this.repo.get(id);
-    if (!post) return false;
-    const deleted = await this.repo.delete(id);
-    return deleted;
-  }
   public async putLike(data: LikeInputModel): Promise<boolean> {
     const post = await this.repo.get(data.entityId);
     if (!post) return false;

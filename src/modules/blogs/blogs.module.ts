@@ -32,6 +32,7 @@ import { UpdateBlogHandler } from './blogs/commands/update.blog.handler';
 import { DeleteBlogHandler } from './blogs/commands/delete.blog.handler';
 import { CreatePostHandler } from './posts/commands/create.post.handler';
 import { UpdatePostHandler } from './posts/commands/update.post.handler';
+import { DeletePostHandler } from './posts/commands/delete.post.handler';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -39,6 +40,7 @@ const commandHandlers = [
   DeleteBlogHandler,
   CreatePostHandler,
   UpdatePostHandler,
+  DeletePostHandler,
 ];
 
 @Module({
