@@ -9,7 +9,6 @@ import {
   Post,
   Put,
   Query,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import PageViewModel from '../../../common/models/page.view.model';
@@ -25,7 +24,6 @@ import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import CommentInputModel from '../comments/models/comment.input.model';
 import CommentsService from '../comments/comments.service';
 import LikeInputModel from '../likes/models/like.input.model';
-import { Request } from 'express';
 import TokenPayload from '../../auth/models/jwt/token.payload';
 import { User } from '../../auth/guards/user.decorator';
 
