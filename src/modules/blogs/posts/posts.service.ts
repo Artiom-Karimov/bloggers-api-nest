@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import PostLikesRepository from '../likes/post.likes.repository';
 import LikeInputModel from '../likes/models/like.input.model';
 import LikeModel from '../likes/models/like.model';
-import PostInputModel from '../posts/models/post.input.model';
 import PostModel from '../posts/models/post.model';
 import PostUpdateModel from '../posts/models/post.update.model';
 import PostsRepository from './posts.repository';
@@ -16,10 +15,6 @@ export default class PostsService {
 
   public async get(id: string): Promise<PostModel | undefined> {
     return this.repo.get(id);
-  }
-  public async create(data: PostInputModel): Promise<string | undefined> {
-    const newPost = PostModel.create(data);
-    return this.repo.create(newPost);
   }
   public async update(id: string, data: PostUpdateModel): Promise<boolean> {
     const post = await this.repo.get(id);

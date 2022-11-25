@@ -30,11 +30,13 @@ import PostsService from './posts/posts.service';
 import { CreateBlogHandler } from './blogs/commands/create.blog.handler';
 import { UpdateBlogHandler } from './blogs/commands/update.blog.handler';
 import { DeleteBlogHandler } from './blogs/commands/delete.blog.handler';
+import { CreatePostHandler } from './posts/commands/create.post.handler';
 
 const commandHandlers = [
   CreateBlogHandler,
   UpdateBlogHandler,
   DeleteBlogHandler,
+  CreatePostHandler,
 ];
 
 @Module({

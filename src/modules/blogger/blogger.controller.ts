@@ -32,6 +32,8 @@ import DeleteBlogCommand from '../blogs/blogs/commands/delete.blog.command';
 import { BlogOwnerInfo } from '../blogs/blogs/models/blog.model';
 import { User } from '../auth/guards/user.decorator';
 import TokenPayload from '../auth/models/jwt/token.payload';
+import CreatePostCommand from '../blogs/posts/commands/create.post.command';
+import { PostError } from '../blogs/posts/models/post.error';
 
 @Controller('blogger/blogs')
 @UseGuards(BearerAuthGuard)
@@ -109,16 +111,19 @@ export default class BloggerController {
     @Body() data: PostInputModel,
     @User() user: TokenPayload,
   ): Promise<PostViewModel> {
-    const blog = await this.blogsQueryRepo.getAdminBlog(blogId);
-    if (!blog) throw new NotFoundException();
-    if (!blog.blogOwnerInfo || blog.blogOwnerInfo.userId !== user.userId)
-      throw new ForbiddenException();
+    const created = await this.commandBus.execute(
+      new CreatePostCommand({
+        ...data,
+        blogId,
+        bloggerId: user.userId,
+      }),
+    );
 
-    data.blogId = blog.id;
-    data.blogName = blog.name;
-
-    const created = await this.postsService.create(data);
-    if (!created) throw new BadRequestException();
+    if (typeof created !== 'string') {
+      if (created === PostError.NotFound) throw new NotFoundException();
+      if (created === PostError.Forbidden) throw new ForbiddenException();
+      throw new BadRequestException();
+    }
 
     const retrieved = await this.postsQueryRepo.getPost(created, undefined);
     if (!retrieved) throw new BadRequestException();

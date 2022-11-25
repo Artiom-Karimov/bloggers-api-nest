@@ -1,6 +1,6 @@
 import DateGenerator from '../../../../common/utils/date.generator';
 import IdGenerator from '../../../../common/utils/id.generator';
-import PostInputModel from './post.input.model';
+import PostCreateModel from './post.create.model';
 
 export default class PostModel {
   constructor(
@@ -12,7 +12,7 @@ export default class PostModel {
     public blogName: string,
     public createdAt: string,
   ) { }
-  public static create(data: PostInputModel): PostModel {
+  public static create(data: PostCreateModel): PostModel {
     return new PostModel(
       IdGenerator.generate(),
       data.title,
