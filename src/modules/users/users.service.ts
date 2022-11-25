@@ -53,7 +53,7 @@ export default class UsersService {
     return true;
   }
   public async updatePassword(id: string, password: string): Promise<boolean> {
-    let user = await this.get(id);
+    let user = await this.repo.get(id);
     if (!user) return false;
 
     user = await UserModel.updatePassword(user, password);
@@ -68,7 +68,7 @@ export default class UsersService {
       await this.banRepo.delete(data.userId);
       return true;
     }
-    const user = await this.get(data.userId);
+    const user = await this.repo.get(data.userId);
     if (!user) return false;
 
     await this.sessionsRepo.deleteAll(user.id);
