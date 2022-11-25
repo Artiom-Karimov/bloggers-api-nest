@@ -26,7 +26,6 @@ import SessionsService from './sessions.service';
 import SessionUserViewModel from './models/session.user.view.model';
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
 import { BearerAuthGuard } from './guards/bearer.auth.guard';
-import TokenPayload from './models/jwt/token.payload';
 
 @Controller('auth')
 export default class AuthController {

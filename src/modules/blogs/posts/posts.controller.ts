@@ -26,6 +26,8 @@ import CommentInputModel from '../comments/models/comment.input.model';
 import CommentsService from '../comments/comments.service';
 import LikeInputModel from '../likes/models/like.input.model';
 import { Request } from 'express';
+import TokenPayload from '../../auth/models/jwt/token.payload';
+import { User } from '../../auth/guards/user.decorator';
 
 @Controller('posts')
 export default class PostsController {
@@ -40,18 +42,18 @@ export default class PostsController {
   @UseGuards(OptionalBearerAuthGuard)
   async get(
     @Query() reqQuery: any,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ): Promise<PageViewModel<PostViewModel>> {
-    const query = new GetPostsQuery(reqQuery, undefined, req.user?.userId);
+    const query = new GetPostsQuery(reqQuery, undefined, user?.userId);
     return this.queryRepo.getPosts(query);
   }
   @Get(':id')
   @UseGuards(OptionalBearerAuthGuard)
   async getOne(
     @Param('id') id: string,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ): Promise<PostViewModel> {
-    const result = await this.queryRepo.getPost(id, req.user?.userId);
+    const result = await this.queryRepo.getPost(id, user?.userId);
     if (!result) throw new NotFoundException();
     return result;
   }
@@ -61,12 +63,12 @@ export default class PostsController {
   async getComments(
     @Param('id') id: string,
     @Query() reqQuery: any,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ): Promise<PageViewModel<CommentViewModel>> {
     const post = await this.queryRepo.getPost(id, undefined);
     if (!post) throw new NotFoundException();
 
-    const query = new GetCommentsQuery(reqQuery, id, req.user?.userId);
+    const query = new GetCommentsQuery(reqQuery, id, user?.userId);
     return this.commentsQueryRepo.getComments(query);
   }
 
@@ -75,14 +77,14 @@ export default class PostsController {
   async createComment(
     @Param('id') postId: string,
     @Body() data: CommentInputModel,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ): Promise<CommentViewModel> {
     const post = await this.queryRepo.getPost(postId, undefined);
     if (!post) throw new NotFoundException();
 
     data.postId = postId;
-    data.userId = req.user.userId;
-    data.userLogin = req.user.userLogin;
+    data.userId = user.userId;
+    data.userLogin = user.userLogin;
 
     const created = await this.commentsService.create(data);
     if (!created) throw new BadRequestException();
@@ -102,11 +104,11 @@ export default class PostsController {
   async putLike(
     @Param('id') postId: string,
     @Body() data: LikeInputModel,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ) {
     data.entityId = postId;
-    data.userId = req.user.userId;
-    data.userLogin = req.user.userLogin;
+    data.userId = user.userId;
+    data.userLogin = user.userLogin;
 
     const result = await this.service.putLike(data);
     if (!result) throw new NotFoundException();

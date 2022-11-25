@@ -22,6 +22,8 @@ import CommentsService, { CommentError } from './comments.service';
 import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.guard';
 import LikeInputModel from '../likes/models/like.input.model';
 import { Request } from 'express';
+import { User } from '../../auth/guards/user.decorator';
+import TokenPayload from '../../auth/models/jwt/token.payload';
 
 @Controller('comments')
 export default class CommentsController {
@@ -34,9 +36,9 @@ export default class CommentsController {
   @UseGuards(OptionalBearerAuthGuard)
   async getOne(
     @Param('id') id: string,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ): Promise<CommentViewModel> {
-    const result = await this.queryRepo.getComment(id, req.user?.userId);
+    const result = await this.queryRepo.getComment(id, user?.userId);
     if (!result) throw new NotFoundException();
     return result;
   }
@@ -47,10 +49,10 @@ export default class CommentsController {
   async update(
     @Param('id') id: string,
     @Body() data: CommentInputModel,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ): Promise<void> {
-    data.userId = req.user.userId;
-    data.userLogin = req.user.userLogin;
+    data.userId = user.userId;
+    data.userLogin = user.userLogin;
     const result = await this.service.update(id, data);
     if (result === CommentError.NoError) return;
     if (result === CommentError.NotFound) throw new NotFoundException();
@@ -61,8 +63,11 @@ export default class CommentsController {
   @Delete(':id')
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
-  async delete(@Param('id') id: string, @Req() req: Request): Promise<void> {
-    const result = await this.service.delete(id, req.user.userId);
+  async delete(
+    @Param('id') id: string,
+    @User() user: TokenPayload,
+  ): Promise<void> {
+    const result = await this.service.delete(id, user.userId);
     if (result === CommentError.NoError) return;
     if (result === CommentError.NotFound) throw new NotFoundException();
     if (result === CommentError.Forbidden) throw new ForbiddenException();
@@ -75,11 +80,11 @@ export default class CommentsController {
   async putLike(
     @Param('id') commentId: string,
     @Body() data: LikeInputModel,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ) {
     data.entityId = commentId;
-    data.userId = req.user.userId;
-    data.userLogin = req.user.userLogin;
+    data.userId = user.userId;
+    data.userLogin = user.userLogin;
 
     const result = await this.service.putLike(data);
     if (!result) throw new NotFoundException();

@@ -33,12 +33,13 @@ import UpdateBlogCommand from '../blogs/blogs/commands/update.blog.command';
 import { BlogError } from '../blogs/blogs/models/blog.error';
 import DeleteBlogCommand from '../blogs/blogs/commands/delete.blog.command';
 import { BlogOwnerInfo } from '../blogs/blogs/models/blog.model';
+import { User } from '../auth/guards/user.decorator';
+import TokenPayload from '../auth/models/jwt/token.payload';
 
 @Controller('blogger/blogs')
 @UseGuards(BearerAuthGuard)
 export default class BloggerController {
   constructor(
-    private readonly blogsService: BlogsService,
     private readonly postsService: PostsService,
     private readonly blogsQueryRepo: BlogsQueryRepository,
     private readonly postsQueryRepo: PostsQueryRepository,
@@ -47,22 +48,22 @@ export default class BloggerController {
 
   @Get()
   public async getBlogs(
-    @Req() req: Request,
+    @User() user: TokenPayload,
     @Query() reqQuery: any,
   ): Promise<PageViewModel<BlogViewModel>> {
     const query = new GetBlogsQuery(reqQuery);
-    return this.blogsQueryRepo.getBloggerBlogs(query, req.user.userId);
+    return this.blogsQueryRepo.getBloggerBlogs(query, user.userId);
   }
 
   @Post()
   @HttpCode(201)
   public async createBlog(
     @Body() data: BlogInputModel,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ): Promise<BlogViewModel> {
     const owner: BlogOwnerInfo = {
-      userId: req.user.userId,
-      userLogin: req.user.userLogin,
+      userId: user.userId,
+      userLogin: user.userLogin,
     };
     const created = await this.commandBus.execute(
       new CreateBlogCommand(data, owner),
@@ -78,10 +79,10 @@ export default class BloggerController {
   public async updateBlog(
     @Body() data: BlogInputModel,
     @Param('id') blogId: string,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ): Promise<void> {
     const result = await this.commandBus.execute(
-      new UpdateBlogCommand(blogId, data, req.user.userId),
+      new UpdateBlogCommand(blogId, data, user.userId),
     );
     if (result === BlogError.NoError) return;
     if (result === BlogError.NotFound) throw new NotFoundException();
@@ -93,10 +94,10 @@ export default class BloggerController {
   @HttpCode(204)
   public async deleteBlog(
     @Param('id') blogId: string,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ): Promise<void> {
     const result = await this.commandBus.execute(
-      new DeleteBlogCommand(blogId, req.user.userId),
+      new DeleteBlogCommand(blogId, user.userId),
     );
     if (result === BlogError.NoError) return;
     if (result === BlogError.NotFound) throw new NotFoundException();
@@ -109,11 +110,11 @@ export default class BloggerController {
   public async createPost(
     @Param('blogId') blogId: string,
     @Body() data: PostInputModel,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ): Promise<PostViewModel> {
     const blog = await this.blogsQueryRepo.getAdminBlog(blogId);
     if (!blog) throw new NotFoundException();
-    if (!blog.blogOwnerInfo || blog.blogOwnerInfo.userId !== req.user.userId)
+    if (!blog.blogOwnerInfo || blog.blogOwnerInfo.userId !== user.userId)
       throw new ForbiddenException();
 
     data.blogId = blog.id;
@@ -134,11 +135,11 @@ export default class BloggerController {
     @Param('blogId') blogId: string,
     @Param('postId') postId: string,
     @Body() data: PostUpdateModel,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ): Promise<void> {
     const blog = await this.blogsQueryRepo.getAdminBlog(blogId);
     if (!blog) throw new NotFoundException();
-    if (!blog.blogOwnerInfo || blog.blogOwnerInfo.userId !== req.user.userId)
+    if (!blog.blogOwnerInfo || blog.blogOwnerInfo.userId !== user.userId)
       throw new ForbiddenException();
 
     const post = await this.postsQueryRepo.getPost(postId, undefined);
@@ -156,11 +157,11 @@ export default class BloggerController {
   public async deletePost(
     @Param('blogId') blogId: string,
     @Param('postId') postId: string,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ): Promise<void> {
     const blog = await this.blogsQueryRepo.getAdminBlog(blogId);
     if (!blog) throw new NotFoundException();
-    if (!blog.blogOwnerInfo || blog.blogOwnerInfo.userId !== req.user.userId)
+    if (!blog.blogOwnerInfo || blog.blogOwnerInfo.userId !== user.userId)
       throw new ForbiddenException();
 
     const post = await this.postsQueryRepo.getPost(postId, undefined);

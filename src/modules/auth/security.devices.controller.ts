@@ -7,7 +7,6 @@ import {
   HttpCode,
   NotFoundException,
   Param,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
@@ -15,7 +14,8 @@ import { AuthError } from './models/auth.error';
 import SessionViewModel from './models/session/session.view.model';
 import SessionsQueryRepository from './sessions.query.repository';
 import SessionsService from './sessions.service';
-import { Request } from 'express';
+import TokenPayload from './models/jwt/token.payload';
+import { User } from './guards/user.decorator';
 
 @Controller('security/devices')
 export default class SecurityDevicesController {
@@ -26,15 +26,15 @@ export default class SecurityDevicesController {
 
   @Get()
   @UseGuards(RefreshTokenGuard)
-  async get(@Req() req: Request): Promise<SessionViewModel[]> {
-    return this.queryRepo.get(req.user.userId);
+  async get(@User() user: TokenPayload): Promise<SessionViewModel[]> {
+    return this.queryRepo.get(user.userId);
   }
 
   @Delete()
   @UseGuards(RefreshTokenGuard)
   @HttpCode(204)
-  async deleteAllButOne(@Req() req: Request): Promise<void> {
-    await this.service.deleteAllButOne(req.user.userId, req.user.deviceId);
+  async deleteAllButOne(@User() user: TokenPayload): Promise<void> {
+    await this.service.deleteAllButOne(user.userId, user.deviceId);
     return;
   }
 
@@ -43,9 +43,9 @@ export default class SecurityDevicesController {
   @HttpCode(204)
   async deleteOne(
     @Param('deviceId') deviceId: string,
-    @Req() req: Request,
+    @User() user: TokenPayload,
   ): Promise<void> {
-    const result = await this.service.deleteOne(req.user.userId, deviceId);
+    const result = await this.service.deleteOne(user.userId, deviceId);
     if (result === AuthError.NoError) return;
     if (result === AuthError.NotFound) throw new NotFoundException();
     if (result === AuthError.WrongCredentials) throw new ForbiddenException();
