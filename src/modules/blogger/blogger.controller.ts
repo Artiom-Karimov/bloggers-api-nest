@@ -34,6 +34,7 @@ import { User } from '../auth/guards/user.decorator';
 import TokenPayload from '../auth/models/jwt/token.payload';
 import CreatePostCommand from '../blogs/posts/commands/create.post.command';
 import { PostError } from '../blogs/posts/models/post.error';
+import UpdatePostCommand from '../blogs/posts/commands/update.post.command';
 
 @Controller('blogger/blogs')
 @UseGuards(BearerAuthGuard)
@@ -136,22 +137,21 @@ export default class BloggerController {
   public async updatePost(
     @Param('blogId') blogId: string,
     @Param('postId') postId: string,
-    @Body() data: PostUpdateModel,
+    @Body() data: PostInputModel,
     @User() user: TokenPayload,
   ): Promise<void> {
-    const blog = await this.blogsQueryRepo.getAdminBlog(blogId);
-    if (!blog) throw new NotFoundException();
-    if (!blog.blogOwnerInfo || blog.blogOwnerInfo.userId !== user.userId)
-      throw new ForbiddenException();
-
-    const post = await this.postsQueryRepo.getPost(postId, undefined);
-    if (!post) throw new NotFoundException();
-    if (post.blogId !== blog.id) throw new NotFoundException();
-
-    const result = await this.postsService.update(postId, data);
-    if (!result) throw new NotFoundException();
-
-    return;
+    const updated = await this.commandBus.execute(
+      new UpdatePostCommand({
+        postId,
+        blogId,
+        bloggerId: user.userId,
+        data,
+      }),
+    );
+    if (updated === PostError.NoError) return;
+    if (updated === PostError.NotFound) throw new NotFoundException();
+    if (updated === PostError.Forbidden) throw new ForbiddenException();
+    throw new BadRequestException();
   }
 
   @Delete(':blogId/posts/:postId')

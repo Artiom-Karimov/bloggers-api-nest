@@ -31,12 +31,14 @@ import { CreateBlogHandler } from './blogs/commands/create.blog.handler';
 import { UpdateBlogHandler } from './blogs/commands/update.blog.handler';
 import { DeleteBlogHandler } from './blogs/commands/delete.blog.handler';
 import { CreatePostHandler } from './posts/commands/create.post.handler';
+import { UpdatePostHandler } from './posts/commands/update.post.handler';
 
 const commandHandlers = [
   CreateBlogHandler,
   UpdateBlogHandler,
   DeleteBlogHandler,
   CreatePostHandler,
+  UpdatePostHandler,
 ];
 
 @Module({

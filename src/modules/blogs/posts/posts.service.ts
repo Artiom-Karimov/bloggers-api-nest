@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import PostLikesRepository from '../likes/post.likes.repository';
 import LikeInputModel from '../likes/models/like.input.model';
 import LikeModel from '../likes/models/like.model';
-import PostModel from '../posts/models/post.model';
-import PostUpdateModel from '../posts/models/post.update.model';
 import PostsRepository from './posts.repository';
 
 @Injectable()
@@ -13,14 +11,6 @@ export default class PostsService {
     private readonly likeRepo: PostLikesRepository,
   ) { }
 
-  public async get(id: string): Promise<PostModel | undefined> {
-    return this.repo.get(id);
-  }
-  public async update(id: string, data: PostUpdateModel): Promise<boolean> {
-    const post = await this.repo.get(id);
-    if (!post) return false;
-    return this.repo.update(id, data);
-  }
   public async delete(id: string): Promise<boolean> {
     const post = await this.repo.get(id);
     if (!post) return false;
@@ -28,7 +18,7 @@ export default class PostsService {
     return deleted;
   }
   public async putLike(data: LikeInputModel): Promise<boolean> {
-    const post = await this.get(data.entityId);
+    const post = await this.repo.get(data.entityId);
     if (!post) return false;
 
     let like = await this.likeRepo.get(data.entityId, data.userId);

@@ -159,7 +159,7 @@ describe('BloggerController (e2e)', () => {
     postId = response.body.id;
   });
   it('should update post', async () => {
-    const sample: PostUpdateModel = {
+    const sample: PostInputModel = {
       title: 'updatedTitle',
       shortDescription: 'dooscreeption',
       content: 'brand new content',
