@@ -12,7 +12,7 @@ export default class BlogSampleGenerator extends TestSampleGenerator<
 > {
   public readonly user: UserInputModel;
   private readonly userGenerator: UserSampleGenerator;
-  private tokens: Tokens = undefined;
+  public tokens: Tokens = undefined;
 
   constructor(app: INestApplication) {
     super(app);
