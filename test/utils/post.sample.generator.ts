@@ -26,17 +26,15 @@ export default class PostSampleGenerator extends TestSampleGenerator<
     this.user = this.blogGenerator.user;
     this.blog = this.blogGenerator.generateSamples(1)[0];
   }
-
-  public override generateSamples(length: number): Array<PostInputModel> {
-    for (let i = 0; i < length; i++) {
-      const rand = this.rand();
-      this.samples.push({
-        title: `samplePost ${rand}`,
-        shortDescription: `Post description\nNumber ${rand}`,
-        content: `Post content with ${rand} litres of liquid sh`,
-      });
-    }
-    return this.getLastSamples(length);
+  public generateOne(): PostInputModel {
+    const rand = this.rand();
+    const sample = {
+      title: `samplePost ${rand}`,
+      shortDescription: `Post description\nNumber ${rand}`,
+      content: `Post content with ${rand} litres of liquid sh`,
+    };
+    this.samples.push(sample);
+    return sample;
   }
   public override async createOne(
     sample: PostInputModel,
