@@ -28,6 +28,7 @@ import { User } from '../../auth/guards/user.decorator';
 import { CommandBus } from '@nestjs/cqrs';
 import PutPostLikeCommand from './commands/put.post.like.command';
 import { PostError } from './models/post.error';
+import CommentCreateModel from '../comments/models/comment.create.model';
 
 @Controller('posts')
 export default class PostsController {
@@ -82,16 +83,19 @@ export default class PostsController {
     const post = await this.queryRepo.getPost(postId, undefined);
     if (!post) throw new NotFoundException();
 
-    data.postId = postId;
-    data.userId = user.userId;
-    data.userLogin = user.userLogin;
+    const model: CommentCreateModel = {
+      postId,
+      userId: user.userId,
+      userLogin: user.userLogin,
+      content: data.content,
+    };
 
-    const created = await this.commentsService.create(data);
+    const created = await this.commentsService.create(model);
     if (!created) throw new BadRequestException();
 
     const retrieved = await this.commentsQueryRepo.getComment(
       created,
-      data.userId,
+      user.userId,
     );
     if (!retrieved) throw new BadRequestException();
 

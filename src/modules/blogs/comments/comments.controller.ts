@@ -25,6 +25,7 @@ import TokenPayload from '../../auth/models/jwt/token.payload';
 import PutCommentLikeCommand from './commands/put.comment.like.command';
 import { CommandBus } from '@nestjs/cqrs';
 import { PostError } from '../posts/models/post.error';
+import CommentUpdateModel from './models/comment.update.model';
 
 @Controller('comments')
 export default class CommentsController {
@@ -53,9 +54,13 @@ export default class CommentsController {
     @Body() data: CommentInputModel,
     @User() user: TokenPayload,
   ): Promise<void> {
-    data.userId = user.userId;
-    data.userLogin = user.userLogin;
-    const result = await this.service.update(id, data);
+    const model: CommentUpdateModel = {
+      commentId: id,
+      userId: user.userId,
+      content: data.content,
+    };
+
+    const result = await this.service.update(model);
     if (result === CommentError.NoError) return;
     if (result === CommentError.NotFound) throw new NotFoundException();
     if (result === CommentError.Forbidden) throw new ForbiddenException();

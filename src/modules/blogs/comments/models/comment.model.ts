@@ -1,6 +1,6 @@
 import DateGenerator from '../../../../common/utils/date.generator';
 import IdGenerator from '../../../../common/utils/id.generator';
-import CommentInputModel from './comment.input.model';
+import CommentCreateModel from './comment.create.model';
 
 export default class CommentModel {
   constructor(
@@ -13,7 +13,7 @@ export default class CommentModel {
     public createdAt: string,
   ) { }
 
-  public static create(data: CommentInputModel): CommentModel {
+  public static create(data: CommentCreateModel): CommentModel {
     return new CommentModel(
       IdGenerator.generate(),
       data.postId,
