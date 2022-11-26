@@ -17,19 +17,18 @@ export default class BlogSampleGenerator extends TestSampleGenerator<
   constructor(app: INestApplication) {
     super(app);
     this.userGenerator = new UserSampleGenerator(app);
-    this.user = this.userGenerator.generateSamples(1)[0];
+    this.user = this.userGenerator.generateOne();
   }
 
-  public override generateSamples(length: number): Array<BlogInputModel> {
-    for (let i = 0; i < length; i++) {
-      const rand = this.rand();
-      this.samples.push({
-        name: `sampleBlog ${rand}`,
-        websiteUrl: `https://blog${rand}.com`,
-        description: `Blog description\nNumber ${rand}`,
-      });
-    }
-    return this.getLastSamples(length);
+  public generateOne(): BlogInputModel {
+    const rand = this.rand();
+    const sample = {
+      name: `sampleBlog ${rand}`,
+      websiteUrl: `https://blog${rand}.com`,
+      description: `Blog description\nNumber ${rand}`,
+    };
+    this.samples.push(sample);
+    return sample;
   }
   public override async createOne(
     sample: BlogInputModel,

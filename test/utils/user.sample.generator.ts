@@ -10,16 +10,15 @@ export default class UserSampleGenerator extends TestSampleGenerator<
   UserInputModel,
   UserViewModel
 > {
-  public override generateSamples(length: number): Array<UserInputModel> {
-    for (let i = 0; i < length; i++) {
-      const rand = this.rand();
-      this.samples.push({
-        login: `sampleUser${rand}`,
-        email: `youser${rand}@example.com`,
-        password: `assword${rand}`,
-      });
-    }
-    return this.getLastSamples(length);
+  public generateOne(): UserInputModel {
+    const rand = this.rand();
+    const sample = {
+      login: `sampleUser${rand}`,
+      email: `youser${rand}@example.com`,
+      password: `assword${rand}`,
+    };
+    this.samples.push(sample);
+    return sample;
   }
   public override async createOne(
     sample: UserInputModel,
@@ -39,7 +38,7 @@ export default class UserSampleGenerator extends TestSampleGenerator<
       refresh: this.parseRefreshCookie(res.get('Set-Cookie')),
     };
   }
-  private parseRefreshCookie(cookies: string[]): string {
+  protected parseRefreshCookie(cookies: string[]): string {
     const cookie = cookies.find((q) => q.includes('refreshToken'));
     return cookie ? cookie : '';
   }

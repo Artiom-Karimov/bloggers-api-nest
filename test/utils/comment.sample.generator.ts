@@ -1,3 +1,4 @@
+import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import CommentInputModel from '../../src/modules/blogs/comments/models/comment.input.model';
 import CommentViewModel from '../../src/modules/blogs/comments/models/comment.view.model';
@@ -17,22 +18,30 @@ export default class CommentSampleGenerator extends TestSampleGenerator<
   constructor(app: INestApplication, postId: string) {
     super(app);
     this.userGenerator = new UserSampleGenerator(app);
-    this.user = this.userGenerator.generateSamples(1)[0];
+    this.user = this.userGenerator.generateOne();
     this.postId = postId;
   }
 
-  public generateSamples(length: number): CommentInputModel[] {
-    // for (let i = 0; i < length; i++) {
-    //   const rand = this.rand();
-    //   this.samples.push({
-    //     name: `sampleBlog ${rand}`,
-    //     websiteUrl: `https://blog${rand}.com`,
-    //     description: `Blog description\nNumber ${rand}`,
-    //   });
-    // }
-    return this.getLastSamples(length);
+  public generateOne(): CommentInputModel {
+    const rand = this.rand();
+    const sample = {
+      content: `This comment is ${rand}% unique.`,
+    };
+    this.samples.push(sample);
+    return sample;
   }
-  public createOne(sample: CommentInputModel): Promise<CommentViewModel> {
-    throw new Error('Method not implemented.');
+  public async createOne(sample: CommentInputModel): Promise<CommentViewModel> {
+    await this.checkUser();
+
+    const created = await request(this.app.getHttpServer())
+      .post(`/posts/${this.postId}/comments`)
+      .set('Authorization', `Bearer ${this.tokens.access}`)
+      .send(sample);
+    return created.body as CommentViewModel;
+  }
+  protected async checkUser() {
+    if (this.userGenerator.outputs.length === 0)
+      await this.userGenerator.createSamples();
+    if (!this.tokens) this.tokens = await this.userGenerator.login(this.user);
   }
 }

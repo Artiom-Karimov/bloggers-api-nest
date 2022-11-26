@@ -6,16 +6,25 @@ export default abstract class TestSampleGenerator<Tinput, Toutput> {
 
   constructor(protected readonly app: INestApplication) { }
 
+  // generateOne should push its result to samples
+  public abstract generateOne(): Tinput;
+  // createOne should put sample to db
+  public abstract createOne(sample: Tinput): Promise<Toutput>;
+
   public clearSamples = () => {
     this.samples = [];
   };
-  public abstract generateSamples(length: number): Array<Tinput>;
+  public generateSamples(length: number): Array<Tinput> {
+    for (let i = 0; i < length; i++) {
+      this.generateOne();
+    }
+    return this.getLastSamples(length);
+  }
   public async createSamples(): Promise<void> {
     const promises = this.samples.map((s) => this.createOne(s));
     const results = await Promise.all(promises);
     this.outputs.push(...results);
   }
-  public abstract createOne(sample: Tinput): Promise<Toutput>;
 
   protected rand = () => {
     return Math.floor(Math.random() * 999_999);
