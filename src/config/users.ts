@@ -1,6 +1,6 @@
 const confirmationMinutes = +process.env.emailConfirmationMinutes || 60;
 const recoveryExpireMinutes = +process.env.passwordRecoveryExpireMinutes || 60;
-const ddosMaxRequests = +process.env.ddosMaxRequests || 5;
+const ddosMaxRequests = +process.env.ddosMaxRequests || 10;
 const ddosTimeoutSeconds = +process.env.ddosTimeoutSeconds || 10;
 const jwtSecret = process.env.jwtSecret || 'qwerty';
 const ddosGuardDisable = process.env.ddosGuardDisable === 'true';

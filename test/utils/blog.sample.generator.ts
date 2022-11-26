@@ -41,6 +41,18 @@ export default class BlogSampleGenerator extends TestSampleGenerator<
       .send(sample);
     return created.body as BlogViewModel;
   }
+  public async removeOne(id: string): Promise<void> {
+    const req = request(this.app.getHttpServer())
+      .delete(`/blogger/blogs/${id}`)
+      .set('Authorization', `Bearer ${this.tokens.access}`);
+
+    this.removeFromArrays(id, 'name');
+    await req;
+  }
+
+  protected alreadyCreated(sample: BlogInputModel): boolean {
+    return this.outputs.some((o) => o.name === sample.name);
+  }
   private async checkUser() {
     if (this.userGenerator.outputs.length === 0)
       await this.userGenerator.createSamples();

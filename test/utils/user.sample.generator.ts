@@ -29,6 +29,14 @@ export default class UserSampleGenerator extends TestSampleGenerator<
       .send(sample);
     return created.body as UserViewModel;
   }
+  public async removeOne(id: string): Promise<void> {
+    const req = request(this.app.getHttpServer())
+      .delete(`/sa/users/${id}`)
+      .auth(config.userName, config.password);
+
+    this.removeFromArrays(id, 'login');
+    await req;
+  }
   public async login(sample: UserInputModel): Promise<Tokens> {
     const res = await request(this.app.getHttpServer())
       .post('/auth/login')
@@ -37,6 +45,10 @@ export default class UserSampleGenerator extends TestSampleGenerator<
       access: res.body.accessToken,
       refresh: this.parseRefreshCookie(res.get('Set-Cookie')),
     };
+  }
+
+  protected alreadyCreated(sample: UserInputModel): boolean {
+    return this.outputs.some((o) => o.login === sample.login);
   }
   protected parseRefreshCookie(cookies: string[]): string {
     const cookie = cookies.find((q) => q.includes('refreshToken'));

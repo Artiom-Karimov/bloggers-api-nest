@@ -14,6 +14,7 @@ export default class CommentSampleGenerator extends TestSampleGenerator<
   private readonly userGenerator: UserSampleGenerator;
   public tokens: Tokens = undefined;
   public postId: string;
+  public userId: string;
 
   constructor(app: INestApplication, postId: string) {
     super(app);
@@ -23,9 +24,8 @@ export default class CommentSampleGenerator extends TestSampleGenerator<
   }
 
   public generateOne(): CommentInputModel {
-    const rand = this.rand();
     const sample = {
-      content: `This comment is ${rand}% unique.`,
+      content: `This commentus is ${this.rand()}% unique.\nI am ${this.rand()}% sure.`,
     };
     this.samples.push(sample);
     return sample;
@@ -39,9 +39,23 @@ export default class CommentSampleGenerator extends TestSampleGenerator<
       .send(sample);
     return created.body as CommentViewModel;
   }
+  public async removeOne(id: string): Promise<void> {
+    const req = request(this.app.getHttpServer())
+      .delete(`/comments/${id}`)
+      .set('Authorization', `Bearer ${this.tokens.access}`);
+
+    this.removeFromArrays(id, 'content');
+    await req;
+  }
+
+  protected alreadyCreated(sample: CommentInputModel): boolean {
+    return this.outputs.some((o) => o.content === sample.content);
+  }
   protected async checkUser() {
-    if (this.userGenerator.outputs.length === 0)
+    if (this.userGenerator.outputs.length === 0) {
       await this.userGenerator.createSamples();
+      this.userId = this.userGenerator.outputs[0].id;
+    }
     if (!this.tokens) this.tokens = await this.userGenerator.login(this.user);
   }
 }
