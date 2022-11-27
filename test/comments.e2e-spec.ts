@@ -4,6 +4,7 @@ import { init, stop } from './utils/test.init';
 import { dateRegex } from '../src/common/utils/date.generator';
 import PostSampleGenerator from './utils/post.sample.generator';
 import CommentSampleGenerator from './utils/comment.sample.generator';
+import CommentViewModel from '../src/modules/blogs/comments/models/comment.view.model';
 
 jest.useRealTimers();
 
@@ -97,5 +98,58 @@ describe('CommentsController (e2e)', () => {
       items: expect.arrayContaining(commentSamples.outputs),
     };
     expect(result.body).toEqual(expected);
+  });
+
+  let comment: CommentViewModel;
+  it('change comment content', async () => {
+    comment = commentSamples.outputs[0];
+    const data = { content: 'changed comment content' };
+
+    let response = await request(app.getHttpServer())
+      .put(`${base}/${comment.id}`)
+      .set('Authorization', `Bearer ${commentSamples.tokens.access}`)
+      .send(data);
+
+    expect(response.statusCode).toBe(204);
+
+    response = await request(app.getHttpServer()).get(`${base}/${comment.id}`);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toEqual({
+      ...comment,
+      content: data.content,
+    });
+  });
+  it('delete comment', async () => {
+    let response = await request(app.getHttpServer())
+      .delete(`${base}/${comment.id}`)
+      .set('Authorization', `Bearer ${commentSamples.tokens.access}`);
+    expect(response.statusCode).toBe(204);
+
+    response = await request(app.getHttpServer()).get(`${base}/${comment.id}`);
+    expect(response.statusCode).toBe(404);
+
+    await commentSamples.removeOne(comment.id);
+  });
+
+  it('put like', async () => {
+    comment = commentSamples.outputs[0];
+    let response = await request(app.getHttpServer())
+      .put(`${base}/${comment.id}/like-status`)
+      .send({ likeStatus: 'Like' })
+      .set('Authorization', `Bearer ${commentSamples.tokens.access}`);
+    expect(response.statusCode).toBe(204);
+
+    response = await request(app.getHttpServer())
+      .get(`${base}/${comment.id}`)
+      .set('Authorization', `Bearer ${commentSamples.tokens.access}`);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toEqual({
+      ...comment,
+      likesInfo: {
+        likesCount: 1,
+        dislikesCount: 0,
+        myStatus: 'Like',
+      },
+    });
   });
 });

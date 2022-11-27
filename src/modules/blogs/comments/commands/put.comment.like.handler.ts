@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import CommentLikesRepository from '../../likes/comment.likes.repository';
 import LikeModel from '../../likes/models/like.model';
-import PostLikesRepository from '../../likes/post.likes.repository';
 import { PostError } from '../../posts/models/post.error';
 import CommentsRepository from '../comments.repository';
 import PutCommentLikeCommand from './put.comment.like.command';
@@ -11,13 +11,13 @@ export class PutCommentLikeHandler
 {
   constructor(
     private readonly commentsRepo: CommentsRepository,
-    private readonly likesRepo: PostLikesRepository,
+    private readonly likesRepo: CommentLikesRepository,
   ) { }
 
   async execute(command: PutCommentLikeCommand): Promise<PostError> {
     const { entityId, userId, likeStatus } = command.data;
-    const post = await this.commentsRepo.get(entityId);
-    if (!post) return PostError.NotFound;
+    const comment = await this.commentsRepo.get(entityId);
+    if (!comment) return PostError.NotFound;
 
     let like = await this.likesRepo.get(entityId, userId);
     if (like) {
