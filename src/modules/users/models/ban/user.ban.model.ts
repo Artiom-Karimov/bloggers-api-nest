@@ -1,5 +1,5 @@
 import DateGenerator from '../../../../common/utils/date.generator';
-import UserBanInputModel from './user.ban.input.model';
+import UserBanInputModel from '../../../admin/models/user.ban.input.model';
 
 export default class UserBanModel {
   constructor(

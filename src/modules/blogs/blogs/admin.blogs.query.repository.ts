@@ -2,48 +2,41 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../../common/models/page.view.model';
+import AdminBlogViewModel from './models/admin.blog.view.model';
 import BlogMapper from '../blogs/models/blog.mapper';
 import Blog, { BlogDocument } from '../blogs/models/blog.schema';
-import BlogViewModel from '../blogs/models/blog.view.model';
 import GetBlogsQuery from '../blogs/models/get.blogs.query';
 
 @Injectable()
-export default class BlogsQueryRepository {
+export default class AdminBlogsQueryRepository {
   constructor(
     @InjectModel(Blog.name) private readonly model: Model<BlogDocument>,
   ) { }
 
-  public async getBlogs(
+  public async getAdminBlogs(
     params: GetBlogsQuery,
-  ): Promise<PageViewModel<BlogViewModel>> {
+  ): Promise<PageViewModel<AdminBlogViewModel>> {
     const page = await this.getPage(params);
     const query = this.getDbQuery(params);
     return this.loadPageBlogs(page, query);
   }
-  public async getBloggerBlogs(
-    params: GetBlogsQuery,
-    bloggerId: string,
-  ): Promise<PageViewModel<BlogViewModel>> {
-    const page = await this.getPage(params, bloggerId);
-    const query = this.getDbQuery(params, bloggerId);
-    return this.loadPageBlogs(page, query);
-  }
-  public async getBlog(id: string): Promise<BlogViewModel | undefined> {
+  public async getAdminBlog(
+    id: string,
+  ): Promise<AdminBlogViewModel | undefined> {
     try {
       const result = await this.model.findOne({ _id: id });
-      return result ? BlogMapper.toView(result) : undefined;
+      return result ? BlogMapper.toAdminView(result) : undefined;
     } catch (error) {
       console.log(error);
       return undefined;
     }
   }
-
   private async getPage(
     params: GetBlogsQuery,
     bloggerId?: string,
-  ): Promise<PageViewModel<BlogViewModel>> {
+  ): Promise<PageViewModel<AdminBlogViewModel>> {
     const count = await this.getCount(params, bloggerId);
-    return new PageViewModel<BlogViewModel>(
+    return new PageViewModel<AdminBlogViewModel>(
       params.pageNumber,
       params.pageSize,
       count,
@@ -55,14 +48,7 @@ export default class BlogsQueryRepository {
   ): Promise<number> {
     try {
       const filter = this.getFilter(params.searchNameTerm, bloggerId);
-      return this.model
-        .countDocuments(filter)
-        .or([
-          { banInfo: null },
-          { 'banInfo.isBanned': null },
-          { 'banInfo.isBanned': false },
-        ])
-        .exec();
+      return this.model.countDocuments(filter).exec();
     } catch (error) {
       return 0;
     }
@@ -71,38 +57,28 @@ export default class BlogsQueryRepository {
     const filter = this.getFilter(params.searchNameTerm, bloggerId);
     return this.model
       .find(filter)
-      .or([
-        { banInfo: null },
-        { 'banInfo.isBanned': null },
-        { 'banInfo.isBanned': false },
-      ])
       .sort({ [params.sortBy]: params.sortDirection as SortOrder });
   }
   private getFilter(searchNameTerm?: string, bloggerId?: string): any {
-    const filter: {
-      name?: RegExp;
-      'ownerInfo.userId'?: string;
-    } = {};
-
+    const filter: { name?: RegExp; 'ownerInfo.userId'?: string } = {};
     if (searchNameTerm) {
       filter.name = RegExp(searchNameTerm, 'i');
     }
     if (bloggerId) {
       filter['ownerInfo.userId'] = bloggerId;
     }
-
     return filter;
   }
   private async loadPageBlogs(
-    page: PageViewModel<BlogViewModel>,
+    page: PageViewModel<AdminBlogViewModel>,
     query: any,
-  ): Promise<PageViewModel<BlogViewModel>> {
+  ): Promise<PageViewModel<AdminBlogViewModel>> {
     try {
       const blogs: Blog[] = await query
         .skip(page.calculateSkip())
         .limit(page.pageSize)
         .exec();
-      const viewModels = blogs.map((b) => BlogMapper.toView(b));
+      const viewModels = blogs.map((b) => BlogMapper.toAdminView(b));
       return page.add(...viewModels);
     } catch (error) {
       return page;

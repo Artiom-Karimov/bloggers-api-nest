@@ -1,5 +1,5 @@
 import AdminBlogViewModel from './admin.blog.view.model';
-import BlogModel, { BlogOwnerInfo } from './blog.model';
+import BlogModel, { BlogBanInfo, BlogOwnerInfo } from './blog.model';
 import Blog from './blog.schema';
 import BlogViewModel from './blog.view.model';
 
@@ -12,6 +12,7 @@ export default class BlogMapper {
       model.websiteUrl,
       model.createdAt,
       model.ownerInfo,
+      model.banInfo,
     );
   }
   public static toDomain(model: Blog): BlogModel {
@@ -22,6 +23,7 @@ export default class BlogMapper {
       model.websiteUrl,
       model.createdAt,
       BlogMapper.getOwnerInfo(model),
+      BlogMapper.getBanInfo(model),
     );
   }
   public static toView(model: Blog): BlogViewModel {
@@ -37,13 +39,29 @@ export default class BlogMapper {
     return new AdminBlogViewModel(
       BlogMapper.toView(model),
       BlogMapper.getOwnerInfo(model),
+      BlogMapper.getBanInfo(model),
     );
   }
   private static getOwnerInfo(model: Blog): BlogOwnerInfo {
-    if (!model.ownerInfo) return undefined;
+    if (!model.ownerInfo)
+      return {
+        userId: null,
+        userLogin: null,
+      };
     return {
       userId: model.ownerInfo.userId,
       userLogin: model.ownerInfo.userLogin,
+    };
+  }
+  private static getBanInfo(model: Blog): BlogBanInfo {
+    if (!model.banInfo)
+      return {
+        isBanned: false,
+        banDate: null,
+      };
+    return {
+      isBanned: model.banInfo.isBanned,
+      banDate: model.banInfo.banDate,
     };
   }
 }

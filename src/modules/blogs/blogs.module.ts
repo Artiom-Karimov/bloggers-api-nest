@@ -36,11 +36,14 @@ import { DeletePostHandler } from './posts/commands/delete.post.handler';
 import { PutPostLikeHandler } from './posts/commands/put.post.like.handler';
 import { PutCommentLikeHandler } from './comments/commands/put.comment.like.handler';
 import { CqrsModule } from '@nestjs/cqrs';
+import { BanBlogHandler } from './blogs/commands/ban.blog.handler';
+import AdminBlogsQueryRepository from './blogs/admin.blogs.query.repository';
 
 const commandHandlers = [
   CreateBlogHandler,
   UpdateBlogHandler,
   DeleteBlogHandler,
+  BanBlogHandler,
   CreatePostHandler,
   UpdatePostHandler,
   DeletePostHandler,
@@ -66,6 +69,7 @@ const commandHandlers = [
   providers: [
     BlogsRepository,
     BlogsQueryRepository,
+    AdminBlogsQueryRepository,
     BlogsService,
     PostsRepository,
     PostsQueryRepository,
@@ -83,6 +87,7 @@ const commandHandlers = [
   exports: [
     BlogsService,
     BlogsQueryRepository,
+    AdminBlogsQueryRepository,
     PostsService,
     PostsQueryRepository,
     CommentsService,

@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import BlogsQueryRepository from '../../blogs/blogs.query.repository';
+import AdminBlogsQueryRepository from '../../blogs/admin.blogs.query.repository';
 import { PostError } from '../models/post.error';
 import PostsRepository from '../posts.repository';
 import DeletePostCommand from './delete.post.command';
@@ -7,7 +7,7 @@ import DeletePostCommand from './delete.post.command';
 @CommandHandler(DeletePostCommand)
 export class DeletePostHandler implements ICommandHandler<DeletePostCommand> {
   constructor(
-    private readonly blogsQueryRepo: BlogsQueryRepository,
+    private readonly blogsQueryRepo: AdminBlogsQueryRepository,
     private readonly postsRepo: PostsRepository,
   ) { }
 

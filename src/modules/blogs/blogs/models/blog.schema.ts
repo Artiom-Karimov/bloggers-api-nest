@@ -1,13 +1,17 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { BlogOwnerInfo } from './blog.model';
 
 export type BlogDocument = Blog & Document;
 
 @Schema()
 export class BlogOwner {
-  userId: string;
-  userLogin: string;
+  userId?: string;
+  userLogin?: string;
+}
+@Schema()
+export class BlogBan {
+  isBanned?: boolean;
+  banDate?: string;
 }
 
 @Schema({ collection: 'blogs' })
@@ -18,7 +22,8 @@ export default class Blog {
     description: string,
     websiteUrl: string,
     createdAt: string,
-    ownerInfo?: BlogOwnerInfo,
+    ownerInfo?: BlogOwner,
+    banInfo?: BlogBan,
   ) {
     this._id = _id;
     this.name = name;
@@ -26,6 +31,7 @@ export default class Blog {
     this.websiteUrl = websiteUrl;
     this.createdAt = createdAt;
     this.ownerInfo = ownerInfo;
+    this.banInfo = banInfo;
   }
   @Prop()
   _id: string;
@@ -44,6 +50,9 @@ export default class Blog {
 
   @Prop()
   ownerInfo?: BlogOwner;
+
+  @Prop()
+  banInfo?: BlogBan;
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);

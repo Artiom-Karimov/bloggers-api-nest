@@ -17,26 +17,30 @@ import {
 import PageViewModel from '../../common/models/page.view.model';
 import { throwValidationException } from '../../common/utils/validation.options';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
-import BlogsQueryRepository from '../blogs/blogs/blogs.query.repository';
 import BlogsService from '../blogs/blogs/blogs.service';
 import CommentsService from '../blogs/comments/comments.service';
 import AdminBlogViewModel from '../blogs/blogs/models/admin.blog.view.model';
 import GetBlogsQuery from '../blogs/blogs/models/get.blogs.query';
 import PostsService from '../blogs/posts/posts.service';
-import UserBanInputModel from '../users/models/ban/user.ban.input.model';
+import UserBanInputModel from './models/user.ban.input.model';
 import GetUsersQuery from '../users/models/get.users.query';
 import UserInputModel from '../users/models/user.input.model';
 import UserViewModel from '../users/models/user.view.model';
 import UsersQueryRepository from '../users/users.query.repository';
 import UsersService from '../users/users.service';
 import { BlogError } from '../blogs/blogs/models/blog.error';
+import BlogBanInputModel from './models/blog.ban.input.model';
+import { CommandBus } from '@nestjs/cqrs';
+import BanBlogCommand from '../blogs/blogs/commands/ban.blog.command';
+import AdminBlogsQueryRepository from '../blogs/blogs/admin.blogs.query.repository';
 
 @Controller('sa')
 @UseGuards(BasicAuthGuard)
 export default class AdminController {
   constructor(
+    private readonly commandBus: CommandBus,
     private readonly blogsService: BlogsService,
-    private readonly blogsQueryRepo: BlogsQueryRepository,
+    private readonly blogsQueryRepo: AdminBlogsQueryRepository,
     private readonly usersService: UsersService,
     private readonly usersQueryRepo: UsersQueryRepository,
     private readonly postsService: PostsService,
@@ -49,6 +53,20 @@ export default class AdminController {
   ): Promise<PageViewModel<AdminBlogViewModel>> {
     const query = new GetBlogsQuery(reqQuery);
     return this.blogsQueryRepo.getAdminBlogs(query);
+  }
+  @Put('blogs/:blogId/ban')
+  @HttpCode(204)
+  async banBlog(
+    @Param('blogId') blogId: string,
+    @Body() data: BlogBanInputModel,
+  ): Promise<void> {
+    const result = await this.commandBus.execute(
+      new BanBlogCommand(blogId, data),
+    );
+    if (result === BlogError.NoError) return;
+    if (result === BlogError.NotFound)
+      throwValidationException('id', 'blog not found');
+    throw new BadRequestException();
   }
   @Put('blogs/:id/bind-with-user/:userId')
   @HttpCode(204)

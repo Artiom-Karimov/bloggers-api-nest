@@ -3,8 +3,12 @@ import IdGenerator from '../../../../common/utils/id.generator';
 import BlogInputModel from './blog.input.model';
 
 export type BlogOwnerInfo = {
-  userId: string;
-  userLogin: string;
+  userId?: string;
+  userLogin?: string;
+};
+export type BlogBanInfo = {
+  isBanned: boolean;
+  banDate?: string;
 };
 
 export default class BlogModel {
@@ -15,10 +19,12 @@ export default class BlogModel {
     public websiteUrl: string,
     public createdAt: string,
     public ownerInfo?: BlogOwnerInfo,
+    public banInfo?: BlogBanInfo,
   ) { }
   public static create(
     data: BlogInputModel,
     ownerInfo?: BlogOwnerInfo,
+    banInfo?: BlogBanInfo,
   ): BlogModel {
     return new BlogModel(
       IdGenerator.generate(),
@@ -27,6 +33,18 @@ export default class BlogModel {
       data.websiteUrl,
       DateGenerator.generate(),
       ownerInfo,
+      banInfo,
     );
+  }
+  public static createBanInfo(isBanned: boolean): BlogBanInfo {
+    if (isBanned)
+      return {
+        isBanned: true,
+        banDate: new Date().toISOString(),
+      };
+    return {
+      isBanned: false,
+      banDate: null,
+    };
   }
 }

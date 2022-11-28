@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import BlogsQueryRepository from '../../blogs/blogs.query.repository';
+import AdminBlogsQueryRepository from '../../blogs/admin.blogs.query.repository';
 import { PostError } from '../models/post.error';
 import PostModel from '../models/post.model';
 import PostsRepository from '../posts.repository';
@@ -8,7 +8,7 @@ import CreatePostCommand from './create.post.command';
 @CommandHandler(CreatePostCommand)
 export class CreatePostHandler implements ICommandHandler<CreatePostCommand> {
   constructor(
-    private readonly blogsQueryRepo: BlogsQueryRepository,
+    private readonly blogsQueryRepo: AdminBlogsQueryRepository,
     private readonly postsRepo: PostsRepository,
   ) { }
 
