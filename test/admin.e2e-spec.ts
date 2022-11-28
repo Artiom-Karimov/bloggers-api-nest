@@ -8,6 +8,8 @@ import UserSampleGenerator from './utils/user.sample.generator';
 import BlogViewModel from '../src/modules/blogs/blogs/models/blog.view.model';
 import PageViewModel from '../src/common/models/page.view.model';
 import AdminBlogViewModel from '../src/modules/blogs/blogs/models/admin.blog.view.model';
+import PostViewModel from '../src/modules/blogs/posts/models/post.view.model';
+import { HttpCode } from '@nestjs/common/decorators';
 
 jest.useRealTimers();
 
@@ -141,8 +143,21 @@ describe('AdminController (e2e)', () => {
     });
 
     let bannedBlog: BlogViewModel;
-    it('should ban a blog', async () => {
+    let bannedPost: PostViewModel;
+    it('add a post to check blog ban', async () => {
       bannedBlog = blogSamples.outputs[0];
+      const response = await request(app.getHttpServer())
+        .post(`/blogger/blogs/${bannedBlog.id}/posts`)
+        .set('Authorization', `Bearer ${blogSamples.tokens.access}`)
+        .send({
+          title: 'samplePost',
+          shortDescription: 'describe this!',
+          content: 'The best text piece in the whole world',
+        })
+        .expect(201);
+      bannedPost = response.body;
+    });
+    it('should ban a blog', async () => {
       await request(app.getHttpServer())
         .put(`${blogBase}/${bannedBlog.id}/ban`)
         .auth(config.userName, config.password)
@@ -160,6 +175,25 @@ describe('AdminController (e2e)', () => {
       const body = retrieved.body as PageViewModel<BlogViewModel>;
       expect(body.totalCount).toBe(amount - 1);
       expect(body.items.length).toBe(amount - 1);
+    });
+    it('user should not get banned blog posts', async () => {
+      await request(app.getHttpServer())
+        .get(`/blogs/${bannedBlog.id}/posts`)
+        .expect(404);
+      await request(app.getHttpServer())
+        .get(`/posts/${bannedPost.id}`)
+        .expect(404);
+    });
+    it('blogger should not create post for banned blog', async () => {
+      const response = await request(app.getHttpServer())
+        .post(`/blogger/blogs/${bannedBlog.id}/posts`)
+        .set('Authorization', `Bearer ${blogSamples.tokens.access}`)
+        .send({
+          title: 'sampl756ePost',
+          shortDescription: 'describe this!',
+          content: 'The best text piece in the whole world',
+        });
+      expect(response.statusCode).toBeGreaterThanOrEqual(400);
     });
     it('admin should get banned blog', async () => {
       const response = await request(app.getHttpServer())
@@ -202,6 +236,14 @@ describe('AdminController (e2e)', () => {
     it('user should get unbanned blog', async () => {
       await request(app.getHttpServer())
         .get(`/blogs/${bannedBlog.id}`)
+        .expect(200);
+    });
+    it('user should get unbanned blog posts', async () => {
+      await request(app.getHttpServer())
+        .get(`/blogs/${bannedBlog.id}/posts`)
+        .expect(200);
+      await request(app.getHttpServer())
+        .get(`/posts/${bannedPost.id}`)
         .expect(200);
     });
   });

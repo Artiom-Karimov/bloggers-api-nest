@@ -5,15 +5,16 @@ import PostViewModel from './post.view.model';
 
 export default class PostMapper {
   public static fromDomain(model: PostModel): Post {
-    const post = new Post();
-    post._id = model.id;
-    post.title = model.title;
-    post.shortDescription = model.shortDescription;
-    post.content = model.content;
-    post.blogId = model.blogId;
-    post.blogName = model.blogName;
-    post.createdAt = model.createdAt;
-    return post;
+    return new Post(
+      model.id,
+      model.title,
+      model.shortDescription,
+      model.content,
+      model.blogId,
+      model.blogName,
+      model.createdAt,
+      model.blogBanned,
+    );
   }
   public static toDomain(model: Post): PostModel {
     return new PostModel(
@@ -24,6 +25,7 @@ export default class PostMapper {
       model.blogId,
       model.blogName,
       model.createdAt,
+      model.blogBanned,
     );
   }
   public static toView(

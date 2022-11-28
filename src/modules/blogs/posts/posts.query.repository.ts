@@ -31,7 +31,7 @@ export default class PostsQueryRepository {
     userId: string | undefined,
   ): Promise<PostViewModel | undefined> {
     try {
-      const post = await this.model.findOne({ _id: id });
+      const post = await this.model.findOne({ _id: id, blogBanned: false });
       return post ? this.mergeWithLikes(post, userId) : undefined;
     } catch (error) {
       return undefined;
@@ -71,7 +71,9 @@ export default class PostsQueryRepository {
     }
   }
   private getFilter(blogId: string | null = null): any {
-    return blogId ? { blogId: blogId } : {};
+    return blogId
+      ? { blogId: blogId, blogBanned: false }
+      : { blogBanned: false };
   }
   private async loadPagePosts(
     page: PageViewModel<PostViewModel>,

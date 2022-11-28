@@ -11,6 +11,7 @@ export default class PostModel {
     public blogId: string,
     public blogName: string,
     public createdAt: string,
+    public blogBanned: boolean,
   ) { }
   public static create(data: PostCreateModel): PostModel {
     return new PostModel(
@@ -21,6 +22,7 @@ export default class PostModel {
       data.blogId,
       data.blogName,
       DateGenerator.generate(),
+      false,
     );
   }
 }

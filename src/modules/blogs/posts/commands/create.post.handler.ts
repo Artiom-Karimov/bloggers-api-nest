@@ -16,7 +16,8 @@ export class CreatePostHandler implements ICommandHandler<CreatePostCommand> {
     const { blogId, bloggerId } = command.data;
     const blog = await this.blogsQueryRepo.getAdminBlog(blogId);
     if (!blog) return PostError.NotFound;
-    if (blog.blogOwnerInfo.userId !== bloggerId) return PostError.Forbidden;
+    if (blog.blogOwnerInfo.userId !== bloggerId || blog.banInfo.isBanned)
+      return PostError.Forbidden;
 
     command.data.blogName = blog.name;
     const post = PostModel.create(command.data);
