@@ -5,6 +5,9 @@ import BlogSampleGenerator from './utils/blog.sample.generator';
 import * as config from '../src/config/admin';
 import { dateRegex } from '../src/common/utils/date.generator';
 import UserSampleGenerator from './utils/user.sample.generator';
+import BlogViewModel from '../src/modules/blogs/blogs/models/blog.view.model';
+import PageViewModel from '../src/common/models/page.view.model';
+import AdminBlogViewModel from '../src/modules/blogs/blogs/models/admin.blog.view.model';
 
 jest.useRealTimers();
 
@@ -85,8 +88,10 @@ describe('AdminController (e2e)', () => {
         .auth(config.userName, config.password);
       expect(response.body).toEqual(emptyPage);
     });
-    it('should get created blog', async () => {
-      blogSamples.generateSamples(1);
+
+    const amount = 2;
+    it('should get created blogs', async () => {
+      blogSamples.generateSamples(amount);
       await blogSamples.createSamples();
 
       const response = await request(app.getHttpServer())
@@ -97,7 +102,7 @@ describe('AdminController (e2e)', () => {
         pagesCount: 1,
         page: 1,
         pageSize: expect.any(Number),
-        totalCount: 1,
+        totalCount: amount,
         items: expect.arrayContaining([
           {
             id: expect.any(String),
@@ -114,10 +119,90 @@ describe('AdminController (e2e)', () => {
               banDate: null,
             },
           },
+          {
+            id: expect.any(String),
+            name: blogSamples.samples[1].name,
+            description: blogSamples.samples[1].description,
+            websiteUrl: blogSamples.samples[1].websiteUrl,
+            createdAt: expect.stringMatching(dateRegex),
+            blogOwnerInfo: {
+              userId: expect.any(String),
+              userLogin: blogSamples.user.login,
+            },
+            banInfo: {
+              isBanned: false,
+              banDate: null,
+            },
+          },
         ]),
       };
 
       expect(response.body).toEqual(expectedPage);
+    });
+
+    let bannedBlog: BlogViewModel;
+    it('should ban a blog', async () => {
+      bannedBlog = blogSamples.outputs[0];
+      await request(app.getHttpServer())
+        .put(`${blogBase}/${bannedBlog.id}/ban`)
+        .auth(config.userName, config.password)
+        .send({ isBanned: true })
+        .expect(204);
+    });
+    it('user should not get banned blog', async () => {
+      await request(app.getHttpServer())
+        .get(`/blogs/${bannedBlog.id}`)
+        .expect(404);
+
+      const retrieved = await request(app.getHttpServer())
+        .get(`/blogs`)
+        .expect(200);
+      const body = retrieved.body as PageViewModel<BlogViewModel>;
+      expect(body.totalCount).toBe(amount - 1);
+      expect(body.items.length).toBe(amount - 1);
+    });
+    it('admin should get banned blog', async () => {
+      const response = await request(app.getHttpServer())
+        .get(blogBase)
+        .auth(config.userName, config.password)
+        .expect(200);
+
+      const expectedPage = {
+        pagesCount: 1,
+        page: 1,
+        pageSize: expect.any(Number),
+        totalCount: amount,
+        items: expect.arrayContaining([
+          {
+            id: bannedBlog.id,
+            name: bannedBlog.name,
+            description: bannedBlog.description,
+            websiteUrl: bannedBlog.websiteUrl,
+            createdAt: expect.stringMatching(dateRegex),
+            blogOwnerInfo: {
+              userId: expect.any(String),
+              userLogin: blogSamples.user.login,
+            },
+            banInfo: {
+              isBanned: true,
+              banDate: expect.stringMatching(dateRegex),
+            },
+          },
+        ]),
+      };
+      expect(response.body).toEqual(expectedPage);
+    });
+    it('should unban blog', async () => {
+      await request(app.getHttpServer())
+        .put(`${blogBase}/${bannedBlog.id}/ban`)
+        .auth(config.userName, config.password)
+        .send({ isBanned: false })
+        .expect(204);
+    });
+    it('user should get unbanned blog', async () => {
+      await request(app.getHttpServer())
+        .get(`/blogs/${bannedBlog.id}`)
+        .expect(200);
     });
   });
 

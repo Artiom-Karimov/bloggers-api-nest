@@ -30,7 +30,14 @@ export default class BlogsQueryRepository {
   }
   public async getBlog(id: string): Promise<BlogViewModel | undefined> {
     try {
-      const result = await this.model.findOne({ _id: id });
+      const result = await this.model.findOne({
+        _id: id,
+        $or: [
+          { banInfo: null },
+          { 'banInfo.isBanned': null },
+          { 'banInfo.isBanned': false },
+        ],
+      });
       return result ? BlogMapper.toView(result) : undefined;
     } catch (error) {
       console.log(error);
