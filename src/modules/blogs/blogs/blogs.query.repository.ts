@@ -4,8 +4,8 @@ import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../../common/models/page.view.model';
 import BlogMapper from '../blogs/models/blog.mapper';
 import Blog, { BlogDocument } from '../blogs/models/blog.schema';
-import BlogViewModel from '../blogs/models/blog.view.model';
-import GetBlogsQuery from '../blogs/models/get.blogs.query';
+import BlogViewModel from './models/view/blog.view.model';
+import GetBlogsQuery from './models/input/get.blogs.query';
 
 @Injectable()
 export default class BlogsQueryRepository {

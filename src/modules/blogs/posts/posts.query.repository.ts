@@ -5,7 +5,7 @@ import PageViewModel from '../../../common/models/page.view.model';
 import PostLikesQueryRepository from '../likes/post.likes.query.repository';
 import BlogMapper from '../blogs/models/blog.mapper';
 import Blog, { BlogDocument } from '../blogs/models/blog.schema';
-import BlogViewModel from '../blogs/models/blog.view.model';
+import BlogViewModel from '../blogs/models/view/blog.view.model';
 import GetPostsQuery from '../posts/models/get.posts.query';
 import PostMapper from '../posts/models/post.mapper';
 import Post, { PostDocument } from '../posts/models/post.schema';

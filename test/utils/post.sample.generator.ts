@@ -6,7 +6,7 @@ import UserInputModel from '../../src/modules/users/models/user.input.model';
 import BlogSampleGenerator from './blog.sample.generator';
 import TestSampleGenerator from './test.sample.generator';
 import { Tokens } from './user.sample.generator';
-import BlogInputModel from '../../src/modules/blogs/blogs/models/blog.input.model';
+import BlogInputModel from '../../src/modules/blogs/blogs/models/input/blog.input.model';
 
 export default class PostSampleGenerator extends TestSampleGenerator<
   PostInputModel,

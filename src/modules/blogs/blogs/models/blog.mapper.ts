@@ -1,7 +1,7 @@
-import AdminBlogViewModel from './admin.blog.view.model';
+import AdminBlogViewModel from './view/admin.blog.view.model';
 import BlogModel, { BlogBanInfo, BlogOwnerInfo } from './blog.model';
 import Blog from './blog.schema';
-import BlogViewModel from './blog.view.model';
+import BlogViewModel from './view/blog.view.model';
 
 export default class BlogMapper {
   public static fromDomain(model: BlogModel): Blog {

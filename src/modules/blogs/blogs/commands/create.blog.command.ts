@@ -1,4 +1,4 @@
-import BlogInputModel from '../models/blog.input.model';
+import BlogInputModel from '../models/input/blog.input.model';
 import { BlogOwnerInfo } from '../models/blog.model';
 
 export default class CreateBlogCommand {

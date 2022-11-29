@@ -5,11 +5,10 @@ import PageViewModel from '../src/common/models/page.view.model';
 import BlogSampleGenerator from './utils/blog.sample.generator';
 import UserSampleGenerator, { Tokens } from './utils/user.sample.generator';
 import { dateRegex } from '../src/common/utils/date.generator';
-import BlogInputModel from '../src/modules/blogs/blogs/models/blog.input.model';
+import BlogInputModel from '../src/modules/blogs/blogs/models/input/blog.input.model';
 import PostInputModel from '../src/modules/blogs/posts/models/post.input.model';
-import BlogViewModel from '../src/modules/blogs/blogs/models/blog.view.model';
+import BlogViewModel from '../src/modules/blogs/blogs/models/view/blog.view.model';
 import UserViewModel from '../src/modules/users/models/user.view.model';
-import CommentViewModel from '../src/modules/blogs/comments/models/comment.view.model';
 import PostSampleGenerator from './utils/post.sample.generator';
 import PostViewModel from '../src/modules/blogs/posts/models/post.view.model';
 
@@ -287,7 +286,7 @@ describe('BloggerController (e2e)', () => {
       post = postSamples.outputs[0];
     });
 
-    const content = 'Really annoying comment for sure';
+    const content = "We don't need no education!";
     it('not-banned user should create comment', async () => {
       await request(app.getHttpServer())
         .post(`/posts/${post.id}/comments`)
@@ -329,7 +328,7 @@ describe('BloggerController (e2e)', () => {
       });
     });
 
-    const banReason = "Can't you see? He's a moron!";
+    const banReason = "How can you have any pudding if you don't eat meat?";
     it('blogger should ban user', async () => {
       await request(app.getHttpServer())
         .put(`${userBase}/${user.id}/ban`)
@@ -342,8 +341,7 @@ describe('BloggerController (e2e)', () => {
         .expect(204);
     });
 
-    const afterBanContent =
-      "How can you eat any pudding if you don't eat meat?";
+    const afterBanContent = "We don't need no thought control!";
     it('banned user should not create comment', async () => {
       await request(app.getHttpServer())
         .post(`/posts/${post.id}/comments`)

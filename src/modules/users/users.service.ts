@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import SessionsRepository from '../auth/sessions.repository';
 import EmailConfirmationRepository from './email.confirmation.repository';
-import UserBanInputModel from '../admin/models/user.ban.input.model';
+import UserBanInputModel from './models/ban/user.ban.input.model';
 import UserBanModel from './models/ban/user.ban.model';
 import EmailConfirmationModel from './models/email/email.confirmation.model';
 import UserInputModel from './models/user.input.model';

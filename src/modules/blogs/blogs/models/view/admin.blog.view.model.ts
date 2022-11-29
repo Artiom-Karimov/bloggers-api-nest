@@ -1,4 +1,4 @@
-import { BlogBanInfo, BlogOwnerInfo } from './blog.model';
+import { BlogBanInfo, BlogOwnerInfo } from '../blog.model';
 import BlogViewModel from './blog.view.model';
 
 export default class AdminBlogViewModel extends BlogViewModel {

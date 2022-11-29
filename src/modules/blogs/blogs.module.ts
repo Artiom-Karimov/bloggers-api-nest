@@ -21,7 +21,7 @@ import {
   PostLike,
   PostLikeSchema,
 } from './likes/models/like.schema';
-import { BlogIdValidator } from './posts/models/blog.id.validator';
+import { BlogIdValidator } from './blogs/models/input/blog.id.validator';
 import Post, { PostSchema } from './posts/models/post.schema';
 import PostsController from './posts/posts.controller';
 import PostsQueryRepository from './posts/posts.query.repository';

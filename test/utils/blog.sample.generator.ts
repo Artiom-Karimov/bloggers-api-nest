@@ -1,10 +1,10 @@
 import * as request from 'supertest';
-import BlogInputModel from '../../src/modules/blogs/blogs/models/blog.input.model';
+import BlogInputModel from '../../src/modules/blogs/blogs/models/input/blog.input.model';
 import TestSampleGenerator from './test.sample.generator';
 import UserInputModel from '../../src/modules/users/models/user.input.model';
 import { INestApplication } from '@nestjs/common';
 import UserSampleGenerator, { Tokens } from './user.sample.generator';
-import BlogViewModel from '../../src/modules/blogs/blogs/models/blog.view.model';
+import BlogViewModel from '../../src/modules/blogs/blogs/models/view/blog.view.model';
 
 export default class BlogSampleGenerator extends TestSampleGenerator<
   BlogInputModel,

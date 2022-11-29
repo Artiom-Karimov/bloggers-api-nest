@@ -4,7 +4,7 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
 } from 'class-validator';
-import PostsQueryRepository from '../posts.query.repository';
+import PostsQueryRepository from '../../../posts/posts.query.repository';
 
 @ValidatorConstraint({ name: 'blogId', async: true })
 @Injectable()

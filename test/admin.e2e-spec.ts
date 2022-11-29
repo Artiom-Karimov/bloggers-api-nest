@@ -5,7 +5,7 @@ import BlogSampleGenerator from './utils/blog.sample.generator';
 import * as config from '../src/config/admin';
 import { dateRegex } from '../src/common/utils/date.generator';
 import UserSampleGenerator from './utils/user.sample.generator';
-import BlogViewModel from '../src/modules/blogs/blogs/models/blog.view.model';
+import BlogViewModel from '../src/modules/blogs/blogs/models/view/blog.view.model';
 import PageViewModel from '../src/common/models/page.view.model';
 import PostViewModel from '../src/modules/blogs/posts/models/post.view.model';
 

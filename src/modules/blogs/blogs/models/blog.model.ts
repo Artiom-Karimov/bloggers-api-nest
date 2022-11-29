@@ -1,6 +1,6 @@
 import DateGenerator from '../../../../common/utils/date.generator';
 import IdGenerator from '../../../../common/utils/id.generator';
-import BlogInputModel from './blog.input.model';
+import BlogInputModel from './input/blog.input.model';
 
 export type BlogOwnerInfo = {
   userId?: string;

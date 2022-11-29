@@ -1,4 +1,4 @@
-import PageQueryParams from '../../../../common/models/page.query.params';
+import PageQueryParams from '../../../../../common/models/page.query.params';
 
 export default class GetBlogsQuery extends PageQueryParams {
   public searchNameTerm: string | null = null;
