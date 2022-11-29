@@ -38,6 +38,7 @@ import { PutCommentLikeHandler } from './comments/commands/put.comment.like.hand
 import { CqrsModule } from '@nestjs/cqrs';
 import { BanBlogHandler } from './blogs/commands/ban.blog.handler';
 import AdminBlogsQueryRepository from './blogs/admin.blogs.query.repository';
+import BloggerCommentsQueryRepository from './comments/blogger.comments.query.repository';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -78,6 +79,7 @@ const commandHandlers = [
     PostsService,
     CommentsRepository,
     CommentsQueryRepository,
+    BloggerCommentsQueryRepository,
     CommentLikesRepository,
     CommentLikesQueryRepository,
     CommentsService,
@@ -91,6 +93,7 @@ const commandHandlers = [
     PostsService,
     PostsQueryRepository,
     CommentsService,
+    BloggerCommentsQueryRepository,
   ],
 })
 export class BlogsModule { }

@@ -1,5 +1,5 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export type PostDocument = Post & Document;
 
@@ -36,7 +36,7 @@ export default class Post {
   @Prop()
   content: string;
 
-  @Prop()
+  @Prop({ type: String, ref: 'Blog' })
   blogId: string;
 
   @Prop()

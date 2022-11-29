@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import CommentLikesRepository from '../likes/comment.likes.repository';
 import CommentModel from '../comments/models/comment.model';
 import CommentsRepository from './comments.repository';
-import CommentCreateModel from './models/comment.create.model';
-import CommentUpdateModel from './models/comment.update.model';
+import CommentCreateModel from './models/input/comment.create.model';
+import CommentUpdateModel from './models/input/comment.update.model';
 
 export enum CommentError {
   NoError,

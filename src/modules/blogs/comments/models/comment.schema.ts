@@ -8,7 +8,7 @@ export default class Comment {
   @Prop()
   _id: string;
 
-  @Prop()
+  @Prop({ type: String, ref: 'Post' })
   postId: string;
 
   @Prop()

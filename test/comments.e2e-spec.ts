@@ -4,7 +4,7 @@ import { init, stop } from './utils/test.init';
 import { dateRegex } from '../src/common/utils/date.generator';
 import PostSampleGenerator from './utils/post.sample.generator';
 import CommentSampleGenerator from './utils/comment.sample.generator';
-import CommentViewModel from '../src/modules/blogs/comments/models/comment.view.model';
+import CommentViewModel from '../src/modules/blogs/comments/models/view/comment.view.model';
 
 jest.useRealTimers();
 

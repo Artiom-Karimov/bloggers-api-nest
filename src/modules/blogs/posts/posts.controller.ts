@@ -13,14 +13,14 @@ import {
 } from '@nestjs/common';
 import PageViewModel from '../../../common/models/page.view.model';
 import CommentsQueryRepository from '../comments/comments.query.repository';
-import CommentViewModel from '../comments/models/comment.view.model';
-import GetCommentsQuery from '../comments/models/get.comments.query';
+import CommentViewModel from '../comments/models/view/comment.view.model';
+import GetCommentsQuery from '../comments/models/input/get.comments.query';
 import GetPostsQuery from '../posts/models/get.posts.query';
 import PostViewModel from '../posts/models/post.view.model';
 import PostsQueryRepository from './posts.query.repository';
 import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.guard';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
-import CommentInputModel from '../comments/models/comment.input.model';
+import CommentInputModel from '../comments/models/input/comment.input.model';
 import CommentsService from '../comments/comments.service';
 import LikeInputModel from '../likes/models/like.input.model';
 import TokenPayload from '../../auth/models/jwt/token.payload';
@@ -28,7 +28,7 @@ import { User } from '../../auth/guards/user.decorator';
 import { CommandBus } from '@nestjs/cqrs';
 import PutPostLikeCommand from './commands/put.post.like.command';
 import { PostError } from './models/post.error';
-import CommentCreateModel from '../comments/models/comment.create.model';
+import CommentCreateModel from '../comments/models/input/comment.create.model';
 
 @Controller('posts')
 export default class PostsController {

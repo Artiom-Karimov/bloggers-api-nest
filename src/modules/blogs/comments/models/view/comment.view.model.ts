@@ -1,4 +1,4 @@
-import { LikesInfoModel } from '../../likes/models/likes.info.model';
+import { LikesInfoModel } from '../../../likes/models/likes.info.model';
 
 export default class CommentViewModel {
   constructor(

@@ -7,7 +7,7 @@ import {
   Param,
 } from '@nestjs/common';
 import CommentsQueryRepository from './comments.query.repository';
-import CommentViewModel from '../comments/models/comment.view.model';
+import CommentViewModel from './models/view/comment.view.model';
 import {
   Body,
   Delete,
@@ -16,7 +16,7 @@ import {
   UseGuards,
 } from '@nestjs/common/decorators';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
-import CommentInputModel from './models/comment.input.model';
+import CommentInputModel from './models/input/comment.input.model';
 import CommentsService, { CommentError } from './comments.service';
 import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.guard';
 import LikeInputModel from '../likes/models/like.input.model';
@@ -25,7 +25,7 @@ import TokenPayload from '../../auth/models/jwt/token.payload';
 import PutCommentLikeCommand from './commands/put.comment.like.command';
 import { CommandBus } from '@nestjs/cqrs';
 import { PostError } from '../posts/models/post.error';
-import CommentUpdateModel from './models/comment.update.model';
+import CommentUpdateModel from './models/input/comment.update.model';
 
 @Controller('comments')
 export default class CommentsController {

@@ -5,8 +5,8 @@ import PageViewModel from '../../../common/models/page.view.model';
 import CommentLikesQueryRepository from '../likes/comment.likes.query.repository';
 import CommentMapper from '../comments/models/comment.mapper';
 import Comment, { CommentDocument } from '../comments/models/comment.schema';
-import CommentViewModel from '../comments/models/comment.view.model';
-import GetCommentsQuery from '../comments/models/get.comments.query';
+import CommentViewModel from './models/view/comment.view.model';
+import GetCommentsQuery from './models/input/get.comments.query';
 
 @Injectable()
 export default class CommentsQueryRepository {

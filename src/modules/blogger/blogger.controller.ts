@@ -34,6 +34,9 @@ import CreatePostCommand from '../blogs/posts/commands/create.post.command';
 import { PostError } from '../blogs/posts/models/post.error';
 import UpdatePostCommand from '../blogs/posts/commands/update.post.command';
 import DeletePostCommand from '../blogs/posts/commands/delete.post.command';
+import BloggerCommentViewModel from '../blogs/comments/models/view/blogger.comment.view.model';
+import BloggerCommentsQueryRepository from '../blogs/comments/blogger.comments.query.repository';
+import GetBloggerCommentsQuery from '../blogs/comments/models/input/get.blogger.comments.query';
 
 @Controller('blogger/blogs')
 @UseGuards(BearerAuthGuard)
@@ -41,6 +44,7 @@ export default class BloggerController {
   constructor(
     private readonly blogsQueryRepo: BlogsQueryRepository,
     private readonly postsQueryRepo: PostsQueryRepository,
+    private readonly commentsQueryRepo: BloggerCommentsQueryRepository,
     private readonly commandBus: CommandBus,
   ) { }
 
@@ -170,5 +174,14 @@ export default class BloggerController {
     if (deleted === PostError.NotFound) throw new NotFoundException();
     if (deleted === PostError.Forbidden) throw new ForbiddenException();
     throw new BadRequestException();
+  }
+
+  @Get('comments')
+  public async getComments(
+    @Query() reqQuery: any,
+    @User() user: TokenPayload,
+  ): Promise<PageViewModel<BloggerCommentViewModel>> {
+    const query = new GetBloggerCommentsQuery(reqQuery, user.userId);
+    return this.commentsQueryRepo.getBloggerComments(query);
   }
 }
