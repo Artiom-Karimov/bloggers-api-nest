@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Put,
   Query,
@@ -12,10 +13,10 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import PageViewModel from '../../common/models/page.view.model';
-import { throwValidationException } from '../../common/utils/validation.options';
 import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
 import { User } from '../auth/guards/user.decorator';
 import TokenPayload from '../auth/models/jwt/token.payload';
+import AdminBlogsQueryRepository from '../blogs/blogs/admin.blogs.query.repository';
 import BlogUserBanQueryRepository from '../blogs/blogs/blog.user.ban.query.repository';
 import BlogUserBanCommand from '../blogs/blogs/commands/blog.user.ban.command';
 import { BlogError } from '../blogs/blogs/models/blog.error';
@@ -29,6 +30,7 @@ export default class BloggerUserController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly banRepo: BlogUserBanQueryRepository,
+    private readonly blogRepo: AdminBlogsQueryRepository,
   ) { }
 
   @Put(':id/ban')
@@ -46,8 +48,7 @@ export default class BloggerUserController {
       }),
     );
     if (result === BlogError.NoError) return;
-    if (result === BlogError.NotFound)
-      throwValidationException('id', 'user not found');
+    if (result === BlogError.NotFound) throw new NotFoundException();
     if (result === BlogError.Forbidden) throw new ForbiddenException();
     throw new BadRequestException();
   }
@@ -58,7 +59,11 @@ export default class BloggerUserController {
     @User() blogger: TokenPayload,
     @Query() reqQuery: any,
   ): Promise<PageViewModel<BlogUserBanViewModel>> {
-    // TODO: check if this blog belongs to blogger
+    const blog = await this.blogRepo.getAdminBlog(blogId);
+    if (!blog) throw new NotFoundException();
+    if (blog.blogOwnerInfo?.userId !== blogger.userId)
+      throw new ForbiddenException();
+
     const query = new GetBlogUserBansQuery(reqQuery, blogId);
     return this.banRepo.getUsers(query);
   }
