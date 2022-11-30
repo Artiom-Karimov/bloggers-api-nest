@@ -55,7 +55,7 @@ export default class BloggerCommentsQueryRepository {
       return this.model
         .countDocuments({})
         .populate({ path: 'postId', match: { blogId: { $in: blogIds } } })
-        .where({ userBanned: false })
+        .where({ bannedByAdmin: false, bannedByBlogger: false })
         .exec();
     } catch (error) {
       console.error(error);
@@ -66,7 +66,7 @@ export default class BloggerCommentsQueryRepository {
     return this.model
       .find({})
       .populate({ path: 'postId', match: { blogId: { $in: blogIds } } })
-      .where({ userBanned: false })
+      .where({ bannedByAdmin: false, bannedByBlogger: false })
       .sort({ [params.sortBy]: params.sortDirection as SortOrder });
   }
   private async loadPageComments(

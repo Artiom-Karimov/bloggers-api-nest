@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import CommentMapper from '../comments/models/comment.mapper';
 import CommentModel from '../comments/models/comment.model';
 import Comment, { CommentDocument } from '../comments/models/comment.schema';
+import PostInputModel from '../posts/models/post.input.model';
 
 @Injectable()
 export default class CommentsRepository {
@@ -49,12 +50,25 @@ export default class CommentsRepository {
       return false;
     }
   }
-  public async setUserBanned(
+  public async banByAdmin(
     userId: string,
-    userBanned: boolean,
+    bannedByAdmin: boolean,
   ): Promise<void> {
     try {
-      await this.model.updateMany({ userId }, { userBanned }).exec();
+      await this.model.updateMany({ userId }, { bannedByAdmin }).exec();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  public async banByBlogger(
+    userId: string,
+    blogId: string,
+    bannedByBlogger: boolean,
+  ): Promise<void> {
+    try {
+      await this.model
+        .updateMany({ userId }, { bannedByBlogger })
+        .populate({ path: 'postId', match: { blogId } });
     } catch (error) {
       console.error(error);
     }

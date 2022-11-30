@@ -28,7 +28,8 @@ export default class CommentsQueryRepository {
   ): Promise<CommentViewModel | undefined> {
     try {
       const result = await this.model.findOne({ _id: id });
-      if (!result || result.userBanned) return undefined;
+      if (!result || result.bannedByAdmin || result.bannedByBlogger)
+        return undefined;
       return this.mergeWithLikes(result, userId);
     } catch (error) {
       console.log(error);
@@ -50,7 +51,7 @@ export default class CommentsQueryRepository {
     try {
       return this.model
         .countDocuments({ postId })
-        .where({ userBanned: false })
+        .where({ bannedByAdmin: false, bannedByBlogger: false })
         .exec();
     } catch (error) {
       return 0;
@@ -59,7 +60,7 @@ export default class CommentsQueryRepository {
   private getDbQuery(params: GetCommentsQuery): any {
     return this.model
       .find({ postId: params.postId })
-      .where({ userBanned: false })
+      .where({ bannedByAdmin: false, bannedByBlogger: false })
       .sort({ [params.sortBy]: params.sortDirection as SortOrder });
   }
   private async loadPageComments(

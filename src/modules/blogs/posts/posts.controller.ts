@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  ForbiddenException,
   Get,
   HttpCode,
   NotFoundException,
@@ -29,6 +30,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import PutPostLikeCommand from './commands/put.post.like.command';
 import { PostError } from './models/post.error';
 import CommentCreateModel from '../comments/models/input/comment.create.model';
+import CreateCommentCommand from '../comments/commands/create.comment.command';
 
 @Controller('posts')
 export default class PostsController {
@@ -80,26 +82,26 @@ export default class PostsController {
     @Body() data: CommentInputModel,
     @User() user: TokenPayload,
   ): Promise<CommentViewModel> {
-    const post = await this.queryRepo.getPost(postId, undefined);
-    if (!post) throw new NotFoundException();
-
-    const model: CommentCreateModel = {
-      postId,
-      userId: user.userId,
-      userLogin: user.userLogin,
-      content: data.content,
-    };
-
-    const created = await this.commentsService.create(model);
-    if (!created) throw new BadRequestException();
-
-    const retrieved = await this.commentsQueryRepo.getComment(
-      created,
-      user.userId,
+    const result = await this.commandBus.execute(
+      new CreateCommentCommand({
+        postId,
+        userId: user.userId,
+        userLogin: user.userLogin,
+        content: data.content,
+      }),
     );
-    if (!retrieved) throw new BadRequestException();
 
-    return retrieved;
+    if (typeof result === 'string') {
+      const comment = await this.commentsQueryRepo.getComment(
+        result,
+        undefined,
+      );
+      if (comment) return comment;
+      throw new BadRequestException();
+    }
+    if (result === PostError.NotFound) throw new NotFoundException();
+    if (result === PostError.Forbidden) throw new ForbiddenException();
+    throw new BadRequestException();
   }
 
   @Put(':id/like-status')

@@ -8,7 +8,8 @@ export default class CommentModel {
     public postId: string,
     public userId: string,
     public userLogin: string,
-    public userBanned: boolean,
+    public bannedByAdmin: boolean,
+    public bannedByBlogger: boolean,
     public content: string,
     public createdAt: string,
   ) { }
@@ -19,6 +20,7 @@ export default class CommentModel {
       data.postId,
       data.userId,
       data.userLogin,
+      false,
       false,
       data.content,
       DateGenerator.generate(),

@@ -45,8 +45,8 @@ describe('BloggerController (e2e)', () => {
         .put(`${base}/6497236/posts/htw84t`)
         .send('hello'),
       request(app.getHttpServer()).delete(`${base}/6497236/posts/htw84t`),
-      //request(app.getHttpServer()).put(`${userBase}/6497236/ban`),
-      //request(app.getHttpServer()).get(`${userBase}/blog/875360983457`),
+      request(app.getHttpServer()).put(`${userBase}/6497236/ban`),
+      request(app.getHttpServer()).get(`${userBase}/blog/875360983457`),
     ];
     const responses = await Promise.all(requests);
     for (const r of responses) {
@@ -328,112 +328,112 @@ describe('BloggerController (e2e)', () => {
       });
     });
 
-    // const banReason = "How can you have any pudding if you don't eat meat?";
-    // it('blogger should ban user', async () => {
-    //   await request(app.getHttpServer())
-    //     .put(`${userBase}/${user.id}/ban`)
-    //     .set('Authorization', `Bearer ${postSamples.tokens.access}`)
-    //     .send({
-    //       isBanned: true,
-    //       banReason,
-    //       blogId: post.blogId,
-    //     })
-    //     .expect(204);
-    // });
+    const banReason = "How can you have any pudding if you don't eat meat?";
+    it('blogger should ban user', async () => {
+      await request(app.getHttpServer())
+        .put(`${userBase}/${user.id}/ban`)
+        .set('Authorization', `Bearer ${postSamples.tokens.access}`)
+        .send({
+          isBanned: true,
+          banReason,
+          blogId: post.blogId,
+        })
+        .expect(204);
+    });
 
-    // const afterBanContent = "We don't need no thought control!";
-    // it('banned user should not create comment', async () => {
-    //   await request(app.getHttpServer())
-    //     .post(`/posts/${post.id}/comments`)
-    //     .set('Authorization', `Bearer ${userTokens.access}`)
-    //     .send({ content: afterBanContent })
-    //     .expect(403);
-    // });
+    const afterBanContent = "We don't need no thought control!";
+    it('banned user should not create comment', async () => {
+      await request(app.getHttpServer())
+        .post(`/posts/${post.id}/comments`)
+        .set('Authorization', `Bearer ${userTokens.access}`)
+        .send({ content: afterBanContent })
+        .expect(403);
+    });
 
-    // it('blogger should not get banned user comments', async () => {
-    //   const response = await request(app.getHttpServer())
-    //     .get(`${base}/comments`)
-    //     .set('Authorization', `Bearer ${postSamples.tokens.access}`)
-    //     .expect(200);
-    //   expect(response.body).toEqual(emptyPage);
-    // });
+    it('blogger should not get banned user comments', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${base}/comments`)
+        .set('Authorization', `Bearer ${postSamples.tokens.access}`)
+        .expect(200);
+      expect(response.body).toEqual(emptyPage);
+    });
 
-    // it('blogger should get banned user info', async () => {
-    //   const response = await request(app.getHttpServer())
-    //     .put(`${userBase}/blog/${post.blogId}`)
-    //     .set('Authorization', `Bearer ${postSamples.tokens.access}`)
-    //     .expect(200);
-    //   expect(response.body).toEqual({
-    //     pagesCount: 1,
-    //     page: 1,
-    //     pageSize: expect.any(Number),
-    //     totalCount: 1,
-    //     items: [
-    //       {
-    //         id: user.id,
-    //         login: user.login,
-    //         banInfo: {
-    //           isBanned: true,
-    //           banDate: expect.stringMatching(dateRegex),
-    //           banReason,
-    //         },
-    //       },
-    //     ],
-    //   });
-    // });
+    it('blogger should get banned user info', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${userBase}/blog/${post.blogId}`)
+        .set('Authorization', `Bearer ${postSamples.tokens.access}`)
+        .expect(200);
+      expect(response.body).toEqual({
+        pagesCount: 1,
+        page: 1,
+        pageSize: expect.any(Number),
+        totalCount: 1,
+        items: [
+          {
+            id: user.id,
+            login: user.login,
+            banInfo: {
+              isBanned: true,
+              banDate: expect.stringMatching(dateRegex),
+              banReason,
+            },
+          },
+        ],
+      });
+    });
 
-    // it('blogger should unban user', async () => {
-    //   await request(app.getHttpServer())
-    //     .put(`${userBase}/${user.id}/ban`)
-    //     .set('Authorization', `Bearer ${postSamples.tokens.access}`)
-    //     .send({
-    //       isBanned: false,
-    //       banReason,
-    //       blogId: post.blogId,
-    //     })
-    //     .expect(204);
-    // });
+    it('blogger should unban user', async () => {
+      await request(app.getHttpServer())
+        .put(`${userBase}/${user.id}/ban`)
+        .set('Authorization', `Bearer ${postSamples.tokens.access}`)
+        .send({
+          isBanned: false,
+          banReason,
+          blogId: post.blogId,
+        })
+        .expect(204);
+    });
 
-    // it('unbanned user should create comment', async () => {
-    //   await request(app.getHttpServer())
-    //     .post(`/posts/${post.id}/comments`)
-    //     .set('Authorization', `Bearer ${userTokens.access}`)
-    //     .send({ content: afterBanContent })
-    //     .expect(201);
-    // });
+    it('unbanned user should create comment', async () => {
+      await request(app.getHttpServer())
+        .post(`/posts/${post.id}/comments`)
+        .set('Authorization', `Bearer ${userTokens.access}`)
+        .send({ content: afterBanContent })
+        .expect(201);
+    });
 
-    // it('blogger should get comments', async () => {
-    //   const response = await request(app.getHttpServer())
-    //     .get(`${base}/comments`)
-    //     .set('Authorization', `Bearer ${postSamples.tokens.access}`)
-    //     .expect(200);
-    //   expect(response.body).toEqual({
-    //     ...emptyPage,
-    //     totalCount: 2,
-    //     pagesCount: 1,
-    //     items: expect.arrayContaining([
-    //       {
-    //         id: expect.any(String),
-    //         content: afterBanContent,
-    //         createdAt: expect.stringMatching(dateRegex),
-    //         likesInfo: {
-    //           likesCount: 0,
-    //           dislikesCount: 0,
-    //           myStatus: 'None',
-    //         },
-    //         commentatorInfo: {
-    //           userId: user.id,
-    //           userLogin: user.login,
-    //         },
-    //         postInfo: {
-    //           id: post.id,
-    //           title: post.title,
-    //           blogId: post.blogId,
-    //           blogName: post.blogName,
-    //         },
-    //       },
-    //     ]),
-    //   });
-    // });
+    it('blogger should get comments', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${base}/comments`)
+        .set('Authorization', `Bearer ${postSamples.tokens.access}`)
+        .expect(200);
+      expect(response.body).toEqual({
+        ...emptyPage,
+        totalCount: 2,
+        pagesCount: 1,
+        items: expect.arrayContaining([
+          {
+            id: expect.any(String),
+            content: afterBanContent,
+            createdAt: expect.stringMatching(dateRegex),
+            likesInfo: {
+              likesCount: 0,
+              dislikesCount: 0,
+              myStatus: 'None',
+            },
+            commentatorInfo: {
+              userId: user.id,
+              userLogin: user.login,
+            },
+            postInfo: {
+              id: post.id,
+              title: post.title,
+              blogId: post.blogId,
+              blogName: post.blogName,
+            },
+          },
+        ]),
+      });
+    });
   });
 });

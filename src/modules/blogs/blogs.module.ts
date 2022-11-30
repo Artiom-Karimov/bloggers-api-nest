@@ -39,6 +39,14 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { BanBlogHandler } from './blogs/commands/ban.blog.handler';
 import AdminBlogsQueryRepository from './blogs/admin.blogs.query.repository';
 import BloggerCommentsQueryRepository from './comments/blogger.comments.query.repository';
+import { BlogUserBanHandler } from './blogs/commands/blog.user.ban.handler';
+import BlogUserBanRepository from './blogs/blog.user.ban.repository';
+import BlogUserBan, {
+  BlogUserBanSchema,
+} from './blogs/models/blog.user.ban.schema';
+import { CreateCommentHandler } from './comments/commands/create.comment.handler';
+import BlogUserBanQueryRepository from './blogs/blog.user.ban.query.repository';
+import { UsersModule } from '../users/users.module';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -49,7 +57,9 @@ const commandHandlers = [
   UpdatePostHandler,
   DeletePostHandler,
   PutPostLikeHandler,
+  CreateCommentHandler,
   PutCommentLikeHandler,
+  BlogUserBanHandler,
 ];
 
 @Module({
@@ -64,7 +74,11 @@ const commandHandlers = [
     MongooseModule.forFeature([
       { name: CommentLike.name, schema: CommentLikeSchema },
     ]),
+    MongooseModule.forFeature([
+      { name: BlogUserBan.name, schema: BlogUserBanSchema },
+    ]),
     AuthModule,
+    UsersModule,
   ],
   controllers: [BlogsController, PostsController, CommentsController],
   providers: [
@@ -72,6 +86,8 @@ const commandHandlers = [
     BlogsQueryRepository,
     AdminBlogsQueryRepository,
     BlogsService,
+    BlogUserBanRepository,
+    BlogUserBanQueryRepository,
     PostsRepository,
     PostsQueryRepository,
     PostLikesRepository,
@@ -89,6 +105,7 @@ const commandHandlers = [
   exports: [
     BlogsService,
     BlogsQueryRepository,
+    BlogUserBanQueryRepository,
     AdminBlogsQueryRepository,
     PostsService,
     PostsQueryRepository,

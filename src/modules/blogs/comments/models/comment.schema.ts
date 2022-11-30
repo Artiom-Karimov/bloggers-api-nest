@@ -5,6 +5,25 @@ export type CommentDocument = Comment & Document;
 
 @Schema({ collection: 'comments' })
 export default class Comment {
+  constructor(
+    _id: string,
+    postId: string,
+    userId: string,
+    userLogin: string,
+    bannedByAdmin: boolean,
+    bannedByBlogger: boolean,
+    content: string,
+    createdAt: string,
+  ) {
+    this._id = _id;
+    this.postId = postId;
+    this.userId = userId;
+    this.userLogin = userLogin;
+    this.bannedByAdmin = bannedByAdmin;
+    this.bannedByBlogger = bannedByBlogger;
+    this.content = content;
+    this.createdAt = createdAt;
+  }
   @Prop()
   _id: string;
 
@@ -18,7 +37,10 @@ export default class Comment {
   userLogin: string;
 
   @Prop()
-  userBanned: boolean;
+  bannedByAdmin: boolean;
+
+  @Prop()
+  bannedByBlogger: boolean;
 
   @Prop()
   content: string;

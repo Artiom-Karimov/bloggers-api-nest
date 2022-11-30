@@ -7,15 +7,16 @@ import CommentViewModel from './view/comment.view.model';
 
 export default class CommentMapper {
   public static fromDomain(model: CommentModel): Comment {
-    const comment = new Comment();
-    comment._id = model.id;
-    comment.postId = model.postId;
-    comment.userId = model.userId;
-    comment.userLogin = model.userLogin;
-    comment.userBanned = model.userBanned;
-    comment.content = model.content;
-    comment.createdAt = model.createdAt;
-    return comment;
+    return new Comment(
+      model.id,
+      model.postId,
+      model.userId,
+      model.userLogin,
+      model.bannedByAdmin,
+      model.bannedByBlogger,
+      model.content,
+      model.createdAt,
+    );
   }
   public static toDomain(model: Comment): CommentModel {
     return new CommentModel(
@@ -23,7 +24,8 @@ export default class CommentMapper {
       model.postId,
       model.userId,
       model.userLogin,
-      model.userBanned,
+      model.bannedByAdmin,
+      model.bannedByBlogger,
       model.content,
       model.createdAt,
     );
