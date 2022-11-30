@@ -44,9 +44,10 @@ export default class BlogUserBanQueryRepository {
   }
   private getDbQuery(params: GetBlogUserBansQuery): any {
     const filter = this.getFilter(params.blogId, params.searchLoginTerm);
+    const sortBy = this.getSortValue(params.sortBy);
     return this.model
       .find(filter)
-      .sort({ [params.sortBy]: params.sortDirection as SortOrder });
+      .sort({ [sortBy]: params.sortDirection as SortOrder });
   }
   private getFilter(blogId: string, searchLoginTerm?: string): any {
     const filter: {
@@ -59,6 +60,12 @@ export default class BlogUserBanQueryRepository {
     }
 
     return filter;
+  }
+  private getSortValue(sortBy: string): string {
+    if (sortBy === 'login') return 'userLogin';
+    if (sortBy === 'id') return 'userId';
+    if (sortBy === 'banReason') return 'banReason';
+    return 'banDate';
   }
   private async loadPageItems(
     page: PageViewModel<BlogUserBanViewModel>,
