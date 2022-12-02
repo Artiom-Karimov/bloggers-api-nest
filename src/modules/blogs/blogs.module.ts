@@ -27,19 +27,15 @@ import PostsController from './posts/posts.controller';
 import PostsQueryRepository from './posts/posts.query.repository';
 import PostsRepository from './posts/posts.repository';
 import PostsService from './posts/posts.service';
-import { CreateBlogHandler } from './blogs/commands/create.blog.handler';
-import { UpdateBlogHandler } from './blogs/commands/update.blog.handler';
-import { DeleteBlogHandler } from './blogs/commands/delete.blog.handler';
 import { CreatePostHandler } from './posts/commands/create.post.handler';
 import { UpdatePostHandler } from './posts/commands/update.post.handler';
 import { DeletePostHandler } from './posts/commands/delete.post.handler';
 import { PutPostLikeHandler } from './posts/commands/put.post.like.handler';
 import { PutCommentLikeHandler } from './comments/commands/put.comment.like.handler';
 import { CqrsModule } from '@nestjs/cqrs';
-import { BanBlogHandler } from './blogs/commands/ban.blog.handler';
+import { BanBlogHandler } from './blogs/commands/handlers/ban.blog.handler';
 import AdminBlogsQueryRepository from './blogs/admin.blogs.query.repository';
 import BloggerCommentsQueryRepository from './comments/blogger.comments.query.repository';
-import { BlogUserBanHandler } from './blogs/commands/blog.user.ban.handler';
 import BlogUserBanRepository from './blogs/blog.user.ban.repository';
 import BlogUserBan, {
   BlogUserBanSchema,
@@ -47,6 +43,10 @@ import BlogUserBan, {
 import { CreateCommentHandler } from './comments/commands/create.comment.handler';
 import BlogUserBanQueryRepository from './blogs/blog.user.ban.query.repository';
 import { UsersModule } from '../users/users.module';
+import { CreateBlogHandler } from './blogs/commands/handlers/create.blog.handler';
+import { UpdateBlogHandler } from './blogs/commands/handlers/update.blog.handler';
+import { DeleteBlogHandler } from './blogs/commands/handlers/delete.blog.handler';
+import { BlogUserBanHandler } from './blogs/commands/handlers/blog.user.ban.handler';
 
 const commandHandlers = [
   CreateBlogHandler,

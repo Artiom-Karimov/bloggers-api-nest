@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import BlogsRepository from '../blogs.repository';
-import BlogModel from '../models/blog.model';
-import CreateBlogCommand from './create.blog.command';
+import BlogsRepository from '../../blogs.repository';
+import BlogModel from '../../models/blog.model';
+import CreateBlogCommand from '../commands/create.blog.command';
 
 @CommandHandler(CreateBlogCommand)
 export class CreateBlogHandler implements ICommandHandler<CreateBlogCommand> {

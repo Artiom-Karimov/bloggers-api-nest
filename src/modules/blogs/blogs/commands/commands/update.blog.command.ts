@@ -1,4 +1,4 @@
-import BlogInputModel from '../models/input/blog.input.model';
+import BlogInputModel from '../../models/input/blog.input.model';
 
 export default class UpdateBlogCommand {
   constructor(

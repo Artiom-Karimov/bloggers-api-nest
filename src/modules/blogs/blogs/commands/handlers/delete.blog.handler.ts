@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import BlogsRepository from '../blogs.repository';
-import { BlogError } from '../models/blog.error';
-import DeleteBlogCommand from './delete.blog.command';
+import BlogsRepository from '../../blogs.repository';
+import { BlogError } from '../../models/blog.error';
+import DeleteBlogCommand from '../commands/delete.blog.command';
 
 @CommandHandler(DeleteBlogCommand)
 export class DeleteBlogHandler implements ICommandHandler<DeleteBlogCommand> {

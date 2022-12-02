@@ -1,13 +1,13 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import UsersQueryRepository from '../../../users/users.query.repository';
-import CommentsRepository from '../../comments/comments.repository';
-import BlogUserBanRepository from '../blog.user.ban.repository';
-import BlogsRepository from '../blogs.repository';
-import { BlogError } from '../models/blog.error';
-import BlogUserBanModel from '../models/blog.user.ban.model';
+import UsersQueryRepository from '../../../../users/users.query.repository';
+import CommentsRepository from '../../../comments/comments.repository';
+import BlogUserBanRepository from '../../blog.user.ban.repository';
+import BlogsRepository from '../../blogs.repository';
+import { BlogError } from '../../models/blog.error';
+import BlogUserBanModel from '../../models/blog.user.ban.model';
 import BlogUserBanCommand, {
   BlogUserBanCreateModel,
-} from './blog.user.ban.command';
+} from '../commands/blog.user.ban.command';
 
 @CommandHandler(BlogUserBanCommand)
 export class BlogUserBanHandler implements ICommandHandler<BlogUserBanCommand> {

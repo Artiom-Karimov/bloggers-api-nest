@@ -1,6 +1,6 @@
 import DateGenerator from '../../../../common/utils/date.generator';
 import IdGenerator from '../../../../common/utils/id.generator';
-import { BlogUserBanCreateModel } from '../commands/blog.user.ban.command';
+import { BlogUserBanCreateModel } from '../commands/commands/blog.user.ban.command';
 
 export default class BlogUserBanModel {
   constructor(

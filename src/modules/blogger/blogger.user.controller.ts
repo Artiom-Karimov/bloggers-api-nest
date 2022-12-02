@@ -18,7 +18,7 @@ import { User } from '../auth/guards/user.decorator';
 import TokenPayload from '../auth/models/jwt/token.payload';
 import AdminBlogsQueryRepository from '../blogs/blogs/admin.blogs.query.repository';
 import BlogUserBanQueryRepository from '../blogs/blogs/blog.user.ban.query.repository';
-import BlogUserBanCommand from '../blogs/blogs/commands/blog.user.ban.command';
+import BlogUserBanCommand from '../blogs/blogs/commands/commands/blog.user.ban.command';
 import { BlogError } from '../blogs/blogs/models/blog.error';
 import BlogUserBanInputModel from '../blogs/blogs/models/input/blog.user.ban.input.model';
 import GetBlogUserBansQuery from '../blogs/blogs/models/input/get.blog.user.bans.query';

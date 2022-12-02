@@ -31,7 +31,7 @@ import UsersService from '../users/users.service';
 import { BlogError } from '../blogs/blogs/models/blog.error';
 import BlogBanInputModel from '../blogs/blogs/models/input/blog.ban.input.model';
 import { CommandBus } from '@nestjs/cqrs';
-import BanBlogCommand from '../blogs/blogs/commands/ban.blog.command';
+import BanBlogCommand from '../blogs/blogs/commands/commands/ban.blog.command';
 import AdminBlogsQueryRepository from '../blogs/blogs/admin.blogs.query.repository';
 
 @Controller('sa')
