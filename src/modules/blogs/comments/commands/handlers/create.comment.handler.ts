@@ -1,10 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import BlogUserBanRepository from '../../blogs/blog.user.ban.repository';
-import { PostError } from '../../posts/models/post.error';
-import PostsRepository from '../../posts/posts.repository';
-import CommentsRepository from '../comments.repository';
-import CommentModel from '../models/comment.model';
-import CreateCommentCommand from './create.comment.command';
+import BlogUserBanRepository from '../../../blogs/blog.user.ban.repository';
+import { PostError } from '../../../posts/models/post.error';
+import PostsRepository from '../../../posts/posts.repository';
+import CommentsRepository from '../../comments.repository';
+import CommentModel from '../../models/comment.model';
+import CreateCommentCommand from '../commands/create.comment.command';
 
 @CommandHandler(CreateCommentCommand)
 export class CreateCommentHandler

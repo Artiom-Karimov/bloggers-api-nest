@@ -22,7 +22,7 @@ import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.
 import LikeInputModel from '../likes/models/like.input.model';
 import { User } from '../../auth/guards/user.decorator';
 import TokenPayload from '../../auth/models/jwt/token.payload';
-import PutCommentLikeCommand from './commands/put.comment.like.command';
+import PutCommentLikeCommand from './commands/commands/put.comment.like.command';
 import { CommandBus } from '@nestjs/cqrs';
 import { PostError } from '../posts/models/post.error';
 import CommentUpdateModel from './models/input/comment.update.model';

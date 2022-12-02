@@ -29,7 +29,7 @@ import { CreatePostHandler } from './posts/commands/handlers/create.post.handler
 import { UpdatePostHandler } from './posts/commands/handlers/update.post.handler';
 import { DeletePostHandler } from './posts/commands/handlers/delete.post.handler';
 import { PutPostLikeHandler } from './posts/commands/handlers/put.post.like.handler';
-import { PutCommentLikeHandler } from './comments/commands/put.comment.like.handler';
+import { PutCommentLikeHandler } from './comments/commands/handlers/put.comment.like.handler';
 import { CqrsModule } from '@nestjs/cqrs';
 import { BanBlogHandler } from './blogs/commands/handlers/ban.blog.handler';
 import AdminBlogsQueryRepository from './blogs/admin.blogs.query.repository';
@@ -38,7 +38,7 @@ import BlogUserBanRepository from './blogs/blog.user.ban.repository';
 import BlogUserBan, {
   BlogUserBanSchema,
 } from './blogs/models/blog.user.ban.schema';
-import { CreateCommentHandler } from './comments/commands/create.comment.handler';
+import { CreateCommentHandler } from './comments/commands/handlers/create.comment.handler';
 import BlogUserBanQueryRepository from './blogs/blog.user.ban.query.repository';
 import { UsersModule } from '../users/users.module';
 import { CreateBlogHandler } from './blogs/commands/handlers/create.blog.handler';

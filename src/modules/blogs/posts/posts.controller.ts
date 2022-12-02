@@ -29,7 +29,7 @@ import { User } from '../../auth/guards/user.decorator';
 import { CommandBus } from '@nestjs/cqrs';
 import PutPostLikeCommand from './commands/commands/put.post.like.command';
 import { PostError } from './models/post.error';
-import CreateCommentCommand from '../comments/commands/create.comment.command';
+import CreateCommentCommand from '../comments/commands/commands/create.comment.command';
 
 @Controller('posts')
 export default class PostsController {
