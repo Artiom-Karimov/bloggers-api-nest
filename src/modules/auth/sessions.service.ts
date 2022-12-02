@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import EmailConfirmationRepository from '../users/email.confirmation.repository';
 import UserModel from '../users/models/user.model';
-import UsersService from '../users/users.service';
+import UsersRepository from '../users/users.repository';
 import { AuthError } from './models/auth.error';
 import LoginInputModel from './models/input/login.input.model';
 import RefreshTokenInputModel from './models/input/refresh.token.input.model';
@@ -17,7 +17,7 @@ import UsersBanQueryRepository from './users.ban.query.repository';
 @Injectable()
 export default class SessionsService {
   constructor(
-    private readonly usersService: UsersService,
+    private readonly usersRepo: UsersRepository,
     private readonly banRepo: UsersBanQueryRepository,
     private readonly emailRepo: EmailConfirmationRepository,
     private readonly sessionsRepo: SessionsRepository,
@@ -65,7 +65,7 @@ export default class SessionsService {
   public async getSessionUserView(
     userId: string,
   ): Promise<SessionUserViewModel> {
-    const user = await this.usersService.get(userId);
+    const user = await this.usersRepo.get(userId);
     if (!user) return undefined;
 
     return SessionUserViewModel.fromDomain(user);
@@ -91,7 +91,7 @@ export default class SessionsService {
     loginOrEmail: string,
     password: string,
   ): Promise<UserModel | AuthError> {
-    const user = await this.usersService.getByLoginOrEmail(loginOrEmail);
+    const user = await this.usersRepo.getByLoginOrEmail(loginOrEmail);
     if (!user) return AuthError.WrongCredentials;
 
     const loginAllowed = await this.checkLoginAllowed(user.id);

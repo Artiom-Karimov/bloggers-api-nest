@@ -22,7 +22,7 @@ export default class RegistrationService {
   ) { }
 
   public async resendEmail(email: string): Promise<UserError> {
-    const user = await this.usersService.getByLoginOrEmail(email);
+    const user = await this.usersRepo.getByLoginOrEmail(email);
     if (!user) return UserError.WrongCredentials;
 
     const created = await this.createEmailConfirmation(user);
@@ -40,7 +40,7 @@ export default class RegistrationService {
   }
 
   public async recoverPassword(email: string): Promise<boolean> {
-    const user = await this.usersService.getByLoginOrEmail(email);
+    const user = await this.usersRepo.getByLoginOrEmail(email);
     if (!user) return false;
 
     const recovery = RecoveryModel.create(user.id);
