@@ -33,6 +33,7 @@ import BanBlogCommand from '../blogs/blogs/commands/commands/ban.blog.command';
 import AdminBlogsQueryRepository from '../blogs/blogs/admin.blogs.query.repository';
 import AssignBlogOwnerCommand from '../blogs/blogs/commands/commands/assign.blog.owner.command';
 import BanUserCommand from './commands/commands/ban.user.command';
+import CreateConfirmedUserCommand from '../users/commands/commands/create.confirmed.user.command';
 
 @Controller('sa')
 @UseGuards(BasicAuthGuard)
@@ -97,7 +98,9 @@ export default class AdminController {
   @Post('users')
   async create(@Body() data: UserInputModel): Promise<UserViewModel> {
     await this.checkLoginEmailExists(data.login, data.email);
-    const created = await this.usersService.createConfirmed(data);
+    const created = await this.commandBus.execute(
+      new CreateConfirmedUserCommand(data),
+    );
     if (!created) throw new BadRequestException();
     const retrieved = this.usersQueryRepo.getUser(created);
     if (!retrieved) throw new BadRequestException();

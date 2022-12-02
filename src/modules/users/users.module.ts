@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import Session, { SessionSchema } from '../auth/models/session/session.schema';
 import SessionsRepository from '../auth/sessions.repository';
+import CreateConfirmedUserHandler from './commands/handlers/create.confirmed.user.handler';
 import EmailConfirmationRepository from './email.confirmation.repository';
 import UserBan, { UserBanSchema } from './models/ban/user.ban.schema';
 import EmailConfirmation, {
@@ -12,6 +13,8 @@ import UsersBanRepository from './users.ban.repository';
 import UsersQueryRepository from './users.query.repository';
 import UsersRepository from './users.repository';
 import UsersService from './users.service';
+
+const commandHandlers = [CreateConfirmedUserHandler];
 
 @Module({
   imports: [
@@ -29,6 +32,7 @@ import UsersService from './users.service';
     UsersBanRepository,
     EmailConfirmationRepository,
     SessionsRepository,
+    ...commandHandlers,
   ],
   exports: [
     UsersRepository,

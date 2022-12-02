@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import EmailConfirmationRepository from './email.confirmation.repository';
-import EmailConfirmationModel from './models/email/email.confirmation.model';
 import UserInputModel from './models/user.input.model';
 import UserModel from './models/user.model';
 import UsersBanRepository from './users.ban.repository';
@@ -23,18 +22,6 @@ export default class UsersService {
   public async create(data: UserInputModel): Promise<string | undefined> {
     const user = await UserModel.create(data);
     return this.repo.create(user);
-  }
-  public async createConfirmed(
-    data: UserInputModel,
-  ): Promise<string | undefined> {
-    const user = await UserModel.create(data);
-    const created = await this.repo.create(user);
-    if (!created) return undefined;
-
-    const emailConfirmation = EmailConfirmationModel.createConfirmed(user.id);
-    await this.emailRepo.create(emailConfirmation);
-
-    return created;
   }
   public async delete(id: string): Promise<boolean> {
     const user = await this.repo.get(id);
