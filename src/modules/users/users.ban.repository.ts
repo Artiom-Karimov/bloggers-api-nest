@@ -30,9 +30,9 @@ export default class UsersBanRepository {
       return false;
     }
   }
-  public async delete(id: string): Promise<boolean> {
+  public async delete(userId: string): Promise<boolean> {
     try {
-      await this.model.findByIdAndDelete(id);
+      await this.model.findByIdAndDelete(userId);
       return true;
     } catch (error) {
       console.error(error);

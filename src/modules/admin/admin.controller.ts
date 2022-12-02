@@ -33,7 +33,9 @@ import BanBlogCommand from '../blogs/blogs/commands/commands/ban.blog.command';
 import AdminBlogsQueryRepository from '../blogs/blogs/admin.blogs.query.repository';
 import AssignBlogOwnerCommand from '../blogs/blogs/commands/commands/assign.blog.owner.command';
 import BanUserCommand from './commands/commands/ban.user.command';
-import CreateConfirmedUserCommand from '../users/commands/commands/create.confirmed.user.command';
+import CreateConfirmedUserCommand from './commands/commands/create.confirmed.user.command';
+import DeleteUserCommand from './commands/commands/delete.user.command';
+import { UserError } from '../users/models/user.error';
 
 @Controller('sa')
 @UseGuards(BasicAuthGuard)
@@ -101,7 +103,8 @@ export default class AdminController {
     const created = await this.commandBus.execute(
       new CreateConfirmedUserCommand(data),
     );
-    if (!created) throw new BadRequestException();
+    if (typeof created !== 'string') throw new BadRequestException();
+
     const retrieved = this.usersQueryRepo.getUser(created);
     if (!retrieved) throw new BadRequestException();
     return retrieved;
@@ -109,9 +112,10 @@ export default class AdminController {
   @Delete('users/:id')
   @HttpCode(204)
   async delete(@Param('id') id: string): Promise<void> {
-    const deleted = await this.usersService.delete(id);
-    if (!deleted) throw new NotFoundException();
-    return;
+    const result = await this.commandBus.execute(new DeleteUserCommand(id));
+    if (result === UserError.NoError) return;
+    if (result === UserError.NotFound) throw new NotFoundException();
+    throw new BadRequestException();
   }
   @Put('users/:id/ban')
   @HttpCode(204)
