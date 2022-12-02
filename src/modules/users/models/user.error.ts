@@ -4,5 +4,7 @@ export enum UserError {
   Forbidden,
   LoginExists,
   EmailExists,
+  WrongCredentials,
+  AlreadyConfirmed,
   Unknown,
 }

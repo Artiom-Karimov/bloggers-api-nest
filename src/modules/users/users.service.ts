@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import UserInputModel from './models/user.input.model';
 import UserModel from './models/user.model';
 import UsersRepository from './users.repository';
 
@@ -12,10 +11,6 @@ export default class UsersService {
   }
   public getByLoginOrEmail(input: string): Promise<UserModel | undefined> {
     return this.repo.getByLoginOrEmail(input);
-  }
-  public async create(data: UserInputModel): Promise<string | undefined> {
-    const user = await UserModel.create(data);
-    return this.repo.create(user);
   }
   public async updatePassword(id: string, password: string): Promise<boolean> {
     let user = await this.repo.get(id);

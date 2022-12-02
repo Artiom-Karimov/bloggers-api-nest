@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { MailService } from '../mail/mail.service';
 import EmailConfirmationRepository from '../users/email.confirmation.repository';
 import EmailConfirmationModel from '../users/models/email/email.confirmation.model';
+import { UserError } from '../users/models/user.error';
 import UserInputModel from '../users/models/user.input.model';
 import UserModel from '../users/models/user.model';
+import UsersRepository from '../users/users.repository';
 import UsersService from '../users/users.service';
-import { AuthError } from './models/auth.error';
 import NewPasswordInputModel from './models/input/new.password.input.model';
 import RecoveryModel from './models/recovery/recovery.model';
 import RecoveryRepository from './recovery.repository';
@@ -13,35 +14,20 @@ import RecoveryRepository from './recovery.repository';
 @Injectable()
 export default class RegistrationService {
   constructor(
+    private readonly usersRepo: UsersRepository,
     private readonly usersService: UsersService,
     private readonly emailRepo: EmailConfirmationRepository,
     private readonly recoveryRepo: RecoveryRepository,
     private readonly mailService: MailService,
   ) { }
 
-  public async register(data: UserInputModel): Promise<AuthError> {
-    if (await this.usersService.loginOrEmailExists(data.login))
-      return AuthError.LoginExists;
-    if (await this.usersService.loginOrEmailExists(data.email))
-      return AuthError.EmailExists;
-
-    const created = await this.usersService.create(data);
-    if (!created) return AuthError.Unknown;
-    const retrieved = await this.usersService.get(created);
-    if (!retrieved) return AuthError.Unknown;
-
-    await this.createEmailConfirmation(retrieved);
-
-    return AuthError.NoError;
-  }
-
-  public async resendEmail(email: string): Promise<AuthError> {
+  public async resendEmail(email: string): Promise<UserError> {
     const user = await this.usersService.getByLoginOrEmail(email);
-    if (!user) return AuthError.WrongCredentials;
+    if (!user) return UserError.WrongCredentials;
 
     const created = await this.createEmailConfirmation(user);
 
-    return created ? AuthError.NoError : AuthError.AlreadyConfirmed;
+    return created ? UserError.NoError : UserError.AlreadyConfirmed;
   }
 
   public async confirmEmail(code: string): Promise<boolean> {
@@ -73,7 +59,16 @@ export default class RegistrationService {
     return this.usersService.updatePassword(recovery.userId, data.newPassword);
   }
 
-  private async createEmailConfirmation(user: UserModel): Promise<boolean> {
+  public async checkLoginEmailExists(data: UserInputModel): Promise<UserError> {
+    const loginExists = await this.usersRepo.getByLoginOrEmail(data.login);
+    if (loginExists) return UserError.LoginExists;
+    const emailExists = await this.usersRepo.getByLoginOrEmail(data.email);
+    if (emailExists) return UserError.EmailExists;
+
+    return UserError.NoError;
+  }
+
+  public async createEmailConfirmation(user: UserModel): Promise<boolean> {
     const ec = EmailConfirmationModel.create(user.id);
     const existing = await this.emailRepo.getByUser(user.id);
 

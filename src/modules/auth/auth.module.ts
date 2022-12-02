@@ -14,9 +14,14 @@ import { MailModule } from '../mail/mail.module';
 import { UsersModule } from '../users/users.module';
 import UserBan, { UserBanSchema } from '../users/models/ban/user.ban.schema';
 import UsersBanQueryRepository from './users.ban.query.repository';
+import RegisterHandler from './commands/handlers/register.handler';
+import { CqrsModule } from '@nestjs/cqrs';
+
+const commandHandlers = [RegisterHandler];
 
 @Module({
   imports: [
+    CqrsModule,
     MongooseModule.forFeature([
       { name: Recovery.name, schema: RecoverySchema },
     ]),
@@ -34,6 +39,7 @@ import UsersBanQueryRepository from './users.ban.query.repository';
     RegistrationService,
     SessionsService,
     UsersBanQueryRepository,
+    ...commandHandlers,
   ],
   exports: [UsersBanQueryRepository, SessionsRepository],
 })

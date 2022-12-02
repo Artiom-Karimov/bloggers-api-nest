@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import UserInputModel from '../users/models/user.input.model';
 import { DdosGuard } from './guards/ddos.guard';
-import { AuthError } from './models/auth.error';
 import CodeInputModel from './models/input/code.input.model';
 import EmailInputModel from './models/input/email.input.model';
 import LoginInputModel from './models/input/login.input.model';
@@ -26,10 +25,14 @@ import SessionsService from './sessions.service';
 import SessionUserViewModel from './models/session.user.view.model';
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
 import { BearerAuthGuard } from './guards/bearer.auth.guard';
+import { UserError } from '../users/models/user.error';
+import { CommandBus } from '@nestjs/cqrs';
+import RegisterCommand from './commands/commands/register.command';
 
 @Controller('auth')
 export default class AuthController {
   constructor(
+    private readonly commandBus: CommandBus,
     private readonly regService: RegistrationService,
     private readonly sessionsService: SessionsService,
   ) { }
@@ -38,14 +41,14 @@ export default class AuthController {
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async register(@Body() data: UserInputModel): Promise<void> {
-    const result = await this.regService.register(data);
+    const result = await this.commandBus.execute(new RegisterCommand(data));
 
     switch (result) {
-      case AuthError.NoError:
+      case UserError.NoError:
         return;
-      case AuthError.LoginExists:
+      case UserError.LoginExists:
         throwValidationException('login', 'login already exists');
-      case AuthError.EmailExists:
+      case UserError.EmailExists:
         throwValidationException('email', 'email already exists');
       default:
         throw new BadRequestException();
@@ -58,7 +61,7 @@ export default class AuthController {
   async resendEmail(@Body() data: EmailInputModel): Promise<void> {
     const result = await this.regService.resendEmail(data.email);
 
-    if (result === AuthError.NoError) return;
+    if (result === UserError.NoError) return;
     throwValidationException('email', 'email is wrong or already confirmed');
   }
 
