@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import EmailConfirmationRepository from '../users/email.confirmation.repository';
+import { UserError } from '../users/models/user.error';
 import UserModel from '../users/models/user.model';
 import UsersRepository from '../users/users.repository';
-import { AuthError } from './models/auth.error';
 import LoginInputModel from './models/input/login.input.model';
 import RefreshTokenInputModel from './models/input/refresh.token.input.model';
 import TokenPair from './models/jwt/token.pair';
@@ -22,7 +22,7 @@ export default class SessionsService {
     private readonly emailRepo: EmailConfirmationRepository,
     private readonly sessionsRepo: SessionsRepository,
   ) { }
-  public async login(data: LoginInputModel): Promise<TokenPair | AuthError> {
+  public async login(data: LoginInputModel): Promise<TokenPair | UserError> {
     const userResult = await this.checkLoginGetUser(
       data.loginOrEmail,
       data.password,
@@ -38,15 +38,15 @@ export default class SessionsService {
   }
   public async refreshToken(
     data: RefreshTokenInputModel,
-  ): Promise<TokenPair | AuthError> {
+  ): Promise<TokenPair | UserError> {
     const payload = TokenPair.unpackToken(data.token);
-    if (!payload) return AuthError.InvalidCode;
+    if (!payload) return UserError.InvalidCode;
 
     if (!(await this.checkSession(payload.deviceId, payload.userId)))
-      return AuthError.InvalidCode;
+      return UserError.InvalidCode;
 
     const loginAllowed = await this.checkLoginAllowed(payload.userId);
-    if (loginAllowed !== AuthError.NoError) return loginAllowed;
+    if (loginAllowed !== UserError.NoError) return loginAllowed;
 
     const session = await this.updateSession(payload.deviceId, {
       ip: data.ip,
@@ -60,7 +60,7 @@ export default class SessionsService {
     if (!payload) return false;
 
     const result = await this.deleteOne(payload.userId, payload.deviceId);
-    return result === AuthError.NoError;
+    return result === UserError.NoError;
   }
   public async getSessionUserView(
     userId: string,
@@ -76,12 +76,12 @@ export default class SessionsService {
   ): Promise<number> {
     return this.sessionsRepo.deleteAllButOne(userId, deviceId);
   }
-  public async deleteOne(userId: string, deviceId: string): Promise<AuthError> {
+  public async deleteOne(userId: string, deviceId: string): Promise<UserError> {
     const session = await this.sessionsRepo.get(deviceId);
-    if (!session) return AuthError.NotFound;
-    if (session.userId !== userId) return AuthError.WrongCredentials;
+    if (!session) return UserError.NotFound;
+    if (session.userId !== userId) return UserError.WrongCredentials;
     await this.sessionsRepo.delete(deviceId);
-    return AuthError.NoError;
+    return UserError.NoError;
   }
   public async get(deviceId: string): Promise<SessionModel> {
     return this.sessionsRepo.get(deviceId);
@@ -90,24 +90,24 @@ export default class SessionsService {
   private async checkLoginGetUser(
     loginOrEmail: string,
     password: string,
-  ): Promise<UserModel | AuthError> {
+  ): Promise<UserModel | UserError> {
     const user = await this.usersRepo.getByLoginOrEmail(loginOrEmail);
-    if (!user) return AuthError.WrongCredentials;
+    if (!user) return UserError.WrongCredentials;
 
     const loginAllowed = await this.checkLoginAllowed(user.id);
-    if (loginAllowed !== AuthError.NoError) return loginAllowed;
+    if (loginAllowed !== UserError.NoError) return loginAllowed;
 
     const passwordMatch = await UserModel.checkPassword(user, password);
-    if (!passwordMatch) return AuthError.WrongCredentials;
+    if (!passwordMatch) return UserError.WrongCredentials;
 
     return user;
   }
-  private async checkLoginAllowed(id: string): Promise<AuthError> {
+  private async checkLoginAllowed(id: string): Promise<UserError> {
     const ec = await this.emailRepo.getByUser(id);
-    if (!ec || !ec.confirmed) return AuthError.Unconfirmed;
+    if (!ec || !ec.confirmed) return UserError.Unconfirmed;
     const ban = await this.banRepo.get(id);
-    if (ban === undefined || !ban.isBanned) return AuthError.NoError;
-    return AuthError.Banned;
+    if (ban === undefined || !ban.isBanned) return UserError.NoError;
+    return UserError.Forbidden;
   }
   private async createSession(data: SessionCreateType): Promise<SessionModel> {
     const session = SessionModel.create(data);

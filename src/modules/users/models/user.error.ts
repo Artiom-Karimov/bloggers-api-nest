@@ -6,5 +6,7 @@ export enum UserError {
   EmailExists,
   WrongCredentials,
   AlreadyConfirmed,
+  InvalidCode,
+  Unconfirmed,
   Unknown,
 }

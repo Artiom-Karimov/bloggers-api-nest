@@ -10,12 +10,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
-import { AuthError } from './models/auth.error';
 import SessionViewModel from './models/session/session.view.model';
 import SessionsQueryRepository from './sessions.query.repository';
 import SessionsService from './sessions.service';
 import TokenPayload from './models/jwt/token.payload';
 import { User } from './guards/user.decorator';
+import { UserError } from '../users/models/user.error';
 
 @Controller('security/devices')
 export default class SecurityDevicesController {
@@ -46,9 +46,9 @@ export default class SecurityDevicesController {
     @User() user: TokenPayload,
   ): Promise<void> {
     const result = await this.service.deleteOne(user.userId, deviceId);
-    if (result === AuthError.NoError) return;
-    if (result === AuthError.NotFound) throw new NotFoundException();
-    if (result === AuthError.WrongCredentials) throw new ForbiddenException();
+    if (result === UserError.NoError) return;
+    if (result === UserError.NotFound) throw new NotFoundException();
+    if (result === UserError.WrongCredentials) throw new ForbiddenException();
     throw new BadRequestException();
   }
 }
