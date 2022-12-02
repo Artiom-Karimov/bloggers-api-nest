@@ -12,12 +12,12 @@ import {
 } from '@nestjs/common';
 import {
   BadRequestException,
+  ForbiddenException,
   NotFoundException,
 } from '@nestjs/common/exceptions';
 import PageViewModel from '../../common/models/page.view.model';
 import { throwValidationException } from '../../common/utils/validation.options';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
-import BlogsService from '../blogs/blogs/blogs.service';
 import CommentsService from '../blogs/comments/comments.service';
 import AdminBlogViewModel from '../blogs/blogs/models/view/admin.blog.view.model';
 import GetBlogsQuery from '../blogs/blogs/models/input/get.blogs.query';
@@ -33,13 +33,13 @@ import BlogBanInputModel from '../blogs/blogs/models/input/blog.ban.input.model'
 import { CommandBus } from '@nestjs/cqrs';
 import BanBlogCommand from '../blogs/blogs/commands/commands/ban.blog.command';
 import AdminBlogsQueryRepository from '../blogs/blogs/admin.blogs.query.repository';
+import AssignBlogOwnerCommand from '../blogs/blogs/commands/commands/assign.blog.owner.command';
 
 @Controller('sa')
 @UseGuards(BasicAuthGuard)
 export default class AdminController {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly blogsService: BlogsService,
     private readonly blogsQueryRepo: AdminBlogsQueryRepository,
     private readonly usersService: UsersService,
     private readonly usersQueryRepo: UsersQueryRepository,
@@ -74,18 +74,13 @@ export default class AdminController {
     @Param('id') blogId: string,
     @Param('userId') userId: string,
   ): Promise<void> {
-    const user = await this.usersQueryRepo.getUser(userId);
-    if (!user) throwValidationException('userId', 'user not found');
+    const result = await this.commandBus.execute(
+      new AssignBlogOwnerCommand(userId, blogId),
+    );
 
-    const result = await this.blogsService.assignOwner(blogId, {
-      userId: user.id,
-      userLogin: user.login,
-    });
     if (result === BlogError.NoError) return;
-    if (result === BlogError.Forbidden)
-      throwValidationException('id', 'blog already has owner');
-    if (result === BlogError.NotFound)
-      throwValidationException('id', 'blog not found');
+    if (result === BlogError.Forbidden) throw new ForbiddenException();
+    if (result === BlogError.NotFound) throw new NotFoundException();
     throw new BadRequestException('unknown');
   }
 

@@ -4,7 +4,6 @@ import { AuthModule } from '../auth/auth.module';
 import BlogsController from './blogs/blogs.controller';
 import BlogsQueryRepository from './blogs/blogs.query.repository';
 import BlogsRepository from './blogs/blogs.repository';
-import BlogsService from './blogs/blogs.service';
 import CommentsController from './comments/comments.controller';
 import CommentsQueryRepository from './comments/comments.query.repository';
 import CommentsRepository from './comments/comments.repository';
@@ -85,7 +84,6 @@ const commandHandlers = [
     BlogsRepository,
     BlogsQueryRepository,
     AdminBlogsQueryRepository,
-    BlogsService,
     BlogUserBanRepository,
     BlogUserBanQueryRepository,
     PostsRepository,
@@ -103,7 +101,6 @@ const commandHandlers = [
     ...commandHandlers,
   ],
   exports: [
-    BlogsService,
     BlogsQueryRepository,
     BlogUserBanQueryRepository,
     AdminBlogsQueryRepository,
