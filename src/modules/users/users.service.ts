@@ -24,8 +24,4 @@ export default class UsersService {
     user = await UserModel.updatePassword(user, password);
     return this.repo.update(user.id, user);
   }
-  public async loginOrEmailExists(input: string): Promise<boolean> {
-    const result = await this.repo.getByLoginOrEmail(input);
-    return !!result;
-  }
 }

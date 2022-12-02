@@ -99,11 +99,17 @@ export default class AdminController {
   }
   @Post('users')
   async create(@Body() data: UserInputModel): Promise<UserViewModel> {
-    await this.checkLoginEmailExists(data.login, data.email);
     const created = await this.commandBus.execute(
       new CreateConfirmedUserCommand(data),
     );
-    if (typeof created !== 'string') throw new BadRequestException();
+
+    if (typeof created !== 'string') {
+      if (created === UserError.LoginExists)
+        throwValidationException('login', 'login already taken');
+      if (created === UserError.EmailExists)
+        throwValidationException('email', 'email already taken');
+      throw new BadRequestException();
+    }
 
     const retrieved = this.usersQueryRepo.getUser(created);
     if (!retrieved) throw new BadRequestException();
@@ -129,15 +135,5 @@ export default class AdminController {
     if (result === BlogError.NoError) return;
     if (result === BlogError.NotFound) throw new NotFoundException();
     throw new BadRequestException();
-  }
-
-  private async checkLoginEmailExists(
-    login: string,
-    email: string,
-  ): Promise<void> {
-    const loginExists = await this.usersService.loginOrEmailExists(login);
-    if (loginExists) throwValidationException('login', 'login already exists');
-    const emailExists = await this.usersService.loginOrEmailExists(email);
-    if (emailExists) throwValidationException('email', 'email already exists');
   }
 }
