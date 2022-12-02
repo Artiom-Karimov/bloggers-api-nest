@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { BlogError } from '../../../blogs/models/blog.error';
 import LikeModel from '../../../likes/models/like.model';
 import PostLikesRepository from '../../../likes/post.likes.repository';
-import { PostError } from '../../models/post.error';
 import PostsRepository from '../../posts.repository';
 import PutPostLikeCommand from '../commands/put.post.like.command';
 
@@ -12,19 +12,19 @@ export class PutPostLikeHandler implements ICommandHandler<PutPostLikeCommand> {
     private readonly likesRepo: PostLikesRepository,
   ) { }
 
-  async execute(command: PutPostLikeCommand): Promise<PostError> {
+  async execute(command: PutPostLikeCommand): Promise<BlogError> {
     const { entityId, userId, likeStatus } = command.data;
     const post = await this.postsRepo.get(entityId);
-    if (!post) return PostError.NotFound;
+    if (!post) return BlogError.NotFound;
 
     let like = await this.likesRepo.get(entityId, userId);
     if (like) {
       like = LikeModel.update(like, likeStatus);
       const result = await this.likesRepo.update(like);
-      return result ? PostError.NoError : PostError.Unknown;
+      return result ? BlogError.NoError : BlogError.Unknown;
     }
     like = LikeModel.create(command.data);
     const result = await this.likesRepo.create(like);
-    return result ? PostError.NoError : PostError.Unknown;
+    return result ? BlogError.NoError : BlogError.Unknown;
   }
 }

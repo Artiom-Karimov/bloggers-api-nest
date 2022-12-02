@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import BlogUserBanRepository from '../../../blogs/blog.user.ban.repository';
-import { PostError } from '../../../posts/models/post.error';
+import { BlogError } from '../../../blogs/models/blog.error';
 import PostsRepository from '../../../posts/posts.repository';
 import CommentsRepository from '../../comments.repository';
 import CommentModel from '../../models/comment.model';
@@ -16,16 +16,16 @@ export class CreateCommentHandler
     private readonly commentsRepo: CommentsRepository,
   ) { }
 
-  async execute(command: CreateCommentCommand): Promise<string | PostError> {
+  async execute(command: CreateCommentCommand): Promise<string | BlogError> {
     const { postId, userId } = command.data;
     const post = await this.postsRepo.get(postId);
-    if (!post) return PostError.NotFound;
+    if (!post) return BlogError.NotFound;
 
     const ban = await this.banRepo.get(post.blogId, userId);
-    if (ban) return PostError.Forbidden;
+    if (ban) return BlogError.Forbidden;
 
     const comment = CommentModel.create(command.data);
     const created = await this.commentsRepo.create(comment);
-    return created ?? PostError.Unknown;
+    return created ?? BlogError.Unknown;
   }
 }

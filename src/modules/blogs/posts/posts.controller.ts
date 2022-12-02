@@ -27,8 +27,8 @@ import TokenPayload from '../../auth/models/jwt/token.payload';
 import { User } from '../../auth/guards/user.decorator';
 import { CommandBus } from '@nestjs/cqrs';
 import PutPostLikeCommand from './commands/commands/put.post.like.command';
-import { PostError } from './models/post.error';
 import CreateCommentCommand from '../comments/commands/commands/create.comment.command';
+import { BlogError } from '../blogs/models/blog.error';
 
 @Controller('posts')
 export default class PostsController {
@@ -96,8 +96,8 @@ export default class PostsController {
       if (comment) return comment;
       throw new BadRequestException();
     }
-    if (result === PostError.NotFound) throw new NotFoundException();
-    if (result === PostError.Forbidden) throw new ForbiddenException();
+    if (result === BlogError.NotFound) throw new NotFoundException();
+    if (result === BlogError.Forbidden) throw new ForbiddenException();
     throw new BadRequestException();
   }
 
@@ -117,8 +117,8 @@ export default class PostsController {
         likeStatus: data.likeStatus,
       }),
     );
-    if (result === PostError.NoError) return;
-    if (result === PostError.NotFound) throw new NotFoundException();
+    if (result === BlogError.NoError) return;
+    if (result === BlogError.NotFound) throw new NotFoundException();
     throw new BadRequestException();
   }
 }

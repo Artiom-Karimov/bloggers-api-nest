@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import AdminBlogsQueryRepository from '../../../blogs/admin.blogs.query.repository';
-import { PostError } from '../../models/post.error';
+import { BlogError } from '../../../blogs/models/blog.error';
 import PostModel from '../../models/post.model';
 import PostsRepository from '../../posts.repository';
 import CreatePostCommand from '../commands/create.post.command';
@@ -12,16 +12,16 @@ export class CreatePostHandler implements ICommandHandler<CreatePostCommand> {
     private readonly postsRepo: PostsRepository,
   ) { }
 
-  async execute(command: CreatePostCommand): Promise<string | PostError> {
+  async execute(command: CreatePostCommand): Promise<string | BlogError> {
     const { blogId, bloggerId } = command.data;
     const blog = await this.blogsQueryRepo.getAdminBlog(blogId);
-    if (!blog) return PostError.NotFound;
+    if (!blog) return BlogError.NotFound;
     if (blog.blogOwnerInfo.userId !== bloggerId || blog.banInfo.isBanned)
-      return PostError.Forbidden;
+      return BlogError.Forbidden;
 
     command.data.blogName = blog.name;
     const post = PostModel.create(command.data);
     const created = await this.postsRepo.create(post);
-    return created ? created : PostError.Unknown;
+    return created ? created : BlogError.Unknown;
   }
 }

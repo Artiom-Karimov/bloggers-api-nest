@@ -23,7 +23,6 @@ import { User } from '../../auth/guards/user.decorator';
 import TokenPayload from '../../auth/models/jwt/token.payload';
 import PutCommentLikeCommand from './commands/commands/put.comment.like.command';
 import { CommandBus } from '@nestjs/cqrs';
-import { PostError } from '../posts/models/post.error';
 import UpdateCommentCommand from './commands/commands/update.comment.command';
 import { BlogError } from '../blogs/models/blog.error';
 import DeleteCommentCommand from './commands/commands/delete.comment.command';
@@ -101,8 +100,8 @@ export default class CommentsController {
         likeStatus: data.likeStatus,
       }),
     );
-    if (result === PostError.NoError) return;
-    if (result === PostError.NotFound) throw new NotFoundException();
+    if (result === BlogError.NoError) return;
+    if (result === BlogError.NotFound) throw new NotFoundException();
     throw new BadRequestException();
   }
 }

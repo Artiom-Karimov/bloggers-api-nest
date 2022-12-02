@@ -31,7 +31,6 @@ import { BlogOwnerInfo } from '../blogs/blogs/models/blog.model';
 import { User } from '../auth/guards/user.decorator';
 import TokenPayload from '../auth/models/jwt/token.payload';
 import CreatePostCommand from '../blogs/posts/commands/commands/create.post.command';
-import { PostError } from '../blogs/posts/models/post.error';
 import UpdatePostCommand from '../blogs/posts/commands/commands/update.post.command';
 import DeletePostCommand from '../blogs/posts/commands/commands/delete.post.command';
 import BloggerCommentViewModel from '../blogs/comments/models/view/blogger.comment.view.model';
@@ -123,8 +122,8 @@ export default class BloggerController {
     );
 
     if (typeof created !== 'string') {
-      if (created === PostError.NotFound) throw new NotFoundException();
-      if (created === PostError.Forbidden) throw new ForbiddenException();
+      if (created === BlogError.NotFound) throw new NotFoundException();
+      if (created === BlogError.Forbidden) throw new ForbiddenException();
       throw new BadRequestException();
     }
 
@@ -150,9 +149,9 @@ export default class BloggerController {
         data,
       }),
     );
-    if (updated === PostError.NoError) return;
-    if (updated === PostError.NotFound) throw new NotFoundException();
-    if (updated === PostError.Forbidden) throw new ForbiddenException();
+    if (updated === BlogError.NoError) return;
+    if (updated === BlogError.NotFound) throw new NotFoundException();
+    if (updated === BlogError.Forbidden) throw new ForbiddenException();
     throw new BadRequestException();
   }
 
@@ -170,9 +169,9 @@ export default class BloggerController {
         bloggerId: user.userId,
       }),
     );
-    if (deleted === PostError.NoError) return;
-    if (deleted === PostError.NotFound) throw new NotFoundException();
-    if (deleted === PostError.Forbidden) throw new ForbiddenException();
+    if (deleted === BlogError.NoError) return;
+    if (deleted === BlogError.NotFound) throw new NotFoundException();
+    if (deleted === BlogError.Forbidden) throw new ForbiddenException();
     throw new BadRequestException();
   }
 
