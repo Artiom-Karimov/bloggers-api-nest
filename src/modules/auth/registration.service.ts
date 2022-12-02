@@ -6,7 +6,6 @@ import { UserError } from '../users/models/user.error';
 import UserInputModel from '../users/models/user.input.model';
 import UserModel from '../users/models/user.model';
 import UsersRepository from '../users/users.repository';
-import UsersService from '../users/users.service';
 import NewPasswordInputModel from './models/input/new.password.input.model';
 import RecoveryModel from './models/recovery/recovery.model';
 import RecoveryRepository from './recovery.repository';
@@ -15,7 +14,6 @@ import RecoveryRepository from './recovery.repository';
 export default class RegistrationService {
   constructor(
     private readonly usersRepo: UsersRepository,
-    private readonly usersService: UsersService,
     private readonly emailRepo: EmailConfirmationRepository,
     private readonly recoveryRepo: RecoveryRepository,
     private readonly mailService: MailService,
@@ -56,7 +54,11 @@ export default class RegistrationService {
     if (!recovery || recovery.expiresAt > new Date().getTime()) return false;
     await this.recoveryRepo.delete(recovery.userId);
 
-    return this.usersService.updatePassword(recovery.userId, data.newPassword);
+    let user = await this.usersRepo.get(recovery.userId);
+    if (!user) return false;
+
+    user = await UserModel.updatePassword(user, data.newPassword);
+    return this.usersRepo.update(user.id, user);
   }
 
   public async checkLoginEmailExists(data: UserInputModel): Promise<UserError> {

@@ -25,7 +25,6 @@ import GetUsersQuery from '../users/models/get.users.query';
 import UserInputModel from '../users/models/user.input.model';
 import UserViewModel from '../users/models/user.view.model';
 import UsersQueryRepository from '../users/users.query.repository';
-import UsersService from '../users/users.service';
 import { BlogError } from '../blogs/blogs/models/blog.error';
 import BlogBanInputModel from '../blogs/blogs/models/input/blog.ban.input.model';
 import { CommandBus } from '@nestjs/cqrs';
@@ -43,7 +42,6 @@ export default class AdminController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly blogsQueryRepo: AdminBlogsQueryRepository,
-    private readonly usersService: UsersService,
     private readonly usersQueryRepo: UsersQueryRepository,
   ) { }
 

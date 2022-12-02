@@ -11,7 +11,6 @@ import User, { UserSchema } from './models/user.schema';
 import UsersBanRepository from './users.ban.repository';
 import UsersQueryRepository from './users.query.repository';
 import UsersRepository from './users.repository';
-import UsersService from './users.service';
 
 @Module({
   imports: [
@@ -25,7 +24,6 @@ import UsersService from './users.service';
   providers: [
     UsersRepository,
     UsersQueryRepository,
-    UsersService,
     UsersBanRepository,
     EmailConfirmationRepository,
     SessionsRepository,
@@ -34,7 +32,6 @@ import UsersService from './users.service';
     UsersRepository,
     UsersBanRepository,
     UsersQueryRepository,
-    UsersService,
     EmailConfirmationRepository,
   ],
 })
