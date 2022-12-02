@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import LikeModel from '../../likes/models/like.model';
-import PostLikesRepository from '../../likes/post.likes.repository';
-import { PostError } from '../models/post.error';
-import PostsRepository from '../posts.repository';
-import PutPostLikeCommand from './put.post.like.command';
+import LikeModel from '../../../likes/models/like.model';
+import PostLikesRepository from '../../../likes/post.likes.repository';
+import { PostError } from '../../models/post.error';
+import PostsRepository from '../../posts.repository';
+import PutPostLikeCommand from '../commands/put.post.like.command';
 
 @CommandHandler(PutPostLikeCommand)
 export class PutPostLikeHandler implements ICommandHandler<PutPostLikeCommand> {

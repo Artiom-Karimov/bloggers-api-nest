@@ -30,10 +30,10 @@ import DeleteBlogCommand from '../blogs/blogs/commands/commands/delete.blog.comm
 import { BlogOwnerInfo } from '../blogs/blogs/models/blog.model';
 import { User } from '../auth/guards/user.decorator';
 import TokenPayload from '../auth/models/jwt/token.payload';
-import CreatePostCommand from '../blogs/posts/commands/create.post.command';
+import CreatePostCommand from '../blogs/posts/commands/commands/create.post.command';
 import { PostError } from '../blogs/posts/models/post.error';
-import UpdatePostCommand from '../blogs/posts/commands/update.post.command';
-import DeletePostCommand from '../blogs/posts/commands/delete.post.command';
+import UpdatePostCommand from '../blogs/posts/commands/commands/update.post.command';
+import DeletePostCommand from '../blogs/posts/commands/commands/delete.post.command';
 import BloggerCommentViewModel from '../blogs/comments/models/view/blogger.comment.view.model';
 import BloggerCommentsQueryRepository from '../blogs/comments/blogger.comments.query.repository';
 import GetBloggerCommentsQuery from '../blogs/comments/models/input/get.blogger.comments.query';

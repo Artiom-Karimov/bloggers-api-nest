@@ -27,9 +27,8 @@ import LikeInputModel from '../likes/models/like.input.model';
 import TokenPayload from '../../auth/models/jwt/token.payload';
 import { User } from '../../auth/guards/user.decorator';
 import { CommandBus } from '@nestjs/cqrs';
-import PutPostLikeCommand from './commands/put.post.like.command';
+import PutPostLikeCommand from './commands/commands/put.post.like.command';
 import { PostError } from './models/post.error';
-import CommentCreateModel from '../comments/models/input/comment.create.model';
 import CreateCommentCommand from '../comments/commands/create.comment.command';
 
 @Controller('posts')

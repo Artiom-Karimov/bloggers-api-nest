@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import AdminBlogsQueryRepository from '../../blogs/admin.blogs.query.repository';
-import { PostError } from '../models/post.error';
-import PostsRepository from '../posts.repository';
-import UpdatePostCommand from './update.post.command';
+import AdminBlogsQueryRepository from '../../../blogs/admin.blogs.query.repository';
+import { PostError } from '../../models/post.error';
+import PostsRepository from '../../posts.repository';
+import UpdatePostCommand from '../commands/update.post.command';
 
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
