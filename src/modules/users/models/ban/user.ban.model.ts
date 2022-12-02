@@ -1,5 +1,5 @@
 import DateGenerator from '../../../../common/utils/date.generator';
-import UserBanInputModel from './user.ban.input.model';
+import { BanUserCreateModel } from '../../../admin/commands/commands/ban.user.command';
 
 export default class UserBanModel {
   constructor(
@@ -8,10 +8,10 @@ export default class UserBanModel {
     public banReason: string | null,
     public banDate: string | null,
   ) { }
-  public static create(data: UserBanInputModel): UserBanModel {
+  public static create(data: BanUserCreateModel): UserBanModel {
     if (!data.userId) throw new Error('You must specify userId for ban');
     return new UserBanModel(
-      data.userId!,
+      data.userId,
       data.isBanned ?? null,
       data.banReason ?? null,
       DateGenerator.generate(),

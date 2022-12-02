@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import SessionsRepository from '../auth/sessions.repository';
 import EmailConfirmationRepository from './email.confirmation.repository';
-import UserBanInputModel from './models/ban/user.ban.input.model';
-import UserBanModel from './models/ban/user.ban.model';
 import EmailConfirmationModel from './models/email/email.confirmation.model';
 import UserInputModel from './models/user.input.model';
 import UserModel from './models/user.model';
@@ -15,7 +12,6 @@ export default class UsersService {
     private readonly repo: UsersRepository,
     private readonly banRepo: UsersBanRepository,
     private readonly emailRepo: EmailConfirmationRepository,
-    private readonly sessionsRepo: SessionsRepository,
   ) { }
 
   public async get(id: string): Promise<UserModel | undefined> {
@@ -62,19 +58,5 @@ export default class UsersService {
   public async loginOrEmailExists(input: string): Promise<boolean> {
     const result = await this.repo.getByLoginOrEmail(input);
     return !!result;
-  }
-  public async putBanInfo(data: UserBanInputModel): Promise<boolean> {
-    if (!data.isBanned) {
-      await this.banRepo.delete(data.userId);
-      return true;
-    }
-    const user = await this.repo.get(data.userId);
-    if (!user) return false;
-
-    await this.sessionsRepo.deleteAll(user.id);
-
-    const model = UserBanModel.create(data);
-
-    return this.banRepo.createOrUpdate(model);
   }
 }

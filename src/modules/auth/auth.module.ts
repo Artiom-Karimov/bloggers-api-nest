@@ -35,6 +35,6 @@ import UsersBanQueryRepository from './users.ban.query.repository';
     SessionsService,
     UsersBanQueryRepository,
   ],
-  exports: [UsersBanQueryRepository],
+  exports: [UsersBanQueryRepository, SessionsRepository],
 })
 export class AuthModule { }

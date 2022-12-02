@@ -25,7 +25,6 @@ import Post, { PostSchema } from './posts/models/post.schema';
 import PostsController from './posts/posts.controller';
 import PostsQueryRepository from './posts/posts.query.repository';
 import PostsRepository from './posts/posts.repository';
-import PostsService from './posts/posts.service';
 import { CreatePostHandler } from './posts/commands/handlers/create.post.handler';
 import { UpdatePostHandler } from './posts/commands/handlers/update.post.handler';
 import { DeletePostHandler } from './posts/commands/handlers/delete.post.handler';
@@ -90,7 +89,6 @@ const commandHandlers = [
     PostsQueryRepository,
     PostLikesRepository,
     PostLikesQueryRepository,
-    PostsService,
     CommentsRepository,
     CommentsQueryRepository,
     BloggerCommentsQueryRepository,
@@ -104,9 +102,11 @@ const commandHandlers = [
     BlogsQueryRepository,
     BlogUserBanQueryRepository,
     AdminBlogsQueryRepository,
-    PostsService,
     PostsQueryRepository,
+    PostLikesRepository,
     CommentsService,
+    CommentsRepository,
+    CommentLikesRepository,
     BloggerCommentsQueryRepository,
   ],
 })

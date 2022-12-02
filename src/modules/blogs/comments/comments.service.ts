@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import CommentLikesRepository from '../likes/comment.likes.repository';
 import CommentsRepository from './comments.repository';
 import CommentUpdateModel from './models/input/comment.update.model';
 
@@ -12,10 +11,7 @@ export enum CommentError {
 
 @Injectable()
 export default class CommentsService {
-  constructor(
-    private readonly repo: CommentsRepository,
-    private readonly likeRepo: CommentLikesRepository,
-  ) { }
+  constructor(private readonly repo: CommentsRepository) { }
 
   public async update(data: CommentUpdateModel): Promise<CommentError> {
     const comment = await this.repo.get(data.commentId);
@@ -32,9 +28,5 @@ export default class CommentsService {
 
     const deleted = await this.repo.delete(id);
     return deleted ? CommentError.NoError : CommentError.Unknown;
-  }
-  public async setUserBanned(userId: string, isBanned: boolean): Promise<void> {
-    await this.repo.banByAdmin(userId, isBanned);
-    await this.likeRepo.setUserBanned(userId, isBanned);
   }
 }

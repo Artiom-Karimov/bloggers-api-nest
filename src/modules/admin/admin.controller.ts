@@ -18,10 +18,8 @@ import {
 import PageViewModel from '../../common/models/page.view.model';
 import { throwValidationException } from '../../common/utils/validation.options';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
-import CommentsService from '../blogs/comments/comments.service';
 import AdminBlogViewModel from '../blogs/blogs/models/view/admin.blog.view.model';
 import GetBlogsQuery from '../blogs/blogs/models/input/get.blogs.query';
-import PostsService from '../blogs/posts/posts.service';
 import UserBanInputModel from '../users/models/ban/user.ban.input.model';
 import GetUsersQuery from '../users/models/get.users.query';
 import UserInputModel from '../users/models/user.input.model';
@@ -34,6 +32,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import BanBlogCommand from '../blogs/blogs/commands/commands/ban.blog.command';
 import AdminBlogsQueryRepository from '../blogs/blogs/admin.blogs.query.repository';
 import AssignBlogOwnerCommand from '../blogs/blogs/commands/commands/assign.blog.owner.command';
+import BanUserCommand from './commands/commands/ban.user.command';
 
 @Controller('sa')
 @UseGuards(BasicAuthGuard)
@@ -43,8 +42,6 @@ export default class AdminController {
     private readonly blogsQueryRepo: AdminBlogsQueryRepository,
     private readonly usersService: UsersService,
     private readonly usersQueryRepo: UsersQueryRepository,
-    private readonly postsService: PostsService,
-    private readonly commentsService: CommentsService,
   ) { }
 
   @Get('blogs')
@@ -115,14 +112,16 @@ export default class AdminController {
   }
   @Put('users/:id/ban')
   @HttpCode(204)
-  async ban(@Param('id') id: string, @Body() data: UserBanInputModel) {
-    data.userId = id;
-    const result = await this.usersService.putBanInfo(data);
-    if (!result) throw new NotFoundException();
-
-    await this.putContentBan(data.userId, data.isBanned);
-
-    return;
+  async ban(@Param('id') userId: string, @Body() data: UserBanInputModel) {
+    const result = await this.commandBus.execute(
+      new BanUserCommand({
+        ...data,
+        userId,
+      }),
+    );
+    if (result === BlogError.NoError) return;
+    if (result === BlogError.NotFound) throw new NotFoundException();
+    throw new BadRequestException();
   }
 
   private async checkLoginEmailExists(
@@ -133,12 +132,5 @@ export default class AdminController {
     if (loginExists) throwValidationException('login', 'login already exists');
     const emailExists = await this.usersService.loginOrEmailExists(email);
     if (emailExists) throwValidationException('email', 'email already exists');
-  }
-  private async putContentBan(
-    userId: string,
-    isBanned: boolean,
-  ): Promise<void> {
-    await this.postsService.setUserBanned(userId, isBanned);
-    await this.commentsService.setUserBanned(userId, isBanned);
   }
 }

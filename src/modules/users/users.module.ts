@@ -32,6 +32,7 @@ import UsersService from './users.service';
   ],
   exports: [
     UsersRepository,
+    UsersBanRepository,
     UsersQueryRepository,
     UsersService,
     EmailConfirmationRepository,
