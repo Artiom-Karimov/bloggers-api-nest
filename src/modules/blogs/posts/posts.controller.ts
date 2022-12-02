@@ -22,7 +22,6 @@ import PostsQueryRepository from './posts.query.repository';
 import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.guard';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import CommentInputModel from '../comments/models/input/comment.input.model';
-import CommentsService from '../comments/comments.service';
 import LikeInputModel from '../likes/models/like.input.model';
 import TokenPayload from '../../auth/models/jwt/token.payload';
 import { User } from '../../auth/guards/user.decorator';
@@ -37,7 +36,6 @@ export default class PostsController {
     private readonly commandBus: CommandBus,
     private readonly queryRepo: PostsQueryRepository,
     private readonly commentsQueryRepo: CommentsQueryRepository,
-    private readonly commentsService: CommentsService,
   ) { }
 
   @Get()

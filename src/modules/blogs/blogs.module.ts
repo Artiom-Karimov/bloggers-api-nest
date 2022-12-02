@@ -7,7 +7,6 @@ import BlogsRepository from './blogs/blogs.repository';
 import CommentsController from './comments/comments.controller';
 import CommentsQueryRepository from './comments/comments.query.repository';
 import CommentsRepository from './comments/comments.repository';
-import CommentsService from './comments/comments.service';
 import CommentLikesQueryRepository from './likes/comment.likes.query.repository';
 import CommentLikesRepository from './likes/comment.likes.repository';
 import PostLikesQueryRepository from './likes/post.likes.query.repository';
@@ -45,6 +44,8 @@ import { CreateBlogHandler } from './blogs/commands/handlers/create.blog.handler
 import { UpdateBlogHandler } from './blogs/commands/handlers/update.blog.handler';
 import { DeleteBlogHandler } from './blogs/commands/handlers/delete.blog.handler';
 import { BlogUserBanHandler } from './blogs/commands/handlers/blog.user.ban.handler';
+import { UpdateCommentHandler } from './comments/commands/handlers/update.comment.handler';
+import { DeleteCommentHandler } from './comments/commands/handlers/delete.comment.handler';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -56,6 +57,8 @@ const commandHandlers = [
   DeletePostHandler,
   PutPostLikeHandler,
   CreateCommentHandler,
+  UpdateCommentHandler,
+  DeleteCommentHandler,
   PutCommentLikeHandler,
   BlogUserBanHandler,
 ];
@@ -94,7 +97,6 @@ const commandHandlers = [
     BloggerCommentsQueryRepository,
     CommentLikesRepository,
     CommentLikesQueryRepository,
-    CommentsService,
     BlogIdValidator,
     ...commandHandlers,
   ],
@@ -104,7 +106,6 @@ const commandHandlers = [
     AdminBlogsQueryRepository,
     PostsQueryRepository,
     PostLikesRepository,
-    CommentsService,
     CommentsRepository,
     CommentLikesRepository,
     BloggerCommentsQueryRepository,

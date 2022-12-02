@@ -17,7 +17,6 @@ import {
 } from '@nestjs/common/decorators';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import CommentInputModel from './models/input/comment.input.model';
-import CommentsService, { CommentError } from './comments.service';
 import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.guard';
 import LikeInputModel from '../likes/models/like.input.model';
 import { User } from '../../auth/guards/user.decorator';
@@ -25,13 +24,14 @@ import TokenPayload from '../../auth/models/jwt/token.payload';
 import PutCommentLikeCommand from './commands/commands/put.comment.like.command';
 import { CommandBus } from '@nestjs/cqrs';
 import { PostError } from '../posts/models/post.error';
-import CommentUpdateModel from './models/input/comment.update.model';
+import UpdateCommentCommand from './commands/commands/update.comment.command';
+import { BlogError } from '../blogs/models/blog.error';
+import DeleteCommentCommand from './commands/commands/delete.comment.command';
 
 @Controller('comments')
 export default class CommentsController {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly service: CommentsService,
     private readonly queryRepo: CommentsQueryRepository,
   ) { }
 
@@ -54,16 +54,17 @@ export default class CommentsController {
     @Body() data: CommentInputModel,
     @User() user: TokenPayload,
   ): Promise<void> {
-    const model: CommentUpdateModel = {
-      commentId: id,
-      userId: user.userId,
-      content: data.content,
-    };
+    const result = await this.commandBus.execute(
+      new UpdateCommentCommand({
+        commentId: id,
+        userId: user.userId,
+        content: data.content,
+      }),
+    );
 
-    const result = await this.service.update(model);
-    if (result === CommentError.NoError) return;
-    if (result === CommentError.NotFound) throw new NotFoundException();
-    if (result === CommentError.Forbidden) throw new ForbiddenException();
+    if (result === BlogError.NoError) return;
+    if (result === BlogError.NotFound) throw new NotFoundException();
+    if (result === BlogError.Forbidden) throw new ForbiddenException();
     throw new BadRequestException();
   }
 
@@ -71,13 +72,16 @@ export default class CommentsController {
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   async delete(
-    @Param('id') id: string,
+    @Param('id') commentId: string,
     @User() user: TokenPayload,
   ): Promise<void> {
-    const result = await this.service.delete(id, user.userId);
-    if (result === CommentError.NoError) return;
-    if (result === CommentError.NotFound) throw new NotFoundException();
-    if (result === CommentError.Forbidden) throw new ForbiddenException();
+    const result = await this.commandBus.execute(
+      new DeleteCommentCommand(commentId, user.userId),
+    );
+
+    if (result === BlogError.NoError) return;
+    if (result === BlogError.NotFound) throw new NotFoundException();
+    if (result === BlogError.Forbidden) throw new ForbiddenException();
     throw new BadRequestException();
   }
 
