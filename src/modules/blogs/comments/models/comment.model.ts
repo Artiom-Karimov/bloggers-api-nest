@@ -1,6 +1,6 @@
 import DateGenerator from '../../../../common/utils/date.generator';
 import IdGenerator from '../../../../common/utils/id.generator';
-import CommentCreateModel from './input/comment.create.model';
+import { CommentCreateModel } from '../commands/commands/create.comment.command';
 
 export default class CommentModel {
   constructor(
