@@ -11,9 +11,9 @@ export default class RecoveryRepository {
     @InjectModel(Recovery.name) private readonly model: Model<RecoveryDocument>,
   ) { }
 
-  public async get(id: string): Promise<RecoveryModel | undefined> {
+  public async get(userId: string): Promise<RecoveryModel | undefined> {
     try {
-      const result = await this.model.findById(id);
+      const result = await this.model.findById(userId);
       return result ? RecoveryMapper.toDomain(result) : undefined;
     } catch (error) {
       console.error(error);
@@ -38,9 +38,9 @@ export default class RecoveryRepository {
       return false;
     }
   }
-  public async delete(id: string): Promise<boolean> {
+  public async delete(userId: string): Promise<boolean> {
     try {
-      await this.model.findByIdAndDelete(id);
+      await this.model.findByIdAndDelete(userId);
       return true;
     } catch (error) {
       console.error(error);

@@ -51,7 +51,7 @@ export default class RegistrationService {
 
   public async setNewPassword(data: NewPasswordInputModel): Promise<boolean> {
     const recovery = await this.recoveryRepo.getByCode(data.recoveryCode);
-    if (!recovery || recovery.expiresAt > new Date().getTime()) return false;
+    if (!recovery || recovery.expiresAt < new Date().getTime()) return false;
     await this.recoveryRepo.delete(recovery.userId);
 
     let user = await this.usersRepo.get(recovery.userId);
