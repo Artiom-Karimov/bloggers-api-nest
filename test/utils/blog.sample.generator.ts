@@ -23,7 +23,7 @@ export default class BlogSampleGenerator extends TestSampleGenerator<
   public generateOne(): BlogInputModel {
     const rand = this.rand();
     const sample = {
-      name: `sampleBlog ${rand}`,
+      name: `Blog ${rand}`,
       websiteUrl: `https://blog${rand}.com`,
       description: `Blog description\nNumber ${rand}`,
     };

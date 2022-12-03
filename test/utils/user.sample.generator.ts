@@ -13,7 +13,7 @@ export default class UserSampleGenerator extends TestSampleGenerator<
   public generateOne(): UserInputModel {
     const rand = this.rand();
     const sample = {
-      login: `sampleUser${rand}`,
+      login: `u-${rand}`,
       email: `youser${rand}@example.com`,
       password: `assword${rand}`,
     };
