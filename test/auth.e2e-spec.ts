@@ -6,6 +6,8 @@ import UserInputModel from '../src/modules/users/models/user.input.model';
 import EmailConfirmationRepository from '../src/modules/users/email.confirmation.repository';
 import UsersRepository from '../src/modules/users/users.repository';
 import RecoveryRepository from '../src/modules/auth/recovery.repository';
+import { dateRegex } from '../src/common/utils/date.generator';
+import SessionViewModel from '../src/modules/auth/models/session/session.view.model';
 
 jest.useRealTimers();
 
@@ -301,6 +303,110 @@ describe('AuthController (e2e)', () => {
       const cookies = response.get('Set-Cookie');
       const cookie = cookies.find((q) => q.includes('refreshToken'));
       expect(cookie).not.toBeUndefined();
+    });
+  });
+
+  describe('Refresh token & logout', () => {
+    let user: UserInputModel;
+
+    beforeAll(async () => {
+      const samples = new UserSampleGenerator(app);
+      await request(app.getHttpServer()).delete('/testing/all-data');
+      user = samples.generateOne();
+      await samples.createSamples();
+    });
+
+    let access: string;
+    let refresh: string;
+    it('user should login', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ loginOrEmail: user.login, password: user.password })
+        .expect(200);
+
+      access = res.body.accessToken;
+      const cookies = res.get('Set-Cookie');
+      refresh = cookies.find((q) => q.includes('refreshToken'));
+
+      expect(access && refresh).toBeTruthy();
+    });
+
+    let deviceInfo: SessionViewModel;
+    it('token should get devices', async () => {
+      const res = await request(app.getHttpServer())
+        .get('/security/devices')
+        .set('Cookie', [refresh])
+        .expect(200);
+
+      expect(res.body).toEqual([
+        {
+          ip: expect.any(String),
+          title: expect.any(String),
+          lastActiveDate: expect.stringMatching(dateRegex),
+          deviceId: expect.any(String),
+        },
+      ]);
+      deviceInfo = (res.body as SessionViewModel[])[0];
+    });
+
+    let newRefresh: string;
+    let newAccess: string;
+    it('token should be refreshed', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/auth/refresh-token')
+        .set('Cookie', [refresh])
+        .send({})
+        .expect(200);
+
+      newAccess = res.body.accessToken;
+      const cookies = res.get('Set-Cookie');
+      newRefresh = cookies.find((q) => q.includes('refreshToken'));
+
+      expect(newAccess && newRefresh).toBeTruthy();
+
+      expect(newRefresh).not.toBe(refresh);
+      expect(newAccess).not.toBe(access);
+    });
+
+    it('old token should not be accepted', async () => {
+      await request(app.getHttpServer())
+        .post('/auth/refresh-token')
+        .set('Cookie', [refresh])
+        .send({})
+        .expect(401);
+    });
+
+    it('new token should get devices', async () => {
+      const res = await request(app.getHttpServer())
+        .get('/security/devices')
+        .set('Cookie', [newRefresh])
+        .expect(200);
+
+      expect(res.body).toEqual([
+        {
+          ip: deviceInfo.ip,
+          title: deviceInfo.title,
+          lastActiveDate: expect.stringMatching(dateRegex),
+          deviceId: deviceInfo.deviceId,
+        },
+      ]);
+      expect((res.body as SessionViewModel[])[0].lastActiveDate).not.toBe(
+        deviceInfo.lastActiveDate,
+      );
+    });
+
+    it('logout should make token invalid', async () => {
+      await request(app.getHttpServer())
+        .post('/auth/logout')
+        .set('Cookie', [newRefresh])
+        .send({})
+        .expect(204);
+
+      await request(app.getHttpServer())
+        .post('/auth/refresh-token')
+        .set('Cookie', [newRefresh])
+        .send({})
+        .expect(401);
     });
   });
 });
