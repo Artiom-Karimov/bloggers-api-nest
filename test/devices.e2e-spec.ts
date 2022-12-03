@@ -2,10 +2,6 @@ import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { init, stop } from './utils/test.init';
 import UserSampleGenerator, { Tokens } from './utils/user.sample.generator';
-import UserInputModel from '../src/modules/users/models/user.input.model';
-import EmailConfirmationRepository from '../src/modules/users/email.confirmation.repository';
-import UsersRepository from '../src/modules/users/users.repository';
-import RecoveryRepository from '../src/modules/auth/recovery.repository';
 import { dateRegex } from '../src/common/utils/date.generator';
 import SessionViewModel from '../src/modules/auth/models/session/session.view.model';
 
