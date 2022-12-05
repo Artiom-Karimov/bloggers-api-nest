@@ -30,6 +30,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import RegisterCommand from './commands/commands/register.command';
 import EmailResendCommand from './commands/commands/email.resend.command';
 import EmailConfirmCommand from './commands/commands/email.confirm.command';
+import RecoverPasswordCommand from './commands/commands/recover.password.command';
 
 @Controller('auth')
 export default class AuthController {
@@ -81,7 +82,7 @@ export default class AuthController {
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async recover(@Body() data: EmailInputModel): Promise<void> {
-    await this.regService.recoverPassword(data.email);
+    await this.commandBus.execute(new RecoverPasswordCommand(data.email));
     return;
   }
 

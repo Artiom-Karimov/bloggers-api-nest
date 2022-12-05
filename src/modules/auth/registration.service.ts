@@ -7,7 +7,6 @@ import UserInputModel from '../users/models/user.input.model';
 import UserModel from '../users/models/user.model';
 import UsersRepository from '../users/users.repository';
 import NewPasswordInputModel from './models/input/new.password.input.model';
-import RecoveryModel from './models/recovery/recovery.model';
 import RecoveryRepository from './recovery.repository';
 
 @Injectable()
@@ -18,18 +17,6 @@ export default class RegistrationService {
     private readonly recoveryRepo: RecoveryRepository,
     private readonly mailService: MailService,
   ) { }
-
-  public async recoverPassword(email: string): Promise<boolean> {
-    const user = await this.usersRepo.getByLoginOrEmail(email);
-    if (!user) return false;
-
-    const recovery = RecoveryModel.create(user.id);
-    await this.recoveryRepo.createOrUpdate(recovery);
-
-    await this.mailService.sendPasswordRecovery(user, recovery.code);
-
-    return true;
-  }
 
   public async setNewPassword(data: NewPasswordInputModel): Promise<boolean> {
     const recovery = await this.recoveryRepo.getByCode(data.recoveryCode);

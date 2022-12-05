@@ -18,11 +18,13 @@ import RegisterHandler from './commands/handlers/register.handler';
 import { CqrsModule } from '@nestjs/cqrs';
 import EmailResendHandler from './commands/handlers/email.resend.handler';
 import EmailConfirmHandler from './commands/handlers/email.confirm.handler';
+import RecoverPasswordHandler from './commands/handlers/recover.password.handler';
 
 const commandHandlers = [
   RegisterHandler,
   EmailResendHandler,
   EmailConfirmHandler,
+  RecoverPasswordHandler,
 ];
 
 @Module({
