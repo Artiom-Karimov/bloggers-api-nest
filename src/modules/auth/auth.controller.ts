@@ -20,7 +20,6 @@ import { throwValidationException } from '../../common/utils/validation.options'
 import { Request, Response } from 'express';
 import TokenPair from './models/jwt/token.pair';
 import RefreshTokenInputModel from './models/input/refresh.token.input.model';
-import RegistrationService from './registration.service';
 import SessionsService from './sessions.service';
 import SessionUserViewModel from './models/session.user.view.model';
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
@@ -37,7 +36,6 @@ import SetNewPasswordCommand from './commands/commands/set.new.password.command'
 export default class AuthController {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly regService: RegistrationService,
     private readonly sessionsService: SessionsService,
   ) { }
 

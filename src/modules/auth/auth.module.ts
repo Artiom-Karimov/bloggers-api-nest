@@ -8,7 +8,6 @@ import RecoveryRepository from './recovery.repository';
 import SessionsQueryRepository from './sessions.query.repository';
 import SessionsRepository from './sessions.repository';
 import SessionsService from './sessions.service';
-import RegistrationService from './registration.service';
 import SecurityDevicesController from './security.devices.controller';
 import { MailModule } from '../mail/mail.module';
 import { UsersModule } from '../users/users.module';
@@ -46,7 +45,6 @@ const commandHandlers = [
     RecoveryRepository,
     SessionsRepository,
     SessionsQueryRepository,
-    RegistrationService,
     SessionsService,
     UsersBanQueryRepository,
     ...commandHandlers,
