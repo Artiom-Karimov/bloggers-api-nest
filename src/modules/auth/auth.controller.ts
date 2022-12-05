@@ -28,6 +28,7 @@ import { BearerAuthGuard } from './guards/bearer.auth.guard';
 import { UserError } from '../users/models/user.error';
 import { CommandBus } from '@nestjs/cqrs';
 import RegisterCommand from './commands/commands/register.command';
+import EmailResendCommand from './commands/commands/email.resend.command';
 
 @Controller('auth')
 export default class AuthController {
@@ -43,23 +44,21 @@ export default class AuthController {
   async register(@Body() data: UserInputModel): Promise<void> {
     const result = await this.commandBus.execute(new RegisterCommand(data));
 
-    switch (result) {
-      case UserError.NoError:
-        return;
-      case UserError.LoginExists:
-        throwValidationException('login', 'login already exists');
-      case UserError.EmailExists:
-        throwValidationException('email', 'email already exists');
-      default:
-        throw new BadRequestException();
-    }
+    if (result === UserError.NoError) return;
+    if (result === UserError.LoginExists)
+      throwValidationException('login', 'login already exists');
+    if (result === UserError.EmailExists)
+      throwValidationException('email', 'email already exists');
+    throw new BadRequestException();
   }
 
   @Post('registration-email-resending')
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async resendEmail(@Body() data: EmailInputModel): Promise<void> {
-    const result = await this.regService.resendEmail(data.email);
+    const result = await this.commandBus.execute(
+      new EmailResendCommand(data.email),
+    );
 
     if (result === UserError.NoError) return;
     throwValidationException('email', 'email is wrong or already confirmed');

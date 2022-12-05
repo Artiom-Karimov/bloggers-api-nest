@@ -19,15 +19,6 @@ export default class RegistrationService {
     private readonly mailService: MailService,
   ) { }
 
-  public async resendEmail(email: string): Promise<UserError> {
-    const user = await this.usersRepo.getByLoginOrEmail(email);
-    if (!user) return UserError.WrongCredentials;
-
-    const created = await this.createEmailConfirmation(user);
-
-    return created ? UserError.NoError : UserError.AlreadyConfirmed;
-  }
-
   public async confirmEmail(code: string): Promise<boolean> {
     let ec = await this.emailRepo.getByCode(code);
     if (!ec || ec.expiration < new Date().getTime() || ec.confirmed)

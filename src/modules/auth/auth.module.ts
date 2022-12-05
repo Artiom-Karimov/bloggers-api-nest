@@ -16,8 +16,9 @@ import UserBan, { UserBanSchema } from '../users/models/ban/user.ban.schema';
 import UsersBanQueryRepository from './users.ban.query.repository';
 import RegisterHandler from './commands/handlers/register.handler';
 import { CqrsModule } from '@nestjs/cqrs';
+import EmailResendHandler from './commands/handlers/email.resend.handler';
 
-const commandHandlers = [RegisterHandler];
+const commandHandlers = [RegisterHandler, EmailResendHandler];
 
 @Module({
   imports: [
