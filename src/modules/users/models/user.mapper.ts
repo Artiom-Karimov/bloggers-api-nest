@@ -1,3 +1,4 @@
+import SessionUserViewModel from '../../auth/models/session.user.view.model';
 import UserBanViewModel from './ban/user.ban.view.model';
 import UserModel from './user.model';
 import User from './user.schema';
@@ -33,5 +34,8 @@ export default class UserMapper {
       model.createdAt,
       banInfo,
     );
+  }
+  public static toSessionView(model: User): SessionUserViewModel {
+    return new SessionUserViewModel(model.email, model.login, model._id);
   }
 }

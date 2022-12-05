@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../common/models/page.view.model';
+import SessionUserViewModel from '../auth/models/session.user.view.model';
 import UserBanMapper from './models/ban/user.ban.mapper';
 import UserBan, { UserBanDocument } from './models/ban/user.ban.schema';
 import UserBanViewModel from './models/ban/user.ban.view.model';
@@ -31,6 +32,18 @@ export default class UsersQueryRepository {
       if (!user) return undefined;
       const banView = await this.getBanView(id);
       return UserMapper.toView(user, banView);
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+  public async getSessionUserView(
+    id: string,
+  ): Promise<SessionUserViewModel | undefined> {
+    try {
+      const user = await this.model.findOne({ _id: id });
+      if (!user) return undefined;
+      return UserMapper.toSessionView(user);
     } catch (error) {
       console.error(error);
       return undefined;

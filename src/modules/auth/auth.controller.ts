@@ -19,7 +19,6 @@ import NewPasswordInputModel from './models/input/new.password.input.model';
 import { throwValidationException } from '../../common/utils/validation.options';
 import { Request, Response } from 'express';
 import TokenPair from './models/jwt/token.pair';
-import SessionsService from './sessions.service';
 import SessionUserViewModel from './models/session.user.view.model';
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
 import { BearerAuthGuard } from './guards/bearer.auth.guard';
@@ -33,12 +32,13 @@ import SetNewPasswordCommand from './commands/commands/set.new.password.command'
 import LoginCommand from './commands/commands/login.command';
 import RefreshTokenCommand from './commands/commands/refresh.token.command';
 import LogoutCommand from './commands/commands/logout.command';
+import UsersQueryRepository from '../users/users.query.repository';
 
 @Controller('auth')
 export default class AuthController {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly sessionsService: SessionsService,
+    private readonly usersRepo: UsersQueryRepository,
   ) { }
 
   @Post('registration')
@@ -156,9 +156,7 @@ export default class AuthController {
   @Get('me')
   @UseGuards(BearerAuthGuard)
   async getMe(@Req() req: Request): Promise<SessionUserViewModel> {
-    const result = await this.sessionsService.getSessionUserView(
-      req.user.userId,
-    );
+    const result = await this.usersRepo.getSessionUserView(req.user.userId);
     if (!result) throw new UnauthorizedException();
     return result;
   }
