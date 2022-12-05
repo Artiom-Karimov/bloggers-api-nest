@@ -6,7 +6,6 @@ import TokenPair from './models/jwt/token.pair';
 import TokenPayload from './models/jwt/token.payload';
 import SessionUserViewModel from './models/session.user.view.model';
 import SessionModel from './models/session/session.model';
-import SessionsRepository from './sessions.repository';
 import UsersBanQueryRepository from './users.ban.query.repository';
 
 @Injectable()
@@ -15,7 +14,6 @@ export default class SessionsService {
     private readonly usersRepo: UsersRepository,
     private readonly banRepo: UsersBanQueryRepository,
     private readonly emailRepo: EmailConfirmationRepository,
-    private readonly sessionsRepo: SessionsRepository,
   ) { }
 
   public async getSessionUserView(
@@ -25,17 +23,6 @@ export default class SessionsService {
     if (!user) return undefined;
 
     return SessionUserViewModel.fromDomain(user);
-  }
-
-  public async deleteOne(userId: string, deviceId: string): Promise<UserError> {
-    const session = await this.sessionsRepo.get(deviceId);
-    if (!session) return UserError.NotFound;
-    if (session.userId !== userId) return UserError.WrongCredentials;
-    await this.sessionsRepo.delete(deviceId);
-    return UserError.NoError;
-  }
-  public async get(deviceId: string): Promise<SessionModel> {
-    return this.sessionsRepo.get(deviceId);
   }
 
   public async checkLoginAllowed(id: string): Promise<UserError> {

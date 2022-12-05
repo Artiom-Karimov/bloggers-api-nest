@@ -12,18 +12,17 @@ import {
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
 import SessionViewModel from './models/session/session.view.model';
 import SessionsQueryRepository from './sessions.query.repository';
-import SessionsService from './sessions.service';
 import TokenPayload from './models/jwt/token.payload';
 import { User } from './guards/user.decorator';
 import { UserError } from '../users/models/user.error';
 import { CommandBus } from '@nestjs/cqrs';
 import LogoutAnotherSessionsCommand from './commands/commands/logout.another.sessions.command';
+import DeleteSessionCommand from './commands/commands/delete.session.command';
 
 @Controller('security/devices')
 export default class SecurityDevicesController {
   constructor(
     private commandBus: CommandBus,
-    private readonly service: SessionsService,
     private readonly queryRepo: SessionsQueryRepository,
   ) { }
 
@@ -50,7 +49,10 @@ export default class SecurityDevicesController {
     @Param('deviceId') deviceId: string,
     @User() user: TokenPayload,
   ): Promise<void> {
-    const result = await this.service.deleteOne(user.userId, deviceId);
+    const result = await this.commandBus.execute(
+      new DeleteSessionCommand(user.userId, deviceId),
+    );
+
     if (result === UserError.NoError) return;
     if (result === UserError.NotFound) throw new NotFoundException();
     if (result === UserError.WrongCredentials) throw new ForbiddenException();
