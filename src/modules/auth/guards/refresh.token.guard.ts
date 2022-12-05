@@ -7,11 +7,11 @@ import {
 import { Request } from 'express';
 import TokenPair from '../models/jwt/token.pair';
 import TokenPayload from '../models/jwt/token.payload';
-import SessionsService from '../sessions.service';
+import SessionsRepository from '../sessions.repository';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
-  constructor(private readonly service: SessionsService) { }
+  constructor(private readonly repo: SessionsRepository) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: Request = context.switchToHttp().getRequest();
@@ -27,7 +27,7 @@ export class RefreshTokenGuard implements CanActivate {
     const payload = TokenPair.unpackToken(token);
     if (!payload)
       throw new UnauthorizedException('refreshToken is invalid or expired');
-    const session = await this.service.get(payload.deviceId);
+    const session = await this.repo.get(payload.deviceId);
     if (!session || session.issuedAt !== payload.issuedAt)
       throw new UnauthorizedException('refreshToken is invalid or expired');
 
