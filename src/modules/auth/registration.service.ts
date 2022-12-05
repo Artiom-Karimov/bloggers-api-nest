@@ -19,15 +19,6 @@ export default class RegistrationService {
     private readonly mailService: MailService,
   ) { }
 
-  public async confirmEmail(code: string): Promise<boolean> {
-    let ec = await this.emailRepo.getByCode(code);
-    if (!ec || ec.expiration < new Date().getTime() || ec.confirmed)
-      return false;
-
-    ec = EmailConfirmationModel.setConfirmed(ec);
-    return this.emailRepo.update(ec);
-  }
-
   public async recoverPassword(email: string): Promise<boolean> {
     const user = await this.usersRepo.getByLoginOrEmail(email);
     if (!user) return false;

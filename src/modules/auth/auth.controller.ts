@@ -29,6 +29,7 @@ import { UserError } from '../users/models/user.error';
 import { CommandBus } from '@nestjs/cqrs';
 import RegisterCommand from './commands/commands/register.command';
 import EmailResendCommand from './commands/commands/email.resend.command';
+import EmailConfirmCommand from './commands/commands/email.confirm.command';
 
 @Controller('auth')
 export default class AuthController {
@@ -68,10 +69,12 @@ export default class AuthController {
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async confirmEmail(@Body() data: CodeInputModel): Promise<void> {
-    const result = await this.regService.confirmEmail(data.code);
-    if (!result)
-      throwValidationException('code', 'wrong code or already confirmed');
-    return;
+    const result = await this.commandBus.execute(
+      new EmailConfirmCommand(data.code),
+    );
+    if (result === UserError.NoError) return;
+
+    throwValidationException('code', 'wrong or already confirmed code');
   }
 
   @Post('password-recovery')

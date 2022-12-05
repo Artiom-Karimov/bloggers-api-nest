@@ -17,8 +17,13 @@ import UsersBanQueryRepository from './users.ban.query.repository';
 import RegisterHandler from './commands/handlers/register.handler';
 import { CqrsModule } from '@nestjs/cqrs';
 import EmailResendHandler from './commands/handlers/email.resend.handler';
+import EmailConfirmHandler from './commands/handlers/email.confirm.handler';
 
-const commandHandlers = [RegisterHandler, EmailResendHandler];
+const commandHandlers = [
+  RegisterHandler,
+  EmailResendHandler,
+  EmailConfirmHandler,
+];
 
 @Module({
   imports: [
