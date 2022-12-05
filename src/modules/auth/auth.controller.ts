@@ -32,6 +32,7 @@ import RecoverPasswordCommand from './commands/commands/recover.password.command
 import SetNewPasswordCommand from './commands/commands/set.new.password.command';
 import LoginCommand from './commands/commands/login.command';
 import RefreshTokenCommand from './commands/commands/refresh.token.command';
+import LogoutCommand from './commands/commands/logout.command';
 
 @Controller('auth')
 export default class AuthController {
@@ -144,9 +145,12 @@ export default class AuthController {
   @HttpCode(204)
   @UseGuards(RefreshTokenGuard)
   async logout(@Req() req: Request): Promise<void> {
-    const result = this.sessionsService.logout(req.refreshToken);
-    if (!result) throw new UnauthorizedException();
-    return;
+    const result = await this.commandBus.execute(
+      new LogoutCommand(req.refreshToken),
+    );
+
+    if (result === UserError.NoError) return;
+    throw new UnauthorizedException();
   }
 
   @Get('me')

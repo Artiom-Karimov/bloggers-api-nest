@@ -18,13 +18,6 @@ export default class SessionsService {
     private readonly sessionsRepo: SessionsRepository,
   ) { }
 
-  public async logout(refreshToken: string): Promise<boolean> {
-    const payload = TokenPair.unpackToken(refreshToken);
-    if (!payload) return false;
-
-    const result = await this.deleteOne(payload.userId, payload.deviceId);
-    return result === UserError.NoError;
-  }
   public async getSessionUserView(
     userId: string,
   ): Promise<SessionUserViewModel> {

@@ -21,6 +21,7 @@ import RecoverPasswordHandler from './commands/handlers/recover.password.handler
 import SetNewPasswordPasswordHandler from './commands/handlers/set.new.password.handler';
 import LoginHandler from './commands/handlers/login.handler';
 import RefreshTokenHandler from './commands/handlers/refresh.token.handler';
+import LogoutHandler from './commands/handlers/logout.handler';
 
 const commandHandlers = [
   RegisterHandler,
@@ -30,6 +31,7 @@ const commandHandlers = [
   SetNewPasswordPasswordHandler,
   LoginHandler,
   RefreshTokenHandler,
+  LogoutHandler,
 ];
 
 @Module({
