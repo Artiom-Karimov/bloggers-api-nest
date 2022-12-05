@@ -26,12 +26,7 @@ export default class SessionsService {
 
     return SessionUserViewModel.fromDomain(user);
   }
-  public async deleteAllButOne(
-    userId: string,
-    deviceId: string,
-  ): Promise<number> {
-    return this.sessionsRepo.deleteAllButOne(userId, deviceId);
-  }
+
   public async deleteOne(userId: string, deviceId: string): Promise<UserError> {
     const session = await this.sessionsRepo.get(deviceId);
     if (!session) return UserError.NotFound;

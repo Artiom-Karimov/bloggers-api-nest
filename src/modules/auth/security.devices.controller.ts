@@ -16,10 +16,13 @@ import SessionsService from './sessions.service';
 import TokenPayload from './models/jwt/token.payload';
 import { User } from './guards/user.decorator';
 import { UserError } from '../users/models/user.error';
+import { CommandBus } from '@nestjs/cqrs';
+import LogoutAnotherSessionsCommand from './commands/commands/logout.another.sessions.command';
 
 @Controller('security/devices')
 export default class SecurityDevicesController {
   constructor(
+    private commandBus: CommandBus,
     private readonly service: SessionsService,
     private readonly queryRepo: SessionsQueryRepository,
   ) { }
@@ -34,7 +37,9 @@ export default class SecurityDevicesController {
   @UseGuards(RefreshTokenGuard)
   @HttpCode(204)
   async deleteAllButOne(@User() user: TokenPayload): Promise<void> {
-    await this.service.deleteAllButOne(user.userId, user.deviceId);
+    await this.commandBus.execute(
+      new LogoutAnotherSessionsCommand(user.userId, user.deviceId),
+    );
     return;
   }
 
