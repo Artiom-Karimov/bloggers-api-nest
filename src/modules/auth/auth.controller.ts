@@ -31,6 +31,7 @@ import RegisterCommand from './commands/commands/register.command';
 import EmailResendCommand from './commands/commands/email.resend.command';
 import EmailConfirmCommand from './commands/commands/email.confirm.command';
 import RecoverPasswordCommand from './commands/commands/recover.password.command';
+import SetNewPasswordCommand from './commands/commands/set.new.password.command';
 
 @Controller('auth')
 export default class AuthController {
@@ -90,10 +91,11 @@ export default class AuthController {
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async changePassword(@Body() data: NewPasswordInputModel): Promise<void> {
-    const result = await this.regService.setNewPassword(data);
-    if (!result)
-      throwValidationException('recoveryCode', 'wrong or outdated code');
-    return;
+    const result = await this.commandBus.execute(
+      new SetNewPasswordCommand(data),
+    );
+    if (result === UserError.NoError) return;
+    throwValidationException('recoveryCode', 'wrong or outdated code');
   }
 
   @Post('login')
