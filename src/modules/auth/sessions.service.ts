@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import EmailConfirmationRepository from '../users/email.confirmation.repository';
 import { UserError } from '../users/models/user.error';
-import UserModel from '../users/models/user.model';
 import UsersRepository from '../users/users.repository';
-import LoginInputModel from './models/input/login.input.model';
 import RefreshTokenInputModel from './models/input/refresh.token.input.model';
 import TokenPair from './models/jwt/token.pair';
 import TokenPayload from './models/jwt/token.payload';
@@ -22,20 +20,7 @@ export default class SessionsService {
     private readonly emailRepo: EmailConfirmationRepository,
     private readonly sessionsRepo: SessionsRepository,
   ) { }
-  public async login(data: LoginInputModel): Promise<TokenPair | UserError> {
-    const userResult = await this.checkLoginGetUser(
-      data.loginOrEmail,
-      data.password,
-    );
-    if (!(userResult instanceof UserModel)) return userResult;
 
-    const session = await this.createSession({
-      ip: data.ip,
-      deviceName: data.deviceName,
-      userId: userResult.id,
-    });
-    return this.createTokenPair(session, userResult.login);
-  }
   public async refreshToken(
     data: RefreshTokenInputModel,
   ): Promise<TokenPair | UserError> {
@@ -87,32 +72,12 @@ export default class SessionsService {
     return this.sessionsRepo.get(deviceId);
   }
 
-  private async checkLoginGetUser(
-    loginOrEmail: string,
-    password: string,
-  ): Promise<UserModel | UserError> {
-    const user = await this.usersRepo.getByLoginOrEmail(loginOrEmail);
-    if (!user) return UserError.WrongCredentials;
-
-    const loginAllowed = await this.checkLoginAllowed(user.id);
-    if (loginAllowed !== UserError.NoError) return loginAllowed;
-
-    const passwordMatch = await UserModel.checkPassword(user, password);
-    if (!passwordMatch) return UserError.WrongCredentials;
-
-    return user;
-  }
-  private async checkLoginAllowed(id: string): Promise<UserError> {
+  public async checkLoginAllowed(id: string): Promise<UserError> {
     const ec = await this.emailRepo.getByUser(id);
     if (!ec || !ec.confirmed) return UserError.Unconfirmed;
     const ban = await this.banRepo.get(id);
     if (ban === undefined || !ban.isBanned) return UserError.NoError;
     return UserError.Forbidden;
-  }
-  private async createSession(data: SessionCreateType): Promise<SessionModel> {
-    const session = SessionModel.create(data);
-    await this.sessionsRepo.create(session);
-    return session;
   }
   private async updateSession(sessionId: string, data: SessionCreateType) {
     const session = SessionModel.refresh(sessionId, data);

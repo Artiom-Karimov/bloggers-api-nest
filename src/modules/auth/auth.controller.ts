@@ -31,6 +31,7 @@ import EmailResendCommand from './commands/commands/email.resend.command';
 import EmailConfirmCommand from './commands/commands/email.confirm.command';
 import RecoverPasswordCommand from './commands/commands/recover.password.command';
 import SetNewPasswordCommand from './commands/commands/set.new.password.command';
+import LoginCommand from './commands/commands/login.command';
 
 @Controller('auth')
 export default class AuthController {
@@ -72,8 +73,8 @@ export default class AuthController {
     const result = await this.commandBus.execute(
       new EmailConfirmCommand(data.code),
     );
-    if (result === UserError.NoError) return;
 
+    if (result === UserError.NoError) return;
     throwValidationException('code', 'wrong or already confirmed code');
   }
 
@@ -104,10 +105,14 @@ export default class AuthController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
-    data.ip = req.ip || '<unknown>';
-    data.deviceName = req.headers['user-agent'] || '<unknown>';
+    const result = await this.commandBus.execute(
+      new LoginCommand({
+        ...data,
+        ip: req.ip || '<unknown>',
+        deviceName: req.headers['user-agent'] || '<unknown>',
+      }),
+    );
 
-    const result = await this.sessionsService.login(data);
     if (result instanceof TokenPair) {
       this.setCookie(res, result.refreshToken);
       res.status(200).send({ accessToken: result.accessToken });

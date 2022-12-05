@@ -19,6 +19,7 @@ import EmailResendHandler from './commands/handlers/email.resend.handler';
 import EmailConfirmHandler from './commands/handlers/email.confirm.handler';
 import RecoverPasswordHandler from './commands/handlers/recover.password.handler';
 import SetNewPasswordPasswordHandler from './commands/handlers/set.new.password.handler';
+import LoginHandler from './commands/handlers/login.handler';
 
 const commandHandlers = [
   RegisterHandler,
@@ -26,6 +27,7 @@ const commandHandlers = [
   EmailConfirmHandler,
   RecoverPasswordHandler,
   SetNewPasswordPasswordHandler,
+  LoginHandler,
 ];
 
 @Module({
