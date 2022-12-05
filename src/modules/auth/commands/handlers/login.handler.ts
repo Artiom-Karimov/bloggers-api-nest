@@ -3,7 +3,6 @@ import { UserError } from '../../../users/models/user.error';
 import UserModel from '../../../users/models/user.model';
 import UsersRepository from '../../../users/users.repository';
 import TokenPair from '../../models/jwt/token.pair';
-import TokenPayload from '../../models/jwt/token.payload';
 import SessionModel, {
   SessionCreateType,
 } from '../../models/session/session.model';
@@ -29,7 +28,7 @@ export default class LoginHandler implements ICommandHandler<LoginCommand> {
       deviceName,
       userId: userResult.id,
     });
-    return this.createTokenPair(session, userResult.login);
+    return this.service.createTokenPair(session, userResult.login);
   }
   private async checkLoginGetUser(
     loginOrEmail: string,
@@ -50,16 +49,5 @@ export default class LoginHandler implements ICommandHandler<LoginCommand> {
     const session = SessionModel.create(data);
     await this.sessionsRepo.create(session);
     return session;
-  }
-  private createTokenPair(session: SessionModel, userLogin: string): TokenPair {
-    return TokenPair.create(
-      new TokenPayload(
-        session.userId,
-        userLogin,
-        session.deviceId,
-        session.issuedAt,
-        session.expiresAt,
-      ),
-    );
   }
 }

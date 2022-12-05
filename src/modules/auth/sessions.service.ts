@@ -2,13 +2,10 @@ import { Injectable } from '@nestjs/common';
 import EmailConfirmationRepository from '../users/email.confirmation.repository';
 import { UserError } from '../users/models/user.error';
 import UsersRepository from '../users/users.repository';
-import RefreshTokenInputModel from './models/input/refresh.token.input.model';
 import TokenPair from './models/jwt/token.pair';
 import TokenPayload from './models/jwt/token.payload';
 import SessionUserViewModel from './models/session.user.view.model';
-import SessionModel, {
-  SessionCreateType,
-} from './models/session/session.model';
+import SessionModel from './models/session/session.model';
 import SessionsRepository from './sessions.repository';
 import UsersBanQueryRepository from './users.ban.query.repository';
 
@@ -21,25 +18,6 @@ export default class SessionsService {
     private readonly sessionsRepo: SessionsRepository,
   ) { }
 
-  public async refreshToken(
-    data: RefreshTokenInputModel,
-  ): Promise<TokenPair | UserError> {
-    const payload = TokenPair.unpackToken(data.token);
-    if (!payload) return UserError.InvalidCode;
-
-    if (!(await this.checkSession(payload.deviceId, payload.userId)))
-      return UserError.InvalidCode;
-
-    const loginAllowed = await this.checkLoginAllowed(payload.userId);
-    if (loginAllowed !== UserError.NoError) return loginAllowed;
-
-    const session = await this.updateSession(payload.deviceId, {
-      ip: data.ip,
-      deviceName: data.deviceName,
-      userId: payload.userId,
-    });
-    return this.createTokenPair(session, payload.userLogin);
-  }
   public async logout(refreshToken: string): Promise<boolean> {
     const payload = TokenPair.unpackToken(refreshToken);
     if (!payload) return false;
@@ -79,12 +57,7 @@ export default class SessionsService {
     if (ban === undefined || !ban.isBanned) return UserError.NoError;
     return UserError.Forbidden;
   }
-  private async updateSession(sessionId: string, data: SessionCreateType) {
-    const session = SessionModel.refresh(sessionId, data);
-    await this.sessionsRepo.update(sessionId, session);
-    return session;
-  }
-  private createTokenPair(session: SessionModel, userLogin: string): TokenPair {
+  public createTokenPair(session: SessionModel, userLogin: string): TokenPair {
     return TokenPair.create(
       new TokenPayload(
         session.userId,
@@ -94,17 +67,5 @@ export default class SessionsService {
         session.expiresAt,
       ),
     );
-  }
-  private async checkSession(
-    deviceId: string,
-    userId: string,
-  ): Promise<boolean> {
-    const session = await this.sessionsRepo.get(deviceId);
-    if (!session) return false;
-
-    if (session.expiresAt < new Date().getTime()) return false;
-    if (session.userId !== userId) return false;
-
-    return true;
   }
 }

@@ -19,7 +19,6 @@ import NewPasswordInputModel from './models/input/new.password.input.model';
 import { throwValidationException } from '../../common/utils/validation.options';
 import { Request, Response } from 'express';
 import TokenPair from './models/jwt/token.pair';
-import RefreshTokenInputModel from './models/input/refresh.token.input.model';
 import SessionsService from './sessions.service';
 import SessionUserViewModel from './models/session.user.view.model';
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
@@ -32,6 +31,7 @@ import EmailConfirmCommand from './commands/commands/email.confirm.command';
 import RecoverPasswordCommand from './commands/commands/recover.password.command';
 import SetNewPasswordCommand from './commands/commands/set.new.password.command';
 import LoginCommand from './commands/commands/login.command';
+import RefreshTokenCommand from './commands/commands/refresh.token.command';
 
 @Controller('auth')
 export default class AuthController {
@@ -125,13 +125,13 @@ export default class AuthController {
   @HttpCode(200)
   @UseGuards(DdosGuard, RefreshTokenGuard)
   async refresh(@Req() req: Request, @Res() res: Response): Promise<void> {
-    const data: RefreshTokenInputModel = {
-      token: req.refreshToken,
-      ip: req.ip || '<unknown>',
-      deviceName: req.headers['user-agent'] || '<unknown>',
-    };
-
-    const result = await this.sessionsService.refreshToken(data);
+    const result = await this.commandBus.execute(
+      new RefreshTokenCommand({
+        token: req.refreshToken,
+        ip: req.ip || '<unknown>',
+        deviceName: req.headers['user-agent'] || '<unknown>',
+      }),
+    );
     if (result instanceof TokenPair) {
       this.setCookie(res, result.refreshToken);
       res.status(200).send({ accessToken: result.accessToken });

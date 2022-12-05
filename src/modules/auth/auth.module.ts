@@ -20,6 +20,7 @@ import EmailConfirmHandler from './commands/handlers/email.confirm.handler';
 import RecoverPasswordHandler from './commands/handlers/recover.password.handler';
 import SetNewPasswordPasswordHandler from './commands/handlers/set.new.password.handler';
 import LoginHandler from './commands/handlers/login.handler';
+import RefreshTokenHandler from './commands/handlers/refresh.token.handler';
 
 const commandHandlers = [
   RegisterHandler,
@@ -28,6 +29,7 @@ const commandHandlers = [
   RecoverPasswordHandler,
   SetNewPasswordPasswordHandler,
   LoginHandler,
+  RefreshTokenHandler,
 ];
 
 @Module({
