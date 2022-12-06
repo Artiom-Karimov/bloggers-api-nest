@@ -6,7 +6,7 @@ import UserViewModel from './user.view.model';
 
 export default class UserMapper {
   public static fromDomain(model: UserModel): User {
-    const user = new User(
+    return new User(
       model.id,
       model.login,
       model.email,
@@ -14,7 +14,6 @@ export default class UserMapper {
       model.salt,
       model.createdAt,
     );
-    return user;
   }
   public static toDomain(model: User): UserModel {
     return new UserModel(
