@@ -7,11 +7,12 @@ import {
 import { Request } from 'express';
 import TokenPair from '../models/jwt/token.pair';
 import TokenPayload from '../models/jwt/token.payload';
-import UsersBanQueryRepository from '../users.ban.query.repository';
+import { QueryBus } from '@nestjs/cqrs';
+import CheckUserBanQuery from '../queries/queries/check.user.ban.query';
 
 @Injectable()
 export class BearerAuthGuard implements CanActivate {
-  constructor(private readonly banRepo: UsersBanQueryRepository) { }
+  constructor(private readonly queryBus: QueryBus) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: Request = context.switchToHttp().getRequest();
@@ -30,8 +31,10 @@ export class BearerAuthGuard implements CanActivate {
     if (!payload)
       throw new UnauthorizedException('accessToken is invalid or expired');
 
-    const ban = await this.banRepo.get(payload.userId);
-    if (ban?.isBanned) throw new UnauthorizedException('User is banned');
+    const isBanned = await this.queryBus.execute(
+      new CheckUserBanQuery(payload.userId),
+    );
+    if (isBanned) throw new UnauthorizedException('User is banned');
 
     return payload;
   }

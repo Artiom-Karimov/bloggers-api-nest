@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import EmailConfirmationMapper from './models/email/email.confirmation.mapper';
-import EmailConfirmationModel from './models/email/email.confirmation.model';
+import EmailConfirmationMapper from '../models/mappers/email.confirmation.mapper';
+import EmailConfirmationModel from '../models/email.confirmation.model';
 import EmailConfirmation, {
   EmailConfirmationDocument,
-} from './models/email/email.confirmation.schema';
+} from './models/email.confirmation.schema';
 
 @Injectable()
 export default class EmailConfirmationRepository {

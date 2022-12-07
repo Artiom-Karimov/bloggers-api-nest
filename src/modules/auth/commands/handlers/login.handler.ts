@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserError } from '../../../users/models/user.error';
+import { UserError } from '../../../users/user.error';
 import UserModel from '../../../users/models/user.model';
-import UsersRepository from '../../../users/users.repository';
+import UsersRepository from '../../../users/mongoose/users.repository';
 import TokenPair from '../../models/jwt/token.pair';
 import SessionModel, {
   SessionCreateType,
@@ -40,7 +40,7 @@ export default class LoginHandler implements ICommandHandler<LoginCommand> {
     const loginAllowed = await this.service.checkLoginAllowed(user.id);
     if (loginAllowed !== UserError.NoError) return loginAllowed;
 
-    const passwordMatch = await UserModel.checkPassword(user, password);
+    const passwordMatch = await user.checkPassword(password);
     if (!passwordMatch) return UserError.WrongCredentials;
 
     return user;

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import UserBanMapper from '../users/models/ban/user.ban.mapper';
-import UserBan, { UserBanDocument } from '../users/models/ban/user.ban.schema';
-import UserBanViewModel from '../users/models/ban/user.ban.view.model';
+import UserBanMapper from '../models/mappers/user.ban.mapper';
+import UserBan, { UserBanDocument } from './models/user.ban.schema';
+import UserBanViewModel from '../models/view/user.ban.view.model';
 
 Injectable();
 export default class UsersBanQueryRepository {

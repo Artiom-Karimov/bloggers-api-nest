@@ -10,7 +10,7 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import UserInputModel from '../users/models/user.input.model';
+import UserInputModel from '../users/models/input/user.input.model';
 import { DdosGuard } from './guards/ddos.guard';
 import CodeInputModel from './models/input/code.input.model';
 import EmailInputModel from './models/input/email.input.model';
@@ -22,7 +22,7 @@ import TokenPair from './models/jwt/token.pair';
 import SessionUserViewModel from './models/session.user.view.model';
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
 import { BearerAuthGuard } from './guards/bearer.auth.guard';
-import { UserError } from '../users/models/user.error';
+import { UserError } from '../users/user.error';
 import { CommandBus } from '@nestjs/cqrs';
 import RegisterCommand from './commands/commands/register.command';
 import EmailResendCommand from './commands/commands/email.resend.command';
@@ -32,7 +32,7 @@ import SetNewPasswordCommand from './commands/commands/set.new.password.command'
 import LoginCommand from './commands/commands/login.command';
 import RefreshTokenCommand from './commands/commands/refresh.token.command';
 import LogoutCommand from './commands/commands/logout.command';
-import UsersQueryRepository from '../users/users.query.repository';
+import UsersQueryRepository from '../users/mongoose/users.query.repository';
 
 @Controller('auth')
 export default class AuthController {

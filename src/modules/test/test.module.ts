@@ -15,11 +15,11 @@ import {
   PostLikeSchema,
 } from '../blogs/likes/models/like.schema';
 import Post, { PostSchema } from '../blogs/posts/models/post.schema';
-import UserBan, { UserBanSchema } from '../users/models/ban/user.ban.schema';
+import UserBan, { UserBanSchema } from '../users/mongoose/models/user.ban.schema';
 import EmailConfirmation, {
   EmailConfirmationSchema,
-} from '../users/models/email/email.confirmation.schema';
-import User, { UserSchema } from '../users/models/user.schema';
+} from '../users/mongoose/models/email.confirmation.schema';
+import User, { UserSchema } from '../users/mongoose/models/user.schema';
 import TestController from './test.controller';
 import TestRepository from './test.repository';
 

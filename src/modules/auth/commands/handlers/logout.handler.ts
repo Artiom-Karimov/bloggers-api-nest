@@ -1,5 +1,5 @@
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserError } from '../../../users/models/user.error';
+import { UserError } from '../../../users/user.error';
 import TokenPair from '../../models/jwt/token.pair';
 import DeleteSessionCommand from '../commands/delete.session.command';
 import LogoutCommand from '../commands/logout.command';

@@ -1,4 +1,4 @@
-import UserBanViewModel from './ban/user.ban.view.model';
+import UserBanViewModel from './user.ban.view.model';
 
 export default class UserViewModel {
   constructor(

@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserError } from '../../../users/models/user.error';
+import { UserError } from '../../../users/user.error';
 import SessionsRepository from '../../sessions.repository';
 import LogoutAnotherSessionsCommand from '../commands/logout.another.sessions.command';
 

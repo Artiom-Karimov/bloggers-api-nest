@@ -20,11 +20,11 @@ import { throwValidationException } from '../../common/utils/validation.options'
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 import AdminBlogViewModel from '../blogs/blogs/models/view/admin.blog.view.model';
 import GetBlogsQuery from '../blogs/blogs/models/input/get.blogs.query';
-import UserBanInputModel from '../users/models/ban/user.ban.input.model';
-import GetUsersQuery from '../users/models/get.users.query';
-import UserInputModel from '../users/models/user.input.model';
-import UserViewModel from '../users/models/user.view.model';
-import UsersQueryRepository from '../users/users.query.repository';
+import UserBanInputModel from '../users/models/input/user.ban.input.model';
+import GetUsersQuery from '../users/models/input/get.users.query';
+import UserInputModel from '../users/models/input/user.input.model';
+import UserViewModel from '../users/models/view/user.view.model';
+import UsersQueryRepository from '../users/mongoose/users.query.repository';
 import { BlogError } from '../blogs/blogs/models/blog.error';
 import BlogBanInputModel from '../blogs/blogs/models/input/blog.ban.input.model';
 import { CommandBus } from '@nestjs/cqrs';
@@ -34,7 +34,7 @@ import AssignBlogOwnerCommand from '../blogs/blogs/commands/commands/assign.blog
 import BanUserCommand from './commands/commands/ban.user.command';
 import CreateConfirmedUserCommand from './commands/commands/create.confirmed.user.command';
 import DeleteUserCommand from './commands/commands/delete.user.command';
-import { UserError } from '../users/models/user.error';
+import { UserError } from '../users/user.error';
 
 @Controller('sa')
 @UseGuards(BasicAuthGuard)
