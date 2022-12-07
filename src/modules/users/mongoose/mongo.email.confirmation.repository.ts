@@ -6,13 +6,16 @@ import EmailConfirmationModel from '../models/email.confirmation.model';
 import EmailConfirmation, {
   EmailConfirmationDocument,
 } from './models/email.confirmation.schema';
+import EmailConfirmationRepository from '../email.confirmation.repository';
 
 @Injectable()
-export default class EmailConfirmationRepository {
+export default class MongoEmailConfirmationRepository extends EmailConfirmationRepository {
   constructor(
     @InjectModel(EmailConfirmation.name)
     private readonly model: Model<EmailConfirmationDocument>,
-  ) { }
+  ) {
+    super();
+  }
 
   public async getByUser(
     id: string,

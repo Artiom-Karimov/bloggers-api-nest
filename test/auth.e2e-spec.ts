@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { init, moduleFixture, stop } from './utils/test.init';
 import UserSampleGenerator from './utils/user.sample.generator';
 import UserInputModel from '../src/modules/users/models/input/user.input.model';
-import EmailConfirmationRepository from '../src/modules/users/mongoose/mongo.email.confirmation.repository';
+import EmailConfirmationRepository from '../src/modules/users/email.confirmation.repository';
 import UsersRepository from '../src/modules/users/users.repository';
 import RecoveryRepository from '../src/modules/auth/recovery.repository';
 import { dateRegex } from '../src/common/utils/date.generator';

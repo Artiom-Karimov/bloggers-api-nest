@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import SessionsRepository from '../../../auth/sessions.repository';
-import EmailConfirmationRepository from '../../../users/mongoose/mongo.email.confirmation.repository';
+import EmailConfirmationRepository from '../../../users/email.confirmation.repository';
 import { UserError } from '../../../users/user.error';
 import UsersBanRepository from '../../../users/users.ban.repository';
 import UsersRepository from '../../../users/users.repository';
