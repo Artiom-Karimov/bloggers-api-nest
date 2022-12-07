@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import EmailConfirmationRepository from '../../../users/mongoose/email.confirmation.repository';
+import EmailConfirmationRepository from '../../../users/interfaces/email.confirmation.repository';
 import EmailConfirmationModel from '../../../users/models/email.confirmation.model';
 import { UserError } from '../../../users/user.error';
 import EmailConfirmCommand from '../commands/email.confirm.command';

@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { init, stop } from './utils/test.init';
 import UserSampleGenerator, { Tokens } from './utils/user.sample.generator';
 import { dateRegex } from '../src/common/utils/date.generator';
-import SessionViewModel from '../src/modules/auth/models/session/session.view.model';
+import SessionViewModel from '../src/modules/users/models/view/session.view.model';
 
 jest.useRealTimers();
 

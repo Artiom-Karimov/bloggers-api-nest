@@ -3,11 +3,11 @@ import { INestApplication } from '@nestjs/common';
 import { init, moduleFixture, stop } from './utils/test.init';
 import UserSampleGenerator from './utils/user.sample.generator';
 import UserInputModel from '../src/modules/users/models/input/user.input.model';
-import EmailConfirmationRepository from '../src/modules/users/mongoose/email.confirmation.repository';
-import UsersRepository from '../src/modules/users/mongoose/users.repository';
-import RecoveryRepository from '../src/modules/auth/recovery.repository';
+import EmailConfirmationRepository from '../src/modules/users/interfaces/email.confirmation.repository';
+import UsersRepository from '../src/modules/users/interfaces/users.repository';
+import RecoveryRepository from '../src/modules/users/interfaces/recovery.repository';
 import { dateRegex } from '../src/common/utils/date.generator';
-import SessionViewModel from '../src/modules/auth/models/session/session.view.model';
+import SessionViewModel from '../src/modules/users/models/view/session.view.model';
 
 jest.useRealTimers();
 

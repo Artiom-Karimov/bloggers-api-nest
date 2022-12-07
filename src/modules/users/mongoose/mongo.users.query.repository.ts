@@ -2,22 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../../common/models/page.view.model';
-import SessionUserViewModel from '../../auth/models/session.user.view.model';
-import UserBanMapper from '../models/mappers/user.ban.mapper';
+import SessionUserViewModel from '../models/view/session.user.view.model';
+import UserBanMapper from './models/mappers/user.ban.mapper';
 import UserBan, { UserBanDocument } from './models/user.ban.schema';
 import UserBanViewModel from '../models/view/user.ban.view.model';
 import GetUsersQuery from '../models/input/get.users.query';
-import UserMapper from '../models/mappers/user.mapper';
+import UserMapper from './models/mappers/user.mapper';
 import User, { UserDocument } from './models/user.schema';
 import UserViewModel from '../models/view/user.view.model';
+import UsersQueryRepository from '../interfaces/users.query.repository';
 
 @Injectable()
-export default class UsersQueryRepository {
+export default class MongoUsersQueryRepository extends UsersQueryRepository {
   constructor(
     @InjectModel(User.name) private readonly model: Model<UserDocument>,
     @InjectModel(UserBan.name)
     private readonly banModel: Model<UserBanDocument>,
-  ) { }
+  ) {
+    super();
+  }
 
   public async getUsers(
     params: GetUsersQuery,

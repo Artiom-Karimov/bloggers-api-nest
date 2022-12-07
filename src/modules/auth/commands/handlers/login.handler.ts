@@ -1,12 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserError } from '../../../users/user.error';
 import UserModel from '../../../users/models/user.model';
-import UsersRepository from '../../../users/mongoose/users.repository';
+import UsersRepository from '../../../users/interfaces/users.repository';
 import TokenPair from '../../models/jwt/token.pair';
 import SessionModel, {
   SessionCreateType,
-} from '../../models/session/session.model';
-import SessionsRepository from '../../sessions.repository';
+} from '../../../users/models/session.model';
+import SessionsRepository from '../../../users/interfaces/sessions.repository';
 import SessionsService from '../../sessions.service';
 import LoginCommand from '../commands/login.command';
 

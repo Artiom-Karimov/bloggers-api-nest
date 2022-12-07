@@ -1,18 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import EmailConfirmationMapper from '../models/mappers/email.confirmation.mapper';
+import EmailConfirmationMapper from './models/mappers/email.confirmation.mapper';
 import EmailConfirmationModel from '../models/email.confirmation.model';
 import EmailConfirmation, {
   EmailConfirmationDocument,
 } from './models/email.confirmation.schema';
+import EmailConfirmationRepository from '../interfaces/email.confirmation.repository';
 
 @Injectable()
-export default class EmailConfirmationRepository {
+export default class MongoEmailConfirmationRepository extends EmailConfirmationRepository {
   constructor(
     @InjectModel(EmailConfirmation.name)
     private readonly model: Model<EmailConfirmationDocument>,
-  ) { }
+  ) {
+    super();
+  }
 
   public async getByUser(
     id: string,

@@ -1,5 +1,5 @@
-import IdGenerator from '../../../../common/utils/id.generator';
-import * as config from '../../../../config/users';
+import IdGenerator from '../../../common/utils/id.generator';
+import * as config from '../../../config/users';
 
 export type SessionCreateType = {
   ip: string;
@@ -35,5 +35,9 @@ export default class SessionModel {
       new Date().getTime(),
       new Date().getTime() + config.refreshExpireMillis,
     );
+  }
+
+  public isValid(): boolean {
+    return this.expiresAt > new Date().getTime();
   }
 }

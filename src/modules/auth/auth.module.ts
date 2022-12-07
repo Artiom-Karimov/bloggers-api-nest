@@ -1,12 +1,6 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import AuthController from './auth.controller';
 import { DdosGuard } from './guards/ddos.guard';
-import Recovery, { RecoverySchema } from './models/recovery/recovery.schema';
-import Session, { SessionSchema } from './models/session/session.schema';
-import RecoveryRepository from './recovery.repository';
-import SessionsQueryRepository from './sessions.query.repository';
-import SessionsRepository from './sessions.repository';
 import SessionsService from './sessions.service';
 import SecurityDevicesController from './security.devices.controller';
 import { MailModule } from '../mail/mail.module';
@@ -39,25 +33,8 @@ const commandHandlers = [
 const queryHandlers = [CheckUserBanHandler];
 
 @Module({
-  imports: [
-    CqrsModule,
-    MongooseModule.forFeature([
-      { name: Recovery.name, schema: RecoverySchema },
-    ]),
-    MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
-    UsersModule,
-    MailModule,
-  ],
+  imports: [CqrsModule, UsersModule, MailModule],
   controllers: [AuthController, SecurityDevicesController],
-  providers: [
-    DdosGuard,
-    RecoveryRepository,
-    SessionsRepository,
-    SessionsQueryRepository,
-    SessionsService,
-    ...commandHandlers,
-    ...queryHandlers,
-  ],
-  exports: [SessionsRepository],
+  providers: [DdosGuard, SessionsService, ...commandHandlers, ...queryHandlers],
 })
 export class AuthModule { }

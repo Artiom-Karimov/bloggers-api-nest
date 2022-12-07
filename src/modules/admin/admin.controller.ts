@@ -24,7 +24,7 @@ import UserBanInputModel from '../users/models/input/user.ban.input.model';
 import GetUsersQuery from '../users/models/input/get.users.query';
 import UserInputModel from '../users/models/input/user.input.model';
 import UserViewModel from '../users/models/view/user.view.model';
-import UsersQueryRepository from '../users/mongoose/users.query.repository';
+import UsersQueryRepository from '../users/interfaces/users.query.repository';
 import { BlogError } from '../blogs/blogs/models/blog.error';
 import BlogBanInputModel from '../blogs/blogs/models/input/blog.ban.input.model';
 import { CommandBus } from '@nestjs/cqrs';

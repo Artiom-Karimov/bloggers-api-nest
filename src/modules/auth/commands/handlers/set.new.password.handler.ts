@@ -1,8 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserError } from '../../../users/user.error';
-import UserModel from '../../../users/models/user.model';
-import UsersRepository from '../../../users/mongoose/users.repository';
-import RecoveryRepository from '../../recovery.repository';
+import UsersRepository from '../../../users/interfaces/users.repository';
+import RecoveryRepository from '../../../users/interfaces/recovery.repository';
 import SetNewPasswordCommand from '../commands/set.new.password.command';
 
 @CommandHandler(SetNewPasswordCommand)
@@ -27,7 +26,7 @@ export default class SetNewPasswordPasswordHandler
     if (!user) return UserError.NotFound;
 
     user = await user.updatePassword(command.data.newPassword);
-    const updated = await this.usersRepo.update(user.id, user);
+    const updated = await this.usersRepo.update(user);
 
     return updated ? UserError.NoError : UserError.Unknown;
   }

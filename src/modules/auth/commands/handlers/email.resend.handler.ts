@@ -1,10 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { MailService } from '../../../mail/mail.service';
-import EmailConfirmationRepository from '../../../users/mongoose/email.confirmation.repository';
+import EmailConfirmationRepository from '../../../users/interfaces/email.confirmation.repository';
 import EmailConfirmationModel from '../../../users/models/email.confirmation.model';
 import { UserError } from '../../../users/user.error';
 import UserModel from '../../../users/models/user.model';
-import UsersRepository from '../../../users/mongoose/users.repository';
+import UsersRepository from '../../../users/interfaces/users.repository';
 import EmailResendCommand from '../commands/email.resend.command';
 
 @CommandHandler(EmailResendCommand)
