@@ -33,7 +33,9 @@ export default abstract class TestSampleGenerator<Tinput, Toutput> {
   }
 
   protected rand = () => {
-    return Math.floor(Math.random() * 999_999);
+    let result = Math.floor(Math.random() * 999);
+    result *= new Date().getTime() % 100;
+    return result;
   };
   protected getLastSamples = (length: number) => {
     return this.samples.slice(this.samples.length - length);

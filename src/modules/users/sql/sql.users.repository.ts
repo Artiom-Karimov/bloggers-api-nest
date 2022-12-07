@@ -35,7 +35,6 @@ export default class SqlUsersRepository extends UsersRepository {
     `,
       [value],
     );
-    console.log(result);
     if (!(result instanceof Array)) return undefined;
     const session = result[0] as User;
     return session ? UserMapper.toDomain(session) : undefined;
@@ -43,14 +42,13 @@ export default class SqlUsersRepository extends UsersRepository {
 
   public async create(user: UserModel): Promise<string | undefined> {
     const dbUser = UserMapper.fromDomain(user);
-    const result = await this.db.query(
+    await this.db.query(
       `
       insert into "user" ("id","login","email","hash","createdAt")
       values ($1,$2,$3,$4,$5);
       `,
       [dbUser.id, dbUser.login, dbUser.email, dbUser.hash, dbUser.createdAt],
     );
-    console.log(result);
     return user.id;
   }
 
@@ -59,23 +57,23 @@ export default class SqlUsersRepository extends UsersRepository {
     const result = await this.db.query(
       `
       update "user"
-      set "login" = $1, "email" = $2, "hash" = $3;
+      set "login" = $2, "email" = $3, "hash" = $4
+      where "id" = $1;
       `,
-      [dbUser.login, dbUser.email, dbUser.hash],
+      [dbUser.id, dbUser.login, dbUser.email, dbUser.hash],
     );
-    console.log(result);
+    console.log(`Update result: ${result}`);
     return true;
   }
 
   public async delete(id: string): Promise<boolean> {
-    const result = await this.db.query(
+    await this.db.query(
       `
       delete from "user"
       where "id" = $1;
       `,
       [id],
     );
-    console.log(result);
     return true;
   }
 }
