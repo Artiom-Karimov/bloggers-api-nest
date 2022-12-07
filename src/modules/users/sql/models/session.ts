@@ -1,0 +1,10 @@
+export default class Session {
+  constructor(
+    public deviceId: string,
+    public deviceName: string,
+    public ip: string,
+    public userId: string,
+    public issuedAt: Date,
+    public expiresAt: Date,
+  ) { }
+}
