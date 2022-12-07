@@ -14,7 +14,7 @@ import SessionViewModel from './models/session/session.view.model';
 import SessionsQueryRepository from './sessions.query.repository';
 import TokenPayload from './models/jwt/token.payload';
 import { User } from './guards/user.decorator';
-import { UserError } from '../users/models/user.error';
+import { UserError } from '../users/user.error';
 import { CommandBus } from '@nestjs/cqrs';
 import LogoutAnotherSessionsCommand from './commands/commands/logout.another.sessions.command';
 import DeleteSessionCommand from './commands/commands/delete.session.command';

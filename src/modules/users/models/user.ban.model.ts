@@ -1,5 +1,5 @@
-import DateGenerator from '../../../../common/utils/date.generator';
-import { BanUserCreateModel } from '../../../admin/commands/commands/ban.user.command';
+import DateGenerator from '../../../common/utils/date.generator';
+import { BanUserCreateModel } from '../../admin/commands/commands/ban.user.command';
 
 export default class UserBanModel {
   constructor(

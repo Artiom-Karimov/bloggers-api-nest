@@ -1,7 +1,7 @@
 import DateGenerator from '../../../common/utils/date.generator';
 import Hasher from '../../../common/utils/hasher';
 import IdGenerator from '../../../common/utils/id.generator';
-import UserInputModel from './user.input.model';
+import UserInputModel from './input/user.input.model';
 
 export default class UserModel {
   constructor(

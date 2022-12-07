@@ -1,6 +1,6 @@
-import UserBanModel from './user.ban.model';
-import UserBan from './user.ban.schema';
-import UserBanViewModel from './user.ban.view.model';
+import UserBanModel from '../user.ban.model';
+import UserBan from '../../mongoose/models/user.ban.schema';
+import UserBanViewModel from '../view/user.ban.view.model';
 
 export default class UserBanMapper {
   public static fromDomain(model: UserBanModel): UserBan {

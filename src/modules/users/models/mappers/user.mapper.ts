@@ -1,8 +1,8 @@
-import SessionUserViewModel from '../../auth/models/session.user.view.model';
-import UserBanViewModel from './ban/user.ban.view.model';
-import UserModel from './user.model';
-import User from './user.schema';
-import UserViewModel from './user.view.model';
+import SessionUserViewModel from '../../../auth/models/session.user.view.model';
+import UserBanViewModel from '../view/user.ban.view.model';
+import UserModel from '../user.model';
+import User from '../../mongoose/models/user.schema';
+import UserViewModel from '../view/user.view.model';
 
 export default class UserMapper {
   public static fromDomain(model: UserModel): User {

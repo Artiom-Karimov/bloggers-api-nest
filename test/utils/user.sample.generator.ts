@@ -1,6 +1,6 @@
 import * as request from 'supertest';
-import UserInputModel from '../../src/modules/users/models/user.input.model';
-import UserViewModel from '../../src/modules/users/models/user.view.model';
+import UserInputModel from '../../src/modules/users/models/input/user.input.model';
+import UserViewModel from '../../src/modules/users/models/view/user.view.model';
 import TestSampleGenerator from './test.sample.generator';
 import * as config from '../../src/config/admin';
 

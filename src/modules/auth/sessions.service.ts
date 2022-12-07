@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import EmailConfirmationRepository from '../users/email.confirmation.repository';
-import { UserError } from '../users/models/user.error';
+import EmailConfirmationRepository from '../users/mongoose/email.confirmation.repository';
+import { UserError } from '../users/user.error';
 import TokenPair from './models/jwt/token.pair';
 import TokenPayload from './models/jwt/token.payload';
 import SessionModel from './models/session/session.model';

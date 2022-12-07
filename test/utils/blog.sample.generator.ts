@@ -1,7 +1,7 @@
 import * as request from 'supertest';
 import BlogInputModel from '../../src/modules/blogs/blogs/models/input/blog.input.model';
 import TestSampleGenerator from './test.sample.generator';
-import UserInputModel from '../../src/modules/users/models/user.input.model';
+import UserInputModel from '../../src/modules/users/models/input/user.input.model';
 import { INestApplication } from '@nestjs/common';
 import UserSampleGenerator, { Tokens } from './user.sample.generator';
 import BlogViewModel from '../../src/modules/blogs/blogs/models/view/blog.view.model';

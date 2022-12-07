@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserError } from '../../../users/models/user.error';
+import { UserError } from '../../../users/user.error';
 import UserModel from '../../../users/models/user.model';
-import UsersRepository from '../../../users/users.repository';
+import UsersRepository from '../../../users/mongoose/users.repository';
 import RecoveryRepository from '../../recovery.repository';
 import SetNewPasswordCommand from '../commands/set.new.password.command';
 

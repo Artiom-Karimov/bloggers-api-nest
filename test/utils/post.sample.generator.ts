@@ -2,7 +2,7 @@ import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import PostInputModel from '../../src/modules/blogs/posts/models/post.input.model';
 import PostViewModel from '../../src/modules/blogs/posts/models/post.view.model';
-import UserInputModel from '../../src/modules/users/models/user.input.model';
+import UserInputModel from '../../src/modules/users/models/input/user.input.model';
 import BlogSampleGenerator from './blog.sample.generator';
 import TestSampleGenerator from './test.sample.generator';
 import { Tokens } from './user.sample.generator';

@@ -8,7 +8,7 @@ import { dateRegex } from '../src/common/utils/date.generator';
 import BlogInputModel from '../src/modules/blogs/blogs/models/input/blog.input.model';
 import PostInputModel from '../src/modules/blogs/posts/models/post.input.model';
 import BlogViewModel from '../src/modules/blogs/blogs/models/view/blog.view.model';
-import UserViewModel from '../src/modules/users/models/user.view.model';
+import UserViewModel from '../src/modules/users/models/view/user.view.model';
 import PostSampleGenerator from './utils/post.sample.generator';
 import PostViewModel from '../src/modules/blogs/posts/models/post.view.model';
 

@@ -1,5 +1,5 @@
-import EmailConfirmationModel from './email.confirmation.model';
-import EmailConfirmation from './email.confirmation.schema';
+import EmailConfirmationModel from '../email.confirmation.model';
+import EmailConfirmation from '../../mongoose/models/email.confirmation.schema';
 
 export default class EmailConfirmationMapper {
   public static fromDomain(model: EmailConfirmationModel): EmailConfirmation {
