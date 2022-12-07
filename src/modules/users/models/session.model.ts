@@ -36,4 +36,8 @@ export default class SessionModel {
       new Date().getTime() + config.refreshExpireMillis,
     );
   }
+
+  public isValid(): boolean {
+    return this.expiresAt > new Date().getTime();
+  }
 }

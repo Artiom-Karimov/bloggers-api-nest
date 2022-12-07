@@ -3,13 +3,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import SessionMapper from '../models/mappers/session.mapper';
 import SessionModel from '../models/session.model';
+import SessionsRepository from '../sessions.repository';
 import Session, { SessionDocument } from './models/session.schema';
 
 @Injectable()
-export default class SessionsRepository {
+export default class MongoSessionsRepository extends SessionsRepository {
   constructor(
     @InjectModel(Session.name) private readonly model: Model<SessionDocument>,
-  ) { }
+  ) {
+    super();
+  }
 
   public async get(deviceId: string): Promise<SessionModel | undefined> {
     try {
@@ -30,9 +33,14 @@ export default class SessionsRepository {
       return undefined;
     }
   }
-  public async update(id: string, data: Partial<Session>): Promise<boolean> {
+  public async update(session: SessionModel): Promise<boolean> {
     try {
-      await this.model.findOneAndUpdate({ _id: id }, data).exec();
+      await this.model
+        .findOneAndUpdate(
+          { _id: session.deviceId },
+          SessionMapper.fromDomain(session),
+        )
+        .exec();
       return true;
     } catch (error) {
       console.error(error);

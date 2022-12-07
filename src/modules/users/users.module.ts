@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import Session, { SessionSchema } from './mongoose/models/session.schema';
-import SessionsRepository from './mongoose/mongo.sessions.repository';
+import SessionsRepository from './sessions.repository';
 import EmailConfirmationRepository from './email.confirmation.repository';
 import UserBan, { UserBanSchema } from './mongoose/models/user.ban.schema';
 import EmailConfirmation, {
@@ -21,6 +21,7 @@ import SessionsQueryRepository from './mongoose/mongo.sessions.query.repository'
 import Recovery, { RecoverySchema } from './mongoose/models/recovery.schema';
 import RecoveryRepository from './recovery.repository';
 import MongoRecoveryRepository from './mongoose/mongo.recovery.repository';
+import MongoSessionsRepository from './mongoose/mongo.sessions.repository';
 
 @Module({
   imports: [
@@ -55,7 +56,10 @@ import MongoRecoveryRepository from './mongoose/mongo.recovery.repository';
       provide: EmailConfirmationRepository,
       useClass: MongoEmailConfirmationRepository,
     },
-    SessionsRepository,
+    {
+      provide: SessionsRepository,
+      useClass: MongoSessionsRepository,
+    },
     SessionsQueryRepository,
     {
       provide: RecoveryRepository,

@@ -4,7 +4,7 @@ import TokenPair from '../../models/jwt/token.pair';
 import SessionModel, {
   SessionCreateType,
 } from '../../../users/models/session.model';
-import SessionsRepository from '../../../users/mongoose/mongo.sessions.repository';
+import SessionsRepository from '../../../users/sessions.repository';
 import SessionsService from '../../sessions.service';
 import RefreshTokenCommand from '../commands/refresh.token.command';
 
@@ -44,14 +44,14 @@ export default class RefreshTokenHandler
     const session = await this.sessionsRepo.get(deviceId);
     if (!session) return false;
 
-    if (session.expiresAt < new Date().getTime()) return false;
+    if (!session.isValid()) return false;
     if (session.userId !== userId) return false;
 
     return true;
   }
   private async updateSession(sessionId: string, data: SessionCreateType) {
     const session = SessionModel.refresh(sessionId, data);
-    await this.sessionsRepo.update(sessionId, session);
+    await this.sessionsRepo.update(session);
     return session;
   }
 }

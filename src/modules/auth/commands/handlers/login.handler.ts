@@ -6,7 +6,7 @@ import TokenPair from '../../models/jwt/token.pair';
 import SessionModel, {
   SessionCreateType,
 } from '../../../users/models/session.model';
-import SessionsRepository from '../../../users/mongoose/mongo.sessions.repository';
+import SessionsRepository from '../../../users/sessions.repository';
 import SessionsService from '../../sessions.service';
 import LoginCommand from '../commands/login.command';
 
