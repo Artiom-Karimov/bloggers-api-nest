@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import UsersQueryRepository from '../../../../users/mongoose/mongo.users.query.repository';
+import UsersQueryRepository from '../../../../users/users.query.repository';
 import CommentsRepository from '../../../comments/comments.repository';
 import BlogUserBanRepository from '../../blog.user.ban.repository';
 import BlogsRepository from '../../blogs.repository';

@@ -32,7 +32,7 @@ import SetNewPasswordCommand from './commands/commands/set.new.password.command'
 import LoginCommand from './commands/commands/login.command';
 import RefreshTokenCommand from './commands/commands/refresh.token.command';
 import LogoutCommand from './commands/commands/logout.command';
-import UsersQueryRepository from '../users/mongoose/mongo.users.query.repository';
+import UsersQueryRepository from '../users/users.query.repository';
 
 @Controller('auth')
 export default class AuthController {

@@ -10,14 +10,17 @@ import GetUsersQuery from '../models/input/get.users.query';
 import UserMapper from '../models/mappers/user.mapper';
 import User, { UserDocument } from './models/user.schema';
 import UserViewModel from '../models/view/user.view.model';
+import UsersQueryRepository from '../users.query.repository';
 
 @Injectable()
-export default class UsersQueryRepository {
+export default class MongoUsersQueryRepository extends UsersQueryRepository {
   constructor(
     @InjectModel(User.name) private readonly model: Model<UserDocument>,
     @InjectModel(UserBan.name)
     private readonly banModel: Model<UserBanDocument>,
-  ) { }
+  ) {
+    super();
+  }
 
   public async getUsers(
     params: GetUsersQuery,

@@ -9,10 +9,11 @@ import EmailConfirmation, {
 } from './mongoose/models/email.confirmation.schema';
 import User, { UserSchema } from './mongoose/models/user.schema';
 import UsersBanRepository from './mongoose/mongo.users.ban.repository';
-import UsersQueryRepository from './mongoose/mongo.users.query.repository';
+import UsersQueryRepository from './users.query.repository';
 import UsersBanQueryRepository from './mongoose/mongo.users.ban.query.repository';
 import UsersRepository from './users.repository';
 import MongoUsersRepository from './mongoose/mongo.users.repository';
+import MongoUsersQueryRepository from './mongoose/mongo.users.query.repository';
 
 @Module({
   imports: [
@@ -28,7 +29,10 @@ import MongoUsersRepository from './mongoose/mongo.users.repository';
       provide: UsersRepository,
       useClass: MongoUsersRepository,
     },
-    UsersQueryRepository,
+    {
+      provide: UsersQueryRepository,
+      useClass: MongoUsersQueryRepository,
+    },
     UsersBanRepository,
     EmailConfirmationRepository,
     SessionsRepository,
