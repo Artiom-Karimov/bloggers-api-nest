@@ -11,8 +11,6 @@ import SessionsService from './sessions.service';
 import SecurityDevicesController from './security.devices.controller';
 import { MailModule } from '../mail/mail.module';
 import { UsersModule } from '../users/users.module';
-import UserBan, { UserBanSchema } from '../users/mongoose/models/user.ban.schema';
-import UsersBanQueryRepository from './users.ban.query.repository';
 import RegisterHandler from './commands/handlers/register.handler';
 import { CqrsModule } from '@nestjs/cqrs';
 import EmailResendHandler from './commands/handlers/email.resend.handler';
@@ -24,6 +22,7 @@ import RefreshTokenHandler from './commands/handlers/refresh.token.handler';
 import LogoutHandler from './commands/handlers/logout.handler';
 import LogoutAnotherSessionsHandler from './commands/handlers/logout.another.sessions.handler';
 import DeleteSessionHandler from './commands/handlers/delete.session.handler';
+import CheckUserBanHandler from './queries/handlers/check.user.ban.handler';
 
 const commandHandlers = [
   RegisterHandler,
@@ -37,6 +36,7 @@ const commandHandlers = [
   LogoutAnotherSessionsHandler,
   DeleteSessionHandler,
 ];
+const queryHandlers = [CheckUserBanHandler];
 
 @Module({
   imports: [
@@ -45,7 +45,6 @@ const commandHandlers = [
       { name: Recovery.name, schema: RecoverySchema },
     ]),
     MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
-    MongooseModule.forFeature([{ name: UserBan.name, schema: UserBanSchema }]),
     UsersModule,
     MailModule,
   ],
@@ -56,9 +55,9 @@ const commandHandlers = [
     SessionsRepository,
     SessionsQueryRepository,
     SessionsService,
-    UsersBanQueryRepository,
     ...commandHandlers,
+    ...queryHandlers,
   ],
-  exports: [UsersBanQueryRepository, SessionsRepository],
+  exports: [SessionsRepository],
 })
 export class AuthModule { }

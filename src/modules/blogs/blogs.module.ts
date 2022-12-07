@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from '../auth/auth.module';
 import BlogsController from './blogs/blogs.controller';
 import BlogsQueryRepository from './blogs/blogs.query.repository';
 import BlogsRepository from './blogs/blogs.repository';
@@ -78,7 +77,6 @@ const commandHandlers = [
     MongooseModule.forFeature([
       { name: BlogUserBan.name, schema: BlogUserBanSchema },
     ]),
-    AuthModule,
     UsersModule,
   ],
   controllers: [BlogsController, PostsController, CommentsController],

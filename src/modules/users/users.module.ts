@@ -11,6 +11,7 @@ import User, { UserSchema } from './mongoose/models/user.schema';
 import UsersBanRepository from './mongoose/users.ban.repository';
 import UsersQueryRepository from './mongoose/users.query.repository';
 import UsersRepository from './mongoose/users.repository';
+import UsersBanQueryRepository from './mongoose/users.ban.query.repository';
 
 @Module({
   imports: [
@@ -27,11 +28,13 @@ import UsersRepository from './mongoose/users.repository';
     UsersBanRepository,
     EmailConfirmationRepository,
     SessionsRepository,
+    UsersBanQueryRepository,
   ],
   exports: [
     UsersRepository,
     UsersBanRepository,
     UsersQueryRepository,
+    UsersBanQueryRepository,
     EmailConfirmationRepository,
   ],
 })
