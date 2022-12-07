@@ -10,14 +10,12 @@ export default class User {
     login: string,
     email: string,
     passwordHash: string,
-    salt: string,
     createdAt: string,
   ) {
     this._id = _id;
     this.login = login;
     this.email = email;
     this.passwordHash = passwordHash;
-    this.salt = salt;
     this.createdAt = createdAt;
   }
   @Prop()
@@ -31,9 +29,6 @@ export default class User {
 
   @Prop()
   passwordHash: string;
-
-  @Prop()
-  salt: string;
 
   @Prop()
   createdAt: string;

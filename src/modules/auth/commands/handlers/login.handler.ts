@@ -40,7 +40,7 @@ export default class LoginHandler implements ICommandHandler<LoginCommand> {
     const loginAllowed = await this.service.checkLoginAllowed(user.id);
     if (loginAllowed !== UserError.NoError) return loginAllowed;
 
-    const passwordMatch = await UserModel.checkPassword(user, password);
+    const passwordMatch = await user.checkPassword(password);
     if (!passwordMatch) return UserError.WrongCredentials;
 
     return user;

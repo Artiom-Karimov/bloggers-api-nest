@@ -26,7 +26,7 @@ export default class SetNewPasswordPasswordHandler
     let user = await this.usersRepo.get(recovery.userId);
     if (!user) return UserError.NotFound;
 
-    user = await UserModel.updatePassword(user, command.data.newPassword);
+    user = await user.updatePassword(command.data.newPassword);
     const updated = await this.usersRepo.update(user.id, user);
 
     return updated ? UserError.NoError : UserError.Unknown;
