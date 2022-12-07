@@ -1,5 +1,5 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import UsersBanQueryRepository from '../../../users/mongoose/users.ban.query.repository';
+import UsersBanQueryRepository from '../../../users/mongoose/mongo.users.ban.query.repository';
 import CheckUserBanQuery from '../queries/check.user.ban.query';
 
 @QueryHandler(CheckUserBanQuery)

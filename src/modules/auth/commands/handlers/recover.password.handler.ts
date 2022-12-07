@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { MailService } from '../../../mail/mail.service';
 import { UserError } from '../../../users/user.error';
-import UsersRepository from '../../../users/mongoose/users.repository';
+import UsersRepository from '../../../users/users.repository';
 import RecoveryModel from '../../models/recovery/recovery.model';
 import RecoveryRepository from '../../recovery.repository';
 import RecoverPasswordCommand from '../commands/recover.password.command';

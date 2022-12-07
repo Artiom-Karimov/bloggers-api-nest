@@ -3,13 +3,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import UserMapper from '../models/mappers/user.mapper';
 import UserModel from '../models/user.model';
+import UsersRepository from '../users.repository';
 import User, { UserDocument } from './models/user.schema';
 
 @Injectable()
-export default class UsersRepository {
+export default class MongoUsersRepository extends UsersRepository {
   constructor(
     @InjectModel(User.name) private readonly model: Model<UserDocument>,
-  ) { }
+  ) {
+    super();
+  }
 
   public async get(id: string): Promise<UserModel | undefined> {
     try {
@@ -43,9 +46,11 @@ export default class UsersRepository {
       return undefined;
     }
   }
-  public async update(id: string, data: Partial<User>): Promise<boolean> {
+  public async update(user: UserModel): Promise<boolean> {
     try {
-      await this.model.findOneAndUpdate({ _id: id }, data).exec();
+      await this.model
+        .findOneAndUpdate({ _id: user.id }, UserMapper.fromDomain(user))
+        .exec();
       return true;
     } catch (error) {
       console.error(error);
