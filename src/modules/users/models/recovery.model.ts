@@ -1,6 +1,6 @@
-import IdGenerator from '../../../../common/utils/id.generator';
+import IdGenerator from '../../../common/utils/id.generator';
 import { add } from 'date-fns';
-import * as config from '../../../../config/users';
+import * as config from '../../../config/users';
 
 export default class RecoveryModel {
   constructor(

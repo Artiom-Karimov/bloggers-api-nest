@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import RecoveryMapper from './models/recovery/recovery.mapper';
-import RecoveryModel from './models/recovery/recovery.model';
-import Recovery, { RecoveryDocument } from './models/recovery/recovery.schema';
+import RecoveryMapper from '../models/mappers/recovery.mapper';
+import RecoveryModel from '../models/recovery.model';
+import Recovery, { RecoveryDocument } from './models/recovery.schema';
 
 @Injectable()
 export default class RecoveryRepository {

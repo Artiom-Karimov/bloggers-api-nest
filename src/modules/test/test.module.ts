@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import Recovery, {
   RecoverySchema,
-} from '../auth/models/recovery/recovery.schema';
+} from '../users/mongoose/models/recovery.schema';
 import Session, { SessionSchema } from '../users/mongoose/models/session.schema';
 import Blog, { BlogSchema } from '../blogs/blogs/models/blog.schema';
 import Comment, {

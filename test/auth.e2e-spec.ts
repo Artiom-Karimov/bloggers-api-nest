@@ -5,7 +5,7 @@ import UserSampleGenerator from './utils/user.sample.generator';
 import UserInputModel from '../src/modules/users/models/input/user.input.model';
 import EmailConfirmationRepository from '../src/modules/users/email.confirmation.repository';
 import UsersRepository from '../src/modules/users/users.repository';
-import RecoveryRepository from '../src/modules/auth/recovery.repository';
+import RecoveryRepository from '../src/modules/users/mongoose/recovery.repository';
 import { dateRegex } from '../src/common/utils/date.generator';
 import SessionViewModel from '../src/modules/users/models/view/session.view.model';
 

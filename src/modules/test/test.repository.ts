@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import Recovery, {
   RecoveryDocument,
-} from '../auth/models/recovery/recovery.schema';
+} from '../users/mongoose/models/recovery.schema';
 import Session, {
   SessionDocument,
 } from '../users/mongoose/models/session.schema';

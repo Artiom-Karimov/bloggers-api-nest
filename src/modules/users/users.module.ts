@@ -18,6 +18,8 @@ import MongoUsersBanRepository from './mongoose/mongo.users.ban.repository';
 import MongoUsersBanQueryRepository from './mongoose/mongo.users.ban.query.repository';
 import MongoEmailConfirmationRepository from './mongoose/mongo.email.confirmation.repository';
 import SessionsQueryRepository from './mongoose/mongo.sessions.query.repository';
+import Recovery, { RecoverySchema } from './mongoose/models/recovery.schema';
+import RecoveryRepository from './mongoose/recovery.repository';
 
 @Module({
   imports: [
@@ -25,6 +27,9 @@ import SessionsQueryRepository from './mongoose/mongo.sessions.query.repository'
     MongooseModule.forFeature([{ name: UserBan.name, schema: UserBanSchema }]),
     MongooseModule.forFeature([
       { name: EmailConfirmation.name, schema: EmailConfirmationSchema },
+    ]),
+    MongooseModule.forFeature([
+      { name: Recovery.name, schema: RecoverySchema },
     ]),
     MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
   ],
@@ -51,6 +56,7 @@ import SessionsQueryRepository from './mongoose/mongo.sessions.query.repository'
     },
     SessionsRepository,
     SessionsQueryRepository,
+    RecoveryRepository,
   ],
   exports: [
     UsersRepository,
@@ -60,6 +66,7 @@ import SessionsQueryRepository from './mongoose/mongo.sessions.query.repository'
     EmailConfirmationRepository,
     SessionsRepository,
     SessionsQueryRepository,
+    RecoveryRepository,
   ],
 })
 export class UsersModule { }

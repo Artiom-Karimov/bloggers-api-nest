@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserError } from '../../../users/user.error';
 import UsersRepository from '../../../users/users.repository';
-import RecoveryRepository from '../../recovery.repository';
+import RecoveryRepository from '../../../users/mongoose/recovery.repository';
 import SetNewPasswordCommand from '../commands/set.new.password.command';
 
 @CommandHandler(SetNewPasswordCommand)

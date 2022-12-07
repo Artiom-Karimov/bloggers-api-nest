@@ -1,5 +1,5 @@
-import RecoveryModel from './recovery.model';
-import Recovery from './recovery.schema';
+import RecoveryModel from '../recovery.model';
+import Recovery from '../../mongoose/models/recovery.schema';
 
 export default class RecoveryMapper {
   public static fromDomain(model: RecoveryModel): Recovery {
