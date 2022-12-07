@@ -3,7 +3,7 @@ import { MailService } from '../../../mail/mail.service';
 import { UserError } from '../../../users/user.error';
 import UsersRepository from '../../../users/users.repository';
 import RecoveryModel from '../../../users/models/recovery.model';
-import RecoveryRepository from '../../../users/mongoose/recovery.repository';
+import RecoveryRepository from '../../../users/recovery.repository';
 import RecoverPasswordCommand from '../commands/recover.password.command';
 
 @CommandHandler(RecoverPasswordCommand)

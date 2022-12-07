@@ -19,7 +19,8 @@ import MongoUsersBanQueryRepository from './mongoose/mongo.users.ban.query.repos
 import MongoEmailConfirmationRepository from './mongoose/mongo.email.confirmation.repository';
 import SessionsQueryRepository from './mongoose/mongo.sessions.query.repository';
 import Recovery, { RecoverySchema } from './mongoose/models/recovery.schema';
-import RecoveryRepository from './mongoose/recovery.repository';
+import RecoveryRepository from './recovery.repository';
+import MongoRecoveryRepository from './mongoose/mongo.recovery.repository';
 
 @Module({
   imports: [
@@ -56,7 +57,10 @@ import RecoveryRepository from './mongoose/recovery.repository';
     },
     SessionsRepository,
     SessionsQueryRepository,
-    RecoveryRepository,
+    {
+      provide: RecoveryRepository,
+      useClass: MongoRecoveryRepository,
+    },
   ],
   exports: [
     UsersRepository,
