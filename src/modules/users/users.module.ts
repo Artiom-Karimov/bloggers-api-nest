@@ -10,11 +10,12 @@ import EmailConfirmation, {
 import User, { UserSchema } from './mongoose/models/user.schema';
 import UsersBanRepository from './users.ban.repository';
 import UsersQueryRepository from './users.query.repository';
-import UsersBanQueryRepository from './mongoose/mongo.users.ban.query.repository';
+import UsersBanQueryRepository from './users.ban.query.repository';
 import UsersRepository from './users.repository';
 import MongoUsersRepository from './mongoose/mongo.users.repository';
 import MongoUsersQueryRepository from './mongoose/mongo.users.query.repository';
 import MongoUsersBanRepository from './mongoose/mongo.users.ban.repository';
+import MongoUsersBanQueryRepository from './mongoose/mongo.users.ban.query.repository';
 
 @Module({
   imports: [
@@ -38,9 +39,12 @@ import MongoUsersBanRepository from './mongoose/mongo.users.ban.repository';
       provide: UsersBanRepository,
       useClass: MongoUsersBanRepository,
     },
+    {
+      provide: UsersBanQueryRepository,
+      useClass: MongoUsersBanQueryRepository,
+    },
     EmailConfirmationRepository,
     SessionsRepository,
-    UsersBanQueryRepository,
   ],
   exports: [
     UsersRepository,

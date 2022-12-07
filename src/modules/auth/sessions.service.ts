@@ -4,7 +4,7 @@ import { UserError } from '../users/user.error';
 import TokenPair from './models/jwt/token.pair';
 import TokenPayload from './models/jwt/token.payload';
 import SessionModel from './models/session/session.model';
-import UsersBanQueryRepository from '../users/mongoose/mongo.users.ban.query.repository';
+import UsersBanQueryRepository from '../users/users.ban.query.repository';
 
 @Injectable()
 export default class SessionsService {
