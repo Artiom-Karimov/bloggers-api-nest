@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import SessionMapper from './models/session/session.mapper';
-import Session, { SessionDocument } from './models/session/session.schema';
-import SessionViewModel from './models/session/session.view.model';
+import SessionMapper from '../models/mappers/session.mapper';
+import Session, { SessionDocument } from './models/session.schema';
+import SessionViewModel from '../models/view/session.view.model';
 
 @Injectable()
 export default class SessionsQueryRepository {

@@ -1,5 +1,5 @@
 import PageViewModel from '../../common/models/page.view.model';
-import SessionUserViewModel from '../auth/models/session.user.view.model';
+import SessionUserViewModel from './models/view/session.user.view.model';
 import GetUsersQuery from './models/input/get.users.query';
 import UserViewModel from './models/view/user.view.model';
 

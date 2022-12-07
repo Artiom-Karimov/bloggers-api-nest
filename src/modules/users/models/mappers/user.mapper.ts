@@ -1,4 +1,4 @@
-import SessionUserViewModel from '../../../auth/models/session.user.view.model';
+import SessionUserViewModel from '../view/session.user.view.model';
 import UserBanViewModel from '../view/user.ban.view.model';
 import UserModel from '../user.model';
 import User from '../../mongoose/models/user.schema';

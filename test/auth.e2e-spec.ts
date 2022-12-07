@@ -7,7 +7,7 @@ import EmailConfirmationRepository from '../src/modules/users/email.confirmation
 import UsersRepository from '../src/modules/users/users.repository';
 import RecoveryRepository from '../src/modules/auth/recovery.repository';
 import { dateRegex } from '../src/common/utils/date.generator';
-import SessionViewModel from '../src/modules/auth/models/session/session.view.model';
+import SessionViewModel from '../src/modules/users/models/view/session.view.model';
 
 jest.useRealTimers();
 

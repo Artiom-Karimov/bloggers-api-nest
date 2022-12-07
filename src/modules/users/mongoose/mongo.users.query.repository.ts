@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../../common/models/page.view.model';
-import SessionUserViewModel from '../../auth/models/session.user.view.model';
+import SessionUserViewModel from '../models/view/session.user.view.model';
 import UserBanMapper from '../models/mappers/user.ban.mapper';
 import UserBan, { UserBanDocument } from './models/user.ban.schema';
 import UserBanViewModel from '../models/view/user.ban.view.model';

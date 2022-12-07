@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import Session, { SessionSchema } from '../auth/models/session/session.schema';
-import SessionsRepository from '../auth/sessions.repository';
+import Session, { SessionSchema } from './mongoose/models/session.schema';
+import SessionsRepository from './mongoose/mongo.sessions.repository';
 import EmailConfirmationRepository from './email.confirmation.repository';
 import UserBan, { UserBanSchema } from './mongoose/models/user.ban.schema';
 import EmailConfirmation, {
@@ -17,6 +17,7 @@ import MongoUsersQueryRepository from './mongoose/mongo.users.query.repository';
 import MongoUsersBanRepository from './mongoose/mongo.users.ban.repository';
 import MongoUsersBanQueryRepository from './mongoose/mongo.users.ban.query.repository';
 import MongoEmailConfirmationRepository from './mongoose/mongo.email.confirmation.repository';
+import SessionsQueryRepository from './mongoose/mongo.sessions.query.repository';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import MongoEmailConfirmationRepository from './mongoose/mongo.email.confirmatio
       useClass: MongoEmailConfirmationRepository,
     },
     SessionsRepository,
+    SessionsQueryRepository,
   ],
   exports: [
     UsersRepository,
@@ -56,6 +58,8 @@ import MongoEmailConfirmationRepository from './mongoose/mongo.email.confirmatio
     UsersQueryRepository,
     UsersBanQueryRepository,
     EmailConfirmationRepository,
+    SessionsRepository,
+    SessionsQueryRepository,
   ],
 })
 export class UsersModule { }

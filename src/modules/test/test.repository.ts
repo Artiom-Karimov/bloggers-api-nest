@@ -6,7 +6,7 @@ import Recovery, {
 } from '../auth/models/recovery/recovery.schema';
 import Session, {
   SessionDocument,
-} from '../auth/models/session/session.schema';
+} from '../users/mongoose/models/session.schema';
 import Blog, { BlogDocument } from '../blogs/blogs/models/blog.schema';
 import Comment, {
   CommentDocument,

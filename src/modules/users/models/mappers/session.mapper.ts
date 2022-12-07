@@ -1,6 +1,6 @@
-import SessionModel from './session.model';
-import Session from './session.schema';
-import SessionViewModel from './session.view.model';
+import SessionModel from '../session.model';
+import Session from '../../mongoose/models/session.schema';
+import SessionViewModel from '../view/session.view.model';
 
 export default class SessionMapper {
   public static fromDomain(model: SessionModel): Session {

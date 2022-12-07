@@ -19,7 +19,7 @@ import NewPasswordInputModel from './models/input/new.password.input.model';
 import { throwValidationException } from '../../common/utils/validation.options';
 import { Request, Response } from 'express';
 import TokenPair from './models/jwt/token.pair';
-import SessionUserViewModel from './models/session.user.view.model';
+import SessionUserViewModel from '../users/models/view/session.user.view.model';
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
 import { BearerAuthGuard } from './guards/bearer.auth.guard';
 import { UserError } from '../users/user.error';

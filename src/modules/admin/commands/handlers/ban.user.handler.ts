@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import SessionsRepository from '../../../auth/sessions.repository';
+import SessionsRepository from '../../../users/mongoose/mongo.sessions.repository';
 import { BlogError } from '../../../blogs/blogs/models/blog.error';
 import CommentsRepository from '../../../blogs/comments/comments.repository';
 import CommentLikesRepository from '../../../blogs/likes/comment.likes.repository';
