@@ -1,27 +1,33 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import Session, { SessionSchema } from './mongoose/models/session.schema';
-import SessionsRepository from './sessions.repository';
-import EmailConfirmationRepository from './email.confirmation.repository';
+
+import User, { UserSchema } from './mongoose/models/user.schema';
+import UsersRepository from './users.repository';
+import MongoUsersRepository from './mongoose/mongo.users.repository';
+import UsersQueryRepository from './users.query.repository';
+import MongoUsersQueryRepository from './mongoose/mongo.users.query.repository';
+
 import UserBan, { UserBanSchema } from './mongoose/models/user.ban.schema';
+import UsersBanRepository from './users.ban.repository';
+import MongoUsersBanRepository from './mongoose/mongo.users.ban.repository';
+import UsersBanQueryRepository from './users.ban.query.repository';
+import MongoUsersBanQueryRepository from './mongoose/mongo.users.ban.query.repository';
+
 import EmailConfirmation, {
   EmailConfirmationSchema,
 } from './mongoose/models/email.confirmation.schema';
-import User, { UserSchema } from './mongoose/models/user.schema';
-import UsersBanRepository from './users.ban.repository';
-import UsersQueryRepository from './users.query.repository';
-import UsersBanQueryRepository from './users.ban.query.repository';
-import UsersRepository from './users.repository';
-import MongoUsersRepository from './mongoose/mongo.users.repository';
-import MongoUsersQueryRepository from './mongoose/mongo.users.query.repository';
-import MongoUsersBanRepository from './mongoose/mongo.users.ban.repository';
-import MongoUsersBanQueryRepository from './mongoose/mongo.users.ban.query.repository';
+import EmailConfirmationRepository from './email.confirmation.repository';
 import MongoEmailConfirmationRepository from './mongoose/mongo.email.confirmation.repository';
-import SessionsQueryRepository from './mongoose/mongo.sessions.query.repository';
+
 import Recovery, { RecoverySchema } from './mongoose/models/recovery.schema';
 import RecoveryRepository from './recovery.repository';
 import MongoRecoveryRepository from './mongoose/mongo.recovery.repository';
+
+import Session, { SessionSchema } from './mongoose/models/session.schema';
+import SessionsRepository from './sessions.repository';
 import MongoSessionsRepository from './mongoose/mongo.sessions.repository';
+import SessionsQueryRepository from './sessions.query.repository';
+import MongoSessionsQueryRepository from './mongoose/mongo.sessions.query.repository';
 
 @Module({
   imports: [
@@ -60,7 +66,10 @@ import MongoSessionsRepository from './mongoose/mongo.sessions.repository';
       provide: SessionsRepository,
       useClass: MongoSessionsRepository,
     },
-    SessionsQueryRepository,
+    {
+      provide: SessionsQueryRepository,
+      useClass: MongoSessionsQueryRepository,
+    },
     {
       provide: RecoveryRepository,
       useClass: MongoRecoveryRepository,
