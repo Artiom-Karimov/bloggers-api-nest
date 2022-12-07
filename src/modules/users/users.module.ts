@@ -28,6 +28,8 @@ import SessionsRepository from './interfaces/sessions.repository';
 import MongoSessionsRepository from './mongoose/mongo.sessions.repository';
 import SessionsQueryRepository from './interfaces/sessions.query.repository';
 import MongoSessionsQueryRepository from './mongoose/mongo.sessions.query.repository';
+import SqlUsersRepository from './sql/sql.users.repository';
+import SqlUsersQueryRepository from './sql/sql.users.query.repository';
 
 @Module({
   imports: [
@@ -44,11 +46,11 @@ import MongoSessionsQueryRepository from './mongoose/mongo.sessions.query.reposi
   providers: [
     {
       provide: UsersRepository,
-      useClass: MongoUsersRepository,
+      useClass: SqlUsersRepository,
     },
     {
       provide: UsersQueryRepository,
-      useClass: MongoUsersQueryRepository,
+      useClass: SqlUsersQueryRepository,
     },
     {
       provide: UsersBanRepository,
