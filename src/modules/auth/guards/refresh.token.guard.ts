@@ -7,7 +7,7 @@ import {
 import { Request } from 'express';
 import TokenPair from '../models/jwt/token.pair';
 import TokenPayload from '../models/jwt/token.payload';
-import SessionsRepository from '../../users/sessions.repository';
+import SessionsRepository from '../../users/interfaces/sessions.repository';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {

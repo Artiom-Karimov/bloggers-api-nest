@@ -3,14 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../../common/models/page.view.model';
 import SessionUserViewModel from '../models/view/session.user.view.model';
-import UserBanMapper from '../models/mappers/user.ban.mapper';
+import UserBanMapper from './models/mappers/user.ban.mapper';
 import UserBan, { UserBanDocument } from './models/user.ban.schema';
 import UserBanViewModel from '../models/view/user.ban.view.model';
 import GetUsersQuery from '../models/input/get.users.query';
-import UserMapper from '../models/mappers/user.mapper';
+import UserMapper from './models/mappers/user.mapper';
 import User, { UserDocument } from './models/user.schema';
 import UserViewModel from '../models/view/user.view.model';
-import UsersQueryRepository from '../users.query.repository';
+import UsersQueryRepository from '../interfaces/users.query.repository';
 
 @Injectable()
 export default class MongoUsersQueryRepository extends UsersQueryRepository {

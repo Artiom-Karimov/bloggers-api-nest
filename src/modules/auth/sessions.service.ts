@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import EmailConfirmationRepository from '../users/email.confirmation.repository';
+import EmailConfirmationRepository from '../users/interfaces/email.confirmation.repository';
 import { UserError } from '../users/user.error';
 import TokenPair from './models/jwt/token.pair';
 import TokenPayload from './models/jwt/token.payload';
 import SessionModel from '../users/models/session.model';
-import UsersBanQueryRepository from '../users/users.ban.query.repository';
+import UsersBanQueryRepository from '../users/interfaces/users.ban.query.repository';
 
 @Injectable()
 export default class SessionsService {

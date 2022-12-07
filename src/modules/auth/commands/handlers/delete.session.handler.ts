@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserError } from '../../../users/user.error';
-import SessionsRepository from '../../../users/sessions.repository';
+import SessionsRepository from '../../../users/interfaces/sessions.repository';
 import DeleteSessionCommand from '../commands/delete.session.command';
 
 @CommandHandler(DeleteSessionCommand)

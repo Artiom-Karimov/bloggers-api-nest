@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import SessionsRepository from '../../../users/sessions.repository';
-import EmailConfirmationRepository from '../../../users/email.confirmation.repository';
+import SessionsRepository from '../../../users/interfaces/sessions.repository';
+import EmailConfirmationRepository from '../../../users/interfaces/email.confirmation.repository';
 import { UserError } from '../../../users/user.error';
-import UsersBanRepository from '../../../users/users.ban.repository';
-import UsersRepository from '../../../users/users.repository';
+import UsersBanRepository from '../../../users/interfaces/users.ban.repository';
+import UsersRepository from '../../../users/interfaces/users.repository';
 import DeleteUserCommand from '../commands/delete.user.command';
 
 @CommandHandler(DeleteUserCommand)

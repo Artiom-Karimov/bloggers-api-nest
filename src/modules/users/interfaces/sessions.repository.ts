@@ -1,4 +1,4 @@
-import SessionModel from './models/session.model';
+import SessionModel from '../models/session.model';
 
 export default abstract class SessionsRepository {
   public abstract get(deviceId: string): Promise<SessionModel | undefined>;

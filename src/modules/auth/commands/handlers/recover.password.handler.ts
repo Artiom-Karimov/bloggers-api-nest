@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { MailService } from '../../../mail/mail.service';
 import { UserError } from '../../../users/user.error';
-import UsersRepository from '../../../users/users.repository';
+import UsersRepository from '../../../users/interfaces/users.repository';
 import RecoveryModel from '../../../users/models/recovery.model';
-import RecoveryRepository from '../../../users/recovery.repository';
+import RecoveryRepository from '../../../users/interfaces/recovery.repository';
 import RecoverPasswordCommand from '../commands/recover.password.command';
 
 @CommandHandler(RecoverPasswordCommand)

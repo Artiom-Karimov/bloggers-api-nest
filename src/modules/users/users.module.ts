@@ -2,31 +2,31 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import User, { UserSchema } from './mongoose/models/user.schema';
-import UsersRepository from './users.repository';
+import UsersRepository from './interfaces/users.repository';
 import MongoUsersRepository from './mongoose/mongo.users.repository';
-import UsersQueryRepository from './users.query.repository';
+import UsersQueryRepository from './interfaces/users.query.repository';
 import MongoUsersQueryRepository from './mongoose/mongo.users.query.repository';
 
 import UserBan, { UserBanSchema } from './mongoose/models/user.ban.schema';
-import UsersBanRepository from './users.ban.repository';
+import UsersBanRepository from './interfaces/users.ban.repository';
 import MongoUsersBanRepository from './mongoose/mongo.users.ban.repository';
-import UsersBanQueryRepository from './users.ban.query.repository';
+import UsersBanQueryRepository from './interfaces/users.ban.query.repository';
 import MongoUsersBanQueryRepository from './mongoose/mongo.users.ban.query.repository';
 
 import EmailConfirmation, {
   EmailConfirmationSchema,
 } from './mongoose/models/email.confirmation.schema';
-import EmailConfirmationRepository from './email.confirmation.repository';
+import EmailConfirmationRepository from './interfaces/email.confirmation.repository';
 import MongoEmailConfirmationRepository from './mongoose/mongo.email.confirmation.repository';
 
 import Recovery, { RecoverySchema } from './mongoose/models/recovery.schema';
-import RecoveryRepository from './recovery.repository';
+import RecoveryRepository from './interfaces/recovery.repository';
 import MongoRecoveryRepository from './mongoose/mongo.recovery.repository';
 
 import Session, { SessionSchema } from './mongoose/models/session.schema';
-import SessionsRepository from './sessions.repository';
+import SessionsRepository from './interfaces/sessions.repository';
 import MongoSessionsRepository from './mongoose/mongo.sessions.repository';
-import SessionsQueryRepository from './sessions.query.repository';
+import SessionsQueryRepository from './interfaces/sessions.query.repository';
 import MongoSessionsQueryRepository from './mongoose/mongo.sessions.query.repository';
 
 @Module({

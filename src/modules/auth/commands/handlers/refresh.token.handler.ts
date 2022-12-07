@@ -4,7 +4,7 @@ import TokenPair from '../../models/jwt/token.pair';
 import SessionModel, {
   SessionCreateType,
 } from '../../../users/models/session.model';
-import SessionsRepository from '../../../users/sessions.repository';
+import SessionsRepository from '../../../users/interfaces/sessions.repository';
 import SessionsService from '../../sessions.service';
 import RefreshTokenCommand from '../commands/refresh.token.command';
 

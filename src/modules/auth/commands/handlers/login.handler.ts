@@ -1,12 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserError } from '../../../users/user.error';
 import UserModel from '../../../users/models/user.model';
-import UsersRepository from '../../../users/users.repository';
+import UsersRepository from '../../../users/interfaces/users.repository';
 import TokenPair from '../../models/jwt/token.pair';
 import SessionModel, {
   SessionCreateType,
 } from '../../../users/models/session.model';
-import SessionsRepository from '../../../users/sessions.repository';
+import SessionsRepository from '../../../users/interfaces/sessions.repository';
 import SessionsService from '../../sessions.service';
 import LoginCommand from '../commands/login.command';
 

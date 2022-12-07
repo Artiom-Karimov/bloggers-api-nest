@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import SessionMapper from '../models/mappers/session.mapper';
+import SessionMapper from './models/mappers/session.mapper';
 import Session, { SessionDocument } from './models/session.schema';
 import SessionViewModel from '../models/view/session.view.model';
-import SessionsQueryRepository from '../sessions.query.repository';
+import SessionsQueryRepository from '../interfaces/sessions.query.repository';
 
 @Injectable()
 export default class MongoSessionsQueryRepository extends SessionsQueryRepository {

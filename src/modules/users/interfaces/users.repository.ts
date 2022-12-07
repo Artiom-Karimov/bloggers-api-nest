@@ -1,4 +1,4 @@
-import UserModel from './models/user.model';
+import UserModel from '../models/user.model';
 
 export default abstract class UsersRepository {
   public abstract get(id: string): Promise<UserModel | undefined>;

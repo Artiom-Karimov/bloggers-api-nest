@@ -1,4 +1,4 @@
-import RecoveryModel from './models/recovery.model';
+import RecoveryModel from '../models/recovery.model';
 
 export default abstract class RecoveryRepository {
   public abstract get(userId: string): Promise<RecoveryModel | undefined>;

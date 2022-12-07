@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
 import SessionViewModel from '../users/models/view/session.view.model';
-import SessionsQueryRepository from '../users/sessions.query.repository';
+import SessionsQueryRepository from '../users/interfaces/sessions.query.repository';
 import TokenPayload from './models/jwt/token.payload';
 import { User } from './guards/user.decorator';
 import { UserError } from '../users/user.error';

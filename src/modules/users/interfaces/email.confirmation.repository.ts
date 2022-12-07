@@ -1,4 +1,4 @@
-import EmailConfirmationModel from './models/email.confirmation.model';
+import EmailConfirmationModel from '../models/email.confirmation.model';
 
 export default abstract class EmailConfirmationRepository {
   public abstract getByUser(
