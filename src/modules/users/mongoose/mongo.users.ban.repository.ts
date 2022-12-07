@@ -3,13 +3,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import UserBanMapper from '../models/mappers/user.ban.mapper';
 import UserBanModel from '../models/user.ban.model';
+import UsersBanRepository from '../users.ban.repository';
 import UserBan, { UserBanDocument } from './models/user.ban.schema';
 
 @Injectable()
-export default class UsersBanRepository {
+export default class MongoUsersBanRepository extends UsersBanRepository {
   constructor(
     @InjectModel(UserBan.name) private readonly model: Model<UserBanDocument>,
-  ) { }
+  ) {
+    super();
+  }
 
   public async get(id: string): Promise<UserBanModel | undefined> {
     try {

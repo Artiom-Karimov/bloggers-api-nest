@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import SessionsRepository from '../../../auth/sessions.repository';
 import EmailConfirmationRepository from '../../../users/mongoose/mongo.email.confirmation.repository';
 import { UserError } from '../../../users/user.error';
-import UsersBanRepository from '../../../users/mongoose/mongo.users.ban.repository';
+import UsersBanRepository from '../../../users/users.ban.repository';
 import UsersRepository from '../../../users/users.repository';
 import DeleteUserCommand from '../commands/delete.user.command';
 

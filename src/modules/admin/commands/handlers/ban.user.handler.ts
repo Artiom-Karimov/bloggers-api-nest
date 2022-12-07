@@ -5,7 +5,7 @@ import CommentsRepository from '../../../blogs/comments/comments.repository';
 import CommentLikesRepository from '../../../blogs/likes/comment.likes.repository';
 import PostLikesRepository from '../../../blogs/likes/post.likes.repository';
 import UserBanModel from '../../../users/models/user.ban.model';
-import UsersBanRepository from '../../../users/mongoose/mongo.users.ban.repository';
+import UsersBanRepository from '../../../users/users.ban.repository';
 import UsersRepository from '../../../users/users.repository';
 import BanUserCommand, {
   BanUserCreateModel,
