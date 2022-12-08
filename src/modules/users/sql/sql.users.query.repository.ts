@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import PageViewModel from '../../../common/models/page.view.model';
@@ -9,6 +10,7 @@ import UserMapper from './models/mappers/user.mapper';
 import User from './models/user';
 import UserWithBan from './models/user.with.ban';
 
+@Injectable()
 export default class SqlUsersQueryRepository extends UsersQueryRepository {
   constructor(@InjectDataSource() private readonly db: DataSource) {
     super();

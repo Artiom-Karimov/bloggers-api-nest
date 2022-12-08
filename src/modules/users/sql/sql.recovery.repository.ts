@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import RecoveryRepository from '../interfaces/recovery.repository';
@@ -5,6 +6,7 @@ import RecoveryModel from '../models/recovery.model';
 import RecoveryMapper from './models/mappers/recovery.mapper';
 import Recovery from './models/recovery';
 
+@Injectable()
 export default class SqlRecoveryRepository extends RecoveryRepository {
   constructor(@InjectDataSource() private readonly db: DataSource) {
     super();
