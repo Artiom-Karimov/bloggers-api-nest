@@ -17,9 +17,8 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
   public async getUsers(
     params: GetUsersQuery,
   ): Promise<PageViewModel<UserViewModel>> {
-    // TODO: return actual users
     const page = await this.getPage(params);
-    return page;
+    return this.loadPageUsers(page, params);
   }
 
   public async getUser(id: string): Promise<UserViewModel | undefined> {
@@ -90,5 +89,31 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
     if (loginTerm) return `where ${login}`;
     if (emailTerm) return `where ${email}`;
     return '';
+  }
+  private async loadPageUsers(
+    page: PageViewModel<UserViewModel>,
+    params: GetUsersQuery,
+  ): Promise<PageViewModel<UserViewModel>> {
+    const filter = this.getFilter(
+      params.searchLoginTerm,
+      params.searchEmailTerm,
+    );
+    const order = params.sortDirection === 1 ? 'asc' : 'desc';
+
+    const result = await this.db.query(
+      `
+      select "id","login","email","hash","createdAt"
+      from "user"
+      ${filter}
+      order by "${params.sortBy}" ${order}
+      limit ${page.pageSize} offset ${page.calculateSkip()}
+      `,
+    );
+
+    // TODO: get actual ban info
+    const fakeBan = new UserBanViewModel(false, null, null);
+    const views = result.map((u) => UserMapper.toView(u, fakeBan));
+
+    return page.add(...views);
   }
 }
