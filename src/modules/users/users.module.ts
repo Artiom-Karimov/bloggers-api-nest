@@ -33,6 +33,7 @@ import SqlUsersQueryRepository from './sql/sql.users.query.repository';
 import SqlSessionsRepository from './sql/sql.sessions.repository';
 import SqlSessionsQueryRepository from './sql/sql.sessions.query.repository';
 import SqlEmailConfirmationRepository from './sql/sql.email.confirmation.repository';
+import SqlRecoveryRepository from './sql/sql.recovery.repository';
 
 @Module({
   imports: [
@@ -77,7 +78,7 @@ import SqlEmailConfirmationRepository from './sql/sql.email.confirmation.reposit
     },
     {
       provide: RecoveryRepository,
-      useClass: MongoRecoveryRepository,
+      useClass: SqlRecoveryRepository,
     },
   ],
   exports: [
