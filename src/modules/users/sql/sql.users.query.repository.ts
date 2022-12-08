@@ -18,7 +18,8 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
     params: GetUsersQuery,
   ): Promise<PageViewModel<UserViewModel>> {
     // TODO: return actual users
-    return new PageViewModel(params.pageNumber, params.pageSize, 0);
+    const page = await this.getPage(params);
+    return page;
   }
 
   public async getUser(id: string): Promise<UserViewModel | undefined> {
@@ -53,5 +54,41 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
     if (!(result instanceof Array)) return undefined;
     const user = result[0] as User;
     return user ? UserMapper.toSessionView(user) : undefined;
+  }
+
+  private async getPage(
+    params: GetUsersQuery,
+  ): Promise<PageViewModel<UserViewModel>> {
+    const count = await this.getCount(params);
+    return new PageViewModel<UserViewModel>(
+      params.pageNumber,
+      params.pageSize,
+      count,
+    );
+  }
+  private async getCount(params: GetUsersQuery): Promise<number> {
+    const filter = this.getFilter(
+      params.searchLoginTerm,
+      params.searchEmailTerm,
+    );
+
+    const result = await this.db.query(
+      `select count(*) from "user" ${filter};`,
+    );
+    return +result[0]?.count ?? 0;
+  }
+  private getFilter(
+    loginTerm: string | null,
+    emailTerm: string | null,
+  ): string {
+    const login = `lower("login") like '%${loginTerm?.toLowerCase()}%'`;
+    const email = `lower("email") like '%${emailTerm?.toLowerCase()}%'`;
+
+    if (loginTerm && emailTerm) {
+      return `where ${login} or ${email}`;
+    }
+    if (loginTerm) return `where ${login}`;
+    if (emailTerm) return `where ${email}`;
+    return '';
   }
 }
