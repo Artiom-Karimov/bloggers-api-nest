@@ -34,6 +34,8 @@ import SqlSessionsRepository from './sql/sql.sessions.repository';
 import SqlSessionsQueryRepository from './sql/sql.sessions.query.repository';
 import SqlEmailConfirmationRepository from './sql/sql.email.confirmation.repository';
 import SqlRecoveryRepository from './sql/sql.recovery.repository';
+import SqlUsersBanRepository from './sql/sql.users.ban.repository';
+import SqlUsersBanQueryRepository from './sql/sql.users.ban.query.repository';
 
 @Module({
   imports: [
@@ -58,11 +60,11 @@ import SqlRecoveryRepository from './sql/sql.recovery.repository';
     },
     {
       provide: UsersBanRepository,
-      useClass: MongoUsersBanRepository,
+      useClass: SqlUsersBanRepository,
     },
     {
       provide: UsersBanQueryRepository,
-      useClass: MongoUsersBanQueryRepository,
+      useClass: SqlUsersBanQueryRepository,
     },
     {
       provide: EmailConfirmationRepository,

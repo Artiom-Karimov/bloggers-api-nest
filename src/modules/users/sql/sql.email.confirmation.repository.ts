@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import EmailConfirmationRepository from '../interfaces/email.confirmation.repository';
@@ -5,6 +6,7 @@ import EmailConfirmationModel from '../models/email.confirmation.model';
 import EmailConfirmation from './models/email.confirmation';
 import EmailConfirmationMapper from './models/mappers/email.confirmation.mapper';
 
+@Injectable()
 export default class SqlEmailConfirmationRepository extends EmailConfirmationRepository {
   constructor(@InjectDataSource() private readonly db: DataSource) {
     super();

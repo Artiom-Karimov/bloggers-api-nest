@@ -1,9 +1,11 @@
+import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import SessionsQueryRepository from '../interfaces/sessions.query.repository';
 import SessionViewModel from '../models/view/session.view.model';
 import SessionMapper from './models/mappers/session.mapper';
 
+@Injectable()
 export default class SqlSessionsQueryRepository extends SessionsQueryRepository {
   constructor(@InjectDataSource() private readonly db: DataSource) {
     super();

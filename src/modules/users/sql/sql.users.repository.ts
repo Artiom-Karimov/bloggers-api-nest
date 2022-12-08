@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import UsersRepository from '../interfaces/users.repository';
@@ -5,6 +6,7 @@ import UserModel from '../models/user.model';
 import UserMapper from './models/mappers/user.mapper';
 import User from './models/user';
 
+@Injectable()
 export default class SqlUsersRepository extends UsersRepository {
   constructor(@InjectDataSource() private readonly db: DataSource) {
     super();

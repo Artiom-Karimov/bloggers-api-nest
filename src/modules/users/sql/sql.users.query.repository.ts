@@ -1,14 +1,16 @@
+import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import PageViewModel from '../../../common/models/page.view.model';
 import UsersQueryRepository from '../interfaces/users.query.repository';
 import GetUsersQuery from '../models/input/get.users.query';
 import SessionUserViewModel from '../models/view/session.user.view.model';
-import UserBanViewModel from '../models/view/user.ban.view.model';
 import UserViewModel from '../models/view/user.view.model';
 import UserMapper from './models/mappers/user.mapper';
 import User from './models/user';
+import UserWithBan from './models/user.with.ban';
 
+@Injectable()
 export default class SqlUsersQueryRepository extends UsersQueryRepository {
   constructor(@InjectDataSource() private readonly db: DataSource) {
     super();
@@ -24,19 +26,18 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
   public async getUser(id: string): Promise<UserViewModel | undefined> {
     const result = await this.db.query(
       `
-    select "id","login","email","hash","createdAt"
-    from "user"
-    where "id" = $1;
+    select u."id",u."login",u."email",u."hash",u."createdAt",
+    b."isBanned",b."banReason",b."banDate"
+    from "user" u left join "userBan" b
+    on u."id" = b."userId"
+    where u."id" = $1;
     `,
       [id],
     );
     if (!(result instanceof Array)) return undefined;
-    const user = result[0] as User;
+    const user = result[0] as UserWithBan;
 
-    // TODO: get actual ban info
-    return user
-      ? UserMapper.toView(user, new UserBanViewModel(false, null, null))
-      : undefined;
+    return user ? UserMapper.toView(user) : undefined;
   }
 
   public async getSessionUserView(
@@ -102,17 +103,20 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
 
     const result = await this.db.query(
       `
-      select "id","login","email","hash","createdAt"
-      from "user"
-      ${filter}
-      order by "${params.sortBy}" ${order}
-      limit ${page.pageSize} offset ${page.calculateSkip()}
+      select u."id",u."login",u."email",u."hash",u."createdAt",
+      b."isBanned",b."banReason",b."banDate"
+      from (
+        select "id","login","email","hash","createdAt"
+        from "user"
+        ${filter}
+        order by "${params.sortBy}" ${order}
+        limit ${page.pageSize} offset ${page.calculateSkip()}
+      ) as u left join "userBan" b
+      on u."id" = b."userId"
       `,
     );
 
-    // TODO: get actual ban info
-    const fakeBan = new UserBanViewModel(false, null, null);
-    const views = result.map((u) => UserMapper.toView(u, fakeBan));
+    const views = result.map((u) => UserMapper.toView(u));
 
     return page.add(...views);
   }
