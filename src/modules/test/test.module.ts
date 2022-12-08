@@ -3,7 +3,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import Recovery, {
   RecoverySchema,
 } from '../users/mongoose/models/recovery.schema';
-import Session, { SessionSchema } from '../users/mongoose/models/session.schema';
+import Session, {
+  SessionSchema,
+} from '../users/mongoose/models/session.schema';
 import Blog, { BlogSchema } from '../blogs/blogs/models/blog.schema';
 import Comment, {
   CommentSchema,
@@ -15,13 +17,18 @@ import {
   PostLikeSchema,
 } from '../blogs/likes/models/like.schema';
 import Post, { PostSchema } from '../blogs/posts/models/post.schema';
-import UserBan, { UserBanSchema } from '../users/mongoose/models/user.ban.schema';
+import UserBan, {
+  UserBanSchema,
+} from '../users/mongoose/models/user.ban.schema';
 import EmailConfirmation, {
   EmailConfirmationSchema,
 } from '../users/mongoose/models/email.confirmation.schema';
 import User, { UserSchema } from '../users/mongoose/models/user.schema';
 import TestController from './test.controller';
 import TestRepository from './test.repository';
+import AllDbsTestRepository from './repos/all.dbs.test.repository';
+import MongoTestRepository from './repos/mongo.test.repositoty';
+import SqlTestRepository from './repos/sql.test.repository';
 
 @Module({
   imports: [
@@ -46,6 +53,13 @@ import TestRepository from './test.repository';
     ]),
   ],
   controllers: [TestController],
-  providers: [TestRepository],
+  providers: [
+    MongoTestRepository,
+    SqlTestRepository,
+    {
+      provide: TestRepository,
+      useClass: AllDbsTestRepository,
+    },
+  ],
 })
 export class TestModule { }

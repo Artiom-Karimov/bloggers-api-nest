@@ -62,18 +62,17 @@ export default class SqlUsersRepository extends UsersRepository {
       `,
       [dbUser.id, dbUser.login, dbUser.email, dbUser.hash],
     );
-    console.log(`Update result: ${result}`);
-    return true;
+    return !!result[1];
   }
 
   public async delete(id: string): Promise<boolean> {
-    await this.db.query(
+    const result = await this.db.query(
       `
       delete from "user"
       where "id" = $1;
       `,
       [id],
     );
-    return true;
+    return !!result[1];
   }
 }
