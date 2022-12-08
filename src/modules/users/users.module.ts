@@ -32,6 +32,7 @@ import SqlUsersRepository from './sql/sql.users.repository';
 import SqlUsersQueryRepository from './sql/sql.users.query.repository';
 import SqlSessionsRepository from './sql/sql.sessions.repository';
 import SqlSessionsQueryRepository from './sql/sql.sessions.query.repository';
+import SqlEmailConfirmationRepository from './sql/sql.email.confirmation.repository';
 
 @Module({
   imports: [
@@ -64,7 +65,7 @@ import SqlSessionsQueryRepository from './sql/sql.sessions.query.repository';
     },
     {
       provide: EmailConfirmationRepository,
-      useClass: MongoEmailConfirmationRepository,
+      useClass: SqlEmailConfirmationRepository,
     },
     {
       provide: SessionsRepository,
