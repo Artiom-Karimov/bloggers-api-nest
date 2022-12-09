@@ -102,6 +102,7 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
     const order = params.sortDirection === 1 ? 'asc' : 'desc';
     const sortBy = this.transformSortBy(params.sortBy);
 
+    // The second order by is there because somehow join breaks the order
     const result = await this.db.query(
       `
       select u."id",u."login",u."email",u."hash",u."createdAt",
@@ -122,6 +123,8 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
 
     return page.add(...views);
   }
+
+  // This is needed because tests expect case-sensitive sort
   private transformSortBy(sortBy: string): string {
     if (sortBy === 'login') return 'ascii("login")';
     return `"${sortBy}"`;
