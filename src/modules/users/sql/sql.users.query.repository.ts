@@ -100,6 +100,7 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
       params.searchEmailTerm,
     );
     const order = params.sortDirection === 1 ? 'asc' : 'desc';
+    const sortBy = this.transformSortBy(params.sortBy);
 
     const result = await this.db.query(
       `
@@ -109,16 +110,20 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
         select "id","login","email","hash","createdAt"
         from "user"
         ${filter}
-        order by "${params.sortBy}" ${order}
+        order by ${sortBy} ${order}
         limit ${page.pageSize} offset ${page.calculateSkip()}
       ) as u left join "userBan" b
       on u."id" = b."userId"
-      order by u."${params.sortBy}" ${order};
+      order by ${sortBy} ${order};
       `,
     );
 
     const views = result.map((u) => UserMapper.toView(u));
 
     return page.add(...views);
+  }
+  private transformSortBy(sortBy: string): string {
+    if (sortBy === 'login') return 'ascii("login")';
+    return `"${sortBy}"`;
   }
 }
