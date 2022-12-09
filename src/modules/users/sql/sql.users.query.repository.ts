@@ -113,6 +113,7 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
         limit ${page.pageSize} offset ${page.calculateSkip()}
       ) as u left join "userBan" b
       on u."id" = b."userId"
+      order by u."${params.sortBy}" ${order};
       `,
     );
 
