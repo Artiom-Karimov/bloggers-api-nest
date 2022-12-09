@@ -102,7 +102,6 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
     const order = params.sortDirection === 1 ? 'asc' : 'desc';
     const sortBy = this.transformSortBy(params.sortBy);
 
-    // The second order by is there because somehow join breaks the order
     const result = await this.db.query(
       `
       select u."id",u."login",u."email",u."hash",u."createdAt",
@@ -115,10 +114,10 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
         limit ${page.pageSize} offset ${page.calculateSkip()}
       ) as u left join "userBan" b
       on u."id" = b."userId"
-      order by ${sortBy} ${order};
       `,
     );
 
+    this.sortResult(result, params);
     const views = result.map((u) => UserMapper.toView(u));
 
     return page.add(...views);
@@ -128,5 +127,14 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
   private transformSortBy(sortBy: string): string {
     if (sortBy === 'login') return 'ascii("login")';
     return `"${sortBy}"`;
+  }
+  // This is needed because tests expect js-like sort
+  private sortResult(users: UserWithBan[], params: GetUsersQuery) {
+    users.sort((a, b) => {
+      if (a[params.sortBy] === b[params.sortBy]) return 0;
+      const result = a[params.sortBy] < b[params.sortBy];
+      if (params.sortDirection === 1) return result ? -1 : 1;
+      return result ? 1 : -1;
+    });
   }
 }
