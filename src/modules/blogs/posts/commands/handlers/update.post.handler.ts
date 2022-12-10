@@ -12,16 +12,18 @@ export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
   ) { }
 
   async execute(command: UpdatePostCommand): Promise<BlogError> {
-    const { blogId, bloggerId, postId, data } = command.data;
+    const { blogId, bloggerId, postId } = command.data;
     const blog = await this.blogsRepo.get(blogId);
     if (!blog) return BlogError.NotFound;
     if (blog.ownerId !== bloggerId) return BlogError.Forbidden;
 
     const post = await this.postsRepo.get(postId);
     if (!post) return BlogError.NotFound;
-    if (post.blogId !== blogId) return BlogError.NotFound;
 
-    const updated = await this.postsRepo.update(postId, data);
-    return updated ? BlogError.NoError : BlogError.Unknown;
+    const modelUpdated = post.updateData(command.data);
+    if (modelUpdated !== BlogError.NoError) return modelUpdated;
+
+    const dbUpdated = await this.postsRepo.update(post);
+    return dbUpdated ? BlogError.NoError : BlogError.Unknown;
   }
 }
