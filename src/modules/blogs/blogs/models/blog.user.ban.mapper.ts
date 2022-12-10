@@ -1,28 +1,32 @@
+import BlogUserBanDto from './blog.user.ban.dto';
 import BlogUserBanModel from './blog.user.ban.model';
 import BlogUserBan from './blog.user.ban.schema';
 import BlogUserBanViewModel from './view/blog.user.ban.view.model';
 
 export default class BlogUserBanMapper {
   public static fromDomain(model: BlogUserBanModel): BlogUserBan {
+    const dto = model.toDto();
     return new BlogUserBan(
-      model.id,
-      model.blogId,
-      model.userId,
-      model.userLogin,
-      model.isBanned,
-      model.banReason,
-      model.banDate,
+      dto.id,
+      dto.blogId,
+      dto.userId,
+      dto.userLogin,
+      dto.isBanned,
+      dto.banReason,
+      dto.banDate,
     );
   }
   public static toDomain(model: BlogUserBan): BlogUserBanModel {
     return new BlogUserBanModel(
-      model._id,
-      model.blogId,
-      model.userId,
-      model.userLogin,
-      model.isBanned,
-      model.banReason,
-      model.banDate,
+      new BlogUserBanDto(
+        model._id,
+        model.blogId,
+        model.userId,
+        model.userLogin,
+        model.isBanned,
+        model.banReason,
+        model.banDate,
+      ),
     );
   }
   public static toView(model: BlogUserBan): BlogUserBanViewModel {
