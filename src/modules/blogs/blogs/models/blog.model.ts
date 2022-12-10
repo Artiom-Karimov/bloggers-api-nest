@@ -61,6 +61,9 @@ export default class BlogModel {
   get id(): string {
     return this._id;
   }
+  get name(): string {
+    return this._name;
+  }
   get isBanned(): boolean {
     return this._banInfo.isBanned;
   }
