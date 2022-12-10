@@ -2,7 +2,6 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import UsersQueryRepository from '../../../../users/interfaces/users.query.repository';
 import BlogsRepository from '../../blogs.repository';
 import { BlogError } from '../../models/blog.error';
-import { BlogOwnerInfo } from '../../models/blog.model';
 import AssignBlogOwnerCommand from '../commands/assign.blog.owner.command';
 
 @CommandHandler(AssignBlogOwnerCommand)
@@ -20,14 +19,17 @@ export class AssignBlogOwnerHandler
 
     const blog = await this.repo.get(command.blogId);
     if (!blog) return BlogError.NotFound;
-    if (blog.ownerInfo) return BlogError.Forbidden;
 
-    const ownerInfo: BlogOwnerInfo = {
-      userId: user.id,
-      userLogin: user.login,
-    };
+    try {
+      blog.ownerInfo = {
+        userId: user.id,
+        userLogin: user.login,
+      };
+    } catch (error) {
+      return BlogError.Forbidden;
+    }
 
-    const result = await this.repo.update(command.blogId, { ownerInfo });
+    const result = await this.repo.update(blog);
     return result ? BlogError.NoError : BlogError.Unknown;
   }
 }
