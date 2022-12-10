@@ -13,9 +13,11 @@ export class UpdateCommentHandler
     const { commentId, userId, content } = command.data;
     const comment = await this.repo.get(commentId);
     if (!comment) return BlogError.NotFound;
-    if (comment.userId !== userId) return BlogError.Forbidden;
 
-    const updated = this.repo.update(commentId, content);
-    return updated ? BlogError.NoError : BlogError.Unknown;
+    const modelUpdated = comment.setContent(content, userId);
+    if (modelUpdated !== BlogError.NoError) return modelUpdated;
+
+    const dbUpdated = this.repo.update(comment);
+    return dbUpdated ? BlogError.NoError : BlogError.Unknown;
   }
 }

@@ -1,5 +1,6 @@
 import { LikesInfoModel } from '../../likes/models/likes.info.model';
 import Post from '../../posts/models/post.schema';
+import CommentDto from './comment.dto';
 import CommentModel from './comment.model';
 import Comment from './comment.schema';
 import BloggerCommentViewModel from './view/blogger.comment.view.model';
@@ -7,27 +8,30 @@ import CommentViewModel from './view/comment.view.model';
 
 export default class CommentMapper {
   public static fromDomain(model: CommentModel): Comment {
+    const dto = model.toDto();
     return new Comment(
-      model.id,
-      model.postId,
-      model.userId,
-      model.userLogin,
-      model.bannedByAdmin,
-      model.bannedByBlogger,
-      model.content,
-      model.createdAt,
+      dto.id,
+      dto.postId,
+      dto.userId,
+      dto.userLogin,
+      dto.bannedByAdmin,
+      dto.bannedByBlogger,
+      dto.content,
+      dto.createdAt,
     );
   }
   public static toDomain(model: Comment): CommentModel {
     return new CommentModel(
-      model._id,
-      model.postId,
-      model.userId,
-      model.userLogin,
-      model.bannedByAdmin,
-      model.bannedByBlogger,
-      model.content,
-      model.createdAt,
+      new CommentDto(
+        model._id,
+        model.postId,
+        model.userId,
+        model.userLogin,
+        model.bannedByAdmin,
+        model.bannedByBlogger,
+        model.content,
+        model.createdAt,
+      ),
     );
   }
   public static toView(
