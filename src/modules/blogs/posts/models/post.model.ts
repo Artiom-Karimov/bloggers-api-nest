@@ -1,6 +1,6 @@
 import DateGenerator from '../../../../common/utils/date.generator';
 import IdGenerator from '../../../../common/utils/id.generator';
-import PostCreateModel from './post.create.model';
+import { PostCreateModel } from '../commands/commands/create.post.command';
 
 export default class PostModel {
   constructor(
