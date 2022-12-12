@@ -1,5 +1,5 @@
 import { LikesInfoModel } from '../../likes/models/likes.info.model';
-import Post from '../../posts/models/post.schema';
+import Post from '../../posts/mongoose/models/post.schema';
 import CommentDto from './comment.dto';
 import CommentModel from './comment.model';
 import Comment from './comment.schema';

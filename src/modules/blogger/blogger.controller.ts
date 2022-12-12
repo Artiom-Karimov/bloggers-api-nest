@@ -13,7 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
-import PostsQueryRepository from '../blogs/posts/posts.query.repository';
+import PostsQueryRepository from '../blogs/posts/interfaces/posts.query.repository';
 import PageViewModel from '../../common/models/page.view.model';
 import BlogInputModel from '../blogs/blogs/models/input/blog.input.model';
 import { ForbiddenException } from '@nestjs/common/exceptions';

@@ -19,10 +19,10 @@ import {
   PostLikeSchema,
 } from './likes/models/like.schema';
 import { BlogIdValidator } from './blogs/models/input/blog.id.validator';
-import Post, { PostSchema } from './posts/models/post.schema';
+import Post, { PostSchema } from './posts/mongoose/models/post.schema';
 import PostsController from './posts/posts.controller';
-import PostsQueryRepository from './posts/posts.query.repository';
-import PostsRepository from './posts/posts.repository';
+import PostsQueryRepository from './posts/interfaces/posts.query.repository';
+import PostsRepository from './posts/interfaces/posts.repository';
 import { CreatePostHandler } from './posts/commands/handlers/create.post.handler';
 import { UpdatePostHandler } from './posts/commands/handlers/update.post.handler';
 import { DeletePostHandler } from './posts/commands/handlers/delete.post.handler';

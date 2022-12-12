@@ -5,7 +5,7 @@ import PageViewModel from '../../../common/models/page.view.model';
 import CommentLikesQueryRepository from '../likes/comment.likes.query.repository';
 import CommentMapper from '../comments/models/comment.mapper';
 import Comment, { CommentDocument } from '../comments/models/comment.schema';
-import Post from '../posts/models/post.schema';
+import Post from '../posts/mongoose/models/post.schema';
 import BloggerCommentViewModel from './models/view/blogger.comment.view.model';
 import GetBloggerCommentsQuery from './models/input/get.blogger.comments.query';
 import Blog, { BlogDocument } from '../blogs/mongoose/models/blog.schema';

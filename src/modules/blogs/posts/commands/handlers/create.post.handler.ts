@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import BlogsRepository from '../../../blogs/interfaces/blogs.repository';
 import { BlogError } from '../../../blogs/models/blog.error';
 import PostModel from '../../models/post.model';
-import PostsRepository from '../../posts.repository';
+import PostsRepository from '../../interfaces/posts.repository';
 import CreatePostCommand from '../commands/create.post.command';
 
 @CommandHandler(CreatePostCommand)

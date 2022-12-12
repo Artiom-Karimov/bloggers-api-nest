@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import PostMapper from '../models/post.mapper';
+import PostMapper from './models/post.mapper';
 import PostModel from '../models/post.model';
-import Post, { PostDocument } from '../models/post.schema';
-import PostsRepository from '../posts.repository';
+import Post, { PostDocument } from './models/post.schema';
+import PostsRepository from '../interfaces/posts.repository';
 
 @Injectable()
 export default class MongoPostsRepository extends PostsRepository {

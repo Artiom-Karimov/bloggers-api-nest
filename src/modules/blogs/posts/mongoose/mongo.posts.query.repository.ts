@@ -7,10 +7,10 @@ import BlogMapper from '../../blogs/mongoose/models/blog.mapper';
 import Blog, { BlogDocument } from '../../blogs/mongoose/models/blog.schema';
 import PostLikesQueryRepository from '../../likes/post.likes.query.repository';
 import GetPostsQuery from '../models/get.posts.query';
-import PostMapper from '../models/post.mapper';
-import Post, { PostDocument } from '../models/post.schema';
+import PostMapper from './models/post.mapper';
+import Post, { PostDocument } from './models/post.schema';
 import PostViewModel from '../models/post.view.model';
-import PostsQueryRepository from '../posts.query.repository';
+import PostsQueryRepository from '../interfaces/posts.query.repository';
 
 @Injectable()
 export default class MongoPostsQueryRepository extends PostsQueryRepository {

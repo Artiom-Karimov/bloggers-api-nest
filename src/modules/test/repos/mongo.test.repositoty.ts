@@ -16,7 +16,7 @@ import {
   LikeDocument,
   PostLike,
 } from '../../blogs/likes/models/like.schema';
-import Post, { PostDocument } from '../../blogs/posts/models/post.schema';
+import Post, { PostDocument } from '../../blogs/posts/mongoose/models/post.schema';
 import UserBan, {
   UserBanDocument,
 } from '../../users/mongoose/models/user.ban.schema';

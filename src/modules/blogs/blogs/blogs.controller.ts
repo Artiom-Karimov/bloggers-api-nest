@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import BlogsQueryRepository from './interfaces/blogs.query.repository';
-import PostsQueryRepository from '../posts/posts.query.repository';
+import PostsQueryRepository from '../posts/interfaces/posts.query.repository';
 import PageViewModel from '../../../common/models/page.view.model';
 import BlogViewModel from './models/view/blog.view.model';
 import GetBlogsQuery from './models/input/get.blogs.query';

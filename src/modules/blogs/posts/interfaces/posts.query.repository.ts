@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import PageViewModel from '../../../common/models/page.view.model';
-import BlogViewModel from '../blogs/models/view/blog.view.model';
-import GetPostsQuery from '../posts/models/get.posts.query';
-import PostViewModel from '../posts/models/post.view.model';
+import PageViewModel from '../../../../common/models/page.view.model';
+import BlogViewModel from '../../blogs/models/view/blog.view.model';
+import GetPostsQuery from '../models/get.posts.query';
+import PostViewModel from '../models/post.view.model';
 
 @Injectable()
 export default abstract class PostsQueryRepository {
