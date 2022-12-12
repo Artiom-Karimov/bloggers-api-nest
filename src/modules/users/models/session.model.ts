@@ -34,7 +34,7 @@ export default class SessionModel {
   }
   public refresh(ip: string, deviceName: string, userId: string): SessionModel {
     if (userId !== this.userId) throw new Exception('Wrong user id');
-    if (!this.isValid) throw new Exception('Session expired');
+    if (!this.isValid()) throw new Exception('Session expired');
 
     this.ip = ip;
     this.deviceName = deviceName;
