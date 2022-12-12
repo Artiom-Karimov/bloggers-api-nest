@@ -51,6 +51,7 @@ import MongoAdminBlogsQueryRepository from './blogs/mongoose/mongo.admin.blogs.q
 import MongoBlogUserBanRepository from './blogs/mongoose/mongo.blog.user.ban.repository';
 import MongoBlogUserBanQueryRepository from './blogs/mongoose/mongo.blog.user.ban.query.repository';
 import MongoPostsRepository from './posts/mongoose/mongo.posts.repository';
+import MongoPostsQueryRepository from './posts/mongoose/mongo.posts.query.repository';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -111,7 +112,10 @@ const commandHandlers = [
       provide: PostsRepository,
       useClass: MongoPostsRepository,
     },
-    PostsQueryRepository,
+    {
+      provide: PostsQueryRepository,
+      useClass: MongoPostsQueryRepository,
+    },
     PostLikesRepository,
     PostLikesQueryRepository,
     CommentsRepository,
