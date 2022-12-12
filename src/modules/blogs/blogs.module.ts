@@ -54,6 +54,7 @@ import MongoPostsRepository from './posts/mongoose/mongo.posts.repository';
 import MongoPostsQueryRepository from './posts/mongoose/mongo.posts.query.repository';
 import MongoCommentsRepository from './comments/mongoose/mongo.comments.repository';
 import MongoCommentsQueryRepository from './comments/mongoose/mongo.comments.query.repository';
+import MongoBloggerCommentsQueryRepository from './comments/mongoose/mongo.blogger.comments.query.repository';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -128,7 +129,10 @@ const commandHandlers = [
       provide: CommentsQueryRepository,
       useClass: MongoCommentsQueryRepository,
     },
-    BloggerCommentsQueryRepository,
+    {
+      provide: BloggerCommentsQueryRepository,
+      useClass: MongoBloggerCommentsQueryRepository,
+    },
     CommentLikesRepository,
     CommentLikesQueryRepository,
     BlogIdValidator,
