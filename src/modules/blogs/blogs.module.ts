@@ -10,7 +10,7 @@ import CommentLikesQueryRepository from './likes/comment.likes.query.repository'
 import CommentLikesRepository from './likes/comment.likes.repository';
 import PostLikesQueryRepository from './likes/post.likes.query.repository';
 import PostLikesRepository from './likes/post.likes.repository';
-import Blog, { BlogSchema } from './blogs/models/blog.schema';
+import Blog, { BlogSchema } from './blogs/mongoose/models/blog.schema';
 import Comment, { CommentSchema } from './comments/models/comment.schema';
 import {
   CommentLike,
@@ -35,7 +35,7 @@ import BloggerCommentsQueryRepository from './comments/blogger.comments.query.re
 import BlogUserBanRepository from './blogs/interfaces/blog.user.ban.repository';
 import BlogUserBan, {
   BlogUserBanSchema,
-} from './blogs/models/blog.user.ban.schema';
+} from './blogs/mongoose/models/blog.user.ban.schema';
 import { CreateCommentHandler } from './comments/commands/handlers/create.comment.handler';
 import BlogUserBanQueryRepository from './blogs/interfaces/blog.user.ban.query.repository';
 import { UsersModule } from '../users/users.module';

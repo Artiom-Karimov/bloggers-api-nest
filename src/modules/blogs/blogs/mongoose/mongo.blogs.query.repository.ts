@@ -3,8 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../../../common/models/page.view.model';
 import BlogsQueryRepository from '../interfaces/blogs.query.repository';
-import BlogMapper from '../models/blog.mapper';
-import Blog, { BlogDocument } from '../models/blog.schema';
+import BlogMapper from './models/blog.mapper';
+import Blog, { BlogDocument } from './models/blog.schema';
 import GetBlogsQuery from '../models/input/get.blogs.query';
 import BlogViewModel from '../models/view/blog.view.model';
 

@@ -7,7 +7,7 @@ import Recovery, {
 import Session, {
   SessionDocument,
 } from '../../users/mongoose/models/session.schema';
-import Blog, { BlogDocument } from '../../blogs/blogs/models/blog.schema';
+import Blog, { BlogDocument } from '../../blogs/blogs/mongoose/models/blog.schema';
 import Comment, {
   CommentDocument,
 } from '../../blogs/comments/models/comment.schema';

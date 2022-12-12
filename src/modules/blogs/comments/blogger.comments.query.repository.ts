@@ -8,7 +8,7 @@ import Comment, { CommentDocument } from '../comments/models/comment.schema';
 import Post from '../posts/models/post.schema';
 import BloggerCommentViewModel from './models/view/blogger.comment.view.model';
 import GetBloggerCommentsQuery from './models/input/get.blogger.comments.query';
-import Blog, { BlogDocument } from '../blogs/models/blog.schema';
+import Blog, { BlogDocument } from '../blogs/mongoose/models/blog.schema';
 
 @Injectable()
 export default class BloggerCommentsQueryRepository {

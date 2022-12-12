@@ -3,10 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../../../common/models/page.view.model';
 import BlogUserBanQueryRepository from '../interfaces/blog.user.ban.query.repository';
-import BlogUserBanMapper from '../models/blog.user.ban.mapper';
+import BlogUserBanMapper from './models/blog.user.ban.mapper';
 import BlogUserBan, {
   BlogUserBanDocument,
-} from '../models/blog.user.ban.schema';
+} from './models/blog.user.ban.schema';
 import GetBlogUserBansQuery from '../models/input/get.blog.user.bans.query';
 import BlogUserBanViewModel from '../models/view/blog.user.ban.view.model';
 
