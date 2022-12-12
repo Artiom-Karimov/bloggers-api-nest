@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../../../common/models/page.view.model';
-import BlogUserBanQueryRepository from '../blog.user.ban.query.repository';
+import BlogUserBanQueryRepository from '../interfaces/blog.user.ban.query.repository';
 import BlogUserBanMapper from '../models/blog.user.ban.mapper';
 import BlogUserBan, {
   BlogUserBanDocument,

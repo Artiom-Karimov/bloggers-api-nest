@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import BlogsController from './blogs/blogs.controller';
-import BlogsQueryRepository from './blogs/blogs.query.repository';
-import BlogsRepository from './blogs/blogs.repository';
+import BlogsQueryRepository from './blogs/interfaces/blogs.query.repository';
+import BlogsRepository from './blogs/interfaces/blogs.repository';
 import CommentsController from './comments/comments.controller';
 import CommentsQueryRepository from './comments/comments.query.repository';
 import CommentsRepository from './comments/comments.repository';
@@ -30,14 +30,14 @@ import { PutPostLikeHandler } from './posts/commands/handlers/put.post.like.hand
 import { PutCommentLikeHandler } from './comments/commands/handlers/put.comment.like.handler';
 import { CqrsModule } from '@nestjs/cqrs';
 import { BanBlogHandler } from './blogs/commands/handlers/ban.blog.handler';
-import AdminBlogsQueryRepository from './blogs/admin.blogs.query.repository';
+import AdminBlogsQueryRepository from './blogs/interfaces/admin.blogs.query.repository';
 import BloggerCommentsQueryRepository from './comments/blogger.comments.query.repository';
-import BlogUserBanRepository from './blogs/blog.user.ban.repository';
+import BlogUserBanRepository from './blogs/interfaces/blog.user.ban.repository';
 import BlogUserBan, {
   BlogUserBanSchema,
 } from './blogs/models/blog.user.ban.schema';
 import { CreateCommentHandler } from './comments/commands/handlers/create.comment.handler';
-import BlogUserBanQueryRepository from './blogs/blog.user.ban.query.repository';
+import BlogUserBanQueryRepository from './blogs/interfaces/blog.user.ban.query.repository';
 import { UsersModule } from '../users/users.module';
 import { CreateBlogHandler } from './blogs/commands/handlers/create.blog.handler';
 import { UpdateBlogHandler } from './blogs/commands/handlers/update.blog.handler';

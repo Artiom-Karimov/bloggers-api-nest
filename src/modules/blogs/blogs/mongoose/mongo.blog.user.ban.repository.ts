@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import BlogUserBanRepository from '../blog.user.ban.repository';
+import BlogUserBanRepository from '../interfaces/blog.user.ban.repository';
 import BlogUserBanMapper from '../models/blog.user.ban.mapper';
 import BlogUserBanModel from '../models/blog.user.ban.model';
 import BlogUserBan, {

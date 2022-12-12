@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import BlogUserBanModel from './models/blog.user.ban.model';
+import BlogUserBanModel from '../models/blog.user.ban.model';
 
 @Injectable()
 export default abstract class BlogUserBanRepository {

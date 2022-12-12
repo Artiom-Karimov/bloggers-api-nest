@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import PageViewModel from '../../../common/models/page.view.model';
-import BlogViewModel from './models/view/blog.view.model';
-import GetBlogsQuery from './models/input/get.blogs.query';
+import PageViewModel from '../../../../common/models/page.view.model';
+import BlogViewModel from '../models/view/blog.view.model';
+import GetBlogsQuery from '../models/input/get.blogs.query';
 
 @Injectable()
 export default abstract class BlogsQueryRepository {

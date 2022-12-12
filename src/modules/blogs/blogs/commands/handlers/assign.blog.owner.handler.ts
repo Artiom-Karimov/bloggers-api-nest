@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import UsersQueryRepository from '../../../../users/interfaces/users.query.repository';
-import BlogsRepository from '../../blogs.repository';
+import BlogsRepository from '../../interfaces/blogs.repository';
 import { BlogError } from '../../models/blog.error';
 import AssignBlogOwnerCommand from '../commands/assign.blog.owner.command';
 
