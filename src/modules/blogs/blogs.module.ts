@@ -46,6 +46,7 @@ import { BlogUserBanHandler } from './blogs/commands/handlers/blog.user.ban.hand
 import { UpdateCommentHandler } from './comments/commands/handlers/update.comment.handler';
 import { DeleteCommentHandler } from './comments/commands/handlers/delete.comment.handler';
 import MongoBlogsRepository from './blogs/mongoose/mongo.blogs.repository';
+import MongoBlogsQueryRepository from './blogs/mongoose/mongo.blogs.query.repository';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -86,7 +87,10 @@ const commandHandlers = [
       provide: BlogsRepository,
       useClass: MongoBlogsRepository,
     },
-    BlogsQueryRepository,
+    {
+      provide: BlogsQueryRepository,
+      useClass: MongoBlogsQueryRepository,
+    },
     AdminBlogsQueryRepository,
     BlogUserBanRepository,
     BlogUserBanQueryRepository,
