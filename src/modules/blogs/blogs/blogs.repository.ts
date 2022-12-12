@@ -30,9 +30,10 @@ export default class BlogsRepository {
       return undefined;
     }
   }
-  public async update(id: string, data: Partial<Blog>): Promise<boolean> {
+  public async update(model: BlogModel): Promise<boolean> {
     try {
-      await this.model.findOneAndUpdate({ _id: id }, data).exec();
+      const dbBlog = new this.model(BlogMapper.fromDomain(model));
+      await this.model.findOneAndUpdate({ _id: dbBlog._id }, dbBlog).exec();
       return true;
     } catch (error) {
       console.error(error);

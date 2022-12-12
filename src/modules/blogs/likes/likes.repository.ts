@@ -30,7 +30,7 @@ export default class LikesRepository {
   public async update(data: LikeModel): Promise<boolean> {
     try {
       const like = LikeMapper.fromDomain(data);
-      await this.model.findByIdAndUpdate(data.id, like);
+      await this.model.findByIdAndUpdate(like._id, like);
       return true;
     } catch (error) {
       console.error(error);

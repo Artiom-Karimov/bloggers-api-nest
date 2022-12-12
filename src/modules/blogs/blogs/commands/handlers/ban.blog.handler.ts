@@ -2,7 +2,6 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import PostsRepository from '../../../posts/posts.repository';
 import BlogsRepository from '../../blogs.repository';
 import { BlogError } from '../../models/blog.error';
-import BlogModel from '../../models/blog.model';
 import BanBlogCommand from '../commands/ban.blog.command';
 
 @CommandHandler(BanBlogCommand)
@@ -16,15 +15,11 @@ export class BanBlogHandler implements ICommandHandler<BanBlogCommand> {
     const blog = await this.repo.get(command.blogId);
     if (!blog) return BlogError.NotFound;
 
-    if (blog.banInfo?.isBanned === command.data.isBanned)
-      return BlogError.NoError;
+    if (blog.isBanned === command.data.isBanned) return BlogError.NoError;
+    blog.banInfo = command.data.isBanned;
+    let result = await this.repo.update(blog);
 
-    return this.putBan(blog.id, command.data.isBanned);
-  }
-  private async putBan(blogId: string, isBanned: boolean): Promise<BlogError> {
-    const banInfo = BlogModel.createBanInfo(isBanned);
-    let result = await this.repo.update(blogId, { banInfo });
-    result &&= await this.postsRepo.setBlogBan(blogId, isBanned);
-    return result ? BlogError.NoError : BlogError.NotFound;
+    result &&= await this.postsRepo.setBlogBan(command.blogId, blog.isBanned);
+    return result ? BlogError.NoError : BlogError.Unknown;
   }
 }

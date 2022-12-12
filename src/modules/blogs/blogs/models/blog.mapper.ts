@@ -2,21 +2,23 @@ import AdminBlogViewModel from './view/admin.blog.view.model';
 import BlogModel, { BlogBanInfo, BlogOwnerInfo } from './blog.model';
 import Blog from './blog.schema';
 import BlogViewModel from './view/blog.view.model';
+import BlogDto from './blog.dto';
 
 export default class BlogMapper {
   public static fromDomain(model: BlogModel): Blog {
+    const dto = model.toDto();
     return new Blog(
-      model.id,
-      model.name,
-      model.description,
-      model.websiteUrl,
-      model.createdAt,
-      model.ownerInfo,
-      model.banInfo,
+      dto.id,
+      dto.name,
+      dto.description,
+      dto.websiteUrl,
+      dto.createdAt,
+      dto.ownerInfo,
+      dto.banInfo,
     );
   }
   public static toDomain(model: Blog): BlogModel {
-    return new BlogModel(
+    const dto = new BlogDto(
       model._id,
       model.name,
       model.description,
@@ -25,6 +27,7 @@ export default class BlogMapper {
       BlogMapper.getOwnerInfo(model),
       BlogMapper.getBanInfo(model),
     );
+    return new BlogModel(dto);
   }
   public static toView(model: Blog): BlogViewModel {
     return new BlogViewModel(

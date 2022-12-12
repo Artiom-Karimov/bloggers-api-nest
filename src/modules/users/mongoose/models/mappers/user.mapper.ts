@@ -3,24 +3,28 @@ import UserBanViewModel from '../../../models/view/user.ban.view.model';
 import UserModel from '../../../models/user.model';
 import User from '../user.schema';
 import UserViewModel from '../../../models/view/user.view.model';
+import UserDto from '../../../models/user.dto';
 
 export default class UserMapper {
   public static fromDomain(model: UserModel): User {
+    const dto = model.toDto();
     return new User(
-      model.id,
-      model.login,
-      model.email,
-      model.passwordHash,
-      model.createdAt,
+      dto.id,
+      dto.login,
+      dto.email,
+      dto.passwordHash,
+      dto.createdAt,
     );
   }
   public static toDomain(model: User): UserModel {
     return new UserModel(
-      model._id,
-      model.login,
-      model.email,
-      model.passwordHash,
-      model.createdAt,
+      new UserDto(
+        model._id,
+        model.login,
+        model.email,
+        model.passwordHash,
+        model.createdAt,
+      ),
     );
   }
   public static toView(model: User, banInfo: UserBanViewModel): UserViewModel {

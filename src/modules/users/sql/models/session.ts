@@ -4,6 +4,7 @@ export default class Session {
     public deviceName: string,
     public ip: string,
     public userId: string,
+    public userLogin: string,
     public issuedAt: Date,
     public expiresAt: Date,
   ) { }

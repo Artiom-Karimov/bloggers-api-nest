@@ -30,9 +30,10 @@ export default class PostsRepository {
       return undefined;
     }
   }
-  public async update(id: string, data: Partial<Post>): Promise<boolean> {
+  public async update(model: PostModel): Promise<boolean> {
     try {
-      await this.model.findOneAndUpdate({ _id: id }, data).exec();
+      const dbModel = PostMapper.fromDomain(model);
+      await this.model.findOneAndUpdate({ _id: model.id }, dbModel).exec();
       return true;
     } catch (error) {
       console.error(error);

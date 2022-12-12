@@ -9,6 +9,7 @@ export default class SessionMapper {
       model.deviceName,
       model.ip,
       model.userId,
+      model.userLogin,
       model.issuedAt,
       model.expiresAt,
     );
@@ -19,6 +20,7 @@ export default class SessionMapper {
       model._id,
       model.deviceName,
       model.userId,
+      model.userLogin,
       model.issuedAt,
       model.expiresAt,
     );

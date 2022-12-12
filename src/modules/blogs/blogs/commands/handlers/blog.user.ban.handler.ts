@@ -22,7 +22,7 @@ export class BlogUserBanHandler implements ICommandHandler<BlogUserBanCommand> {
     const { blogId, bloggerId, isBanned, userId } = command.data;
     const blog = await this.blogRepo.get(blogId);
     if (!blog) return BlogError.NotFound;
-    if (blog.ownerInfo?.userId !== bloggerId) return BlogError.Forbidden;
+    if (blog.ownerId !== bloggerId) return BlogError.Forbidden;
 
     const user = await this.usersRepo.getUser(userId);
     if (!user) return BlogError.NotFound;

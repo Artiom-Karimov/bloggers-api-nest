@@ -27,8 +27,10 @@ export default class LoginHandler implements ICommandHandler<LoginCommand> {
       ip,
       deviceName,
       userId: userResult.id,
+      userLogin: userResult.login,
     });
-    return this.service.createTokenPair(session, userResult.login);
+
+    return session.getTokens();
   }
   private async checkLoginGetUser(
     loginOrEmail: string,

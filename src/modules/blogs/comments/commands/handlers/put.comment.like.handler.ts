@@ -21,7 +21,7 @@ export class PutCommentLikeHandler
 
     let like = await this.likesRepo.get(entityId, userId);
     if (like) {
-      like = LikeModel.update(like, likeStatus);
+      like.updateData(likeStatus, userId);
       const result = await this.likesRepo.update(like);
       return result ? BlogError.NoError : BlogError.Unknown;
     }

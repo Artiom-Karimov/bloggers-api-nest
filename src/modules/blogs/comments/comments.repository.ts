@@ -30,9 +30,10 @@ export default class CommentsRepository {
       return undefined;
     }
   }
-  public async update(id: string, content: string): Promise<boolean> {
+  public async update(model: CommentModel): Promise<boolean> {
     try {
-      await this.model.findOneAndUpdate({ _id: id }, { content }).exec();
+      const dbModel = CommentMapper.fromDomain(model);
+      await this.model.findOneAndUpdate({ _id: dbModel._id }, dbModel).exec();
       return true;
     } catch (error) {
       console.error(error);

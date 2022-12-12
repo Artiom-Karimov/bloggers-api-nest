@@ -3,14 +3,14 @@ import * as config from '../../../../config/users';
 import TokenPayload from './token.payload';
 
 export default class TokenPair {
-  constructor(public accessToken: string, public refreshToken: string) { }
+  public accessToken: string;
+  public refreshToken: string;
 
-  public static create(payload: TokenPayload): TokenPair {
-    return new TokenPair(
-      TokenPair.createAccess(payload),
-      TokenPair.createRefresh(payload),
-    );
+  constructor(payload: TokenPayload) {
+    this.createAccess(payload);
+    this.createRefresh(payload);
   }
+
   public static unpackToken(token: string): TokenPayload {
     try {
       const result: any = verify(token, config.jwtSecret);
@@ -26,19 +26,16 @@ export default class TokenPair {
     }
   }
 
-  private static createAccess(payload: TokenPayload): string {
+  private createAccess(payload: TokenPayload) {
     let exp = new Date().getTime();
     exp += config.accessExpireMillis;
 
-    return TokenPair.sign(payload, exp);
+    this.accessToken = this.sign(payload, exp);
   }
-  private static createRefresh(payload: TokenPayload): string {
-    return TokenPair.sign(payload);
+  private createRefresh(payload: TokenPayload) {
+    this.refreshToken = this.sign(payload);
   }
-  private static sign(
-    payload: TokenPayload,
-    exp: number = payload.exp,
-  ): string {
+  private sign(payload: TokenPayload, exp: number = payload.exp): string {
     exp = Math.floor(exp / 1000);
     return sign({ ...payload, exp }, config.jwtSecret);
   }
