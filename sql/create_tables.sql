@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS public."userSession"
     "deviceName" character varying(250) COLLATE pg_catalog."default" NOT NULL,
     ip character varying(100) COLLATE pg_catalog."default" NOT NULL,
     "userId" uuid NOT NULL,
+    "userLogin" character varying(20) NOT NULL,
     "issuedAt" timestamp with time zone NOT NULL,
     "expiresAt" timestamp with time zone NOT NULL,
     CONSTRAINT "userSession_pkey" PRIMARY KEY ("deviceId"),

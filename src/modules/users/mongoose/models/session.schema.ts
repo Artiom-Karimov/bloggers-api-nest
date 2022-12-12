@@ -10,6 +10,7 @@ export default class Session {
     deviceName: string,
     ip: string,
     userId: string,
+    userLogin: string,
     issuedAt: number,
     expiresAt: number,
   ) {
@@ -17,6 +18,7 @@ export default class Session {
     this.deviceName = deviceName;
     this.ip = ip;
     this.userId = userId;
+    this.userLogin = userLogin;
     this.issuedAt = issuedAt;
     this.expiresAt = expiresAt;
   }
@@ -32,6 +34,9 @@ export default class Session {
 
   @Prop()
   userId: string;
+
+  @Prop()
+  userLogin: string;
 
   @Prop()
   issuedAt: number;

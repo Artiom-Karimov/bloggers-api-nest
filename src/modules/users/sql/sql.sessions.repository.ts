@@ -14,7 +14,7 @@ export default class SqlSessionsRepository extends SessionsRepository {
   public async get(deviceId: string): Promise<SessionModel | undefined> {
     const result = await this.db.query(
       `
-    select "deviceId","deviceName","ip","userId","issuedAt","expiresAt"
+    select "deviceId","deviceName","ip","userId","userLogin","issuedAt","expiresAt"
     from "userSession"
     where "deviceId" = $1;
     `,
@@ -28,14 +28,15 @@ export default class SqlSessionsRepository extends SessionsRepository {
     const dbSession = SessionMapper.fromDomain(session);
     await this.db.query(
       `
-      insert into "userSession" ("deviceId","deviceName","ip","userId","issuedAt","expiresAt")
-      values ($1,$2,$3,$4,$5,$6);
+      insert into "userSession" ("deviceId","deviceName","ip","userId","userLogin","issuedAt","expiresAt")
+      values ($1,$2,$3,$4,$5,$6,$7);
       `,
       [
         dbSession.deviceId,
         dbSession.deviceName,
         dbSession.ip,
         dbSession.userId,
+        dbSession.userLogin,
         dbSession.issuedAt,
         dbSession.expiresAt,
       ],
