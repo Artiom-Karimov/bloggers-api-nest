@@ -119,8 +119,6 @@ const commandHandlers = [
       provide: PostsQueryRepository,
       useClass: MongoPostsQueryRepository,
     },
-    PostLikesRepository,
-    PostLikesQueryRepository,
     {
       provide: CommentsRepository,
       useClass: MongoCommentsRepository,
@@ -133,6 +131,8 @@ const commandHandlers = [
       provide: BloggerCommentsQueryRepository,
       useClass: MongoBloggerCommentsQueryRepository,
     },
+    PostLikesRepository,
+    PostLikesQueryRepository,
     CommentLikesRepository,
     CommentLikesQueryRepository,
     BlogIdValidator,
