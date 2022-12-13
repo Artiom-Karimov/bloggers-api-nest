@@ -55,6 +55,9 @@ import MongoPostsQueryRepository from './posts/mongoose/mongo.posts.query.reposi
 import MongoCommentsRepository from './comments/mongoose/mongo.comments.repository';
 import MongoCommentsQueryRepository from './comments/mongoose/mongo.comments.query.repository';
 import MongoBloggerCommentsQueryRepository from './comments/mongoose/mongo.blogger.comments.query.repository';
+import SqlBlogsRepository from './blogs/sql/sql.blogs.repository';
+import SqlBlogsQueryRepository from './blogs/sql/sql.blogs.query.repository';
+import SqlAdminBlogsQueryRepository from './blogs/sql/sql.admin.blogs.query.repository';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -93,15 +96,15 @@ const commandHandlers = [
   providers: [
     {
       provide: BlogsRepository,
-      useClass: MongoBlogsRepository,
+      useClass: SqlBlogsRepository,
     },
     {
       provide: BlogsQueryRepository,
-      useClass: MongoBlogsQueryRepository,
+      useClass: SqlBlogsQueryRepository,
     },
     {
       provide: AdminBlogsQueryRepository,
-      useClass: MongoAdminBlogsQueryRepository,
+      useClass: SqlAdminBlogsQueryRepository,
     },
     {
       provide: BlogUserBanRepository,

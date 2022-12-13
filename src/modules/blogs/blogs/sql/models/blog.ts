@@ -5,5 +5,9 @@ export class Blog {
     public description: string,
     public websiteUrl: string,
     public createdAt: Date,
+    public userId?: string,
+    public userLogin?: string,
+    public isBanned?: boolean,
+    public banDate?: Date,
   ) { }
 }

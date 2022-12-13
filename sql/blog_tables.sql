@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS public."blogOwner"
 (
     "blogId" uuid NOT NULL,
     "userId" uuid NOT NULL,
+    "userLogin" character varying(15) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT blogowner_pkey PRIMARY KEY ("blogId"),
     CONSTRAINT "blog" FOREIGN KEY ("blogId")
         REFERENCES public."blog" ("id") MATCH SIMPLE
@@ -40,8 +41,8 @@ CREATE TABLE IF NOT EXISTS public."blogOwner"
 CREATE TABLE IF NOT EXISTS public."blogBan"
 (
     "blogId" uuid NOT NULL,
-    "isBanned" boolean NOT NULL,
-    "banDate" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    "isBanned" boolean NOT NULL DEFAULT False,
+    "banDate" timestamp with time zone,
     CONSTRAINT blogban_pkey PRIMARY KEY ("blogId"),
     CONSTRAINT "blog" FOREIGN KEY ("blogId")
         REFERENCES public."blog" ("id") MATCH SIMPLE

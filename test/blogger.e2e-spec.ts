@@ -330,15 +330,15 @@ describe('BloggerController (e2e)', () => {
 
     const banReason = "How can you have any pudding if you don't eat meat?";
     it('blogger should ban user', async () => {
-      await request(app.getHttpServer())
+      const result = await request(app.getHttpServer())
         .put(`${userBase}/${user.id}/ban`)
         .set('Authorization', `Bearer ${postSamples.tokens.access}`)
         .send({
           isBanned: true,
           banReason,
           blogId: post.blogId,
-        })
-        .expect(204);
+        });
+      expect(result.statusCode).toBe(204);
     });
 
     const afterBanContent = "We don't need no thought control!";

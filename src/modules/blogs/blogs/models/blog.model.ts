@@ -29,7 +29,7 @@ export default class BlogModel {
     this._websiteUrl = dto.websiteUrl;
     this._createdAt = dto.createdAt;
     this._ownerInfo = dto.ownerInfo;
-    this._banInfo = dto.banInfo;
+    this._banInfo = dto.banInfo ? dto.banInfo : { isBanned: false };
   }
   public static create(
     data: BlogInputModel,
