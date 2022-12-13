@@ -5,7 +5,7 @@ export default class BlogUserBanDto {
     public userId: string,
     public userLogin: string,
     public isBanned: boolean,
-    public banReason: string,
-    public banDate: string,
+    public banReason?: string,
+    public banDate?: string,
   ) { }
 }
