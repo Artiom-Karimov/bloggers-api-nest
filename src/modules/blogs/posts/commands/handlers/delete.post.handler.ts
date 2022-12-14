@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import BlogsRepository from '../../../blogs/blogs.repository';
+import BlogsRepository from '../../../blogs/interfaces/blogs.repository';
 import { BlogError } from '../../../blogs/models/blog.error';
-import PostsRepository from '../../posts.repository';
+import PostsRepository from '../../interfaces/posts.repository';
 import DeletePostCommand from '../commands/delete.post.command';
 
 @CommandHandler(DeletePostCommand)

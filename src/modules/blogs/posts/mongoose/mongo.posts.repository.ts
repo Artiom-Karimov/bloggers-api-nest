@@ -1,15 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import PostMapper from '../posts/models/post.mapper';
-import PostModel from '../posts/models/post.model';
-import Post, { PostDocument } from '../posts/models/post.schema';
+import PostMapper from './models/post.mapper';
+import PostModel from '../models/post.model';
+import Post, { PostDocument } from './models/post.schema';
+import PostsRepository from '../interfaces/posts.repository';
 
 @Injectable()
-export default class PostsRepository {
+export default class MongoPostsRepository extends PostsRepository {
   constructor(
     @InjectModel(Post.name) private readonly model: Model<PostDocument>,
-  ) { }
+  ) {
+    super();
+  }
 
   public async get(id: string): Promise<PostModel | undefined> {
     try {

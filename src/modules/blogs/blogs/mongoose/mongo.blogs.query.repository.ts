@@ -1,17 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
-import PageViewModel from '../../../common/models/page.view.model';
-import BlogMapper from '../blogs/models/blog.mapper';
-import Blog, { BlogDocument } from '../blogs/models/blog.schema';
-import BlogViewModel from './models/view/blog.view.model';
-import GetBlogsQuery from './models/input/get.blogs.query';
+import PageViewModel from '../../../../common/models/page.view.model';
+import BlogsQueryRepository from '../interfaces/blogs.query.repository';
+import BlogMapper from './models/blog.mapper';
+import Blog, { BlogDocument } from './models/blog.schema';
+import GetBlogsQuery from '../models/input/get.blogs.query';
+import BlogViewModel from '../models/view/blog.view.model';
 
 @Injectable()
-export default class BlogsQueryRepository {
+export default class MongoBlogsQueryRepository extends BlogsQueryRepository {
   constructor(
     @InjectModel(Blog.name) private readonly model: Model<BlogDocument>,
-  ) { }
+  ) {
+    super();
+  }
 
   public async getBlogs(
     params: GetBlogsQuery,

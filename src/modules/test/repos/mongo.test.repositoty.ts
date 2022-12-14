@@ -7,7 +7,7 @@ import Recovery, {
 import Session, {
   SessionDocument,
 } from '../../users/mongoose/models/session.schema';
-import Blog, { BlogDocument } from '../../blogs/blogs/models/blog.schema';
+import Blog, { BlogDocument } from '../../blogs/blogs/mongoose/models/blog.schema';
 import Comment, {
   CommentDocument,
 } from '../../blogs/comments/models/comment.schema';
@@ -16,7 +16,7 @@ import {
   LikeDocument,
   PostLike,
 } from '../../blogs/likes/models/like.schema';
-import Post, { PostDocument } from '../../blogs/posts/models/post.schema';
+import Post, { PostDocument } from '../../blogs/posts/mongoose/models/post.schema';
 import UserBan, {
   UserBanDocument,
 } from '../../users/mongoose/models/user.ban.schema';

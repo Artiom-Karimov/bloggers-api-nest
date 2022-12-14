@@ -1,8 +1,8 @@
-import { ExtendedLikesInfoModel } from '../../likes/models/likes.info.model';
-import PostDto from './post.dto';
-import PostModel from './post.model';
+import { ExtendedLikesInfoModel } from '../../../likes/models/likes.info.model';
+import PostDto from '../../models/post.dto';
+import PostModel from '../../models/post.model';
 import Post from './post.schema';
-import PostViewModel from './post.view.model';
+import PostViewModel from '../../models/post.view.model';
 
 export default class PostMapper {
   public static fromDomain(model: PostModel): Post {

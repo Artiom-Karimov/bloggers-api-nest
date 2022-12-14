@@ -1,15 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import BlogMapper from '../blogs/models/blog.mapper';
-import BlogModel from '../blogs/models/blog.model';
-import Blog, { BlogDocument } from '../blogs/models/blog.schema';
+import BlogsRepository from '../interfaces/blogs.repository';
+import BlogMapper from './models/blog.mapper';
+import BlogModel from '../models/blog.model';
+import Blog, { BlogDocument } from './models/blog.schema';
 
 @Injectable()
-export default class BlogsRepository {
+export default class MongoBlogsRepository extends BlogsRepository {
   constructor(
     @InjectModel(Blog.name) private readonly model: Model<BlogDocument>,
-  ) { }
+  ) {
+    super();
+  }
 
   public async get(id: string): Promise<BlogModel | undefined> {
     try {

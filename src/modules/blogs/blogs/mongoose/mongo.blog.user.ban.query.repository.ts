@@ -1,20 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
-import PageViewModel from '../../../common/models/page.view.model';
+import PageViewModel from '../../../../common/models/page.view.model';
+import BlogUserBanQueryRepository from '../interfaces/blog.user.ban.query.repository';
 import BlogUserBanMapper from './models/blog.user.ban.mapper';
 import BlogUserBan, {
   BlogUserBanDocument,
 } from './models/blog.user.ban.schema';
-import GetBlogUserBansQuery from './models/input/get.blog.user.bans.query';
-import BlogUserBanViewModel from './models/view/blog.user.ban.view.model';
+import GetBlogUserBansQuery from '../models/input/get.blog.user.bans.query';
+import BlogUserBanViewModel from '../models/view/blog.user.ban.view.model';
 
 @Injectable()
-export default class BlogUserBanQueryRepository {
+export default class MongoBlogUserBanQueryRepository extends BlogUserBanQueryRepository {
   constructor(
     @InjectModel(BlogUserBan.name)
     private readonly model: Model<BlogUserBanDocument>,
-  ) { }
+  ) {
+    super();
+  }
 
   public async getUsers(
     params: GetBlogUserBansQuery,

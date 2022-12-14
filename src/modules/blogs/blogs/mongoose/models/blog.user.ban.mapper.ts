@@ -1,7 +1,7 @@
-import BlogUserBanDto from './blog.user.ban.dto';
-import BlogUserBanModel from './blog.user.ban.model';
+import BlogUserBanDto from '../../models/blog.user.ban.dto';
+import BlogUserBanModel from '../../models/blog.user.ban.model';
 import BlogUserBan from './blog.user.ban.schema';
-import BlogUserBanViewModel from './view/blog.user.ban.view.model';
+import BlogUserBanViewModel from '../../models/view/blog.user.ban.view.model';
 
 export default class BlogUserBanMapper {
   public static fromDomain(model: BlogUserBanModel): BlogUserBan {

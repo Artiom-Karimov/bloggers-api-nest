@@ -1,23 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
-import PageViewModel from '../../../common/models/page.view.model';
-import PostLikesQueryRepository from '../likes/post.likes.query.repository';
-import BlogMapper from '../blogs/models/blog.mapper';
-import Blog, { BlogDocument } from '../blogs/models/blog.schema';
-import BlogViewModel from '../blogs/models/view/blog.view.model';
-import GetPostsQuery from '../posts/models/get.posts.query';
-import PostMapper from '../posts/models/post.mapper';
-import Post, { PostDocument } from '../posts/models/post.schema';
-import PostViewModel from '../posts/models/post.view.model';
+import PageViewModel from '../../../../common/models/page.view.model';
+import BlogViewModel from '../../blogs/models/view/blog.view.model';
+import BlogMapper from '../../blogs/mongoose/models/blog.mapper';
+import Blog, { BlogDocument } from '../../blogs/mongoose/models/blog.schema';
+import PostLikesQueryRepository from '../../likes/post.likes.query.repository';
+import GetPostsQuery from '../models/get.posts.query';
+import PostMapper from './models/post.mapper';
+import Post, { PostDocument } from './models/post.schema';
+import PostViewModel from '../models/post.view.model';
+import PostsQueryRepository from '../interfaces/posts.query.repository';
 
 @Injectable()
-export default class PostsQueryRepository {
+export default class MongoPostsQueryRepository extends PostsQueryRepository {
   constructor(
     @InjectModel(Post.name) private readonly model: Model<PostDocument>,
     @InjectModel(Blog.name) private readonly blogModel: Model<BlogDocument>,
     private readonly likesQueryRepo: PostLikesQueryRepository,
-  ) { }
+  ) {
+    super();
+  }
 
   public async getPosts(
     params: GetPostsQuery,

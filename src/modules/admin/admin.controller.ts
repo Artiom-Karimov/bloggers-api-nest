@@ -29,7 +29,7 @@ import { BlogError } from '../blogs/blogs/models/blog.error';
 import BlogBanInputModel from '../blogs/blogs/models/input/blog.ban.input.model';
 import { CommandBus } from '@nestjs/cqrs';
 import BanBlogCommand from '../blogs/blogs/commands/commands/ban.blog.command';
-import AdminBlogsQueryRepository from '../blogs/blogs/admin.blogs.query.repository';
+import AdminBlogsQueryRepository from '../blogs/blogs/interfaces/admin.blogs.query.repository';
 import AssignBlogOwnerCommand from '../blogs/blogs/commands/commands/assign.blog.owner.command';
 import BanUserCommand from './commands/commands/ban.user.command';
 import CreateConfirmedUserCommand from './commands/commands/create.confirmed.user.command';

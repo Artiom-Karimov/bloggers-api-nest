@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import BlogsRepository from '../../blogs.repository';
+import BlogsRepository from '../../interfaces/blogs.repository';
 import BlogModel from '../../models/blog.model';
 import CreateBlogCommand from '../commands/create.blog.command';
 

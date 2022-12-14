@@ -18,7 +18,7 @@ import CommentViewModel from '../comments/models/view/comment.view.model';
 import GetCommentsQuery from '../comments/models/input/get.comments.query';
 import GetPostsQuery from '../posts/models/get.posts.query';
 import PostViewModel from '../posts/models/post.view.model';
-import PostsQueryRepository from './posts.query.repository';
+import PostsQueryRepository from './interfaces/posts.query.repository';
 import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.guard';
 import { BearerAuthGuard } from '../../auth/guards/bearer.auth.guard';
 import CommentInputModel from '../comments/models/input/comment.input.model';

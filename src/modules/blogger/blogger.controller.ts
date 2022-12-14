@@ -13,13 +13,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
-import PostsQueryRepository from '../blogs/posts/posts.query.repository';
+import PostsQueryRepository from '../blogs/posts/interfaces/posts.query.repository';
 import PageViewModel from '../../common/models/page.view.model';
 import BlogInputModel from '../blogs/blogs/models/input/blog.input.model';
 import { ForbiddenException } from '@nestjs/common/exceptions';
 import PostInputModel from '../blogs/posts/models/post.input.model';
 import PostViewModel from '../blogs/posts/models/post.view.model';
-import BlogsQueryRepository from '../blogs/blogs/blogs.query.repository';
+import BlogsQueryRepository from '../blogs/blogs/interfaces/blogs.query.repository';
 import BlogViewModel from '../blogs/blogs/models/view/blog.view.model';
 import GetBlogsQuery from '../blogs/blogs/models/input/get.blogs.query';
 import { CommandBus } from '@nestjs/cqrs';
