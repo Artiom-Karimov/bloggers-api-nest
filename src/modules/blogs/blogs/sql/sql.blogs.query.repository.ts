@@ -17,19 +17,37 @@ export default class SqlBlogsQueryRepository extends BlogsQueryRepository {
   public async getBlogs(
     params: GetBlogsQuery,
   ): Promise<PageViewModel<BlogViewModel>> {
-    const page = await this.getPage(params);
-    return this.loadBlogs(page, params);
+    try {
+      const page = await this.getPage(params);
+      return this.loadBlogs(page, params);
+    } catch (error) {
+      console.error(error);
+      return new PageViewModel(params.pageNumber, params.pageSize, 0);
+    }
   }
 
   public async getBloggerBlogs(
     params: GetBlogsQuery,
     bloggerId: string,
   ): Promise<PageViewModel<BlogViewModel>> {
-    const page = await this.getPage(params, bloggerId);
-    return this.loadBloggerBlogs(page, params, bloggerId);
+    try {
+      const page = await this.getPage(params, bloggerId);
+      return this.loadBloggerBlogs(page, params, bloggerId);
+    } catch (error) {
+      console.error(error);
+      return new PageViewModel(params.pageNumber, params.pageSize, 0);
+    }
   }
 
   public async getBlog(id: string): Promise<BlogViewModel | undefined> {
+    try {
+      return await this.getOne(id);
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+  private async getOne(id: string): Promise<BlogViewModel | undefined> {
     const result: Array<any> = await this.db.query(
       `
       select "id", "name", "description", "websiteUrl", "createdAt"

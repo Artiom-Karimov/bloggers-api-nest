@@ -13,6 +13,14 @@ export default class SqlUsersBanQueryRepository extends UsersBanQueryRepository 
   }
 
   public async get(userId: string): Promise<UserBanViewModel | undefined> {
+    try {
+      return await this.getOne(userId);
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+  private async getOne(userId: string): Promise<UserBanViewModel | undefined> {
     const result = await this.db.query(
       `
       select "userId","isBanned","banReason","banDate"

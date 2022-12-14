@@ -17,8 +17,13 @@ export default class SqlBlogUserBanQueryRepository extends BlogUserBanQueryRepos
   public async getUsers(
     params: GetBlogUserBansQuery,
   ): Promise<PageViewModel<BlogUserBanViewModel>> {
-    const page = await this.getPage(params);
-    return this.loadPageBans(page, params);
+    try {
+      const page = await this.getPage(params);
+      return this.loadPageBans(page, params);
+    } catch (error) {
+      console.error(error);
+      return new PageViewModel(params.pageNumber, params.pageSize, 0);
+    }
   }
 
   private async getPage(

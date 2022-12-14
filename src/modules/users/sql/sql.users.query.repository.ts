@@ -19,11 +19,24 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
   public async getUsers(
     params: GetUsersQuery,
   ): Promise<PageViewModel<UserViewModel>> {
-    const page = await this.getPage(params);
-    return this.loadPageUsers(page, params);
+    try {
+      const page = await this.getPage(params);
+      return this.loadPageUsers(page, params);
+    } catch (error) {
+      console.error(error);
+      return new PageViewModel(params.pageNumber, params.pageSize, 0);
+    }
   }
 
   public async getUser(id: string): Promise<UserViewModel | undefined> {
+    try {
+      return await this.getOne(id);
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+  private async getOne(id: string): Promise<UserViewModel | undefined> {
     const result = await this.db.query(
       `
     select u."id",u."login",u."email",u."hash",u."createdAt",
@@ -41,6 +54,16 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
   }
 
   public async getSessionUserView(
+    id: string,
+  ): Promise<SessionUserViewModel | undefined> {
+    try {
+      return await this.getOneSessionView(id);
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+  private async getOneSessionView(
     id: string,
   ): Promise<SessionUserViewModel | undefined> {
     const result = await this.db.query(
