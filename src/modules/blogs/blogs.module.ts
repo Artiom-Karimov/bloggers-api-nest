@@ -60,6 +60,8 @@ import SqlBlogsQueryRepository from './blogs/sql/sql.blogs.query.repository';
 import SqlAdminBlogsQueryRepository from './blogs/sql/sql.admin.blogs.query.repository';
 import SqlBlogUserBanRepository from './blogs/sql/sql.blog.user.ban.repository';
 import SqlBlogUserBanQueryRepository from './blogs/sql/sql.blog.user.ban.query.repository';
+import SqlPostsRepository from './posts/sql/sql.posts.repository';
+import SqlPostsQueryRepository from './posts/sql/sql.posts.query.repository';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -118,11 +120,11 @@ const commandHandlers = [
     },
     {
       provide: PostsRepository,
-      useClass: MongoPostsRepository,
+      useClass: SqlPostsRepository,
     },
     {
       provide: PostsQueryRepository,
-      useClass: MongoPostsQueryRepository,
+      useClass: SqlPostsQueryRepository,
     },
     {
       provide: CommentsRepository,
