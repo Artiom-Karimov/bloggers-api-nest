@@ -17,13 +17,26 @@ export default class SqlAdminBlogsQueryRepository extends AdminBlogsQueryReposit
   public async getAdminBlogs(
     params: GetBlogsQuery,
   ): Promise<PageViewModel<AdminBlogViewModel>> {
-    const page = await this.getPage(params);
-    return this.loadPageBlogs(page, params);
+    try {
+      const page = await this.getPage(params);
+      return this.loadPageBlogs(page, params);
+    } catch (error) {
+      console.error(error);
+      return new PageViewModel(params.pageNumber, params.pageSize, 0);
+    }
   }
 
   public async getAdminBlog(
     id: string,
   ): Promise<AdminBlogViewModel | undefined> {
+    try {
+      return await this.getOne(id);
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+  private async getOne(id: string): Promise<AdminBlogViewModel | undefined> {
     const result: Array<any> = await this.db.query(
       `
       select b."id", b."name", b."description", b."websiteUrl", b."createdAt",
