@@ -79,7 +79,7 @@ export default class SqlPostsRepository extends PostsRepository {
     blogId: string,
     blogBanned: boolean,
   ): Promise<boolean> {
-    const result = await this.db.query(
+    await this.db.query(
       `
       update "post" 
       set "blogBanned" = $2
@@ -87,6 +87,6 @@ export default class SqlPostsRepository extends PostsRepository {
       `,
       [blogId, blogBanned],
     );
-    return !!result[1];
+    return true;
   }
 }

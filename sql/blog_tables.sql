@@ -5,9 +5,9 @@
 CREATE TABLE IF NOT EXISTS public."blog"
 (
     "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-    "name" character varying(15) COLLATE pg_catalog."default" NOT NULL,
-    "description" character varying(500) COLLATE pg_catalog."default" NOT NULL,
-    "websiteUrl" character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    "name" character varying(15) COLLATE "C" NOT NULL,
+    "description" character varying(500) COLLATE "C" NOT NULL,
+    "websiteUrl" character varying(100) COLLATE "C" NOT NULL,
     "createdAt" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     CONSTRAINT blog_pkey PRIMARY KEY ("id")
 );
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS public."blogOwner"
 (
     "blogId" uuid NOT NULL,
     "userId" uuid NOT NULL,
-    "userLogin" character varying(15) COLLATE pg_catalog."default" NOT NULL,
+    "userLogin" character varying(15) COLLATE "C" NOT NULL,
     CONSTRAINT blogowner_pkey PRIMARY KEY ("blogId"),
     CONSTRAINT "blog" FOREIGN KEY ("blogId")
         REFERENCES public."blog" ("id") MATCH SIMPLE
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS public."blogUserBan"
     "blogId" uuid NOT NULL,
     "userId" uuid NOT NULL,
     "isBanned" boolean NOT NULL,
-    "banReason"  character varying(500) COLLATE pg_catalog."default",
+    "banReason"  character varying(500) COLLATE "C",
     "banDate" timestamp with time zone,
     CONSTRAINT bloguserban_pkey PRIMARY KEY ("blogId", "userId"),
     CONSTRAINT "blog" FOREIGN KEY ("blogId")
@@ -84,9 +84,9 @@ CREATE TABLE IF NOT EXISTS public."post"
     "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
     "blogId" uuid NOT NULL,
     "blogBanned" boolean NOT NULL,
-    "title" character varying(30) COLLATE pg_catalog."default" NOT NULL,
-    "shortDescription" character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    "content" character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    "title" character varying(30) COLLATE "C" NOT NULL,
+    "shortDescription" character varying(100) COLLATE "C" NOT NULL,
+    "content" character varying(1000) COLLATE "C" NOT NULL,
     "createdAt" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     CONSTRAINT post_pkey PRIMARY KEY ("id"),
     CONSTRAINT "blog" FOREIGN KEY ("blogId")
