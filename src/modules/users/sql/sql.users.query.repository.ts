@@ -90,7 +90,7 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
     );
   }
   private async getCount(params: GetUsersQuery): Promise<number> {
-    const filter = this.getCountFilter(params);
+    const filter = this.getFilter(params);
 
     const result = await this.db.query(
       `select count(*) from "user" u
@@ -100,6 +100,16 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
     );
     return +result[0]?.count ?? 0;
   }
+  private getFilter(params: GetUsersQuery): string {
+    const userFilter = this.getUserFilter(params, false);
+    const banFilter = this.getBanFilter(params, false);
+
+    if (userFilter && banFilter)
+      return `where (${userFilter}) and ${banFilter}`;
+    if (userFilter) return `where ${userFilter}`;
+    if (banFilter) return `where ${banFilter}`;
+    return '';
+  }
   private getBanFilter(params: GetUsersQuery, includeWhere: boolean): string {
     const { banStatus } = params;
     const where = includeWhere ? 'where ' : '';
@@ -108,7 +118,6 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
       return `${where}("isBanned" = False or "isBanned" is null)`;
     return '';
   }
-
   private getUserFilter(params: GetUsersQuery, includeWhere: boolean): string {
     const lt = params.searchLoginTerm;
     const et = params.searchEmailTerm;
@@ -125,60 +134,27 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
     return '';
   }
 
-  private getCountFilter(params: GetUsersQuery): string {
-    const userFilter = this.getUserFilter(params, false);
-    const banFilter = this.getBanFilter(params, false);
-
-    if (userFilter && banFilter)
-      return `where (${userFilter}) and ${banFilter}`;
-    if (userFilter) return `where ${userFilter}`;
-    if (banFilter) return `where ${banFilter}`;
-    return '';
-  }
-
   private async loadPageUsers(
     page: PageViewModel<UserViewModel>,
     params: GetUsersQuery,
   ): Promise<PageViewModel<UserViewModel>> {
-    const userFilter = this.getUserFilter(params, true);
-    const banFilter = this.getBanFilter(params, true);
+    const filter = this.getFilter(params);
     const order = params.sortDirection === 1 ? 'asc' : 'desc';
-    const sortBy = this.transformSortBy(params.sortBy);
 
     const result = await this.db.query(
       `
       select u."id",u."login",u."email",u."hash",u."createdAt",
       b."isBanned",b."banReason",b."banDate"
-      from (
-        select "id","login","email","hash","createdAt"
-        from "user"
-        ${userFilter}
-        order by ${sortBy} ${order}
-        limit ${page.pageSize} offset ${page.calculateSkip()}
-      ) as u left join "userBan" b
+      from "user" u left join "userBan" b
       on u."id" = b."userId"
-      ${banFilter}
+      ${filter}
+      order by "${params.sortBy}" ${order}
+      limit ${page.pageSize} offset ${page.calculateSkip()}
       `,
     );
 
-    this.sortResult(result, params);
     const views = result.map((u) => UserMapper.toView(u));
 
     return page.add(...views);
-  }
-
-  // This is needed because tests expect case-sensitive sort
-  private transformSortBy(sortBy: string): string {
-    if (sortBy === 'login') return 'ascii("login")';
-    return `"${sortBy}"`;
-  }
-  // This is needed because tests expect js-like sort
-  private sortResult(users: UserWithBan[], params: GetUsersQuery) {
-    users.sort((a, b) => {
-      if (a[params.sortBy] === b[params.sortBy]) return 0;
-      const result = a[params.sortBy] < b[params.sortBy];
-      if (params.sortDirection === 1) return result ? -1 : 1;
-      return result ? 1 : -1;
-    });
   }
 }
