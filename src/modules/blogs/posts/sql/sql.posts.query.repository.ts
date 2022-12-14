@@ -18,12 +18,28 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
   public async getPosts(
     params: GetPostsQuery,
   ): Promise<PageViewModel<PostViewModel>> {
-    const page = await this.getPage(params);
-    return this.loadPosts(page, params);
+    try {
+      const page = await this.getPage(params);
+      return this.loadPosts(page, params);
+    } catch (error) {
+      console.error(error);
+      return new PageViewModel(params.pageNumber, params.pageSize, 0);
+    }
   }
 
-  // TODO: get actual likes
   public async getPost(
+    id: string,
+    userId: string | undefined,
+  ): Promise<PostViewModel | undefined> {
+    try {
+      return await this.getOne(id, userId);
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+  // TODO: get actual likes
+  private async getOne(
     id: string,
     userId: string | undefined,
   ): Promise<PostViewModel | undefined> {
