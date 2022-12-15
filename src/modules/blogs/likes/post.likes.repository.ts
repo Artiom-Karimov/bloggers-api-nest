@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { LikeDocument, PostLike } from '../likes/models/like.schema';
+import { LikeDocument, PostLike } from './mongoose/models/like.schema';
 import LikesRepository from './likes.repository';
 
 @Injectable()

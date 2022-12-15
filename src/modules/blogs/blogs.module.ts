@@ -17,7 +17,7 @@ import {
   CommentLikeSchema,
   PostLike,
   PostLikeSchema,
-} from './likes/models/like.schema';
+} from './likes/mongoose/models/like.schema';
 import { BlogIdValidator } from './blogs/models/input/blog.id.validator';
 import Post, { PostSchema } from './posts/mongoose/models/post.schema';
 import PostsController from './posts/posts.controller';

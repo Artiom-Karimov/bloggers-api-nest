@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import LikeMapper from '../likes/models/like.mapper';
+import LikeMapper from './mongoose/models/like.mapper';
 import LikeModel from '../likes/models/like.model';
-import { LikeDocument } from '../likes/models/like.schema';
+import { LikeDocument } from './mongoose/models/like.schema';
 
 @Injectable()
 export default class LikesRepository {
@@ -31,15 +31,6 @@ export default class LikesRepository {
     try {
       const like = LikeMapper.fromDomain(data);
       await this.model.findByIdAndUpdate(like._id, like);
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  }
-  public async delete(id: string): Promise<boolean> {
-    try {
-      await this.model.findByIdAndDelete(id);
       return true;
     } catch (error) {
       console.error(error);

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { LikeStatus } from './models/like.input.model';
-import LikeMapper from '../likes/models/like.mapper';
-import { Like, LikeDocument } from '../likes/models/like.schema';
+import LikeMapper from './mongoose/models/like.mapper';
+import { Like, LikeDocument } from './mongoose/models/like.schema';
 import {
   ExtendedLikesInfoModel,
   LikesInfoModel,

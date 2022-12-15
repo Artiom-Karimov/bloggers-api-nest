@@ -111,10 +111,60 @@ CREATE TABLE IF NOT EXISTS public."comment"
     "content" character varying(300) COLLATE "C" NOT NULL,
     "createdAt" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     CONSTRAINT comment_pkey PRIMARY KEY ("id"),
-    CONSTRAINT "post" FOREIGN KEY ("postIdId")
+    CONSTRAINT "post" FOREIGN KEY ("postId")
         REFERENCES public."post" ("id") MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT "user" FOREIGN KEY ("userId")
+        REFERENCES public."user" ("id") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID
+);
+
+-- Table: public.commentLike
+
+-- DROP TABLE IF EXISTS public."commentLike";
+
+CREATE TABLE IF NOT EXISTS public."commentLike"
+(
+    "parentId" uuid NOT NULL,
+    "userId" uuid NOT NULL,
+    "userLogin" character varying(20) COLLATE "C" NOT NULL,
+    "userBanned" boolean NOT NULL,
+    "status" character varying(20) COLLATE "C" NOT NULL,
+    "lastModified" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    CONSTRAINT commentlike_pkey PRIMARY KEY ("parentId", "userId"),
+    CONSTRAINT "comment" FOREIGN KEY ("parentId")
+        REFERENCES public."comment" ("id") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID,
+    CONSTRAINT "user" FOREIGN KEY ("userId")
+        REFERENCES public."user" ("id") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID
+);
+
+-- Table: public.postLike
+
+-- DROP TABLE IF EXISTS public."postLike";
+
+CREATE TABLE IF NOT EXISTS public."postLike"
+(
+    "parentId" uuid NOT NULL,
+    "userId" uuid NOT NULL,
+    "userLogin" character varying(20) COLLATE "C" NOT NULL,
+    "userBanned" boolean NOT NULL,
+    "status" character varying(20) COLLATE "C" NOT NULL,
+    "lastModified" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    CONSTRAINT postlike_pkey PRIMARY KEY ("parentId", "userId"),
+    CONSTRAINT "post" FOREIGN KEY ("parentId")
+        REFERENCES public."post" ("id") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
         NOT VALID,
     CONSTRAINT "user" FOREIGN KEY ("userId")
         REFERENCES public."user" ("id") MATCH SIMPLE
