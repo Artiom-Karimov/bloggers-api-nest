@@ -11,7 +11,7 @@ import CommentLikesRepository from './likes/comment.likes.repository';
 import PostLikesQueryRepository from './likes/post.likes.query.repository';
 import PostLikesRepository from './likes/post.likes.repository';
 import Blog, { BlogSchema } from './blogs/mongoose/models/blog.schema';
-import Comment, { CommentSchema } from './comments/models/comment.schema';
+import Comment, { CommentSchema } from './comments/mongoose/models/comment.schema';
 import {
   CommentLike,
   CommentLikeSchema,

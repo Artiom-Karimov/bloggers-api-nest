@@ -10,7 +10,7 @@ import Session, {
 import Blog, { BlogDocument } from '../../blogs/blogs/mongoose/models/blog.schema';
 import Comment, {
   CommentDocument,
-} from '../../blogs/comments/models/comment.schema';
+} from '../../blogs/comments/mongoose/models/comment.schema';
 import {
   CommentLike,
   LikeDocument,

@@ -1,10 +1,10 @@
-import { LikesInfoModel } from '../../likes/models/likes.info.model';
-import Post from '../../posts/mongoose/models/post.schema';
-import CommentDto from './comment.dto';
-import CommentModel from './comment.model';
+import { LikesInfoModel } from '../../../likes/models/likes.info.model';
+import Post from '../../../posts/mongoose/models/post.schema';
+import CommentDto from '../../models/comment.dto';
+import CommentModel from '../../models/comment.model';
 import Comment from './comment.schema';
-import BloggerCommentViewModel from './view/blogger.comment.view.model';
-import CommentViewModel from './view/comment.view.model';
+import BloggerCommentViewModel from '../../models/view/blogger.comment.view.model';
+import CommentViewModel from '../../models/view/comment.view.model';
 
 export default class CommentMapper {
   public static fromDomain(model: CommentModel): Comment {

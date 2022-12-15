@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import CommentsRepository from '../comments.repository';
-import CommentMapper from '../models/comment.mapper';
+import CommentMapper from './models/comment.mapper';
 import CommentModel from '../models/comment.model';
-import Comment, { CommentDocument } from '../models/comment.schema';
+import Comment, { CommentDocument } from './models/comment.schema';
 
 @Injectable()
 export default class MongoCommentsRepository extends CommentsRepository {

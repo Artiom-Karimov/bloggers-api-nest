@@ -9,7 +9,7 @@ import Session, {
 import Blog, { BlogSchema } from '../blogs/blogs/mongoose/models/blog.schema';
 import Comment, {
   CommentSchema,
-} from '../blogs/comments/models/comment.schema';
+} from '../blogs/comments/mongoose/models/comment.schema';
 import {
   CommentLike,
   CommentLikeSchema,
