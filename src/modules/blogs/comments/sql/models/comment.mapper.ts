@@ -5,6 +5,7 @@ import Comment from './comment';
 import BloggerCommentViewModel from '../../models/view/blogger.comment.view.model';
 import CommentViewModel from '../../models/view/comment.view.model';
 import PostDto from '../../../posts/models/post.dto';
+import CommentWithPost from './comment.with.post';
 
 export default class CommentMapper {
   public static fromDomain(model: CommentModel): Comment {
@@ -48,15 +49,14 @@ export default class CommentMapper {
     );
   }
   public static toBloggerView(
-    model: Comment,
+    model: CommentWithPost,
     likesInfo: LikesInfoModel | undefined,
-    postModel: PostDto,
   ): BloggerCommentViewModel {
     return new BloggerCommentViewModel(CommentMapper.toView(model, likesInfo), {
-      id: postModel.id,
-      title: postModel.title,
-      blogId: postModel.blogId,
-      blogName: postModel.blogName,
+      id: model.postId,
+      title: model.postTitle,
+      blogId: model.blogId,
+      blogName: model.blogName,
     });
   }
 }
