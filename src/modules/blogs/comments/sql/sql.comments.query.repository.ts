@@ -8,10 +8,14 @@ import CommentsQueryRepository from '../comments.query.repository';
 import GetCommentsQuery from '../models/input/get.comments.query';
 import CommentViewModel from '../models/view/comment.view.model';
 import CommentMapper from './models/comment.mapper';
+import CommentLikesQueryRepository from '../../likes/comment.likes.query.repository';
 
 @Injectable()
 export default class SqlCommentsQueryRepository extends CommentsQueryRepository {
-  constructor(@InjectDataSource() private readonly db: DataSource) {
+  constructor(
+    @InjectDataSource() private readonly db: DataSource,
+    private readonly likesRepo: CommentLikesQueryRepository,
+  ) {
     super();
   }
 
@@ -27,7 +31,6 @@ export default class SqlCommentsQueryRepository extends CommentsQueryRepository 
     }
   }
 
-  // TODO: Get actual likes
   public async getComment(
     id: string,
     userId: string | undefined,
@@ -43,7 +46,8 @@ export default class SqlCommentsQueryRepository extends CommentsQueryRepository 
     );
     if (!result || result.length === 0) return undefined;
     const comment = result[0] as Comment;
-    return CommentMapper.toView(comment, new LikesInfoModel());
+    const likes = await this.likesRepo.getLikesInfo(id, userId);
+    return CommentMapper.toView(comment, likes);
   }
 
   private async getPage(

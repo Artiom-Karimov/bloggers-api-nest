@@ -11,7 +11,9 @@ import CommentLikesRepository from './likes/comment.likes.repository';
 import PostLikesQueryRepository from './likes/post.likes.query.repository';
 import PostLikesRepository from './likes/post.likes.repository';
 import Blog, { BlogSchema } from './blogs/mongoose/models/blog.schema';
-import Comment, { CommentSchema } from './comments/mongoose/models/comment.schema';
+import Comment, {
+  CommentSchema,
+} from './comments/mongoose/models/comment.schema';
 import {
   CommentLike,
   CommentLikeSchema,
@@ -62,6 +64,9 @@ import SqlBlogUserBanRepository from './blogs/sql/sql.blog.user.ban.repository';
 import SqlBlogUserBanQueryRepository from './blogs/sql/sql.blog.user.ban.query.repository';
 import SqlPostsRepository from './posts/sql/sql.posts.repository';
 import SqlPostsQueryRepository from './posts/sql/sql.posts.query.repository';
+import SqlCommentsRepository from './comments/sql/sql.comments.repository';
+import SqlCommentsQueryRepository from './comments/sql/sql.comments.query.repository';
+import SqlBloggerCommentsQueryRepository from './comments/sql/sql.blogger.comments.query.repository';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -128,15 +133,15 @@ const commandHandlers = [
     },
     {
       provide: CommentsRepository,
-      useClass: MongoCommentsRepository,
+      useClass: SqlCommentsRepository,
     },
     {
       provide: CommentsQueryRepository,
-      useClass: MongoCommentsQueryRepository,
+      useClass: SqlCommentsQueryRepository,
     },
     {
       provide: BloggerCommentsQueryRepository,
-      useClass: MongoBloggerCommentsQueryRepository,
+      useClass: SqlBloggerCommentsQueryRepository,
     },
     PostLikesRepository,
     PostLikesQueryRepository,
