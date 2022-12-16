@@ -328,6 +328,29 @@ describe('BloggerController (e2e)', () => {
       });
     });
 
+    it('user should create dislike', async () => {
+      await request(app.getHttpServer())
+        .put(`/posts/${post.id}/like-status`)
+        .set('Authorization', `Bearer ${userTokens.access}`)
+        .send({ likeStatus: 'Dislike' })
+        .expect(204);
+    });
+    it('blogger should get dislike', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/posts/${post.id}`)
+        .set('Authorization', `Bearer ${postSamples.tokens.access}`)
+        .expect(200);
+      expect(response.body).toEqual({
+        ...post,
+        extendedLikesInfo: {
+          likesCount: 0,
+          dislikesCount: 1,
+          myStatus: 'None',
+          newestLikes: [],
+        },
+      });
+    });
+
     const banReason = "How can you have any pudding if you don't eat meat?";
     it('blogger should ban user', async () => {
       const result = await request(app.getHttpServer())
@@ -356,6 +379,21 @@ describe('BloggerController (e2e)', () => {
         .set('Authorization', `Bearer ${postSamples.tokens.access}`)
         .expect(200);
       expect(response.body).toEqual(emptyPage);
+    });
+    it('blogger should not get dislike', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/posts/${post.id}`)
+        .set('Authorization', `Bearer ${postSamples.tokens.access}`)
+        .expect(200);
+      expect(response.body).toEqual({
+        ...post,
+        extendedLikesInfo: {
+          likesCount: 0,
+          dislikesCount: 0,
+          myStatus: 'None',
+          newestLikes: [],
+        },
+      });
     });
 
     it('blogger should get banned user info', async () => {
@@ -433,6 +471,21 @@ describe('BloggerController (e2e)', () => {
             },
           },
         ]),
+      });
+    });
+    it('blogger should get dislike', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/posts/${post.id}`)
+        .set('Authorization', `Bearer ${postSamples.tokens.access}`)
+        .expect(200);
+      expect(response.body).toEqual({
+        ...post,
+        extendedLikesInfo: {
+          likesCount: 0,
+          dislikesCount: 1,
+          myStatus: 'None',
+          newestLikes: [],
+        },
       });
     });
   });
