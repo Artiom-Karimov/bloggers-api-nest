@@ -67,6 +67,8 @@ import SqlPostsQueryRepository from './posts/sql/sql.posts.query.repository';
 import SqlCommentsRepository from './comments/sql/sql.comments.repository';
 import SqlCommentsQueryRepository from './comments/sql/sql.comments.query.repository';
 import SqlBloggerCommentsQueryRepository from './comments/sql/sql.blogger.comments.query.repository';
+import MongoPostLikesRepository from './likes/mongoose/mongo.post.likes.repossitory';
+import MongoCommentLikesRepository from './likes/mongoose/mongo.comment.likes.repossitory';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -143,9 +145,15 @@ const commandHandlers = [
       provide: BloggerCommentsQueryRepository,
       useClass: SqlBloggerCommentsQueryRepository,
     },
-    PostLikesRepository,
+    {
+      provide: PostLikesRepository,
+      useClass: MongoPostLikesRepository,
+    },
     PostLikesQueryRepository,
-    CommentLikesRepository,
+    {
+      provide: CommentLikesRepository,
+      useClass: MongoCommentLikesRepository,
+    },
     CommentLikesQueryRepository,
     BlogIdValidator,
     ...commandHandlers,
