@@ -46,7 +46,7 @@ export default class PostMapper {
         +model.likesCount,
         +model.dislikesCount,
         model.myStatus ?? LikeStatus.None,
-        model.newestLikes,
+        model.newestLikes ?? [],
       ),
     );
   }

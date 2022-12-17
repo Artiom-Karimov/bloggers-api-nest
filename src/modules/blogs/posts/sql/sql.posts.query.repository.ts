@@ -65,13 +65,21 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
       where "userBanned" = false and "entityId" = p."id" and "status" = 'Like') as "likesCount",
       (select count(*) from "like"
       where "userBanned" = false and "entityId" = p."id" and "status" = 'Dislike') as "dislikesCount",
-      ${this.getStatusSubquery(userId)}
+      ${this.getStatusSubquery(userId)},
+      ${this.getNewestLikesSubquery()}
     `;
   }
   private getStatusSubquery(userId: string | undefined): string {
     if (!userId) return `(select 'None') as "myStatus"`;
     return `(select "status" from "like" 
     where "userBanned" = false and "entityId" = p."id" and "userId" = '${userId}') as "myStatus"`;
+  }
+  private getNewestLikesSubquery(): string {
+    return `(select to_json("nl") as "newestLikes" from
+      (select "lastModified" as "addedAt", "userId", "login" as "userLogin"
+      from "like" l left join "user" u on l."userId" = u."id"
+      where "entityId" = p."id" and "status" = 'Like' and "userBanned" = false
+      order by "lastModified" limit 3) as "nl")`;
   }
 
   private async getPage(
