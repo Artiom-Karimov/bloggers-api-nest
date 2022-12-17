@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import LikeMapper from '../likes/models/like.mapper';
-import LikeModel from '../likes/models/like.model';
-import { LikeDocument } from '../likes/models/like.schema';
+import LikesRepository from '../interfaces/likes.repository';
+import { LikeDocument } from './models/like.schema';
+import LikeModel from '../models/like.model';
+import LikeMapper from './models/like.mapper';
 
 @Injectable()
-export default class LikesRepository {
-  constructor(protected readonly model: Model<LikeDocument>) { }
+export default class MongoLikesRepository extends LikesRepository {
+  constructor(protected readonly model: Model<LikeDocument>) {
+    super();
+  }
 
   public async get(entityId: string, userId: string): Promise<LikeModel> {
     try {
@@ -31,15 +34,6 @@ export default class LikesRepository {
     try {
       const like = LikeMapper.fromDomain(data);
       await this.model.findByIdAndUpdate(like._id, like);
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  }
-  public async delete(id: string): Promise<boolean> {
-    try {
-      await this.model.findByIdAndDelete(id);
       return true;
     } catch (error) {
       console.error(error);

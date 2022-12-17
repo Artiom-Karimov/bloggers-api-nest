@@ -6,8 +6,8 @@ import Blog, { BlogDocument } from '../../blogs/mongoose/models/blog.schema';
 import CommentLikesQueryRepository from '../../likes/comment.likes.query.repository';
 import Post from '../../posts/mongoose/models/post.schema';
 import BloggerCommentsQueryRepository from '../blogger.comments.query.repository';
-import CommentMapper from '../models/comment.mapper';
-import Comment, { CommentDocument } from '../models/comment.schema';
+import CommentMapper from './models/comment.mapper';
+import Comment, { CommentDocument } from './models/comment.schema';
 import GetBloggerCommentsQuery from '../models/input/get.blogger.comments.query';
 import BloggerCommentViewModel from '../models/view/blogger.comment.view.model';
 

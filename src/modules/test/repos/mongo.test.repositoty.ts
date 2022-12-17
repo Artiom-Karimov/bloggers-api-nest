@@ -10,12 +10,12 @@ import Session, {
 import Blog, { BlogDocument } from '../../blogs/blogs/mongoose/models/blog.schema';
 import Comment, {
   CommentDocument,
-} from '../../blogs/comments/models/comment.schema';
+} from '../../blogs/comments/mongoose/models/comment.schema';
 import {
   CommentLike,
   LikeDocument,
   PostLike,
-} from '../../blogs/likes/models/like.schema';
+} from '../../blogs/likes/mongoose/models/like.schema';
 import Post, { PostDocument } from '../../blogs/posts/mongoose/models/post.schema';
 import UserBan, {
   UserBanDocument,

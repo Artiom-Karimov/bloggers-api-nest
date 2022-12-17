@@ -25,8 +25,8 @@ export default class SqlPostsRepository extends PostsRepository {
       [id],
     );
     if (!result || result.length === 0) return undefined;
-    const ban = result[0] as Post;
-    return PostMapper.toDomain(ban);
+    const post = result[0] as Post;
+    return PostMapper.toDomain(post);
   }
   public async create(post: PostModel): Promise<string | undefined> {
     const dbPost = PostMapper.fromDomain(post);

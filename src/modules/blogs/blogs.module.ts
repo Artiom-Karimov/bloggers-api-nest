@@ -6,18 +6,18 @@ import BlogsRepository from './blogs/interfaces/blogs.repository';
 import CommentsController from './comments/comments.controller';
 import CommentsQueryRepository from './comments/comments.query.repository';
 import CommentsRepository from './comments/comments.repository';
-import CommentLikesQueryRepository from './likes/comment.likes.query.repository';
-import CommentLikesRepository from './likes/comment.likes.repository';
-import PostLikesQueryRepository from './likes/post.likes.query.repository';
-import PostLikesRepository from './likes/post.likes.repository';
+import CommentLikesRepository from './likes/interfaces/comment.likes.repository';
+import PostLikesRepository from './likes/interfaces/post.likes.repository';
 import Blog, { BlogSchema } from './blogs/mongoose/models/blog.schema';
-import Comment, { CommentSchema } from './comments/models/comment.schema';
+import Comment, {
+  CommentSchema,
+} from './comments/mongoose/models/comment.schema';
 import {
   CommentLike,
   CommentLikeSchema,
   PostLike,
   PostLikeSchema,
-} from './likes/models/like.schema';
+} from './likes/mongoose/models/like.schema';
 import { BlogIdValidator } from './blogs/models/input/blog.id.validator';
 import Post, { PostSchema } from './posts/mongoose/models/post.schema';
 import PostsController from './posts/posts.controller';
@@ -45,16 +45,6 @@ import { DeleteBlogHandler } from './blogs/commands/handlers/delete.blog.handler
 import { BlogUserBanHandler } from './blogs/commands/handlers/blog.user.ban.handler';
 import { UpdateCommentHandler } from './comments/commands/handlers/update.comment.handler';
 import { DeleteCommentHandler } from './comments/commands/handlers/delete.comment.handler';
-import MongoBlogsRepository from './blogs/mongoose/mongo.blogs.repository';
-import MongoBlogsQueryRepository from './blogs/mongoose/mongo.blogs.query.repository';
-import MongoAdminBlogsQueryRepository from './blogs/mongoose/mongo.admin.blogs.query.repository';
-import MongoBlogUserBanRepository from './blogs/mongoose/mongo.blog.user.ban.repository';
-import MongoBlogUserBanQueryRepository from './blogs/mongoose/mongo.blog.user.ban.query.repository';
-import MongoPostsRepository from './posts/mongoose/mongo.posts.repository';
-import MongoPostsQueryRepository from './posts/mongoose/mongo.posts.query.repository';
-import MongoCommentsRepository from './comments/mongoose/mongo.comments.repository';
-import MongoCommentsQueryRepository from './comments/mongoose/mongo.comments.query.repository';
-import MongoBloggerCommentsQueryRepository from './comments/mongoose/mongo.blogger.comments.query.repository';
 import SqlBlogsRepository from './blogs/sql/sql.blogs.repository';
 import SqlBlogsQueryRepository from './blogs/sql/sql.blogs.query.repository';
 import SqlAdminBlogsQueryRepository from './blogs/sql/sql.admin.blogs.query.repository';
@@ -62,6 +52,11 @@ import SqlBlogUserBanRepository from './blogs/sql/sql.blog.user.ban.repository';
 import SqlBlogUserBanQueryRepository from './blogs/sql/sql.blog.user.ban.query.repository';
 import SqlPostsRepository from './posts/sql/sql.posts.repository';
 import SqlPostsQueryRepository from './posts/sql/sql.posts.query.repository';
+import SqlCommentsRepository from './comments/sql/sql.comments.repository';
+import SqlCommentsQueryRepository from './comments/sql/sql.comments.query.repository';
+import SqlBloggerCommentsQueryRepository from './comments/sql/sql.blogger.comments.query.repository';
+import SqlPostLikesRepository from './likes/sql/sql.post.likes.repository';
+import SqlCommentLikesRepository from './likes/sql/sql.comment.likes.repository';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -128,20 +123,24 @@ const commandHandlers = [
     },
     {
       provide: CommentsRepository,
-      useClass: MongoCommentsRepository,
+      useClass: SqlCommentsRepository,
     },
     {
       provide: CommentsQueryRepository,
-      useClass: MongoCommentsQueryRepository,
+      useClass: SqlCommentsQueryRepository,
     },
     {
       provide: BloggerCommentsQueryRepository,
-      useClass: MongoBloggerCommentsQueryRepository,
+      useClass: SqlBloggerCommentsQueryRepository,
     },
-    PostLikesRepository,
-    PostLikesQueryRepository,
-    CommentLikesRepository,
-    CommentLikesQueryRepository,
+    {
+      provide: PostLikesRepository,
+      useClass: SqlPostLikesRepository,
+    },
+    {
+      provide: CommentLikesRepository,
+      useClass: SqlCommentLikesRepository,
+    },
     BlogIdValidator,
     ...commandHandlers,
   ],

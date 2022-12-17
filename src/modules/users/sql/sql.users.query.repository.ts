@@ -101,36 +101,34 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
     return +result[0]?.count ?? 0;
   }
   private getFilter(params: GetUsersQuery): string {
-    const userFilter = this.getUserFilter(params, false);
-    const banFilter = this.getBanFilter(params, false);
+    const userFilter = this.getUserFilter(params);
+    const banFilter = this.getBanFilter(params);
 
     if (userFilter && banFilter)
-      return `where (${userFilter}) and ${banFilter}`;
+      return `where (${userFilter}) and (${banFilter})`;
     if (userFilter) return `where ${userFilter}`;
     if (banFilter) return `where ${banFilter}`;
     return '';
   }
-  private getBanFilter(params: GetUsersQuery, includeWhere: boolean): string {
+  private getBanFilter(params: GetUsersQuery): string {
     const { banStatus } = params;
-    const where = includeWhere ? 'where ' : '';
-    if (banStatus === BanStatus.Banned) return `${where}"isBanned" = True`;
+    if (banStatus === BanStatus.Banned) return `"isBanned" = True`;
     if (banStatus === BanStatus.NotBanned)
-      return `${where}("isBanned" = False or "isBanned" is null)`;
+      return `"isBanned" = False or "isBanned" is null`;
     return '';
   }
-  private getUserFilter(params: GetUsersQuery, includeWhere: boolean): string {
+  private getUserFilter(params: GetUsersQuery): string {
     const lt = params.searchLoginTerm;
     const et = params.searchEmailTerm;
-    const where = includeWhere ? 'where ' : '';
 
     const login = `lower("login") like '%${lt?.toLowerCase()}%'`;
     const email = `lower("email") like '%${et?.toLowerCase()}%'`;
 
     if (lt && et) {
-      return `${where}${login} or ${email}`;
+      return `${login} or ${email}`;
     }
-    if (lt) return `${where}${login}`;
-    if (et) return `${where}${email}`;
+    if (lt) return login;
+    if (et) return email;
     return '';
   }
 

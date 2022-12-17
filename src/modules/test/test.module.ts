@@ -9,13 +9,13 @@ import Session, {
 import Blog, { BlogSchema } from '../blogs/blogs/mongoose/models/blog.schema';
 import Comment, {
   CommentSchema,
-} from '../blogs/comments/models/comment.schema';
+} from '../blogs/comments/mongoose/models/comment.schema';
 import {
   CommentLike,
   CommentLikeSchema,
   PostLike,
   PostLikeSchema,
-} from '../blogs/likes/models/like.schema';
+} from '../blogs/likes/mongoose/models/like.schema';
 import Post, { PostSchema } from '../blogs/posts/mongoose/models/post.schema';
 import UserBan, {
   UserBanSchema,

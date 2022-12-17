@@ -95,3 +95,50 @@ CREATE TABLE IF NOT EXISTS public."post"
         ON DELETE CASCADE
         NOT VALID
 );
+
+-- Table: public.comment
+
+-- DROP TABLE IF EXISTS public."comment";
+
+CREATE TABLE IF NOT EXISTS public."comment"
+(
+    "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+    "postId" uuid NOT NULL,
+    "userId" uuid NOT NULL,
+    "userLogin" character varying(20) COLLATE "C" NOT NULL,
+    "bannedByAdmin" boolean NOT NULL,
+    "bannedByBlogger" boolean NOT NULL,
+    "content" character varying(300) COLLATE "C" NOT NULL,
+    "createdAt" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    CONSTRAINT comment_pkey PRIMARY KEY ("id"),
+    CONSTRAINT "post" FOREIGN KEY ("postId")
+        REFERENCES public."post" ("id") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT "user" FOREIGN KEY ("userId")
+        REFERENCES public."user" ("id") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID
+);
+
+-- Table: public.like
+
+-- DROP TABLE IF EXISTS public."like";
+
+CREATE TABLE IF NOT EXISTS public."like"
+(
+    "entityId" uuid NOT NULL,
+    "entityType" character varying(20) COLLATE "C" NOT NULL, 
+    "userId" uuid NOT NULL,
+    "userBanned" boolean NOT NULL,
+    "status" character varying(20) COLLATE "C" NOT NULL,
+    "lastModified" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    CONSTRAINT commentlike_pkey PRIMARY KEY ("entityId", "userId"),
+    CONSTRAINT "user" FOREIGN KEY ("userId")
+        REFERENCES public."user" ("id") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID
+);
