@@ -38,7 +38,7 @@ export default class SqlCommentsQueryRepository extends CommentsQueryRepository 
       "bannedByBlogger","content","createdAt",
       ${this.getLikeSubqueries(userId)}
       from "comment" c
-      where "id" = $1;
+      where "bannedByAdmin" = false and "bannedByBlogger" = false and"id" = $1;
       `,
       [id],
     );
