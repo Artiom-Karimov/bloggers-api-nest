@@ -1,5 +1,8 @@
 import { LikeStatus } from '../../../likes/models/like.input.model';
-import { ExtendedLikesInfoModel } from '../../../likes/models/likes.info.model';
+import {
+  ExtendedLikesInfoModel,
+  LikeViewModel,
+} from '../../../likes/models/likes.info.model';
 import PostDto from '../../models/post.dto';
 import PostModel from '../../models/post.model';
 import PostViewModel from '../../models/post.view.model';
@@ -46,8 +49,13 @@ export default class PostMapper {
         +model.likesCount,
         +model.dislikesCount,
         model.myStatus ?? LikeStatus.None,
-        model.newestLikes ?? [],
+        PostMapper.transformNewestLikes(model.newestLikes),
       ),
     );
+  }
+  private static transformNewestLikes(input: any): LikeViewModel[] {
+    if (!input) return [];
+    if (!(input instanceof Array)) return [input];
+    return input;
   }
 }
