@@ -76,7 +76,7 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
   }
   private getNewestLikesSubquery(): string {
     return `(select to_json("nl") as "newestLikes" from
-      (select "lastModified" as "addedAt", "userId", "login" as "userLogin"
+      (select "lastModified" as "addedAt", "userId", "login"
       from "like" l left join "user" u on l."userId" = u."id"
       where "entityId" = p."id" and "status" = 'Like' and "userBanned" = false
       order by "lastModified" limit 3) as "nl")`;
