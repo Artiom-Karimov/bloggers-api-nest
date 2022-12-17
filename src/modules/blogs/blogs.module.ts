@@ -7,9 +7,9 @@ import CommentsController from './comments/comments.controller';
 import CommentsQueryRepository from './comments/comments.query.repository';
 import CommentsRepository from './comments/comments.repository';
 import CommentLikesQueryRepository from './likes/comment.likes.query.repository';
-import CommentLikesRepository from './likes/comment.likes.repository';
+import CommentLikesRepository from './likes/interfaces/comment.likes.repository';
 import PostLikesQueryRepository from './likes/post.likes.query.repository';
-import PostLikesRepository from './likes/post.likes.repository';
+import PostLikesRepository from './likes/interfaces/post.likes.repository';
 import Blog, { BlogSchema } from './blogs/mongoose/models/blog.schema';
 import Comment, {
   CommentSchema,
@@ -149,11 +149,11 @@ const commandHandlers = [
       provide: PostLikesRepository,
       useClass: MongoPostLikesRepository,
     },
-    PostLikesQueryRepository,
     {
       provide: CommentLikesRepository,
       useClass: MongoCommentLikesRepository,
     },
+    PostLikesQueryRepository,
     CommentLikesQueryRepository,
     BlogIdValidator,
     ...commandHandlers,

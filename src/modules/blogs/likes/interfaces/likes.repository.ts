@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import LikeModel from '../likes/models/like.model';
+import LikeModel from '../models/like.model';
 
 @Injectable()
 export default abstract class LikesRepository {

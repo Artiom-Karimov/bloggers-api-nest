@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import PostLikesRepository from '../post.likes.repository';
+import PostLikesRepository from '../interfaces/post.likes.repository';
 import MongoLikesRepository from './mongo.likes.repository';
 import { Model } from 'mongoose';
 import { LikeDocument, PostLike } from './models/like.schema';
