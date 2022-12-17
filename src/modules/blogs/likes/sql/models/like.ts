@@ -1,6 +1,6 @@
 export default class Like {
   constructor(
-    public parentId: string,
+    public entityId: string,
     public userId: string,
     public userLogin: string,
     public userBanned: boolean,

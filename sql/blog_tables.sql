@@ -129,18 +129,13 @@ CREATE TABLE IF NOT EXISTS public."comment"
 
 CREATE TABLE IF NOT EXISTS public."like"
 (
-    "parentId" uuid NOT NULL,
-    'parentType' character varying(20) COLLATE "C" NOT NULL, 
+    "entityId" uuid NOT NULL,
+    "entityType" character varying(20) COLLATE "C" NOT NULL, 
     "userId" uuid NOT NULL,
     "userBanned" boolean NOT NULL,
     "status" character varying(20) COLLATE "C" NOT NULL,
     "lastModified" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
-    CONSTRAINT commentlike_pkey PRIMARY KEY ("parentId", "userId"),
-    CONSTRAINT "comment" FOREIGN KEY ("parentId")
-        REFERENCES public."comment" ("id") MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE CASCADE
-        NOT VALID,
+    CONSTRAINT commentlike_pkey PRIMARY KEY ("entityId", "userId"),
     CONSTRAINT "user" FOREIGN KEY ("userId")
         REFERENCES public."user" ("id") MATCH SIMPLE
         ON UPDATE NO ACTION

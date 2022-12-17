@@ -19,8 +19,8 @@ export default class LikeMapper {
   public static toDomain(model: Like): LikeModel {
     return new LikeModel(
       new LikeDto(
-        model.parentId + model.userId,
-        model.parentId,
+        model.entityId + model.userId,
+        model.entityId,
         model.userId,
         model.userLogin,
         model.userBanned,
