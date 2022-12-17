@@ -38,7 +38,7 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
       return undefined;
     }
   }
-  // TODO: get actual likes
+
   private async getOne(
     id: string,
     userId: string | undefined,
@@ -110,7 +110,7 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
     if (params.blogId) return `${notBanned} and ${blogId}`;
     return notBanned;
   }
-  // TODO: get actual likes
+
   private async loadPosts(
     page: PageViewModel<PostViewModel>,
     params: GetPostsQuery,
