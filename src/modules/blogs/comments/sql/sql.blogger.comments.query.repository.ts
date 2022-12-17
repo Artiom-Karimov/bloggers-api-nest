@@ -55,7 +55,7 @@ export default class SqlBloggerCommentsQueryRepository extends BloggerCommentsQu
     const bloggerId = `bo."userId" = '${params.bloggerId}'`;
     return `where ${bloggerId} and ${notBanned}`;
   }
-  // TODO: get actual likes
+
   private async loadComments(
     page: PageViewModel<BloggerCommentViewModel>,
     params: GetBloggerCommentsQuery,
@@ -63,11 +63,12 @@ export default class SqlBloggerCommentsQueryRepository extends BloggerCommentsQu
     const filter = this.getFilter(params);
     const order = params.sortDirection === 1 ? 'asc' : 'desc';
 
-    const result: CommentWithPost[] = await this.db.query(
+    const result: Array<CommentWithPost & LikesInfoModel> = await this.db.query(
       `
       select c."id",c."postId",c."userId",c."userLogin",c."bannedByAdmin",
       c."bannedByBlogger",c."content",c."createdAt",
-      p."id" as "postId", p."title" as "postTitle", p."blogId", b."name" as "blogName"
+      p."id" as "postId", p."title" as "postTitle", p."blogId", b."name" as "blogName",
+      ${this.getLikeSubqueries(params.bloggerId)}
       from "comment" c 
       left join "post" p on c."postId" = p."id"
       left join "blog" b on p."blogId" = b."id"
@@ -78,9 +79,21 @@ export default class SqlBloggerCommentsQueryRepository extends BloggerCommentsQu
       `,
       [page.pageSize, page.calculateSkip()],
     );
-    const views = result.map((u) =>
-      CommentMapper.toBloggerView(u, new LikesInfoModel()),
-    );
+    const views = result.map((u) => CommentMapper.toBloggerView(u));
     return page.add(...views);
+  }
+  private getLikeSubqueries(userId: string | undefined): string {
+    return `
+      (select count(*) from "like"
+      where "userBanned" = false and "entityId" = c."id" and "status" = 'Like') as "likesCount",
+      (select count(*) from "like"
+      where "userBanned" = false and "entityId" = c."id" and "status" = 'Dislike') as "dislikesCount",
+      ${this.getStatusSubquery(userId)}
+    `;
+  }
+  private getStatusSubquery(userId: string | undefined): string {
+    if (!userId) return `(select 'None') as "myStatus"`;
+    return `(select "status" from "like" 
+    where "userBanned" = false and "entityId" = c."id" and "userId" = '${userId}') as "myStatus"`;
   }
 }

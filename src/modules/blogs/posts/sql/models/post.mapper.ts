@@ -1,3 +1,4 @@
+import { LikeStatus } from '../../../likes/models/like.input.model';
 import { ExtendedLikesInfoModel } from '../../../likes/models/likes.info.model';
 import PostDto from '../../models/post.dto';
 import PostModel from '../../models/post.model';
@@ -32,10 +33,7 @@ export default class PostMapper {
       ),
     );
   }
-  public static toView(
-    model: Post,
-    likesInfo: ExtendedLikesInfoModel,
-  ): PostViewModel {
+  public static toView(model: Post & ExtendedLikesInfoModel): PostViewModel {
     return new PostViewModel(
       model.id,
       model.title,
@@ -44,7 +42,12 @@ export default class PostMapper {
       model.blogId,
       model.blogName,
       model.createdAt.toISOString(),
-      likesInfo,
+      new ExtendedLikesInfoModel(
+        +model.likesCount,
+        +model.dislikesCount,
+        model.myStatus ?? LikeStatus.None,
+        model.newestLikes,
+      ),
     );
   }
 }

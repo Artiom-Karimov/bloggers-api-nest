@@ -4,8 +4,8 @@ import CommentModel from '../../models/comment.model';
 import Comment from './comment';
 import BloggerCommentViewModel from '../../models/view/blogger.comment.view.model';
 import CommentViewModel from '../../models/view/comment.view.model';
-import PostDto from '../../../posts/models/post.dto';
 import CommentWithPost from './comment.with.post';
+import { LikeStatus } from '../../../likes/models/like.input.model';
 
 export default class CommentMapper {
   public static fromDomain(model: CommentModel): Comment {
@@ -35,24 +35,24 @@ export default class CommentMapper {
       ),
     );
   }
-  public static toView(
-    model: Comment,
-    likesInfo: LikesInfoModel | undefined,
-  ): CommentViewModel {
+  public static toView(model: Comment & LikesInfoModel): CommentViewModel {
     return new CommentViewModel(
       model.id,
       model.content,
       model.userId,
       model.userLogin,
       model.createdAt.toISOString(),
-      likesInfo,
+      new LikesInfoModel(
+        +model.likesCount,
+        +model.dislikesCount,
+        model.myStatus ?? LikeStatus.None,
+      ),
     );
   }
   public static toBloggerView(
-    model: CommentWithPost,
-    likesInfo: LikesInfoModel | undefined,
+    model: CommentWithPost & LikesInfoModel,
   ): BloggerCommentViewModel {
-    return new BloggerCommentViewModel(CommentMapper.toView(model, likesInfo), {
+    return new BloggerCommentViewModel(CommentMapper.toView(model), {
       id: model.postId,
       title: model.postTitle,
       blogId: model.blogId,

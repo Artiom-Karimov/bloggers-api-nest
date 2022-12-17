@@ -35,16 +35,30 @@ export default class SqlCommentsQueryRepository extends CommentsQueryRepository 
     const result = await this.db.query(
       `
       select "id","postId","userId","userLogin","bannedByAdmin",
-      "bannedByBlogger","content","createdAt"
-      from "comment"
+      "bannedByBlogger","content","createdAt",
+      ${this.getLikeSubqueries(userId)}
+      from "comment" c
       where "id" = $1;
       `,
       [id],
     );
     if (!result || result.length === 0) return undefined;
-    const comment = result[0] as Comment;
-    const likes = new LikesInfoModel();
-    return CommentMapper.toView(comment, likes);
+    const comment = result[0] as Comment & LikesInfoModel;
+    return CommentMapper.toView(comment);
+  }
+  private getLikeSubqueries(userId: string | undefined): string {
+    return `
+      (select count(*) from "like"
+      where "userBanned" = false and "entityId" = c."id" and "status" = 'Like') as "likesCount",
+      (select count(*) from "like"
+      where "userBanned" = false and "entityId" = c."id" and "status" = 'Dislike') as "dislikesCount",
+      ${this.getStatusSubquery(userId)}
+    `;
+  }
+  private getStatusSubquery(userId: string | undefined): string {
+    if (!userId) return `(select 'None') as "myStatus"`;
+    return `(select "status" from "like" 
+    where "userBanned" = false and "entityId" = c."id" and "userId" = '${userId}') as "myStatus"`;
   }
 
   private async getPage(
@@ -80,20 +94,19 @@ export default class SqlCommentsQueryRepository extends CommentsQueryRepository 
     const filter = this.getFilter(params);
     const order = params.sortDirection === 1 ? 'asc' : 'desc';
 
-    const result: Comment[] = await this.db.query(
+    const result: Array<Comment & LikesInfoModel> = await this.db.query(
       `
       select "id","postId","userId","userLogin","bannedByAdmin",
-      "bannedByBlogger","content","createdAt"
-      from "comment"
+      "bannedByBlogger","content","createdAt",
+      ${this.getLikeSubqueries(params.userId)}
+      from "comment" c
       ${filter}
       order by "${params.sortBy}" ${order}
       limit $1 offset $2;
       `,
       [page.pageSize, page.calculateSkip()],
     );
-    const views = result.map((u) =>
-      CommentMapper.toView(u, new LikesInfoModel()),
-    );
+    const views = result.map((c) => CommentMapper.toView(c));
     return page.add(...views);
   }
 }

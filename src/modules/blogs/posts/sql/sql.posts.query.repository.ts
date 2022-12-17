@@ -47,6 +47,7 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
       `
       select p."id", p."blogId", p."blogBanned", p."title", 
       p."shortDescription", p."content", p."createdAt",
+      ${this.getLikeSubqueries(userId)},
       b."name" as "blogName"
       from "post" p left join "blog" b
       on p."blogId" = b."id"
@@ -55,8 +56,22 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
       [id],
     );
     if (!result || result.length === 0) return undefined;
-    const post = result[0] as Post;
-    return PostMapper.toView(post, new ExtendedLikesInfoModel());
+    const post = result[0] as Post & ExtendedLikesInfoModel;
+    return PostMapper.toView(post);
+  }
+  private getLikeSubqueries(userId: string | undefined): string {
+    return `
+      (select count(*) from "like"
+      where "userBanned" = false and "entityId" = p."id" and "status" = 'Like') as "likesCount",
+      (select count(*) from "like"
+      where "userBanned" = false and "entityId" = p."id" and "status" = 'Dislike') as "dislikesCount",
+      ${this.getStatusSubquery(userId)}
+    `;
+  }
+  private getStatusSubquery(userId: string | undefined): string {
+    if (!userId) return `(select 'None') as "myStatus"`;
+    return `(select "status" from "like" 
+    where "userBanned" = false and "entityId" = p."id" and "userId" = '${userId}') as "myStatus"`;
   }
 
   private async getPage(
@@ -95,10 +110,11 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
     const filter = this.getFilter(params);
     const order = params.sortDirection === 1 ? 'asc' : 'desc';
 
-    const result: Post[] = await this.db.query(
+    const result: Array<Post & ExtendedLikesInfoModel> = await this.db.query(
       `
       select p."id", p."blogId", p."blogBanned", p."title", 
       p."shortDescription", p."content", p."createdAt",
+      ${this.getLikeSubqueries(params.userId)},
       b."name" as "blogName"
       from "post" p left join "blog" b
       on p."blogId" = b."id"
@@ -108,9 +124,7 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
       `,
       [page.pageSize, page.calculateSkip()],
     );
-    const views = result.map((u) =>
-      PostMapper.toView(u, new ExtendedLikesInfoModel()),
-    );
+    const views = result.map((p) => PostMapper.toView(p));
     return page.add(...views);
   }
 }

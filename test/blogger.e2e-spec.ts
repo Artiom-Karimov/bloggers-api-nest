@@ -380,21 +380,6 @@ describe('BloggerController (e2e)', () => {
         .expect(200);
       expect(response.body).toEqual(emptyPage);
     });
-    it('blogger should not get dislike', async () => {
-      const response = await request(app.getHttpServer())
-        .get(`/posts/${post.id}`)
-        .set('Authorization', `Bearer ${postSamples.tokens.access}`)
-        .expect(200);
-      expect(response.body).toEqual({
-        ...post,
-        extendedLikesInfo: {
-          likesCount: 0,
-          dislikesCount: 0,
-          myStatus: 'None',
-          newestLikes: [],
-        },
-      });
-    });
 
     it('blogger should get banned user info', async () => {
       const response = await request(app.getHttpServer())
@@ -471,21 +456,6 @@ describe('BloggerController (e2e)', () => {
             },
           },
         ]),
-      });
-    });
-    it('blogger should get dislike', async () => {
-      const response = await request(app.getHttpServer())
-        .get(`/posts/${post.id}`)
-        .set('Authorization', `Bearer ${postSamples.tokens.access}`)
-        .expect(200);
-      expect(response.body).toEqual({
-        ...post,
-        extendedLikesInfo: {
-          likesCount: 0,
-          dislikesCount: 1,
-          myStatus: 'None',
-          newestLikes: [],
-        },
       });
     });
   });
