@@ -81,7 +81,7 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
       select json_agg(row_to_json(nl)) as "newestLikes" from (
         select "lastModified" as "addedAt", "userId", "login"
         from "like" l left join "user" u on l."userId" = u."id"
-        where "entityId" = p."id" and status" = 'Like' and "userBanned" = false
+        where "entityId" = p."id" and "status" = 'Like' and "userBanned" = false
         order by "lastModified" desc limit 3
       ) nl
     )`;
