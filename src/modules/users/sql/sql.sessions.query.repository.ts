@@ -12,7 +12,8 @@ export default class SqlSessionsQueryRepository extends SessionsQueryRepository 
   }
   public async get(userId: string): Promise<SessionViewModel[]> {
     try {
-      return await this.getOne(userId);
+      const result = await this.getOne(userId);
+      return result;
     } catch (error) {
       console.error(error);
       return undefined;

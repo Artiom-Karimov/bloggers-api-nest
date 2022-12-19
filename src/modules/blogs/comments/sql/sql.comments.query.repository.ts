@@ -20,15 +20,27 @@ export default class SqlCommentsQueryRepository extends CommentsQueryRepository 
   ): Promise<PageViewModel<CommentViewModel>> {
     try {
       const page = await this.getPage(params);
-      return this.loadComments(page, params);
+      await this.loadComments(page, params);
+      return page;
     } catch (error) {
       console.error(error);
       return new PageViewModel(params.pageNumber, params.pageSize, 0);
     }
   }
 
-  // TODO: Get actual likes
   public async getComment(
+    id: string,
+    userId: string | undefined,
+  ): Promise<CommentViewModel | undefined> {
+    try {
+      const result = await this.getOne(id, userId);
+      return result;
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+  private async getOne(
     id: string,
     userId: string | undefined,
   ): Promise<CommentViewModel | undefined> {
