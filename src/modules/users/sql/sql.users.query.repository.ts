@@ -21,7 +21,8 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
   ): Promise<PageViewModel<UserViewModel>> {
     try {
       const page = await this.getPage(params);
-      return this.loadPageUsers(page, params);
+      await this.loadPageUsers(page, params);
+      return page;
     } catch (error) {
       console.error(error);
       return new PageViewModel(params.pageNumber, params.pageSize, 0);
@@ -30,7 +31,8 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
 
   public async getUser(id: string): Promise<UserViewModel | undefined> {
     try {
-      return await this.getOne(id);
+      const result = await this.getOne(id);
+      return result;
     } catch (error) {
       console.error(error);
       return undefined;
@@ -57,7 +59,8 @@ export default class SqlUsersQueryRepository extends UsersQueryRepository {
     id: string,
   ): Promise<SessionUserViewModel | undefined> {
     try {
-      return await this.getOneSessionView(id);
+      const result = await this.getOneSessionView(id);
+      return result;
     } catch (error) {
       console.error(error);
       return undefined;

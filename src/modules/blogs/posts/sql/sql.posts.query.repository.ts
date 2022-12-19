@@ -20,7 +20,8 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
   ): Promise<PageViewModel<PostViewModel>> {
     try {
       const page = await this.getPage(params);
-      return this.loadPosts(page, params);
+      await this.loadPosts(page, params);
+      return page;
     } catch (error) {
       console.error(error);
       return new PageViewModel(params.pageNumber, params.pageSize, 0);
@@ -32,7 +33,8 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
     userId: string | undefined,
   ): Promise<PostViewModel | undefined> {
     try {
-      return await this.getOne(id, userId);
+      const result = await this.getOne(id, userId);
+      return result;
     } catch (error) {
       console.error(error);
       return undefined;

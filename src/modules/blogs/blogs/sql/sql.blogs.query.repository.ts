@@ -19,7 +19,8 @@ export default class SqlBlogsQueryRepository extends BlogsQueryRepository {
   ): Promise<PageViewModel<BlogViewModel>> {
     try {
       const page = await this.getPage(params);
-      return this.loadBlogs(page, params);
+      await this.loadBlogs(page, params);
+      return page;
     } catch (error) {
       console.error(error);
       return new PageViewModel(params.pageNumber, params.pageSize, 0);
@@ -32,7 +33,8 @@ export default class SqlBlogsQueryRepository extends BlogsQueryRepository {
   ): Promise<PageViewModel<BlogViewModel>> {
     try {
       const page = await this.getPage(params, bloggerId);
-      return this.loadBloggerBlogs(page, params, bloggerId);
+      await this.loadBloggerBlogs(page, params, bloggerId);
+      return page;
     } catch (error) {
       console.error(error);
       return new PageViewModel(params.pageNumber, params.pageSize, 0);
@@ -41,7 +43,8 @@ export default class SqlBlogsQueryRepository extends BlogsQueryRepository {
 
   public async getBlog(id: string): Promise<BlogViewModel | undefined> {
     try {
-      return await this.getOne(id);
+      const result = await this.getOne(id);
+      return result;
     } catch (error) {
       console.error(error);
       return undefined;

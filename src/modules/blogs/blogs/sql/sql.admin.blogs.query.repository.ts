@@ -19,7 +19,8 @@ export default class SqlAdminBlogsQueryRepository extends AdminBlogsQueryReposit
   ): Promise<PageViewModel<AdminBlogViewModel>> {
     try {
       const page = await this.getPage(params);
-      return this.loadPageBlogs(page, params);
+      await this.loadPageBlogs(page, params);
+      return page;
     } catch (error) {
       console.error(error);
       return new PageViewModel(params.pageNumber, params.pageSize, 0);
@@ -30,7 +31,8 @@ export default class SqlAdminBlogsQueryRepository extends AdminBlogsQueryReposit
     id: string,
   ): Promise<AdminBlogViewModel | undefined> {
     try {
-      return await this.getOne(id);
+      const result = await this.getOne(id);
+      return result;
     } catch (error) {
       console.error(error);
       return undefined;

@@ -20,7 +20,8 @@ export default class SqlBloggerCommentsQueryRepository extends BloggerCommentsQu
   ): Promise<PageViewModel<BloggerCommentViewModel>> {
     try {
       const page = await this.getPage(params);
-      return this.loadComments(page, params);
+      await this.loadComments(page, params);
+      return page;
     } catch (error) {
       console.error(error);
       return new PageViewModel(params.pageNumber, params.pageSize, 0);
