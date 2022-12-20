@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import BlogsController from './blogs/blogs.controller';
 import BlogsQueryRepository from './blogs/interfaces/blogs.query.repository';
 import BlogsRepository from './blogs/interfaces/blogs.repository';
@@ -8,18 +7,7 @@ import CommentsQueryRepository from './comments/interfaces/comments.query.reposi
 import CommentsRepository from './comments/interfaces/comments.repository';
 import CommentLikesRepository from './likes/interfaces/comment.likes.repository';
 import PostLikesRepository from './likes/interfaces/post.likes.repository';
-import Blog, { BlogSchema } from './blogs/mongoose/models/blog.schema';
-import Comment, {
-  CommentSchema,
-} from './comments/mongoose/models/comment.schema';
-import {
-  CommentLike,
-  CommentLikeSchema,
-  PostLike,
-  PostLikeSchema,
-} from './likes/mongoose/models/like.schema';
 import { BlogIdValidator } from './blogs/models/input/blog.id.validator';
-import Post, { PostSchema } from './posts/mongoose/models/post.schema';
 import PostsController from './posts/posts.controller';
 import PostsQueryRepository from './posts/interfaces/posts.query.repository';
 import PostsRepository from './posts/interfaces/posts.repository';
@@ -33,9 +21,6 @@ import { BanBlogHandler } from './blogs/commands/handlers/ban.blog.handler';
 import AdminBlogsQueryRepository from './blogs/interfaces/admin.blogs.query.repository';
 import BloggerCommentsQueryRepository from './comments/interfaces/blogger.comments.query.repository';
 import BlogUserBanRepository from './blogs/interfaces/blog.user.ban.repository';
-import BlogUserBan, {
-  BlogUserBanSchema,
-} from './blogs/mongoose/models/blog.user.ban.schema';
 import { CreateCommentHandler } from './comments/commands/handlers/create.comment.handler';
 import BlogUserBanQueryRepository from './blogs/interfaces/blog.user.ban.query.repository';
 import { UsersModule } from '../users/users.module';
@@ -75,22 +60,7 @@ const commandHandlers = [
 ];
 
 @Module({
-  imports: [
-    CqrsModule,
-    MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
-    MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
-    MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
-    MongooseModule.forFeature([
-      { name: PostLike.name, schema: PostLikeSchema },
-    ]),
-    MongooseModule.forFeature([
-      { name: CommentLike.name, schema: CommentLikeSchema },
-    ]),
-    MongooseModule.forFeature([
-      { name: BlogUserBan.name, schema: BlogUserBanSchema },
-    ]),
-    UsersModule,
-  ],
+  imports: [CqrsModule, UsersModule],
   controllers: [BlogsController, PostsController, CommentsController],
   providers: [
     {
