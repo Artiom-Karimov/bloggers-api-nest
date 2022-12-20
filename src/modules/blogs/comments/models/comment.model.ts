@@ -8,7 +8,6 @@ export default class CommentModel {
   private _id: string;
   private _postId: string;
   private _userId: string;
-  private _userLogin: string;
   private _bannedByAdmin: boolean;
   private _bannedByBlogger: boolean;
   private _content: string;
@@ -18,7 +17,6 @@ export default class CommentModel {
     this._id = dto.id;
     this._postId = dto.postId;
     this._userId = dto.userId;
-    this._userLogin = dto.userLogin;
     this._bannedByAdmin = dto.bannedByAdmin;
     this._bannedByBlogger = dto.bannedByBlogger;
     this._content = dto.content;
@@ -30,7 +28,6 @@ export default class CommentModel {
       this._id,
       this._postId,
       this._userId,
-      this._userLogin,
       this._bannedByAdmin,
       this._bannedByBlogger,
       this._content,
@@ -44,7 +41,6 @@ export default class CommentModel {
         IdGenerator.generate(),
         data.postId,
         data.userId,
-        data.userLogin,
         false,
         false,
         data.content,

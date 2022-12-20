@@ -66,11 +66,12 @@ export default class SqlBloggerCommentsQueryRepository extends BloggerCommentsQu
 
     const result: Array<CommentWithPost & LikesInfoModel> = await this.db.query(
       `
-      select c."id",c."postId",c."userId",c."userLogin",c."bannedByAdmin",
+      select c."id",c."postId",c."userId",u."login" as "userLogin",c."bannedByAdmin",
       c."bannedByBlogger",c."content",c."createdAt",
       p."id" as "postId", p."title" as "postTitle", p."blogId", b."name" as "blogName",
       ${this.getLikeSubqueries(params.bloggerId)}
       from "comment" c 
+      left join "user" u on c."userId" = u."id"
       left join "post" p on c."postId" = p."id"
       left join "blog" b on p."blogId" = b."id"
       left join "blogOwner" bo on b."id" = bo."blogId"
@@ -85,16 +86,16 @@ export default class SqlBloggerCommentsQueryRepository extends BloggerCommentsQu
   }
   private getLikeSubqueries(userId: string | undefined): string {
     return `
-      (select count(*) from "like"
-      where "userBanned" = false and "entityId" = c."id" and "status" = 'Like') as "likesCount",
-      (select count(*) from "like"
-      where "userBanned" = false and "entityId" = c."id" and "status" = 'Dislike') as "dislikesCount",
+      (select count(*) from "like" l
+      where l."userBanned" = false and l."entityId" = c."id" and l."status" = 'Like') as "likesCount",
+      (select count(*) from "like" l
+      where l."userBanned" = false and l."entityId" = c."id" and l."status" = 'Dislike') as "dislikesCount",
       ${this.getStatusSubquery(userId)}
     `;
   }
   private getStatusSubquery(userId: string | undefined): string {
     if (!userId) return `(select 'None') as "myStatus"`;
-    return `(select "status" from "like" 
-    where "userBanned" = false and "entityId" = c."id" and "userId" = '${userId}') as "myStatus"`;
+    return `(select "status" from "like" l
+    where l."userBanned" = false and l."entityId" = c."id" and l."userId" = '${userId}') as "myStatus"`;
   }
 }

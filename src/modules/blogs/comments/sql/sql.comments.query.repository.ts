@@ -46,11 +46,12 @@ export default class SqlCommentsQueryRepository extends CommentsQueryRepository 
   ): Promise<CommentViewModel | undefined> {
     const result = await this.db.query(
       `
-      select "id","postId","userId","userLogin","bannedByAdmin",
-      "bannedByBlogger","content","createdAt",
+      select c."id", c."postId", c."userId", u."login" as "userLogin",
+      c."bannedByAdmin", c."bannedByBlogger", c."content", c."createdAt",
       ${this.getLikeSubqueries(userId)}
-      from "comment" c
-      where "bannedByAdmin" = false and "bannedByBlogger" = false and"id" = $1;
+      from "comment" c left join "user" u
+      on c."userId" = u."id"
+      where "bannedByAdmin" = false and "bannedByBlogger" = false and c."id" = $1;
       `,
       [id],
     );
@@ -108,10 +109,10 @@ export default class SqlCommentsQueryRepository extends CommentsQueryRepository 
 
     const result: Array<Comment & LikesInfoModel> = await this.db.query(
       `
-      select "id","postId","userId","userLogin","bannedByAdmin",
-      "bannedByBlogger","content","createdAt",
+      select c."id",c."postId",c."userId",u."login" as "userLogin",
+      c."bannedByAdmin",c."bannedByBlogger",c."content",c."createdAt",
       ${this.getLikeSubqueries(params.userId)}
-      from "comment" c
+      from "comment" c left join "user" u on c."userId" = u."id"
       ${filter}
       order by "${params.sortBy}" ${order}
       limit $1 offset $2;

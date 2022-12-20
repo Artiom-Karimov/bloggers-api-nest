@@ -105,7 +105,6 @@ CREATE TABLE IF NOT EXISTS public."comment"
     "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
     "postId" uuid NOT NULL,
     "userId" uuid NOT NULL,
-    "userLogin" character varying(20) COLLATE "C" NOT NULL,
     "bannedByAdmin" boolean NOT NULL,
     "bannedByBlogger" boolean NOT NULL,
     "content" character varying(300) COLLATE "C" NOT NULL,
