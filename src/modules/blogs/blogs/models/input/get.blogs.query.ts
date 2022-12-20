@@ -1,4 +1,5 @@
 import PageQueryParams from '../../../../../common/models/page.query.params';
+import { regex } from '../../../../../common/utils/validation.regex';
 
 export default class GetBlogsQuery extends PageQueryParams {
   public searchNameTerm: string | null = null;
@@ -17,7 +18,8 @@ export default class GetBlogsQuery extends PageQueryParams {
     this.assignSortBy(query.sortBy);
   }
   private assignSearchNameTerm(value: any) {
-    if (!value || typeof value !== 'string') return;
+    if (!value || typeof value !== 'string' || !regex.blogName.test(value))
+      return;
     this.searchNameTerm = value;
   }
 }

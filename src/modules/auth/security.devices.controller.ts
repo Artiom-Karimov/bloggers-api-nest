@@ -18,6 +18,7 @@ import { UserError } from '../users/user.error';
 import { CommandBus } from '@nestjs/cqrs';
 import LogoutAnotherSessionsCommand from './commands/commands/logout.another.sessions.command';
 import DeleteSessionCommand from './commands/commands/delete.session.command';
+import IdParams from '../../common/models/id.param';
 
 @Controller('security/devices')
 export default class SecurityDevicesController {
@@ -46,11 +47,11 @@ export default class SecurityDevicesController {
   @UseGuards(RefreshTokenGuard)
   @HttpCode(204)
   async deleteOne(
-    @Param('deviceId') deviceId: string,
+    @Param() params: IdParams,
     @User() user: TokenPayload,
   ): Promise<void> {
     const result = await this.commandBus.execute(
-      new DeleteSessionCommand(user.userId, deviceId),
+      new DeleteSessionCommand(user.userId, params.deviceId),
     );
 
     if (result === UserError.NoError) return;

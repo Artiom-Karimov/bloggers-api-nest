@@ -35,6 +35,7 @@ import BanUserCommand from './commands/commands/ban.user.command';
 import CreateConfirmedUserCommand from './commands/commands/create.confirmed.user.command';
 import DeleteUserCommand from './commands/commands/delete.user.command';
 import { UserError } from '../users/user.error';
+import IdParams from '../../common/models/id.param';
 
 @Controller('sa')
 @UseGuards(BasicAuthGuard)
@@ -55,25 +56,22 @@ export default class AdminController {
   @Put('blogs/:blogId/ban')
   @HttpCode(204)
   async banBlog(
-    @Param('blogId') blogId: string,
+    @Param() params: IdParams,
     @Body() data: BlogBanInputModel,
   ): Promise<void> {
     const result = await this.commandBus.execute(
-      new BanBlogCommand(blogId, data),
+      new BanBlogCommand(params.blogId, data),
     );
     if (result === BlogError.NoError) return;
     if (result === BlogError.NotFound)
       throwValidationException('id', 'blog not found');
     throw new BadRequestException();
   }
-  @Put('blogs/:id/bind-with-user/:userId')
+  @Put('blogs/:blogId/bind-with-user/:userId')
   @HttpCode(204)
-  async assignBlogOwner(
-    @Param('id') blogId: string,
-    @Param('userId') userId: string,
-  ): Promise<void> {
+  async assignBlogOwner(@Param() params: IdParams): Promise<void> {
     const result = await this.commandBus.execute(
-      new AssignBlogOwnerCommand(userId, blogId),
+      new AssignBlogOwnerCommand(params.userId, params.blogId),
     );
 
     if (result === BlogError.NoError) return;
@@ -90,8 +88,8 @@ export default class AdminController {
     return this.usersQueryRepo.getUsers(query);
   }
   @Get('users/:id')
-  async getUser(@Param('id') id: string): Promise<UserViewModel> {
-    const user = await this.usersQueryRepo.getUser(id);
+  async getUser(@Param() params: IdParams): Promise<UserViewModel> {
+    const user = await this.usersQueryRepo.getUser(params.id);
     if (!user) throw new NotFoundException();
     return user;
   }
@@ -115,19 +113,21 @@ export default class AdminController {
   }
   @Delete('users/:id')
   @HttpCode(204)
-  async delete(@Param('id') id: string): Promise<void> {
-    const result = await this.commandBus.execute(new DeleteUserCommand(id));
+  async delete(@Param() params: IdParams): Promise<void> {
+    const result = await this.commandBus.execute(
+      new DeleteUserCommand(params.id),
+    );
     if (result === UserError.NoError) return;
     if (result === UserError.NotFound) throw new NotFoundException();
     throw new BadRequestException();
   }
   @Put('users/:id/ban')
   @HttpCode(204)
-  async ban(@Param('id') userId: string, @Body() data: UserBanInputModel) {
+  async ban(@Param() params: IdParams, @Body() data: UserBanInputModel) {
     const result = await this.commandBus.execute(
       new BanUserCommand({
         ...data,
-        userId,
+        userId: params.id,
       }),
     );
     if (result === BlogError.NoError) return;

@@ -1,4 +1,5 @@
 import PageQueryParams from '../../../../common/models/page.query.params';
+import { regex } from '../../../../common/utils/validation.regex';
 
 export enum BanStatus {
   All = 'all',
@@ -10,9 +11,6 @@ export default class GetUsersQuery extends PageQueryParams {
   public searchLoginTerm: string | null = null;
   public searchEmailTerm: string | null = null;
   public banStatus: BanStatus = BanStatus.All;
-
-  protected readonly loginRegexp = /^[a-z0-9_-]{1,10}$/i;
-  protected readonly emailRegexp = /^[\w\@\.\-]{1,100}$/i;
 
   protected override sortByValues = ['createdAt', 'login', 'email'];
 
@@ -26,12 +24,12 @@ export default class GetUsersQuery extends PageQueryParams {
   }
   private assignSearchLoginTerm(value: any) {
     if (!value || typeof value !== 'string') return;
-    if (!this.loginRegexp.test(value)) return;
+    if (!regex.login.test(value)) return;
     this.searchLoginTerm = value;
   }
   private assignSearchEmailTerm(value: any) {
     if (!value || typeof value !== 'string') return;
-    if (!this.emailRegexp.test(value)) return;
+    if (!regex.email.test(value)) return;
     this.searchEmailTerm = value;
   }
   private assignBanStatus(value: any) {

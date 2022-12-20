@@ -29,6 +29,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import PutPostLikeCommand from './commands/commands/put.post.like.command';
 import CreateCommentCommand from '../comments/commands/commands/create.comment.command';
 import { BlogError } from '../blogs/models/blog.error';
+import IdParams from '../../../common/models/id.param';
 
 @Controller('posts')
 export default class PostsController {
@@ -50,10 +51,10 @@ export default class PostsController {
   @Get(':id')
   @UseGuards(OptionalBearerAuthGuard)
   async getOne(
-    @Param('id') id: string,
+    @Param() params: IdParams,
     @User() user: TokenPayload,
   ): Promise<PostViewModel> {
-    const result = await this.queryRepo.getPost(id, user?.userId);
+    const result = await this.queryRepo.getPost(params.id, user?.userId);
     if (!result) throw new NotFoundException();
     return result;
   }
@@ -61,27 +62,27 @@ export default class PostsController {
   @Get(':id/comments')
   @UseGuards(OptionalBearerAuthGuard)
   async getComments(
-    @Param('id') id: string,
+    @Param() params: IdParams,
     @Query() reqQuery: any,
     @User() user: TokenPayload,
   ): Promise<PageViewModel<CommentViewModel>> {
-    const post = await this.queryRepo.getPost(id, undefined);
+    const post = await this.queryRepo.getPost(params.id, undefined);
     if (!post) throw new NotFoundException();
 
-    const query = new GetCommentsQuery(reqQuery, id, user?.userId);
+    const query = new GetCommentsQuery(reqQuery, params.id, user?.userId);
     return this.commentsQueryRepo.getComments(query);
   }
 
   @Post(':id/comments')
   @UseGuards(BearerAuthGuard)
   async createComment(
-    @Param('id') postId: string,
+    @Param() params: IdParams,
     @Body() data: CommentInputModel,
     @User() user: TokenPayload,
   ): Promise<CommentViewModel> {
     const result = await this.commandBus.execute(
       new CreateCommentCommand({
-        postId,
+        postId: params.id,
         userId: user.userId,
         userLogin: user.userLogin,
         content: data.content,
@@ -105,13 +106,13 @@ export default class PostsController {
   @UseGuards(BearerAuthGuard)
   @HttpCode(204)
   async putLike(
-    @Param('id') postId: string,
+    @Param() params: IdParams,
     @Body() data: LikeInputModel,
     @User() user: TokenPayload,
   ) {
     const result = await this.commandBus.execute(
       new PutPostLikeCommand({
-        entityId: postId,
+        entityId: params.id,
         userId: user.userId,
         userLogin: user.userLogin,
         likeStatus: data.likeStatus,

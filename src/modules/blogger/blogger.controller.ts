@@ -36,6 +36,7 @@ import DeletePostCommand from '../blogs/posts/commands/commands/delete.post.comm
 import BloggerCommentViewModel from '../blogs/comments/models/view/blogger.comment.view.model';
 import BloggerCommentsQueryRepository from '../blogs/comments/blogger.comments.query.repository';
 import GetBloggerCommentsQuery from '../blogs/comments/models/input/get.blogger.comments.query';
+import IdParams from '../../common/models/id.param';
 
 @Controller('blogger/blogs')
 @UseGuards(BearerAuthGuard)
@@ -79,11 +80,11 @@ export default class BloggerController {
   @HttpCode(204)
   public async updateBlog(
     @Body() data: BlogInputModel,
-    @Param('id') blogId: string,
+    @Param() params: IdParams,
     @User() user: TokenPayload,
   ): Promise<void> {
     const result = await this.commandBus.execute(
-      new UpdateBlogCommand(blogId, data, user.userId),
+      new UpdateBlogCommand(params.id, data, user.userId),
     );
     if (result === BlogError.NoError) return;
     if (result === BlogError.NotFound) throw new NotFoundException();
@@ -94,11 +95,11 @@ export default class BloggerController {
   @Delete(':id')
   @HttpCode(204)
   public async deleteBlog(
-    @Param('id') blogId: string,
+    @Param() params: IdParams,
     @User() user: TokenPayload,
   ): Promise<void> {
     const result = await this.commandBus.execute(
-      new DeleteBlogCommand(blogId, user.userId),
+      new DeleteBlogCommand(params.id, user.userId),
     );
     if (result === BlogError.NoError) return;
     if (result === BlogError.NotFound) throw new NotFoundException();
@@ -109,14 +110,14 @@ export default class BloggerController {
   @Post(':blogId/posts')
   @HttpCode(201)
   public async createPost(
-    @Param('blogId') blogId: string,
+    @Param() params: IdParams,
     @Body() data: PostInputModel,
     @User() user: TokenPayload,
   ): Promise<PostViewModel> {
     const created = await this.commandBus.execute(
       new CreatePostCommand({
         ...data,
-        blogId,
+        blogId: params.blogId,
         bloggerId: user.userId,
       }),
     );
@@ -136,15 +137,14 @@ export default class BloggerController {
   @Put(':blogId/posts/:postId')
   @HttpCode(204)
   public async updatePost(
-    @Param('blogId') blogId: string,
-    @Param('postId') postId: string,
+    @Param() params: IdParams,
     @Body() data: PostInputModel,
     @User() user: TokenPayload,
   ): Promise<void> {
     const updated = await this.commandBus.execute(
       new UpdatePostCommand({
-        postId,
-        blogId,
+        postId: params.postId,
+        blogId: params.blogId,
         bloggerId: user.userId,
         data,
       }),
@@ -158,14 +158,13 @@ export default class BloggerController {
   @Delete(':blogId/posts/:postId')
   @HttpCode(204)
   public async deletePost(
-    @Param('blogId') blogId: string,
-    @Param('postId') postId: string,
+    @Param() params: IdParams,
     @User() user: TokenPayload,
   ): Promise<void> {
     const deleted = await this.commandBus.execute(
       new DeletePostCommand({
-        blogId,
-        postId,
+        blogId: params.blogId,
+        postId: params.postId,
         bloggerId: user.userId,
       }),
     );

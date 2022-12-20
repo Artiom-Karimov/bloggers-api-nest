@@ -26,6 +26,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import UpdateCommentCommand from './commands/commands/update.comment.command';
 import { BlogError } from '../blogs/models/blog.error';
 import DeleteCommentCommand from './commands/commands/delete.comment.command';
+import IdParams from '../../../common/models/id.param';
 
 @Controller('comments')
 export default class CommentsController {
@@ -37,10 +38,10 @@ export default class CommentsController {
   @Get(':id')
   @UseGuards(OptionalBearerAuthGuard)
   async getOne(
-    @Param('id') id: string,
+    @Param() params: IdParams,
     @User() user: TokenPayload,
   ): Promise<CommentViewModel> {
-    const result = await this.queryRepo.getComment(id, user?.userId);
+    const result = await this.queryRepo.getComment(params.id, user?.userId);
     if (!result) throw new NotFoundException();
     return result;
   }
@@ -49,13 +50,13 @@ export default class CommentsController {
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   async update(
-    @Param('id') id: string,
+    @Param() params: IdParams,
     @Body() data: CommentInputModel,
     @User() user: TokenPayload,
   ): Promise<void> {
     const result = await this.commandBus.execute(
       new UpdateCommentCommand({
-        commentId: id,
+        commentId: params.id,
         userId: user.userId,
         content: data.content,
       }),
@@ -71,11 +72,11 @@ export default class CommentsController {
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   async delete(
-    @Param('id') commentId: string,
+    @Param() params: IdParams,
     @User() user: TokenPayload,
   ): Promise<void> {
     const result = await this.commandBus.execute(
-      new DeleteCommentCommand(commentId, user.userId),
+      new DeleteCommentCommand(params.id, user.userId),
     );
 
     if (result === BlogError.NoError) return;
@@ -88,13 +89,13 @@ export default class CommentsController {
   @UseGuards(BearerAuthGuard)
   @HttpCode(204)
   async putLike(
-    @Param('id') commentId: string,
+    @Param() params: IdParams,
     @Body() data: LikeInputModel,
     @User() user: TokenPayload,
   ) {
     const result = await this.commandBus.execute(
       new PutCommentLikeCommand({
-        entityId: commentId,
+        entityId: params.id,
         userId: user.userId,
         userLogin: user.userLogin,
         likeStatus: data.likeStatus,

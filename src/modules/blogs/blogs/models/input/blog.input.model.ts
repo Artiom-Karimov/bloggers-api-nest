@@ -1,10 +1,10 @@
 import { Transform, TransformFnParams } from 'class-transformer';
 import { Matches, MinLength, MaxLength } from 'class-validator';
+import { regex } from '../../../../../common/utils/validation.regex';
 
 export default class BlogInputModel {
   @Transform(({ value }: TransformFnParams) => value?.trim())
-  @MinLength(3)
-  @MaxLength(15)
+  @Matches(regex.blogName)
   name: string;
 
   @Transform(({ value }: TransformFnParams) => value?.trim())
@@ -12,10 +12,7 @@ export default class BlogInputModel {
   @MaxLength(500)
   description: string;
 
-  @MinLength(5)
   @MaxLength(100)
-  @Matches(
-    /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/,
-  )
+  @Matches(regex.httpsUrl)
   websiteUrl: string;
 }
