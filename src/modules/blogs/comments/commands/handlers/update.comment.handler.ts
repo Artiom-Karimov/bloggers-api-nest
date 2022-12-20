@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BlogError } from '../../../blogs/models/blog.error';
-import CommentsRepository from '../../comments.repository';
+import CommentsRepository from '../../interfaces/comments.repository';
 import UpdateCommentCommand from '../commands/update.comment.command';
 
 @CommandHandler(UpdateCommentCommand)

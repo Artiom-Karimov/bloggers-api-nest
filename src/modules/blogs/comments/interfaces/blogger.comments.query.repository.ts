@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import PageViewModel from '../../../common/models/page.view.model';
-import BloggerCommentViewModel from './models/view/blogger.comment.view.model';
-import GetBloggerCommentsQuery from './models/input/get.blogger.comments.query';
+import PageViewModel from '../../../../common/models/page.view.model';
+import BloggerCommentViewModel from '../models/view/blogger.comment.view.model';
+import GetBloggerCommentsQuery from '../models/input/get.blogger.comments.query';
 
 @Injectable()
 export default abstract class BloggerCommentsQueryRepository {

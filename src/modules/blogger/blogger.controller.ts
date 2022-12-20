@@ -34,7 +34,7 @@ import CreatePostCommand from '../blogs/posts/commands/commands/create.post.comm
 import UpdatePostCommand from '../blogs/posts/commands/commands/update.post.command';
 import DeletePostCommand from '../blogs/posts/commands/commands/delete.post.command';
 import BloggerCommentViewModel from '../blogs/comments/models/view/blogger.comment.view.model';
-import BloggerCommentsQueryRepository from '../blogs/comments/blogger.comments.query.repository';
+import BloggerCommentsQueryRepository from '../blogs/comments/interfaces/blogger.comments.query.repository';
 import GetBloggerCommentsQuery from '../blogs/comments/models/input/get.blogger.comments.query';
 import IdParams from '../../common/models/id.param';
 

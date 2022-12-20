@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import CommentsRepository from '../comments.repository';
+import CommentsRepository from '../interfaces/comments.repository';
 import CommentModel from '../models/comment.model';
 import Comment from './models/comment';
 import CommentMapper from './models/comment.mapper';

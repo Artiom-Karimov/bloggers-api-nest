@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import CommentModel from '../comments/models/comment.model';
+import CommentModel from '../models/comment.model';
 
 @Injectable()
 export default abstract class CommentsRepository {

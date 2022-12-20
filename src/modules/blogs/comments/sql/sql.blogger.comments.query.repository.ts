@@ -3,7 +3,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import PageViewModel from '../../../../common/models/page.view.model';
 import { LikesInfoModel } from '../../likes/models/likes.info.model';
-import BloggerCommentsQueryRepository from '../blogger.comments.query.repository';
+import BloggerCommentsQueryRepository from '../interfaces/blogger.comments.query.repository';
 import GetBloggerCommentsQuery from '../models/input/get.blogger.comments.query';
 import BloggerCommentViewModel from '../models/view/blogger.comment.view.model';
 import CommentMapper from './models/comment.mapper';
