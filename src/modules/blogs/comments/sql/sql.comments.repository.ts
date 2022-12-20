@@ -15,7 +15,7 @@ export default class SqlCommentsRepository extends CommentsRepository {
   public async get(id: string): Promise<CommentModel | undefined> {
     const result = await this.db.query(
       `
-      select "id","postId","userId","userLogin","bannedByAdmin",
+      select "id","postId","userId","bannedByAdmin",
       "bannedByBlogger","content","createdAt"
       from "comment"
       where "id" = $1;
@@ -30,15 +30,14 @@ export default class SqlCommentsRepository extends CommentsRepository {
     const dbComment = CommentMapper.fromDomain(comment);
     await this.db.query(
       `
-      insert into "comment" ("id","postId","userId","userLogin","bannedByAdmin",
+      insert into "comment" ("id","postId","userId","bannedByAdmin",
       "bannedByBlogger","content","createdAt")
-      values ($1,$2,$3,$4,$5,$6,$7,$8);
+      values ($1,$2,$3,$4,$5,$6,$7);
       `,
       [
         dbComment.id,
         dbComment.postId,
         dbComment.userId,
-        dbComment.userLogin,
         dbComment.bannedByAdmin,
         dbComment.bannedByBlogger,
         dbComment.content,

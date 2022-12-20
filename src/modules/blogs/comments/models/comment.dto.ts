@@ -3,7 +3,6 @@ export default class CommentDto {
     public id: string,
     public postId: string,
     public userId: string,
-    public userLogin: string,
     public bannedByAdmin: boolean,
     public bannedByBlogger: boolean,
     public content: string,
