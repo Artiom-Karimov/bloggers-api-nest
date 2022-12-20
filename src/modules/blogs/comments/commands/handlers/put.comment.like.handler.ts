@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BlogError } from '../../../blogs/models/blog.error';
 import CommentLikesRepository from '../../../likes/interfaces/comment.likes.repository';
 import LikeModel from '../../../likes/models/like.model';
-import CommentsRepository from '../../comments.repository';
+import CommentsRepository from '../../interfaces/comments.repository';
 import PutCommentLikeCommand from '../commands/put.comment.like.command';
 
 @CommandHandler(PutCommentLikeCommand)

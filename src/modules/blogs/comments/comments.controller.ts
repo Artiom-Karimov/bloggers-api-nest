@@ -6,7 +6,7 @@ import {
   NotFoundException,
   Param,
 } from '@nestjs/common';
-import CommentsQueryRepository from './comments.query.repository';
+import CommentsQueryRepository from './interfaces/comments.query.repository';
 import CommentViewModel from './models/view/comment.view.model';
 import {
   Body,

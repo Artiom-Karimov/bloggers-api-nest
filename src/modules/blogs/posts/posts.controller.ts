@@ -13,7 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import PageViewModel from '../../../common/models/page.view.model';
-import CommentsQueryRepository from '../comments/comments.query.repository';
+import CommentsQueryRepository from '../comments/interfaces/comments.query.repository';
 import CommentViewModel from '../comments/models/view/comment.view.model';
 import GetCommentsQuery from '../comments/models/input/get.comments.query';
 import GetPostsQuery from '../posts/models/get.posts.query';

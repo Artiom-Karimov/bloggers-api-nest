@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
 import PageViewModel from '../../../../common/models/page.view.model';
 import CommentLikesQueryRepository from '../../likes/comment.likes.query.repository';
-import CommentsQueryRepository from '../comments.query.repository';
+import CommentsQueryRepository from '../interfaces/comments.query.repository';
 import CommentMapper from './models/comment.mapper';
 import Comment, { CommentDocument } from './models/comment.schema';
 import GetCommentsQuery from '../models/input/get.comments.query';

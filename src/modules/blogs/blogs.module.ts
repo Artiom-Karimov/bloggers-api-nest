@@ -4,8 +4,8 @@ import BlogsController from './blogs/blogs.controller';
 import BlogsQueryRepository from './blogs/interfaces/blogs.query.repository';
 import BlogsRepository from './blogs/interfaces/blogs.repository';
 import CommentsController from './comments/comments.controller';
-import CommentsQueryRepository from './comments/comments.query.repository';
-import CommentsRepository from './comments/comments.repository';
+import CommentsQueryRepository from './comments/interfaces/comments.query.repository';
+import CommentsRepository from './comments/interfaces/comments.repository';
 import CommentLikesRepository from './likes/interfaces/comment.likes.repository';
 import PostLikesRepository from './likes/interfaces/post.likes.repository';
 import Blog, { BlogSchema } from './blogs/mongoose/models/blog.schema';
@@ -31,7 +31,7 @@ import { PutCommentLikeHandler } from './comments/commands/handlers/put.comment.
 import { CqrsModule } from '@nestjs/cqrs';
 import { BanBlogHandler } from './blogs/commands/handlers/ban.blog.handler';
 import AdminBlogsQueryRepository from './blogs/interfaces/admin.blogs.query.repository';
-import BloggerCommentsQueryRepository from './comments/blogger.comments.query.repository';
+import BloggerCommentsQueryRepository from './comments/interfaces/blogger.comments.query.repository';
 import BlogUserBanRepository from './blogs/interfaces/blog.user.ban.repository';
 import BlogUserBan, {
   BlogUserBanSchema,

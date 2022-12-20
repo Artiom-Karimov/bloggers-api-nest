@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import SessionsRepository from '../../../users/interfaces/sessions.repository';
 import { BlogError } from '../../../blogs/blogs/models/blog.error';
-import CommentsRepository from '../../../blogs/comments/comments.repository';
+import CommentsRepository from '../../../blogs/comments/interfaces/comments.repository';
 import CommentLikesRepository from '../../../blogs/likes/interfaces/comment.likes.repository';
 import PostLikesRepository from '../../../blogs/likes/interfaces/post.likes.repository';
 import UserBanModel from '../../../users/models/user.ban.model';

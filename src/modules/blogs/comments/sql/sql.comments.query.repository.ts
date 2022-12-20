@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm';
 import PageViewModel from '../../../../common/models/page.view.model';
 import { LikesInfoModel } from '../../likes/models/likes.info.model';
 import Comment from './models/comment';
-import CommentsQueryRepository from '../comments.query.repository';
+import CommentsQueryRepository from '../interfaces/comments.query.repository';
 import GetCommentsQuery from '../models/input/get.comments.query';
 import CommentViewModel from '../models/view/comment.view.model';
 import CommentMapper from './models/comment.mapper';

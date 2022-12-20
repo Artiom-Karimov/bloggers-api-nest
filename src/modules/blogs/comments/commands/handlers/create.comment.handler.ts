@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import BlogUserBanRepository from '../../../blogs/interfaces/blog.user.ban.repository';
 import { BlogError } from '../../../blogs/models/blog.error';
 import PostsRepository from '../../../posts/interfaces/posts.repository';
-import CommentsRepository from '../../comments.repository';
+import CommentsRepository from '../../interfaces/comments.repository';
 import CommentModel from '../../models/comment.model';
 import CreateCommentCommand from '../commands/create.comment.command';
 
