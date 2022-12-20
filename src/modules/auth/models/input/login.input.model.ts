@@ -1,11 +1,10 @@
-import { MaxLength, MinLength } from 'class-validator';
+import { Matches } from 'class-validator';
+import { regex } from '../../../../common/utils/validation.regex';
 
 export default class LoginInputModel {
-  @MinLength(3)
-  @MaxLength(100)
+  @Matches(regex.email)
   loginOrEmail: string;
 
-  @MinLength(6)
-  @MaxLength(20)
+  @Matches(regex.password)
   password: string;
 }

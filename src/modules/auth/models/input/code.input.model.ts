@@ -1,7 +1,7 @@
-import { MaxLength, MinLength } from 'class-validator';
+import { Matches } from 'class-validator';
+import { regex } from '../../../../common/utils/validation.regex';
 
 export default class CodeInputModel {
-  @MinLength(10)
-  @MaxLength(200)
+  @Matches(regex.uuid)
   code: string;
 }

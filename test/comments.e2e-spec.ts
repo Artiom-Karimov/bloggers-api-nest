@@ -54,11 +54,12 @@ describe('CommentsController (e2e)', () => {
     await stop();
   });
 
-  it('404 for non-existing post', async () => {
+  it('>= 400 for non-existing post', async () => {
     const result = await request(app.getHttpServer()).get(
       '/posts/1234abc/comments',
     );
-    expect(result.statusCode).toBe(404);
+    expect(result.statusCode).toBeGreaterThanOrEqual(400);
+    expect(result.statusCode).toBeLessThan(500);
   });
   it('empty page for created post', async () => {
     const result = await request(app.getHttpServer()).get(postBase);

@@ -1,11 +1,10 @@
-import { MaxLength, MinLength } from 'class-validator';
+import { Matches } from 'class-validator';
+import { regex } from '../../../../common/utils/validation.regex';
 
 export default class NewPasswordInputModel {
-  @MinLength(6)
-  @MaxLength(20)
+  @Matches(regex.password)
   newPassword: string;
 
-  @MinLength(10)
-  @MaxLength(200)
+  @Matches(regex.uuid)
   recoveryCode: string;
 }

@@ -1,0 +1,14 @@
+export const regex = {
+  login: /^[a-z0-9_-]{3,10}$/i,
+  loginTerm: /^[a-z0-9_-]{1,10}$/i,
+  email: /^[\w\@\.\-]{3,100}$/i,
+  emailTerm: /^[\w\@\.\-]{1,100}$/i,
+  password: /^[\w\@\.\-\&\$\*\#\!\%\^\~\,]{6,20}$/i,
+  uuid: /^[a-f,0-9,-]{36,36}$/,
+  blogName: /^[a-z0-9_-\s]{1,15}$/i,
+  postTitle: /^[a-z0-9_-\s]{1,30}$/i,
+  httpsUrl:
+    /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/,
+};
+
+Object.freeze(regex);

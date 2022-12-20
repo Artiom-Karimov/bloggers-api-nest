@@ -16,6 +16,7 @@ import PostViewModel from '../posts/models/post.view.model';
 import GetPostsQuery from '../posts/models/get.posts.query';
 import TokenPayload from '../../auth/models/jwt/token.payload';
 import { User } from '../../auth/guards/user.decorator';
+import IdParams from '../../../common/models/id.param';
 
 @Controller('blogs')
 export default class BlogsController {
@@ -30,8 +31,8 @@ export default class BlogsController {
     return this.queryRepo.getBlogs(query);
   }
   @Get(':id')
-  async getOne(@Param('id') id: string): Promise<BlogViewModel> {
-    const blog = await this.queryRepo.getBlog(id);
+  async getOne(@Param() params: IdParams): Promise<BlogViewModel> {
+    const blog = await this.queryRepo.getBlog(params.id);
     if (blog) return blog;
     throw new NotFoundException();
   }
@@ -40,13 +41,13 @@ export default class BlogsController {
   @UseGuards(OptionalBearerAuthGuard)
   async getPosts(
     @Query() reqQuery: any,
-    @Param('id') id: string,
+    @Param() params: IdParams,
     @User() user: TokenPayload,
   ): Promise<PageViewModel<PostViewModel>> {
-    const blog = await this.queryRepo.getBlog(id);
+    const blog = await this.queryRepo.getBlog(params.id);
     if (!blog) throw new NotFoundException();
     const userId = user ? user.userId : undefined;
-    const query = new GetPostsQuery(reqQuery, id, userId);
+    const query = new GetPostsQuery(reqQuery, params.id, userId);
     return this.postsQueryRepo.getPosts(query);
   }
 }

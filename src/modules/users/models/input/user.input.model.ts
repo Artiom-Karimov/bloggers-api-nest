@@ -1,16 +1,13 @@
-import { Transform, TransformFnParams } from 'class-transformer';
-import { IsEmail, MinLength, MaxLength } from 'class-validator';
+import { IsEmail, Matches } from 'class-validator';
+import { regex } from '../../../../common/utils/validation.regex';
 
 export default class UserInputModel {
-  @Transform(({ value }: TransformFnParams) => value?.trim())
-  @MinLength(3)
-  @MaxLength(10)
+  @Matches(regex.login)
   login: string;
 
   @IsEmail()
   email: string;
 
-  @MinLength(6)
-  @MaxLength(20)
+  @Matches(regex.password)
   password: string;
 }
