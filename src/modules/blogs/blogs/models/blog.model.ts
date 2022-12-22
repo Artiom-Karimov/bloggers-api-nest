@@ -1,4 +1,3 @@
-import { Exception } from 'handlebars';
 import DateGenerator from '../../../../common/utils/date.generator';
 import IdGenerator from '../../../../common/utils/id.generator';
 import BlogDto from './blog.dto';
@@ -65,7 +64,7 @@ export default class BlogModel {
     return this._name;
   }
   get isBanned(): boolean {
-    return this._banInfo.isBanned;
+    return this._banInfo?.isBanned;
   }
   get ownerId(): string | null {
     if (!this._ownerInfo || !this._ownerInfo.userId) return null;
@@ -80,9 +79,8 @@ export default class BlogModel {
     };
   }
   set ownerInfo(data: BlogOwnerInfo) {
-    if (this.ownerId) throw new Exception('Blog already has an owner');
-    if (!(data.userId || data.userLogin))
-      throw new Exception('Invalid blog owner');
+    if (this.ownerId) throw new Error('Blog already has an owner');
+    if (!(data.userId || data.userLogin)) throw new Error('Invalid blog owner');
     this.ownerInfo = { userId: data.userId, userLogin: data.userLogin };
   }
 
