@@ -4,9 +4,7 @@ const configModule = ConfigModule.forRoot();
 
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import * as mongo from './config/mongo';
 import * as sql from './config/sql';
-import { MongooseModule } from '@nestjs/mongoose';
 import { BlogsModule } from './modules/blogs/blogs.module';
 import { TestModule } from './modules/test/test.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -20,7 +18,6 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 @Module({
   imports: [
     configModule,
-    MongooseModule.forRoot(mongo.mongoUri),
     TypeOrmModule.forRoot(sql.config as TypeOrmModuleOptions),
     TestModule,
     BlogsModule,
