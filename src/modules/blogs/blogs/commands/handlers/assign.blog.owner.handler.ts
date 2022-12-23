@@ -21,10 +21,7 @@ export class AssignBlogOwnerHandler
     if (!blog) return BlogError.NotFound;
 
     try {
-      blog.ownerInfo = {
-        userId: user.id,
-        userLogin: user.login,
-      };
+      blog.ownerId = user.id;
     } catch (error) {
       return BlogError.Forbidden;
     }

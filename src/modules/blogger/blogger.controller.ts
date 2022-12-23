@@ -27,7 +27,6 @@ import CreateBlogCommand from '../blogs/blogs/commands/commands/create.blog.comm
 import UpdateBlogCommand from '../blogs/blogs/commands/commands/update.blog.command';
 import { BlogError } from '../blogs/blogs/models/blog.error';
 import DeleteBlogCommand from '../blogs/blogs/commands/commands/delete.blog.command';
-import { BlogOwnerInfo } from '../blogs/blogs/models/blog.model';
 import { User } from '../auth/guards/user.decorator';
 import TokenPayload from '../auth/models/jwt/token.payload';
 import CreatePostCommand from '../blogs/posts/commands/commands/create.post.command';
@@ -63,12 +62,8 @@ export default class BloggerController {
     @Body() data: BlogInputModel,
     @User() user: TokenPayload,
   ): Promise<BlogViewModel> {
-    const owner: BlogOwnerInfo = {
-      userId: user.userId,
-      userLogin: user.userLogin,
-    };
     const created = await this.commandBus.execute(
-      new CreateBlogCommand(data, owner),
+      new CreateBlogCommand(data, user.userId),
     );
     if (!created) throw new BadRequestException();
     const retrieved = await this.blogsQueryRepo.getBlog(created);

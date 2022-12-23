@@ -16,7 +16,7 @@ export default class SqlBlogsRepository extends BlogsRepository {
     const result: Array<any> = await this.db.query(
       `
       select b."id", b."name", b."description", b."websiteUrl", b."createdAt",
-      o."userId", o."userLogin", bb."isBanned", bb."banDate"
+      o."userId", bb."isBanned", bb."banDate"
       from 
       ("blog" b left join "blogOwner" o on b."id" = o."blogId")
       left join "blogBan" bb
@@ -82,10 +82,10 @@ export default class SqlBlogsRepository extends BlogsRepository {
     await this.db.query(
       `
     insert into "blogOwner"
-    ("blogId","userId","userLogin")
-    values ($1,$2,$3)
+    ("blogId","userId")
+    values ($1,$2)
     `,
-      [blog.id, blog.userId, blog.userLogin],
+      [blog.id, blog.userId],
     );
   }
   private async createBan(blog: Blog) {
@@ -113,10 +113,10 @@ export default class SqlBlogsRepository extends BlogsRepository {
     const result = await this.db.query(
       `
     update "blogOwner"
-    set "userId" = $2, "userLogin" = $3
+    set "userId" = $2
     where "blogId" = $1
     `,
-      [blog.id, blog.userId, blog.userLogin],
+      [blog.id, blog.userId],
     );
     return !!result[1];
   }

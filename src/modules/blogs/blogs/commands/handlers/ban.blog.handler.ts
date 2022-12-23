@@ -16,7 +16,7 @@ export class BanBlogHandler implements ICommandHandler<BanBlogCommand> {
     if (!blog) return BlogError.NotFound;
 
     if (blog.isBanned === command.data.isBanned) return BlogError.NoError;
-    blog.banInfo = command.data.isBanned;
+    blog.isBanned = command.data.isBanned;
     let result = await this.repo.update(blog);
 
     result &&= await this.postsRepo.setBlogBan(command.blogId, blog.isBanned);

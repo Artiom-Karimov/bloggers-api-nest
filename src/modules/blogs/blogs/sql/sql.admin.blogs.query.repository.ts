@@ -42,11 +42,11 @@ export default class SqlAdminBlogsQueryRepository extends AdminBlogsQueryReposit
     const result: Array<any> = await this.db.query(
       `
       select b."id", b."name", b."description", b."websiteUrl", b."createdAt",
-      o."userId", o."userLogin", bb."isBanned", bb."banDate"
+      o."userId", u."login" as "userLogin", bb."isBanned", bb."banDate"
       from 
-      ("blog" b left join "blogOwner" o on b."id" = o."blogId")
-      left join "blogBan" bb
-      on b."id" = bb."blogId"
+      "blog" b left join "blogOwner" o on b."id" = o."blogId"
+      left join "blogBan" bb on b."id" = bb."blogId"
+      left join "user" u on o."userId" = u."id"
       where b."id" = $1;
       `,
       [id],
@@ -90,7 +90,7 @@ export default class SqlAdminBlogsQueryRepository extends AdminBlogsQueryReposit
     const result: Blog[] = await this.db.query(
       `
       select bo."id", bo."name", bo."description", bo."websiteUrl", bo."createdAt",
-      bo."userId", bo."userLogin", bb."isBanned", bb."banDate"
+      bo."userId", u."login" as "userLogin", bb."isBanned", bb."banDate"
       from 
       (
         select * from "blog" b
@@ -99,8 +99,8 @@ export default class SqlAdminBlogsQueryRepository extends AdminBlogsQueryReposit
         order by "${params.sortBy}" ${order}
         limit $1 offset $2
       ) as bo
-      left join "blogBan" bb
-      on bo."id" = bb."blogId"
+      left join "blogBan" bb on bo."id" = bb."blogId"
+      left join "user" u on bo."userId" = u."id"
       order by "${params.sortBy}" ${order}
       `,
       [page.pageSize, page.calculateSkip()],

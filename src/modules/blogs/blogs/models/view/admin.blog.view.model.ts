@@ -1,5 +1,13 @@
-import { BlogBanInfo, BlogOwnerInfo } from '../blog.model';
 import BlogViewModel from './blog.view.model';
+
+export type BlogBanInfo = {
+  isBanned: boolean;
+  banDate: string | null;
+};
+export type BlogOwnerInfo = {
+  userId: string | null;
+  userLogin: string | null;
+};
 
 export default class AdminBlogViewModel extends BlogViewModel {
   constructor(

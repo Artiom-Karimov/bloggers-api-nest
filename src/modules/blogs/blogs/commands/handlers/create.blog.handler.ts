@@ -8,7 +8,7 @@ export class CreateBlogHandler implements ICommandHandler<CreateBlogCommand> {
   constructor(private readonly repo: BlogsRepository) { }
 
   async execute(command: CreateBlogCommand): Promise<string> {
-    const newBlog = BlogModel.create(command.data, command.owner);
+    const newBlog = BlogModel.create(command.data, command.ownerId);
     return this.repo.create(newBlog);
   }
 }

@@ -1,5 +1,8 @@
-import AdminBlogViewModel from '../../models/view/admin.blog.view.model';
-import BlogModel, { BlogBanInfo, BlogOwnerInfo } from '../../models/blog.model';
+import AdminBlogViewModel, {
+  BlogBanInfo,
+  BlogOwnerInfo,
+} from '../../models/view/admin.blog.view.model';
+import BlogModel from '../../models/blog.model';
 import BlogViewModel from '../../models/view/blog.view.model';
 import BlogDto from '../../models/blog.dto';
 import { Blog } from './blog';
@@ -12,11 +15,11 @@ export default class BlogMapper {
       dto.name,
       dto.description,
       dto.websiteUrl,
-      new Date(dto.createdAt),
-      dto.ownerInfo?.userId,
-      dto.ownerInfo?.userLogin,
-      dto.banInfo?.isBanned,
-      dto.banInfo?.banDate ? new Date(dto.banInfo.banDate) : null,
+      dto.createdAt,
+      dto.ownerId,
+      null,
+      dto.isBanned,
+      dto.banDate,
     );
   }
   public static toDomain(model: Blog): BlogModel {
@@ -25,9 +28,10 @@ export default class BlogMapper {
       model.name,
       model.description,
       model.websiteUrl,
-      model.createdAt.toISOString(),
-      BlogMapper.getOwnerInfo(model),
-      BlogMapper.getBanInfo(model),
+      model.createdAt,
+      model.userId,
+      model.isBanned,
+      model.banDate,
     );
     return new BlogModel(dto);
   }

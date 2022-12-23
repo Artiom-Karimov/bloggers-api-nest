@@ -1,25 +1,17 @@
-import DateGenerator from '../../../../common/utils/date.generator';
 import IdGenerator from '../../../../common/utils/id.generator';
+import { regex } from '../../../../common/utils/validation.regex';
 import BlogDto from './blog.dto';
 import BlogInputModel from './input/blog.input.model';
-
-export type BlogOwnerInfo = {
-  userId?: string;
-  userLogin?: string;
-};
-export type BlogBanInfo = {
-  isBanned: boolean;
-  banDate?: string;
-};
 
 export default class BlogModel {
   private _id: string;
   private _name: string;
   private _description: string;
   private _websiteUrl: string;
-  private _createdAt: string;
-  private _ownerInfo?: BlogOwnerInfo;
-  private _banInfo?: BlogBanInfo;
+  private _createdAt: Date;
+  private _ownerId: string | null;
+  private _isBanned: boolean;
+  private _banDate: Date | null;
 
   constructor(dto: BlogDto) {
     this._id = dto.id;
@@ -27,22 +19,20 @@ export default class BlogModel {
     this._description = dto.description;
     this._websiteUrl = dto.websiteUrl;
     this._createdAt = dto.createdAt;
-    this._ownerInfo = dto.ownerInfo;
-    this._banInfo = dto.banInfo ? dto.banInfo : { isBanned: false };
+    this._ownerId = dto.ownerId;
+    this._isBanned = dto.isBanned;
+    this._banDate = dto.banDate;
   }
-  public static create(
-    data: BlogInputModel,
-    ownerInfo?: BlogOwnerInfo,
-    banInfo?: BlogBanInfo,
-  ): BlogModel {
+  public static create(data: BlogInputModel, ownerId?: string): BlogModel {
     return new BlogModel({
       id: IdGenerator.generate(),
       name: data.name,
       description: data.description,
       websiteUrl: data.websiteUrl,
-      createdAt: DateGenerator.generate(),
-      ownerInfo: ownerInfo,
-      banInfo: banInfo,
+      createdAt: new Date(),
+      ownerId,
+      isBanned: false,
+      banDate: null,
     });
   }
   public toDto() {
@@ -52,8 +42,9 @@ export default class BlogModel {
       this._description,
       this._websiteUrl,
       this._createdAt,
-      { ...this._ownerInfo },
-      { ...this._banInfo },
+      this._ownerId,
+      this._isBanned,
+      this._banDate,
     );
   }
 
@@ -63,25 +54,24 @@ export default class BlogModel {
   get name(): string {
     return this._name;
   }
+
   get isBanned(): boolean {
-    return this._banInfo?.isBanned;
+    return this._isBanned;
   }
-  get ownerId(): string | null {
-    if (!this._ownerInfo || !this._ownerInfo.userId) return null;
-    return this._ownerInfo.userId;
+  set isBanned(isBanned: boolean) {
+    if (this._isBanned === isBanned) return;
+    this._isBanned = isBanned;
+    this._banDate = isBanned ? new Date() : null;
   }
 
-  set banInfo(isBanned: boolean) {
-    if (this._banInfo?.isBanned === isBanned) return;
-    this._banInfo = {
-      isBanned,
-      banDate: isBanned ? DateGenerator.generate() : null,
-    };
+  get ownerId(): string | null {
+    if (!this._ownerId) return null;
+    return this._ownerId;
   }
-  set ownerInfo(data: BlogOwnerInfo) {
-    if (this.ownerId) throw new Error('Blog already has an owner');
-    if (!(data.userId || data.userLogin)) throw new Error('Invalid blog owner');
-    this.ownerInfo = { userId: data.userId, userLogin: data.userLogin };
+  set ownerId(id: string) {
+    if (this._ownerId) throw new Error('Blog already has an owner');
+    if (!id || !regex.uuid.test(id)) throw new Error('Invalid blog owner');
+    this._ownerId = id;
   }
 
   updateData(data: BlogInputModel) {

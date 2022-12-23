@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS public."blogOwner"
 (
     "blogId" uuid NOT NULL,
     "userId" uuid NOT NULL,
-    "userLogin" character varying(15) COLLATE "C" NOT NULL,
     CONSTRAINT blogowner_pkey PRIMARY KEY ("blogId"),
     CONSTRAINT "blog" FOREIGN KEY ("blogId")
         REFERENCES public."blog" ("id") MATCH SIMPLE
