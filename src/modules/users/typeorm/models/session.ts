@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user';
+import { SessionDto } from '../../models/dto/session.dto';
 
 @Entity()
 export class Session {
@@ -22,4 +23,13 @@ export class Session {
 
   @Column({ type: 'timestamptz' })
   expiresAt: Date;
+
+  constructor(data: SessionDto) {
+    this.ip = data.ip;
+    this.deviceId = data.deviceId;
+    this.deviceName = data.deviceName;
+    this.userId = data.userId;
+    this.issuedAt = data.issuedAt;
+    this.expiresAt = data.expiresAt;
+  }
 }

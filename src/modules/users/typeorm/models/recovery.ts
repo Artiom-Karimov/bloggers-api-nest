@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { User } from './user';
+import { RecoveryDto } from '../../models/dto/recovery.dto';
 
 @Entity()
 export class Recovery {
@@ -14,4 +15,10 @@ export class Recovery {
 
   @Column({ type: 'timestamptz', nullable: true })
   expiration: Date;
+
+  constructor(data: RecoveryDto) {
+    this.userId = data.userId;
+    this.code = data.code;
+    this.expiration = data.expiration;
+  }
 }

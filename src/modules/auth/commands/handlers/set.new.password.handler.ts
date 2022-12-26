@@ -17,8 +17,7 @@ export default class SetNewPasswordPasswordHandler
     const recovery = await this.recoveryRepo.getByCode(
       command.data.recoveryCode,
     );
-    if (!recovery || recovery.expiresAt < new Date().getTime())
-      return UserError.InvalidCode;
+    if (!recovery || recovery.isExpired) return UserError.InvalidCode;
 
     await this.recoveryRepo.delete(recovery.userId);
 

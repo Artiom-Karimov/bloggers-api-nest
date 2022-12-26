@@ -1,23 +1,39 @@
-import DateGenerator from '../../../common/utils/date.generator';
 import { BanUserCreateModel } from '../../admin/commands/commands/ban.user.command';
+import { UserBanDto } from './dto/user.ban.dto';
 
 export default class UserBanModel {
-  constructor(
-    public userId: string,
-    public isBanned: boolean,
-    public banReason: string | null,
-    public banDate: string | null,
-  ) { }
+  private userId: string;
+  private isBanned: boolean;
+  private banReason: string | null;
+  private banDate: Date | null;
+
+  constructor(data: UserBanDto) {
+    this.userId = data.userId;
+    this.isBanned = data.isBanned;
+    this.banReason = data.banReason;
+    this.banDate = data.banDate;
+  }
+  public toDto(): UserBanDto {
+    return new UserBanDto(
+      this.userId,
+      this.isBanned,
+      this.banReason,
+      this.banDate,
+    );
+  }
+
   public static create(data: BanUserCreateModel): UserBanModel {
     if (!data.userId) throw new Error('You must specify userId for ban');
     return new UserBanModel(
-      data.userId,
-      data.isBanned ?? null,
-      data.banReason ?? null,
-      DateGenerator.generate(),
+      new UserBanDto(
+        data.userId,
+        data.isBanned ?? null,
+        data.banReason ?? null,
+        new Date(),
+      ),
     );
   }
   public static createEmpty(userId: string): UserBanModel {
-    return new UserBanModel(userId, false, null, null);
+    return new UserBanModel(new UserBanDto(userId, false, null, null));
   }
 }

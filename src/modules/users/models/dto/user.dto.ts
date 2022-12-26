@@ -4,6 +4,6 @@ export default class UserDto {
     public login: string,
     public email: string,
     public passwordHash: string,
-    public createdAt: string,
+    public createdAt: Date,
   ) { }
 }

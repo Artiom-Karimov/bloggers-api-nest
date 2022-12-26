@@ -50,7 +50,7 @@ export default class RegisterHandler
 
     const created = await this.emailRepo.create(ec);
 
-    await this.mailService.sendEmailConfirmation(user, ec.code);
+    await this.mailService.sendEmailConfirmation(user, ec.confirmationCode);
     return created;
   }
 }

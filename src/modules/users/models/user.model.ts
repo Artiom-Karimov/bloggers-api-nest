@@ -1,15 +1,14 @@
-import DateGenerator from '../../../common/utils/date.generator';
 import Hasher from '../../../common/utils/hasher';
 import IdGenerator from '../../../common/utils/id.generator';
 import UserInputModel from './input/user.input.model';
-import UserDto from './user.dto';
+import UserDto from './dto/user.dto';
 
 export default class UserModel {
   private _id: string;
   private _login: string;
   private _email: string;
   private _passwordHash: string;
-  private _createdAt: string;
+  private _createdAt: Date;
 
   constructor(dto: UserDto) {
     this._id = dto.id;
@@ -27,7 +26,7 @@ export default class UserModel {
         data.login,
         data.email,
         hash,
-        DateGenerator.generate(),
+        new Date(),
       ),
     );
   }

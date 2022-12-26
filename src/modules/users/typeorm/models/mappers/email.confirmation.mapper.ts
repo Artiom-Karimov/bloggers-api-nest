@@ -1,21 +1,19 @@
+import { EmailConfirmationDto } from '../../../models/dto/email.confirmation.dto';
 import EmailConfirmationModel from '../../../models/email.confirmation.model';
-import EmailConfirmation from '../email.confirmation';
+import { EmailConfirmation } from '../email.confirmation';
 
 export default class EmailConfirmationMapper {
   public static fromDomain(model: EmailConfirmationModel): EmailConfirmation {
-    return new EmailConfirmation(
-      model.id,
-      model.confirmed,
-      model.code,
-      new Date(model.expiration),
-    );
+    return new EmailConfirmation(model.toDto());
   }
   public static toDomain(model: EmailConfirmation): EmailConfirmationModel {
     return new EmailConfirmationModel(
-      model.userId,
-      model.confirmed,
-      model.code,
-      model.expiration.getTime(),
+      new EmailConfirmationDto(
+        model.userId,
+        model.confirmed,
+        model.code,
+        model.expiration,
+      ),
     );
   }
 }

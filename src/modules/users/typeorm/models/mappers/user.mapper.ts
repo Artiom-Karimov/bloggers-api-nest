@@ -1,21 +1,13 @@
 import SessionUserViewModel from '../../../models/view/session.user.view.model';
 import UserModel from '../../../models/user.model';
-import User from '../user';
+import { User } from '../user';
 import UserViewModel from '../../../models/view/user.view.model';
-import UserWithBan from '../user.with.ban';
 import UserBanViewModel from '../../../models/view/user.ban.view.model';
-import UserDto from '../../../models/user.dto';
+import UserDto from '../../../models/dto/user.dto';
 
 export default class UserMapper {
   public static fromDomain(model: UserModel): User {
-    const dto = model.toDto();
-    return new User(
-      dto.id,
-      dto.login,
-      dto.email,
-      dto.passwordHash,
-      new Date(dto.createdAt),
-    );
+    return new User(model.toDto());
   }
   public static toDomain(model: User): UserModel {
     return new UserModel(
@@ -24,11 +16,11 @@ export default class UserMapper {
         model.login,
         model.email,
         model.hash,
-        model.createdAt.toISOString(),
+        model.createdAt,
       ),
     );
   }
-  public static toView(model: UserWithBan): UserViewModel {
+  public static toView(model: User): UserViewModel {
     return new UserViewModel(
       model.id,
       model.login,
@@ -40,12 +32,12 @@ export default class UserMapper {
   public static toSessionView(model: User): SessionUserViewModel {
     return new SessionUserViewModel(model.email, model.login, model.id);
   }
-  private static getBanView(model: UserWithBan): UserBanViewModel {
-    if (model.isBanned)
+  private static getBanView(model: User): UserBanViewModel {
+    if (model.ban?.isBanned)
       return new UserBanViewModel(
-        model.isBanned,
-        model.banDate.toISOString(),
-        model.banReason,
+        model.ban.isBanned,
+        model.ban.banDate.toISOString(),
+        model.ban.banReason,
       );
     return new UserBanViewModel(false, null, null);
   }

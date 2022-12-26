@@ -12,7 +12,7 @@ export default class SessionsService {
 
   public async checkLoginAllowed(id: string): Promise<UserError> {
     const ec = await this.emailRepo.getByUser(id);
-    if (!ec || !ec.confirmed) return UserError.Unconfirmed;
+    if (!ec || !ec.isConfirmed) return UserError.Unconfirmed;
     const ban = await this.banRepo.get(id);
     if (ban === undefined || !ban.isBanned) return UserError.NoError;
     return UserError.Forbidden;

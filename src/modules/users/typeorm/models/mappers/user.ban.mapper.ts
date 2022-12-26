@@ -1,22 +1,20 @@
+import { UserBanDto } from '../../../models/dto/user.ban.dto';
 import UserBanModel from '../../../models/user.ban.model';
 import UserBanViewModel from '../../../models/view/user.ban.view.model';
-import UserBan from '../user.ban';
+import { UserBan } from '../user.ban';
 
 export default class UserBanMapper {
   public static fromDomain(model: UserBanModel): UserBan {
-    return new UserBan(
-      model.userId,
-      model.isBanned,
-      model.banReason,
-      new Date(model.banDate),
-    );
+    return new UserBan(model.toDto());
   }
   public static toDomain(model: UserBan): UserBanModel {
     return new UserBanModel(
-      model.userId,
-      model.isBanned,
-      model.banReason,
-      model.banDate.toISOString(),
+      new UserBanDto(
+        model.userId,
+        model.isBanned,
+        model.banReason,
+        model.banDate,
+      ),
     );
   }
   public static toView(model: UserBan): UserBanViewModel {

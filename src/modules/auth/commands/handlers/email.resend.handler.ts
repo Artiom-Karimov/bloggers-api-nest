@@ -28,7 +28,7 @@ export default class EmailResendHandler
 
   private async createEmailConfirmation(user: UserModel): Promise<UserError> {
     const existing = await this.emailRepo.getByUser(user.id);
-    if (existing?.confirmed) return UserError.AlreadyConfirmed;
+    if (existing?.isConfirmed) return UserError.AlreadyConfirmed;
 
     const ec = EmailConfirmationModel.create(user.id);
 
@@ -36,7 +36,7 @@ export default class EmailResendHandler
       await this.emailRepo.update(ec);
     } else await this.emailRepo.create(ec);
 
-    await this.mailService.sendEmailConfirmation(user, ec.code);
+    await this.mailService.sendEmailConfirmation(user, ec.confirmationCode);
 
     return UserError.NoError;
   }

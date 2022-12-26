@@ -20,8 +20,21 @@ import SqlEmailConfirmationRepository from './sql/sql.email.confirmation.reposit
 import SqlRecoveryRepository from './sql/sql.recovery.repository';
 import SqlUsersBanRepository from './sql/sql.users.ban.repository';
 import SqlUsersBanQueryRepository from './sql/sql.users.ban.query.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './typeorm/models/user';
+import { Session } from './typeorm/models/session';
+import { UserBan } from './typeorm/models/user.ban';
+import { EmailConfirmation } from './typeorm/models/email.confirmation';
+import { Recovery } from './typeorm/models/recovery';
 
 @Module({
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([Session]),
+    TypeOrmModule.forFeature([UserBan]),
+    TypeOrmModule.forFeature([EmailConfirmation]),
+    TypeOrmModule.forFeature([Recovery]),
+  ],
   providers: [
     {
       provide: UsersRepository,
