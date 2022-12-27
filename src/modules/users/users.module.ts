@@ -12,8 +12,6 @@ import RecoveryRepository from './interfaces/recovery.repository';
 
 import SessionsRepository from './interfaces/sessions.repository';
 import SessionsQueryRepository from './interfaces/sessions.query.repository';
-import SqlUsersRepository from './sql/sql.users.repository';
-import SqlUsersQueryRepository from './sql/sql.users.query.repository';
 import SqlSessionsRepository from './sql/sql.sessions.repository';
 import SqlSessionsQueryRepository from './sql/sql.sessions.query.repository';
 import SqlEmailConfirmationRepository from './sql/sql.email.confirmation.repository';
@@ -26,6 +24,8 @@ import { Session } from './typeorm/models/session';
 import { UserBan } from './typeorm/models/user.ban';
 import { EmailConfirmation } from './typeorm/models/email.confirmation';
 import { Recovery } from './typeorm/models/recovery';
+import { OrmUsersRepository } from './typeorm/orm.users.repository';
+import { OrmUsersQueryRepository } from './typeorm/orm.users.query.repository';
 
 @Module({
   imports: [
@@ -38,11 +38,11 @@ import { Recovery } from './typeorm/models/recovery';
   providers: [
     {
       provide: UsersRepository,
-      useClass: SqlUsersRepository,
+      useClass: OrmUsersRepository,
     },
     {
       provide: UsersQueryRepository,
-      useClass: SqlUsersQueryRepository,
+      useClass: OrmUsersQueryRepository,
     },
     {
       provide: UsersBanRepository,

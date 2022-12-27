@@ -20,24 +20,25 @@ export default class UserMapper {
       ),
     );
   }
-  public static toView(model: User): UserViewModel {
+  public static async toView(model: User): Promise<UserViewModel> {
     return new UserViewModel(
       model.id,
       model.login,
       model.email,
       model.createdAt.toISOString(),
-      this.getBanView(model),
+      await this.getBanView(model),
     );
   }
   public static toSessionView(model: User): SessionUserViewModel {
     return new SessionUserViewModel(model.email, model.login, model.id);
   }
-  private static getBanView(model: User): UserBanViewModel {
-    if (model.ban?.isBanned)
+  private static async getBanView(model: User): Promise<UserBanViewModel> {
+    const ban = await model.ban;
+    if (ban?.isBanned)
       return new UserBanViewModel(
-        model.ban.isBanned,
-        model.ban.banDate.toISOString(),
-        model.ban.banReason,
+        ban.isBanned,
+        ban.banDate.toISOString(),
+        ban.banReason,
       );
     return new UserBanViewModel(false, null, null);
   }

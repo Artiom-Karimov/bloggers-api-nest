@@ -29,16 +29,16 @@ export class User {
   createdAt: Date;
 
   @OneToOne(() => EmailConfirmation, (ec) => ec.user)
-  emailConfirmation: EmailConfirmation;
+  emailConfirmation: Promise<EmailConfirmation>;
 
   @OneToOne(() => Recovery, (rec) => rec.user)
-  recovery?: Recovery;
+  recovery: Promise<Recovery>;
 
   @OneToOne(() => UserBan, (ban) => ban.user)
-  ban?: UserBan;
+  ban: Promise<UserBan>;
 
   @OneToMany(() => Session, (s) => s.user)
-  sessions: Session[];
+  sessions: Promise<Session[]>;
 
   constructor(dto: UserDto) {
     this.id = dto.id;
