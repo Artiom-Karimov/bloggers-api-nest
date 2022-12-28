@@ -9,7 +9,9 @@ import { UserBan } from './user.ban';
 import { EmailConfirmation } from './email.confirmation';
 import { Recovery } from './recovery';
 import { Session } from './session';
-import UserDto from '../../models/dto/user.dto';
+import UserInputModel from '../../models/input/user.input.model';
+import Hasher from '../../../../common/utils/hasher';
+import IdGenerator from '../../../../common/utils/id.generator';
 
 @Entity()
 export class User {
@@ -40,11 +42,24 @@ export class User {
   @OneToMany(() => Session, (s) => s.user)
   sessions: Promise<Session[]>;
 
-  constructor(dto: UserDto) {
-    this.id = dto.id;
-    this.login = dto.login;
-    this.email = dto.email;
-    this.hash = dto.passwordHash;
-    this.createdAt = dto.createdAt;
+  private constructor() { }
+
+  public static async create(data: UserInputModel): Promise<User> {
+    const user = new User();
+    user.id = IdGenerator.generate();
+    user.hash = await Hasher.hash(data.password);
+    user.login = data.login;
+    user.email = data.email;
+    user.createdAt = new Date();
+
+    return user;
+  }
+
+  public async checkPassword(password: string): Promise<boolean> {
+    return Hasher.check(password, this.hash);
+  }
+  public async updatePassword(newPassword: string): Promise<User> {
+    this.hash = await Hasher.hash(newPassword);
+    return this;
   }
 }

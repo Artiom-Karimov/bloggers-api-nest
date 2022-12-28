@@ -1,6 +1,8 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import { add } from 'date-fns';
+import * as config from '../../../../config/users';
 import { User } from './user';
-import { RecoveryDto } from '../../models/dto/recovery.dto';
+import IdGenerator from '../../../../common/utils/id.generator';
 
 @Entity()
 export class Recovery {
@@ -16,9 +18,15 @@ export class Recovery {
   @Column({ type: 'timestamptz', nullable: true })
   expiration: Date;
 
-  constructor(data: RecoveryDto, user: User) {
+  constructor(user: User) {
     this.user = user;
-    this.code = data.code;
-    this.expiration = data.expiration;
+    this.code = IdGenerator.generate();
+    this.expiration = add(new Date(), {
+      minutes: config.recoveryExpireMinutes,
+    });
+  }
+
+  get isExpired(): boolean {
+    return this.expiration < new Date();
   }
 }
