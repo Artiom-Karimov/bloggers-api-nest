@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from './user';
 import { SessionDto } from '../../models/dto/session.dto';
 
@@ -8,9 +14,8 @@ export class Session {
   deviceId: string;
 
   @ManyToOne(() => User, (u) => u.sessions)
+  @JoinColumn({ name: 'userId' })
   user: User;
-  @Column()
-  userId: string;
 
   @Column({ type: 'character varying' })
   deviceName: string;
@@ -28,7 +33,6 @@ export class Session {
     this.ip = data.ip;
     this.deviceId = data.deviceId;
     this.deviceName = data.deviceName;
-    this.userId = data.userId;
     this.issuedAt = data.issuedAt;
     this.expiresAt = data.expiresAt;
   }

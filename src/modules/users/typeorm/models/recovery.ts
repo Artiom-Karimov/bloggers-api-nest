@@ -4,11 +4,11 @@ import { RecoveryDto } from '../../models/dto/recovery.dto';
 
 @Entity()
 export class Recovery {
-  @OneToOne(() => User, (u) => u.recovery)
-  @JoinColumn()
-  user: User;
   @PrimaryColumn({ type: 'uuid' })
   userId: string;
+  @OneToOne(() => User, (u) => u.recovery)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   @Column({ type: 'character varying', nullable: true })
   code: string;
@@ -16,8 +16,8 @@ export class Recovery {
   @Column({ type: 'timestamptz', nullable: true })
   expiration: Date;
 
-  constructor(data: RecoveryDto) {
-    this.userId = data.userId;
+  constructor(data: RecoveryDto, user: User) {
+    this.user = user;
     this.code = data.code;
     this.expiration = data.expiration;
   }

@@ -4,11 +4,11 @@ import { EmailConfirmationDto } from '../../models/dto/email.confirmation.dto';
 
 @Entity()
 export class EmailConfirmation {
-  @OneToOne(() => User, (u) => u.emailConfirmation)
-  @JoinColumn()
-  user: User;
   @PrimaryColumn({ type: 'uuid' })
   userId: string;
+  @OneToOne(() => User, (u) => u.emailConfirmation)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   @Column({ type: 'boolean', nullable: false })
   confirmed: boolean;

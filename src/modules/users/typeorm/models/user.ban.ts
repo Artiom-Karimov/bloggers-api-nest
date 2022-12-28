@@ -4,11 +4,11 @@ import { UserBanDto } from '../../models/dto/user.ban.dto';
 
 @Entity()
 export class UserBan {
-  @OneToOne(() => User, (u) => u.ban)
-  @JoinColumn()
-  user: User;
   @PrimaryColumn({ type: 'uuid' })
   userId: string;
+  @OneToOne(() => User, (u) => u.ban)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   @Column({ type: 'boolean', nullable: false })
   isBanned: boolean;

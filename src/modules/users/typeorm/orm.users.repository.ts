@@ -51,14 +51,7 @@ export class OrmUsersRepository extends UsersRepository {
   }
 
   public async update(user: UserModel): Promise<boolean> {
-    try {
-      const dbUser = UserMapper.fromDomain(user);
-      const result = await this.repo.save(dbUser);
-      return !!result.id;
-    } catch (error) {
-      console.error(error);
-      return undefined;
-    }
+    return !!(await this.create(user));
   }
 
   public async delete(id: string): Promise<boolean> {

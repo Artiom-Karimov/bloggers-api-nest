@@ -34,7 +34,7 @@ export class User {
   @OneToOne(() => Recovery, (rec) => rec.user)
   recovery: Promise<Recovery>;
 
-  @OneToOne(() => UserBan, (ban) => ban.user)
+  @OneToOne(() => UserBan, (b) => b.user)
   ban: Promise<UserBan>;
 
   @OneToMany(() => Session, (s) => s.user)
