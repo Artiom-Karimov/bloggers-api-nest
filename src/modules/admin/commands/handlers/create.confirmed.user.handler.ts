@@ -1,11 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import EmailConfirmationRepository from '../../../users/interfaces/email.confirmation.repository';
-import EmailConfirmationModel from '../../../users/models/email.confirmation.model';
-import { UserError } from '../../../users/user.error';
+import { UserError } from '../../../users/models/user.error';
 import UserInputModel from '../../../users/models/input/user.input.model';
-import UserModel from '../../../users/models/user.model';
 import UsersRepository from '../../../users/interfaces/users.repository';
 import CreateConfirmedUserCommand from '../commands/create.confirmed.user.command';
+import { User } from '../../../users/typeorm/models/user';
+import { EmailConfirmation } from '../../../users/typeorm/models/email.confirmation';
 
 @CommandHandler(CreateConfirmedUserCommand)
 export default class CreateConfirmedUserHandler
@@ -22,11 +22,11 @@ export default class CreateConfirmedUserHandler
     const exists = await this.checkLoginEmailExists(command.data);
     if (exists !== UserError.NoError) return exists;
 
-    const user = await UserModel.create(command.data);
+    const user = await User.create(command.data);
     const created = await this.usersRepo.create(user);
     if (!created) return UserError.Unknown;
 
-    const emailConfirmation = EmailConfirmationModel.createConfirmed(user.id);
+    const emailConfirmation = EmailConfirmation.create(user, true);
     await this.emailRepo.create(emailConfirmation);
 
     return created;

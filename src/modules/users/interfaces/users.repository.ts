@@ -1,15 +1,13 @@
-import UserModel from '../models/user.model';
+import { User } from '../typeorm/models/user';
 
 export default abstract class UsersRepository {
-  public abstract get(id: string): Promise<UserModel | undefined>;
+  public abstract get(id: string): Promise<User | undefined>;
 
-  public abstract getByLoginOrEmail(
-    value: string,
-  ): Promise<UserModel | undefined>;
+  public abstract getByLoginOrEmail(value: string): Promise<User | undefined>;
 
-  public abstract create(user: UserModel): Promise<string | undefined>;
+  public abstract create(user: User): Promise<string | undefined>;
 
-  public abstract update(user: UserModel): Promise<boolean>;
+  public abstract update(user: User): Promise<boolean>;
 
   public abstract delete(id: string): Promise<boolean>;
 }

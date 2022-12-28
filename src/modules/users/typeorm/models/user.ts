@@ -42,8 +42,6 @@ export class User {
   @OneToMany(() => Session, (s) => s.user)
   sessions: Promise<Session[]>;
 
-  private constructor() { }
-
   public static async create(data: UserInputModel): Promise<User> {
     const user = new User();
     user.id = IdGenerator.generate();

@@ -1,13 +1,13 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-import UserModel from '../users/models/user.model';
 import * as config from '../../config/email';
+import { User } from '../users/typeorm/models/user';
 
 @Injectable()
 export class MailService {
   constructor(private readonly mailerService: MailerService) { }
 
-  async sendEmailConfirmation(user: UserModel, code: string) {
+  async sendEmailConfirmation(user: User, code: string) {
     const url = `${config.confirmLink}?code=${code}`;
 
     await this.mailerService.sendMail({
@@ -21,7 +21,7 @@ export class MailService {
     });
   }
 
-  async sendPasswordRecovery(user: UserModel, code: string) {
+  async sendPasswordRecovery(user: User, code: string) {
     const url = `${config.recoverLink}?recoveryCode=${code}`;
 
     await this.mailerService.sendMail({

@@ -1,8 +1,6 @@
 import { Repository } from 'typeorm';
 import EmailConfirmationRepository from '../interfaces/email.confirmation.repository';
-import EmailConfirmationModel from '../models/email.confirmation.model';
 import { EmailConfirmation } from './models/email.confirmation';
-import EmailConfirmationMapper from './models/mappers/email.confirmation.mapper';
 import { InjectRepository } from '@nestjs/typeorm';
 
 export class OrmEmailConfirmationRepository extends EmailConfirmationRepository {
@@ -13,36 +11,29 @@ export class OrmEmailConfirmationRepository extends EmailConfirmationRepository 
     super();
   }
 
-  public async getByUser(
-    id: string,
-  ): Promise<EmailConfirmationModel | undefined> {
+  public async getByUser(id: string): Promise<EmailConfirmation | undefined> {
     try {
       const ec = await this.repo.findOne({ where: { userId: id } });
-      if (!ec) return undefined;
-      return EmailConfirmationMapper.toDomain(ec);
+      return ec ?? undefined;
     } catch (error) {
       console.error(error);
       return undefined;
     }
   }
 
-  public async getByCode(
-    code: string,
-  ): Promise<EmailConfirmationModel | undefined> {
+  public async getByCode(code: string): Promise<EmailConfirmation | undefined> {
     try {
       const ec = await this.repo.findOne({ where: { code } });
-      if (!ec) return undefined;
-      return EmailConfirmationMapper.toDomain(ec);
+      return ec ?? undefined;
     } catch (error) {
       console.error(error);
       return undefined;
     }
   }
 
-  public async create(model: EmailConfirmationModel): Promise<boolean> {
+  public async create(model: EmailConfirmation): Promise<boolean> {
     try {
-      const ec = EmailConfirmationMapper.fromDomain(model);
-      const result = await this.repo.save(ec);
+      const result = await this.repo.save(model);
       return !!result.userId;
     } catch (error) {
       console.error(error);
@@ -50,7 +41,7 @@ export class OrmEmailConfirmationRepository extends EmailConfirmationRepository 
     }
   }
 
-  public async update(model: EmailConfirmationModel): Promise<boolean> {
+  public async update(model: EmailConfirmation): Promise<boolean> {
     return this.create(model);
   }
 

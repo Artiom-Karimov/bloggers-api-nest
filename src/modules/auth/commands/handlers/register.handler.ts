@@ -1,12 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { MailService } from '../../../mail/mail.service';
 import EmailConfirmationRepository from '../../../users/interfaces/email.confirmation.repository';
-import EmailConfirmationModel from '../../../users/models/email.confirmation.model';
-import { UserError } from '../../../users/user.error';
+import { UserError } from '../../../users/models/user.error';
 import UserInputModel from '../../../users/models/input/user.input.model';
-import UserModel from '../../../users/models/user.model';
 import UsersRepository from '../../../users/interfaces/users.repository';
 import RegisterCommand from '../commands/register.command';
+import { User } from '../../../users/typeorm/models/user';
+import { EmailConfirmation } from '../../../users/typeorm/models/email.confirmation';
 
 @CommandHandler(RegisterCommand)
 export default class RegisterHandler
@@ -22,7 +22,7 @@ export default class RegisterHandler
     const exists = await this.checkLoginEmailExists(command.data);
     if (exists !== UserError.NoError) return exists;
 
-    const user = await UserModel.create(command.data);
+    const user = await User.create(command.data);
     const created = await this.usersRepo.create(user);
     if (!created) return UserError.Unknown;
 
@@ -45,8 +45,8 @@ export default class RegisterHandler
     return UserError.NoError;
   }
 
-  private async createEmailConfirmation(user: UserModel): Promise<boolean> {
-    const ec = EmailConfirmationModel.create(user.id);
+  private async createEmailConfirmation(user: User): Promise<boolean> {
+    const ec = EmailConfirmation.create(user);
 
     const created = await this.emailRepo.create(ec);
 

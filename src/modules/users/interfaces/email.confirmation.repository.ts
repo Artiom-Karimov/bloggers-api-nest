@@ -1,17 +1,15 @@
-import EmailConfirmationModel from '../models/email.confirmation.model';
+import { EmailConfirmation } from '../typeorm/models/email.confirmation';
 
 export default abstract class EmailConfirmationRepository {
-  public abstract getByUser(
-    id: string,
-  ): Promise<EmailConfirmationModel | undefined>;
+  public abstract getByUser(id: string): Promise<EmailConfirmation | undefined>;
 
   public abstract getByCode(
     code: string,
-  ): Promise<EmailConfirmationModel | undefined>;
+  ): Promise<EmailConfirmation | undefined>;
 
-  public abstract create(model: EmailConfirmationModel): Promise<boolean>;
+  public abstract create(model: EmailConfirmation): Promise<boolean>;
 
-  public abstract update(model: EmailConfirmationModel): Promise<boolean>;
+  public abstract update(model: EmailConfirmation): Promise<boolean>;
 
   public abstract delete(userId: string): Promise<boolean>;
 }

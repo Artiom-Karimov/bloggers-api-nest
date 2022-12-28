@@ -1,9 +1,7 @@
 import { Repository } from 'typeorm';
 import UsersBanRepository from '../interfaces/users.ban.repository';
-import UserBanModel from '../models/user.ban.model';
 import { UserBan } from './models/user.ban';
 import { InjectRepository } from '@nestjs/typeorm';
-import UserBanMapper from './models/mappers/user.ban.mapper';
 
 export class OrmUsersBanRepository extends UsersBanRepository {
   constructor(
@@ -13,20 +11,18 @@ export class OrmUsersBanRepository extends UsersBanRepository {
     super();
   }
 
-  public async get(userId: string): Promise<UserBanModel | undefined> {
+  public async get(userId: string): Promise<UserBan | undefined> {
     try {
       const user = await this.repo.findOne({ where: { userId } });
-      if (!user) return undefined;
-      return UserBanMapper.toDomain(user);
+      return user ?? undefined;
     } catch (error) {
       console.error(error);
       return undefined;
     }
   }
-  public async createOrUpdate(model: UserBanModel): Promise<boolean> {
+  public async createOrUpdate(model: UserBan): Promise<boolean> {
     try {
-      const dbUser = UserBanMapper.fromDomain(model);
-      const result = await this.repo.save(dbUser);
+      const result = await this.repo.save(model);
       return !!result.userId;
     } catch (error) {
       console.error(error);

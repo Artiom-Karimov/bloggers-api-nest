@@ -1,11 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { MailService } from '../../../mail/mail.service';
 import EmailConfirmationRepository from '../../../users/interfaces/email.confirmation.repository';
-import EmailConfirmationModel from '../../../users/models/email.confirmation.model';
-import { UserError } from '../../../users/user.error';
-import UserModel from '../../../users/models/user.model';
+import { UserError } from '../../../users/models/user.error';
 import UsersRepository from '../../../users/interfaces/users.repository';
 import EmailResendCommand from '../commands/email.resend.command';
+import { User } from '../../../users/typeorm/models/user';
+import { EmailConfirmation } from '../../../users/typeorm/models/email.confirmation';
 
 @CommandHandler(EmailResendCommand)
 export default class EmailResendHandler
@@ -26,11 +26,11 @@ export default class EmailResendHandler
     return result;
   }
 
-  private async createEmailConfirmation(user: UserModel): Promise<UserError> {
+  private async createEmailConfirmation(user: User): Promise<UserError> {
     const existing = await this.emailRepo.getByUser(user.id);
     if (existing?.isConfirmed) return UserError.AlreadyConfirmed;
 
-    const ec = EmailConfirmationModel.create(user.id);
+    const ec = EmailConfirmation.create(user);
 
     if (existing) {
       await this.emailRepo.update(ec);

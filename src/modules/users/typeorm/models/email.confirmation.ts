@@ -21,18 +21,22 @@ export class EmailConfirmation {
   @Column({ type: 'timestamptz', nullable: true })
   expiration: Date;
 
-  constructor(user: User, confirmed = false) {
-    this.user = user;
-    this.confirmed = confirmed;
+  public static create(user: User, confirmed = false): EmailConfirmation {
+    const ec = new EmailConfirmation();
+
+    ec.user = user;
+    ec.confirmed = confirmed;
     if (confirmed) {
-      this.code = null;
-      this.expiration = null;
+      ec.code = null;
+      ec.expiration = null;
     } else {
-      this.code = IdGenerator.generate();
-      this.expiration = add(new Date(), {
+      ec.code = IdGenerator.generate();
+      ec.expiration = add(new Date(), {
         minutes: config.confirmationMinutes,
       } as Duration);
     }
+
+    return ec;
   }
 
   public confirm(): EmailConfirmation {

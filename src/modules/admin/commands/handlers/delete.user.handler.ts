@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import SessionsRepository from '../../../users/interfaces/sessions.repository';
 import EmailConfirmationRepository from '../../../users/interfaces/email.confirmation.repository';
-import { UserError } from '../../../users/user.error';
+import { UserError } from '../../../users/models/user.error';
 import UsersBanRepository from '../../../users/interfaces/users.ban.repository';
 import UsersRepository from '../../../users/interfaces/users.repository';
 import DeleteUserCommand from '../commands/delete.user.command';

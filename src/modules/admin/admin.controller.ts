@@ -34,7 +34,7 @@ import AssignBlogOwnerCommand from '../blogs/blogs/commands/commands/assign.blog
 import BanUserCommand from './commands/commands/ban.user.command';
 import CreateConfirmedUserCommand from './commands/commands/create.confirmed.user.command';
 import DeleteUserCommand from './commands/commands/delete.user.command';
-import { UserError } from '../users/user.error';
+import { UserError } from '../users/models/user.error';
 import IdParams from '../../common/models/id.param';
 
 @Controller('sa')

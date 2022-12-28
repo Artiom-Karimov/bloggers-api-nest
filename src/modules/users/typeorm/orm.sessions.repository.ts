@@ -1,9 +1,7 @@
 import { Repository } from 'typeorm';
 import SessionsRepository from '../interfaces/sessions.repository';
-import SessionModel from '../models/session.model';
 import { Session } from './models/session';
 import { InjectRepository } from '@nestjs/typeorm';
-import SessionMapper from './models/mappers/session.mapper';
 
 export class OrmSessionsRepository extends SessionsRepository {
   constructor(
@@ -13,29 +11,27 @@ export class OrmSessionsRepository extends SessionsRepository {
     super();
   }
 
-  public async get(deviceId: string): Promise<SessionModel | undefined> {
+  public async get(deviceId: string): Promise<Session | undefined> {
     try {
       const user = await this.repo.findOne({ where: { deviceId } });
-      if (!user) return undefined;
-      return SessionMapper.toDomain(user);
+      return user ?? undefined;
     } catch (error) {
       console.error(error);
       return undefined;
     }
   }
 
-  public async create(session: SessionModel): Promise<string | undefined> {
+  public async create(session: Session): Promise<string | undefined> {
     try {
-      const dbSession = SessionMapper.fromDomain(session);
-      const result = await this.repo.save(dbSession);
-      return result.deviceId;
+      const result = await this.repo.save(session);
+      return result.deviceId ?? undefined;
     } catch (error) {
       console.error(error);
       return undefined;
     }
   }
 
-  public async update(session: SessionModel): Promise<boolean> {
+  public async update(session: Session): Promise<boolean> {
     return !!(await this.create(session));
   }
 

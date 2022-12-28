@@ -18,12 +18,16 @@ export class Recovery {
   @Column({ type: 'timestamptz', nullable: true })
   expiration: Date;
 
-  constructor(user: User) {
-    this.user = user;
-    this.code = IdGenerator.generate();
-    this.expiration = add(new Date(), {
+  public static create(user: User): Recovery {
+    const recovery = new Recovery();
+
+    recovery.user = user;
+    recovery.code = IdGenerator.generate();
+    recovery.expiration = add(new Date(), {
       minutes: config.recoveryExpireMinutes,
     });
+
+    return recovery;
   }
 
   get isExpired(): boolean {

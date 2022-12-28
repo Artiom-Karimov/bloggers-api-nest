@@ -19,11 +19,15 @@ export class UserBan {
   @Column({ type: 'timestamptz', nullable: true })
   banDate: Date;
 
-  constructor(data: BanUserCreateModel, user: User) {
-    this.user = user;
-    this.isBanned = data.isBanned ?? false;
-    this.banReason = data.banReason ?? null;
-    this.banDate = this.isBanned ? new Date() : null;
+  public static create(data: BanUserCreateModel, user: User): UserBan {
+    const ban = new UserBan();
+
+    ban.user = user;
+    ban.isBanned = data.isBanned;
+    ban.banReason = data.banReason ?? null;
+    ban.banDate = ban.isBanned ? new Date() : null;
+
+    return ban;
   }
 
   public setBan(data: BanUserCreateModel): UserBan {

@@ -1,11 +1,11 @@
-import SessionModel from '../models/session.model';
+import { Session } from '../typeorm/models/session';
 
 export default abstract class SessionsRepository {
-  public abstract get(deviceId: string): Promise<SessionModel | undefined>;
+  public abstract get(deviceId: string): Promise<Session | undefined>;
 
-  public abstract create(session: SessionModel): Promise<string | undefined>;
+  public abstract create(session: Session): Promise<string | undefined>;
 
-  public abstract update(session: SessionModel): Promise<boolean>;
+  public abstract update(session: Session): Promise<boolean>;
 
   public abstract delete(deviceId: string): Promise<boolean>;
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import EmailConfirmationRepository from '../users/interfaces/email.confirmation.repository';
-import { UserError } from '../users/user.error';
+import { UserError } from '../users/models/user.error';
 import UsersBanQueryRepository from '../users/interfaces/users.ban.query.repository';
 
 @Injectable()
