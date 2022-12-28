@@ -99,11 +99,15 @@ export class OrmUsersQueryRepository extends UsersQueryRepository {
       return true;
     }
     if (searchLoginTerm) {
-      qb = qb.where(`"login" ilike :login`, { login: searchLoginTerm });
+      qb = qb.where(`"user"."login" ilike :login`, {
+        login: `%${searchLoginTerm}%`,
+      });
       return true;
     }
     if (searchEmailTerm) {
-      qb = qb.where(`"email" ilike :email`, { email: searchEmailTerm });
+      qb = qb.where(`"user"."email" ilike :email`, {
+        email: `%${searchEmailTerm}%`,
+      });
       return true;
     }
     return false;
@@ -119,7 +123,7 @@ export class OrmUsersQueryRepository extends UsersQueryRepository {
     if (banStatus === BanStatus.Banned) {
       filter = `"ban"."isBanned" = true`;
     } else {
-      filter = `"ban"."isBanned" = false or "ban"."isBanned" is null`;
+      filter = `("ban"."isBanned" = false or "ban"."isBanned" is null)`;
     }
     if (useAnd) qb.andWhere(filter);
     else qb.where(filter);
