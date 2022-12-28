@@ -5,7 +5,7 @@ import UserViewModel from '../models/view/user.view.model';
 import UsersQueryRepository from '../interfaces/users.query.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './models/user';
-import { ILike, Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import UserMapper from './models/mappers/user.mapper';
 
 export class OrmUsersQueryRepository extends UsersQueryRepository {
@@ -70,52 +70,75 @@ export class OrmUsersQueryRepository extends UsersQueryRepository {
   }
 
   private async getCount(params: GetUsersQuery): Promise<number> {
-    const filter = this.getFilter(params);
-    const result = await this.repo.count(filter);
+    const qb = this.repo
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.ban', 'ban');
+    this.appendFilter(qb, params);
+    const result = await qb.getCount();
     return result;
   }
 
-  private getFilter(params: GetUsersQuery): any {
-    const user = this.getUserFilter(params);
-    const ban = this.getBanFilter(params);
-    return {
-      relations: { ban: true },
-      where: { ...user, ...ban },
-    };
+  private appendFilter(
+    qb: SelectQueryBuilder<User>,
+    params: GetUsersQuery,
+  ): SelectQueryBuilder<User> {
+    const filterSet = this.appendUserFilter(qb, params);
+    this.appendBanFilter(qb, params, filterSet);
+    return qb;
   }
-  private getUserFilter(params: GetUsersQuery) {
+  private appendUserFilter(
+    qb: SelectQueryBuilder<User>,
+    params: GetUsersQuery,
+  ): boolean {
     const { searchLoginTerm, searchEmailTerm } = params;
-
-    const login = ILike(`%${searchLoginTerm}%`);
-    const email = ILike(`%${searchEmailTerm}%`);
-
     if (searchLoginTerm && searchEmailTerm) {
-      return [{ login }, { email }];
+      qb = qb.where(`"login" ilike :login or "email" ilike :email`, {
+        login: searchLoginTerm,
+        email: searchEmailTerm,
+      });
+      return true;
     }
-    if (searchLoginTerm) return { login };
-    if (searchEmailTerm) return { email };
-    return {};
+    if (searchLoginTerm) {
+      qb = qb.where(`"login" ilike :login`, { login: searchLoginTerm });
+      return true;
+    }
+    if (searchEmailTerm) {
+      qb = qb.where(`"email" ilike :email`, { email: searchEmailTerm });
+      return true;
+    }
+    return false;
   }
-  private getBanFilter(params: GetUsersQuery): any {
+  private appendBanFilter(
+    qb: SelectQueryBuilder<User>,
+    params: GetUsersQuery,
+    useAnd: boolean,
+  ) {
     const { banStatus } = params;
-    if (banStatus === BanStatus.All) return {};
-    if (banStatus === BanStatus.Banned) return { isBanned: true };
-    return [{ isBanned: false }, { isBanned: null }];
+    if (banStatus === BanStatus.All) return;
+    let filter: string;
+    if (banStatus === BanStatus.Banned) {
+      filter = `"ban"."isBanned" = true`;
+    } else {
+      filter = `"ban"."isBanned" = false or "ban"."isBanned" is null`;
+    }
+    if (useAnd) qb.andWhere(filter);
+    else qb.where(filter);
   }
 
   private async loadPageUsers(
     page: PageViewModel<UserViewModel>,
     params: GetUsersQuery,
   ): Promise<PageViewModel<UserViewModel>> {
-    const filter = this.getFilter(params);
-    const result = await this.repo.find({
-      ...filter,
-      skip: page.calculateSkip(),
-      take: page.pageSize,
-      order: {
-        [params.sortBy]: params.sortOrder,
-      },
-    });
+    const qb = this.repo
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.ban', 'ban');
+    this.appendFilter(qb, params);
+
+    const result = await qb
+      .orderBy(params.sortBy, params.sortOrder)
+      .skip(page.calculateSkip())
+      .limit(page.pageSize)
+      .getMany();
 
     const promises = result.map((u) => UserMapper.toView(u));
     const views = await Promise.all(promises);
