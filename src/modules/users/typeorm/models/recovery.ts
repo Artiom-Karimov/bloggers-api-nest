@@ -12,7 +12,7 @@ export class Recovery {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @Column({ type: 'character varying', nullable: true })
+  @Column({ type: 'character varying', nullable: true, collation: 'C' })
   code: string;
 
   @Column({ type: 'timestamptz', nullable: true })
