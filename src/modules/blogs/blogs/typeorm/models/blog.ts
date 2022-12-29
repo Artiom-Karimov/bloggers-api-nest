@@ -16,13 +16,28 @@ export class Blog {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'character varying', nullable: false, collation: 'C' })
+  @Column({
+    type: 'character varying',
+    length: 15,
+    nullable: false,
+    collation: 'C',
+  })
   name: string;
 
-  @Column({ type: 'character varying', nullable: false, collation: 'C' })
+  @Column({
+    type: 'character varying',
+    length: 500,
+    nullable: false,
+    collation: 'C',
+  })
   description: string;
 
-  @Column({ type: 'character varying', nullable: false, collation: 'C' })
+  @Column({
+    type: 'character varying',
+    length: 100,
+    nullable: false,
+    collation: 'C',
+  })
   websiteUrl: string;
 
   @Column({ type: 'timestamptz', nullable: false })
