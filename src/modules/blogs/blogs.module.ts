@@ -46,6 +46,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Blog } from './blogs/typeorm/models/blog';
 import { BlogBan } from './blogs/typeorm/models/blog.ban';
 import { BlogUserBan } from './blogs/typeorm/models/blog.user.ban';
+import { Post } from './posts/typeorm/models/post';
+import { Comment } from './comments/typeorm/models/comment';
+import { PostLike } from './likes/typeorm/models/post.like';
+import { CommentLike } from './likes/typeorm/models/comment.like';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -68,6 +72,10 @@ const commandHandlers = [
     TypeOrmModule.forFeature([Blog]),
     TypeOrmModule.forFeature([BlogBan]),
     TypeOrmModule.forFeature([BlogUserBan]),
+    TypeOrmModule.forFeature([Post]),
+    TypeOrmModule.forFeature([Comment]),
+    TypeOrmModule.forFeature([PostLike]),
+    TypeOrmModule.forFeature([CommentLike]),
     CqrsModule,
     UsersModule,
   ],

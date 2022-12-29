@@ -10,6 +10,7 @@ import {
 import { User } from '../../../../users/typeorm/models/user';
 import { BlogBan } from './blog.ban';
 import { BlogUserBan } from './blog.user.ban';
+import { Post } from '../../../posts/typeorm/models/post';
 
 @Entity()
 export class Blog {
@@ -52,4 +53,7 @@ export class Blog {
 
   @OneToMany(() => BlogUserBan, (bub) => bub.blog)
   bannedUsers: Promise<BlogUserBan[]>;
+
+  @OneToMany(() => Post, (p) => p.blog)
+  posts: Promise<Post[]>;
 }
