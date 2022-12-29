@@ -3,6 +3,7 @@ export default class PageQueryParams {
   public pageSize = 10;
   public sortBy = 'createdAt';
   public sortDirection = -1;
+  public sortOrder: 'ASC' | 'DESC' = 'DESC';
 
   protected sortByValues: string[] = [];
 
@@ -23,6 +24,7 @@ export default class PageQueryParams {
   protected assignSortDirection(value: any) {
     if (!value || typeof value !== 'string') return;
     this.sortDirection = value === 'asc' ? 1 : -1;
+    this.sortOrder = value === 'asc' ? 'ASC' : 'DESC';
   }
   protected checkNumber(value: any): number | undefined {
     if (!value) return undefined;

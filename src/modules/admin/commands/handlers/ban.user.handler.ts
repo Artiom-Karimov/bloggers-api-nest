@@ -4,12 +4,12 @@ import { BlogError } from '../../../blogs/blogs/models/blog.error';
 import CommentsRepository from '../../../blogs/comments/interfaces/comments.repository';
 import CommentLikesRepository from '../../../blogs/likes/interfaces/comment.likes.repository';
 import PostLikesRepository from '../../../blogs/likes/interfaces/post.likes.repository';
-import UserBanModel from '../../../users/models/user.ban.model';
 import UsersBanRepository from '../../../users/interfaces/users.ban.repository';
 import UsersRepository from '../../../users/interfaces/users.repository';
 import BanUserCommand, {
   BanUserCreateModel,
 } from '../commands/ban.user.command';
+import { UserBan } from '../../../users/typeorm/models/user.ban';
 
 @CommandHandler(BanUserCommand)
 export class BanUserHandler implements ICommandHandler<BanUserCommand> {
@@ -35,16 +35,13 @@ export class BanUserHandler implements ICommandHandler<BanUserCommand> {
   private async setUserBan(data: BanUserCreateModel): Promise<BlogError> {
     const user = await this.usersRepo.get(data.userId);
     if (!user) return BlogError.NotFound;
+    let ban = await this.banRepo.get(user.id);
 
-    if (!data.isBanned) {
-      await this.banRepo.delete(user.id);
-      return BlogError.NoError;
-    }
+    if (ban) ban.setBan(data);
+    else ban = UserBan.create(data, user);
+    const created = await this.banRepo.createOrUpdate(ban);
 
-    await this.sessionsRepo.deleteAll(user.id);
-
-    const model = UserBanModel.create(data);
-    const created = await this.banRepo.createOrUpdate(model);
+    if (ban.isBanned) await this.sessionsRepo.deleteAll(user.id);
 
     return created ? BlogError.NoError : BlogError.Unknown;
   }

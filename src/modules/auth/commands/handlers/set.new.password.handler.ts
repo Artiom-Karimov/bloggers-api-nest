@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserError } from '../../../users/user.error';
+import { UserError } from '../../../users/models/user.error';
 import UsersRepository from '../../../users/interfaces/users.repository';
 import RecoveryRepository from '../../../users/interfaces/recovery.repository';
 import SetNewPasswordCommand from '../commands/set.new.password.command';
@@ -17,8 +17,7 @@ export default class SetNewPasswordPasswordHandler
     const recovery = await this.recoveryRepo.getByCode(
       command.data.recoveryCode,
     );
-    if (!recovery || recovery.expiresAt < new Date().getTime())
-      return UserError.InvalidCode;
+    if (!recovery || recovery.isExpired) return UserError.InvalidCode;
 
     await this.recoveryRepo.delete(recovery.userId);
 

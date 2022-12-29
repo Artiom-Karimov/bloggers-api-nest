@@ -12,48 +12,61 @@ import RecoveryRepository from './interfaces/recovery.repository';
 
 import SessionsRepository from './interfaces/sessions.repository';
 import SessionsQueryRepository from './interfaces/sessions.query.repository';
-import SqlUsersRepository from './sql/sql.users.repository';
-import SqlUsersQueryRepository from './sql/sql.users.query.repository';
-import SqlSessionsRepository from './sql/sql.sessions.repository';
-import SqlSessionsQueryRepository from './sql/sql.sessions.query.repository';
-import SqlEmailConfirmationRepository from './sql/sql.email.confirmation.repository';
-import SqlRecoveryRepository from './sql/sql.recovery.repository';
-import SqlUsersBanRepository from './sql/sql.users.ban.repository';
-import SqlUsersBanQueryRepository from './sql/sql.users.ban.query.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './typeorm/models/user';
+import { Session } from './typeorm/models/session';
+import { UserBan } from './typeorm/models/user.ban';
+import { EmailConfirmation } from './typeorm/models/email.confirmation';
+import { Recovery } from './typeorm/models/recovery';
+import { OrmUsersRepository } from './typeorm/orm.users.repository';
+import { OrmUsersQueryRepository } from './typeorm/orm.users.query.repository';
+import { OrmUsersBanRepository } from './typeorm/orm.users.ban.repository';
+import { OrmUsersBanQueryRepository } from './typeorm/orm.users.ban.query.repository';
+import { OrmEmailConfirmationRepository } from './typeorm/orm.email.confirmation.repository';
+import { OrmSessionsRepository } from './typeorm/orm.sessions.repository';
+import { OrmSessionsQueryRepository } from './typeorm/orm.sessions.query.repository';
+import { OrmRecoveryRepository } from './typeorm/orm.recovery.repository';
 
 @Module({
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([Session]),
+    TypeOrmModule.forFeature([UserBan]),
+    TypeOrmModule.forFeature([EmailConfirmation]),
+    TypeOrmModule.forFeature([Recovery]),
+  ],
   providers: [
     {
       provide: UsersRepository,
-      useClass: SqlUsersRepository,
+      useClass: OrmUsersRepository,
     },
     {
       provide: UsersQueryRepository,
-      useClass: SqlUsersQueryRepository,
+      useClass: OrmUsersQueryRepository,
     },
     {
       provide: UsersBanRepository,
-      useClass: SqlUsersBanRepository,
+      useClass: OrmUsersBanRepository,
     },
     {
       provide: UsersBanQueryRepository,
-      useClass: SqlUsersBanQueryRepository,
+      useClass: OrmUsersBanQueryRepository,
     },
     {
       provide: EmailConfirmationRepository,
-      useClass: SqlEmailConfirmationRepository,
+      useClass: OrmEmailConfirmationRepository,
     },
     {
       provide: SessionsRepository,
-      useClass: SqlSessionsRepository,
+      useClass: OrmSessionsRepository,
     },
     {
       provide: SessionsQueryRepository,
-      useClass: SqlSessionsQueryRepository,
+      useClass: OrmSessionsQueryRepository,
     },
     {
       provide: RecoveryRepository,
-      useClass: SqlRecoveryRepository,
+      useClass: OrmRecoveryRepository,
     },
   ],
   exports: [

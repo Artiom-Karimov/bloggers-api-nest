@@ -1,14 +1,13 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserError } from '../../../users/user.error';
-import UserModel from '../../../users/models/user.model';
+import { UserError } from '../../../users/models/user.error';
 import UsersRepository from '../../../users/interfaces/users.repository';
 import TokenPair from '../../models/jwt/token.pair';
-import SessionModel, {
-  SessionCreateType,
-} from '../../../users/models/session.model';
 import SessionsRepository from '../../../users/interfaces/sessions.repository';
 import SessionsService from '../../sessions.service';
 import LoginCommand from '../commands/login.command';
+import { User } from '../../../users/typeorm/models/user';
+import { SessionCreateType } from '../../../users/models/input/session.create.type';
+import { Session } from '../../../users/typeorm/models/session';
 
 @CommandHandler(LoginCommand)
 export default class LoginHandler implements ICommandHandler<LoginCommand> {
@@ -20,22 +19,25 @@ export default class LoginHandler implements ICommandHandler<LoginCommand> {
 
   public async execute(command: LoginCommand): Promise<TokenPair | UserError> {
     const { loginOrEmail, password, deviceName, ip } = command.data;
-    const userResult = await this.checkLoginGetUser(loginOrEmail, password);
-    if (!(userResult instanceof UserModel)) return userResult;
+    const user = await this.checkLoginGetUser(loginOrEmail, password);
+    if (!(user instanceof User)) return user;
 
-    const session = await this.createSession({
-      ip,
-      deviceName,
-      userId: userResult.id,
-      userLogin: userResult.login,
-    });
+    const session = await this.createSession(
+      {
+        ip,
+        deviceName,
+        userId: user.id,
+        userLogin: user.login,
+      },
+      user,
+    );
 
     return session.getTokens();
   }
   private async checkLoginGetUser(
     loginOrEmail: string,
     password: string,
-  ): Promise<UserModel | UserError> {
+  ): Promise<User | UserError> {
     const user = await this.usersRepo.getByLoginOrEmail(loginOrEmail);
     if (!user) return UserError.WrongCredentials;
 
@@ -47,8 +49,11 @@ export default class LoginHandler implements ICommandHandler<LoginCommand> {
 
     return user;
   }
-  private async createSession(data: SessionCreateType): Promise<SessionModel> {
-    const session = SessionModel.create(data);
+  private async createSession(
+    data: SessionCreateType,
+    user: User,
+  ): Promise<Session> {
+    const session = Session.create(data, user);
     await this.sessionsRepo.create(session);
     return session;
   }

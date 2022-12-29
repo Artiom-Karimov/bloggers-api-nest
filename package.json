@@ -1,8 +1,8 @@
 {
-  "name": "nest-typescript-starter",
+  "name": "bloggers-api-nest",
   "private": true,
   "version": "1.0.0",
-  "description": "Nest TypeScript starter repository",
+  "description": "",
   "license": "MIT",
   "scripts": {
     "build": "nest build",
@@ -16,7 +16,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json --runInBand"
+    "test:e2e": "jest --config ./test/jest-e2e.json --runInBand",
+    "typeorm:sync-schema": "typeorm-ts-node-commonjs schema:sync",
+    "typeorm:create-migration": "typeorm-ts-node-commonjs migration:generate",
+    "typeorm:run-migration": "typeorm-ts-node-commonjs migration:run"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.8.1",

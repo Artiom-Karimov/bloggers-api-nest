@@ -28,7 +28,7 @@ export class RefreshTokenGuard implements CanActivate {
     if (!payload)
       throw new UnauthorizedException('refreshToken is invalid or expired');
     const session = await this.repo.get(payload.deviceId);
-    if (!session || session.issuedAt !== payload.issuedAt)
+    if (!session || session.issuedAt.getTime() !== payload.issuedAt)
       throw new UnauthorizedException('refreshToken is invalid or expired');
 
     return payload;

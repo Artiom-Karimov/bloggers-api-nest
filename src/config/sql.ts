@@ -5,6 +5,6 @@ export const config = {
   username: process.env.sqlUser || 'postgres',
   password: process.env.sqlPass || 'postgres',
   database: process.env.sqlDatabase || 'bloggers',
-  autoLoadEntities: false,
-  synchronize: false,
+  autoLoadEntities: true,
+  synchronize: true,
 };

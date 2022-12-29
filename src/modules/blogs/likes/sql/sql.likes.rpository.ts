@@ -67,6 +67,7 @@ export default class SqlLikesRepository extends LikesRepository {
     userId: string,
     userBanned: boolean,
   ): Promise<void> {
+    return;
     await this.db.query(
       `
       update "like" 

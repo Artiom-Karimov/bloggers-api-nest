@@ -1,7 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import EmailConfirmationRepository from '../../../users/interfaces/email.confirmation.repository';
-import EmailConfirmationModel from '../../../users/models/email.confirmation.model';
-import { UserError } from '../../../users/user.error';
+import { UserError } from '../../../users/models/user.error';
 import EmailConfirmCommand from '../commands/email.confirm.command';
 
 @CommandHandler(EmailConfirmCommand)
@@ -11,14 +10,14 @@ export default class EmailConfirmHandler
   constructor(private readonly emailRepo: EmailConfirmationRepository) { }
 
   public async execute(command: EmailConfirmCommand): Promise<UserError> {
-    let ec = await this.emailRepo.getByCode(command.code);
-    if (!ec || ec.expiration < new Date().getTime())
+    const ec = await this.emailRepo.getByCode(command.code);
+
+    try {
+      ec.confirm();
+      const result = await this.emailRepo.update(ec);
+      return result ? UserError.NoError : UserError.Unknown;
+    } catch (error) {
       return UserError.InvalidCode;
-    if (ec.confirmed) return UserError.AlreadyConfirmed;
-
-    ec = EmailConfirmationModel.setConfirmed(ec);
-    const result = await this.emailRepo.update(ec);
-
-    return result ? UserError.NoError : UserError.Unknown;
+    }
   }
 }

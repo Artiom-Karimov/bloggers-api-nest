@@ -55,7 +55,7 @@ export default class SqlBlogsQueryRepository extends BlogsQueryRepository {
       `
       select "id", "name", "description", "websiteUrl", "createdAt"
       from "blog" b
-      left join "blogBan" bb
+      left join "blog_ban" bb
       on b."id" = bb."blogId"
       where "id" = $1 and ("isBanned" = false or "isBanned" is null);
       `,
@@ -85,9 +85,7 @@ export default class SqlBlogsQueryRepository extends BlogsQueryRepository {
 
     const result = await this.db.query(
       `select count(*) from "blog" b
-      left join "blogOwner" o
-      on b."id" = o."blogId" 
-      left join "blogBan" bb
+      left join "blog_ban" bb
       on b."id" = bb."blogId"
       ${filter};`,
     );
@@ -96,7 +94,7 @@ export default class SqlBlogsQueryRepository extends BlogsQueryRepository {
   private getFilter(params: GetBlogsQuery, bloggerId?: string) {
     const notBanned = 'where ("isBanned" = false or "isBanned" is null)';
     const name = `lower("name") like '%${params.searchNameTerm?.toLowerCase()}%'`;
-    const id = `"userId" = '${bloggerId}'`;
+    const id = `"ownerId" = '${bloggerId}'`;
 
     if (params.searchNameTerm && bloggerId)
       return `${notBanned} and ${name} and ${id}`;
@@ -114,7 +112,7 @@ export default class SqlBlogsQueryRepository extends BlogsQueryRepository {
     const result: Partial<Blog>[] = await this.db.query(
       `
       select "id", "name", "description", "websiteUrl", "createdAt"
-      from "blog" b left join "blogBan" bb
+      from "blog" b left join "blog_ban" bb
       on b."id" = bb."blogId"
       ${blogFilter}
       order by "${params.sortBy}" ${order}
@@ -137,9 +135,7 @@ export default class SqlBlogsQueryRepository extends BlogsQueryRepository {
       `
       select b."id", b."name", b."description", b."websiteUrl", b."createdAt"
       from "blog" b 
-      left join "blogOwner" o
-      on b."id" = o."blogId"
-      left join "blogBan" bb
+      left join "blog_ban" bb
       on b."id" = bb."blogId"
       ${filter}
       order by "${params.sortBy}" ${order}

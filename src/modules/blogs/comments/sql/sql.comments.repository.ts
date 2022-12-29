@@ -72,6 +72,7 @@ export default class SqlCommentsRepository extends CommentsRepository {
     userId: string,
     bannedByAdmin: boolean,
   ): Promise<void> {
+    return;
     await this.db.query(
       `
       update "comment" 

@@ -22,7 +22,7 @@ import TokenPair from './models/jwt/token.pair';
 import SessionUserViewModel from '../users/models/view/session.user.view.model';
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
 import { BearerAuthGuard } from './guards/bearer.auth.guard';
-import { UserError } from '../users/user.error';
+import { UserError } from '../users/models/user.error';
 import { CommandBus } from '@nestjs/cqrs';
 import RegisterCommand from './commands/commands/register.command';
 import EmailResendCommand from './commands/commands/email.resend.command';
