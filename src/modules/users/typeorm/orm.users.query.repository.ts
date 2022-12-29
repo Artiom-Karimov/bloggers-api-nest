@@ -140,7 +140,7 @@ export class OrmUsersQueryRepository extends UsersQueryRepository {
 
     const result = await qb
       .orderBy(`"${params.sortBy}"`, params.sortOrder)
-      .skip(page.calculateSkip())
+      .offset(page.calculateSkip())
       .limit(page.pageSize)
       .getMany();
 

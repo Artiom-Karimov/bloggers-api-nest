@@ -18,7 +18,7 @@ export default class SqlBlogsRepository extends BlogsRepository {
       select b."id", b."name", b."description", b."websiteUrl", b."createdAt",
       b."ownerId", bb."isBanned", bb."banDate"
       from "blog" b
-      left join "blogBan" bb
+      left join "blog_ban" bb
       on b."id" = bb."blogId"
       where b."id" = $1;
       `,

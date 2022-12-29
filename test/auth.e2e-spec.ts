@@ -131,10 +131,10 @@ describe('AuthController (e2e)', () => {
       expect(dbUser).toBeTruthy();
       const confirmation = await emailRepo.getByUser(dbUser.id);
       expect(confirmation).toEqual({
-        id: dbUser.id,
+        userId: dbUser.id,
         confirmed: false,
         code: expect.any(String),
-        expiration: expect.any(Number),
+        expiration: expect.any(Date),
       });
       code = confirmation.code;
     });
@@ -187,10 +187,10 @@ describe('AuthController (e2e)', () => {
       expect(dbUser).toBeTruthy();
       const confirmation = await emailRepo.getByUser(dbUser.id);
       expect(confirmation).toEqual({
-        id: dbUser.id,
+        userId: dbUser.id,
         confirmed: false,
         code: expect.any(String),
-        expiration: expect.any(Number),
+        expiration: expect.any(Date),
       });
       code = confirmation.code;
     });
@@ -214,10 +214,10 @@ describe('AuthController (e2e)', () => {
       expect(dbUser).toBeTruthy();
       const confirmation = await emailRepo.getByUser(dbUser.id);
       expect(confirmation).toEqual({
-        id: dbUser.id,
+        userId: dbUser.id,
         confirmed: false,
         code: expect.any(String),
-        expiration: expect.any(Number),
+        expiration: expect.any(Date),
       });
       expect(confirmation.code).not.toBe(code);
       expect(confirmation.code).toBeTruthy();

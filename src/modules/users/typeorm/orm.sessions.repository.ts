@@ -56,7 +56,7 @@ export class OrmSessionsRepository extends SessionsRepository {
       const result = await this.repo
         .createQueryBuilder('s')
         .delete()
-        .where('"s.userId" = :userId and "deviceId" != :deviceId', {
+        .where('"userId" = :userId and "deviceId" != :deviceId', {
           userId,
           deviceId,
         })
