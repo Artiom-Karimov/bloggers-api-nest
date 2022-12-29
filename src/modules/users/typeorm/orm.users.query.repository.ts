@@ -93,8 +93,8 @@ export class OrmUsersQueryRepository extends UsersQueryRepository {
     const { searchLoginTerm, searchEmailTerm } = params;
     if (searchLoginTerm && searchEmailTerm) {
       qb = qb.where(`"login" ilike :login or "email" ilike :email`, {
-        login: searchLoginTerm,
-        email: searchEmailTerm,
+        login: `%${searchLoginTerm}%`,
+        email: `%${searchEmailTerm}%`,
       });
       return true;
     }
