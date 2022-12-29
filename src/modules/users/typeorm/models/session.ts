@@ -22,10 +22,10 @@ export class Session {
   @Column({ type: 'uuid' })
   userId: string;
 
-  @Column({ type: 'character varying' })
+  @Column({ type: 'character varying', collation: 'C' })
   deviceName: string;
 
-  @Column({ type: 'character varying' })
+  @Column({ type: 'character varying', collation: 'C' })
   ip: string;
 
   @Column({ type: 'timestamptz' })

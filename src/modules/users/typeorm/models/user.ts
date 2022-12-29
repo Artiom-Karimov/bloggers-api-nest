@@ -19,13 +19,13 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'character varying', nullable: false })
+  @Column({ type: 'character varying', nullable: false, collation: 'C' })
   login: string;
 
-  @Column({ type: 'character varying', nullable: false })
+  @Column({ type: 'character varying', nullable: false, collation: 'C' })
   email: string;
 
-  @Column({ type: 'character varying', nullable: false })
+  @Column({ type: 'character varying', nullable: false, collation: 'C' })
   hash: string;
 
   @Column({ type: 'timestamptz', nullable: false })

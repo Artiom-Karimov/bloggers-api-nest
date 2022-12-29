@@ -15,7 +15,7 @@ export class EmailConfirmation {
   @Column({ type: 'boolean', nullable: false })
   confirmed: boolean;
 
-  @Column({ type: 'character varying', nullable: true })
+  @Column({ type: 'character varying', nullable: true, collation: 'C' })
   code: string;
 
   @Column({ type: 'timestamptz', nullable: true })
