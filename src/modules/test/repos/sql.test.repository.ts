@@ -11,8 +11,16 @@ export default class SqlTestRepository extends TestRepository {
 
   public async dropAll(): Promise<void> {
     await this.db.query(`
-    delete from "user";
+
+    delete from "blog_user_ban";
+    delete from "blog_ban";
     delete from "blog";
+
+    delete from "session";
+    delete from "recovery"; 
+    delete from "email_confirmation"; 
+    delete from "user_ban";
+    delete from "user";
     `);
   }
 }
