@@ -13,8 +13,11 @@ export class OrmSessionsRepository extends SessionsRepository {
 
   public async get(deviceId: string): Promise<Session | undefined> {
     try {
-      const user = await this.repo.findOne({ where: { deviceId } });
-      return user ?? undefined;
+      const session = await this.repo.findOne({
+        where: { deviceId },
+        relations: { user: true },
+      });
+      return session ?? undefined;
     } catch (error) {
       console.error(error);
       return undefined;
@@ -69,9 +72,9 @@ export class OrmSessionsRepository extends SessionsRepository {
   public async deleteAll(userId: string): Promise<number> {
     try {
       const result = await this.repo
-        .createQueryBuilder('s')
+        .createQueryBuilder()
         .delete()
-        .where('"s.userId" = :userId', {
+        .where('"userId" = :userId', {
           userId,
         })
         .execute();

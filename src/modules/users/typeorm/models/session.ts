@@ -36,6 +36,7 @@ export class Session {
     const session = new Session();
 
     session.user = user;
+    session.ip = data.ip;
     session.deviceId = IdGenerator.generate();
     session.deviceName = data.deviceName;
     session.issuedAt = new Date();

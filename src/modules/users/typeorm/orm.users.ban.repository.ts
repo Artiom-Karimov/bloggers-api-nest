@@ -13,8 +13,11 @@ export class OrmUsersBanRepository extends UsersBanRepository {
 
   public async get(userId: string): Promise<UserBan | undefined> {
     try {
-      const user = await this.repo.findOne({ where: { userId } });
-      return user ?? undefined;
+      const ban = await this.repo.findOne({
+        where: { userId },
+        relations: { user: true },
+      });
+      return ban ?? undefined;
     } catch (error) {
       console.error(error);
       return undefined;

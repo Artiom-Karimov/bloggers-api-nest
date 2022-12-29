@@ -139,7 +139,7 @@ export class OrmUsersQueryRepository extends UsersQueryRepository {
     this.appendFilter(qb, params);
 
     const result = await qb
-      .orderBy(params.sortBy, params.sortOrder)
+      .orderBy(`"${params.sortBy}"`, params.sortOrder)
       .skip(page.calculateSkip())
       .limit(page.pageSize)
       .getMany();
