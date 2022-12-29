@@ -89,19 +89,14 @@ export default class SqlAdminBlogsQueryRepository extends AdminBlogsQueryReposit
 
     const result: Blog[] = await this.db.query(
       `
-      select bo."id", bo."name", bo."description", bo."websiteUrl", bo."createdAt",
-      bo."userId", u."login" as "userLogin", bb."isBanned", bb."banDate"
-      from 
-      (
-        select * from "blog" b
-        left join "blogOwner" o on b."id" = o."blogId"
-        ${filter}
-        order by "${params.sortBy}" ${order}
-        limit $1 offset $2
-      ) as bo
-      left join "blogBan" bb on bo."id" = bb."blogId"
-      left join "user" u on bo."userId" = u."id"
+      select b."id", b."name", b."description", b."websiteUrl", b."createdAt",
+      b."userId", u."login" as "userLogin", bb."isBanned", bb."banDate"
+      from "blog" b
+      left join "blog_ban" bb on b."id" = bb."blogId"
+      left join "user" u on b."userId" = u."id"
+      ${filter}
       order by "${params.sortBy}" ${order}
+      limit $1 offset $2
       `,
       [page.pageSize, page.calculateSkip()],
     );

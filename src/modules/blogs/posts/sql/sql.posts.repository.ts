@@ -79,6 +79,7 @@ export default class SqlPostsRepository extends PostsRepository {
     blogId: string,
     blogBanned: boolean,
   ): Promise<boolean> {
+    return;
     await this.db.query(
       `
       update "post" 

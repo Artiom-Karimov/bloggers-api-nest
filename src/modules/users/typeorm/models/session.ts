@@ -19,6 +19,8 @@ export class Session {
   @ManyToOne(() => User, (u) => u.sessions)
   @JoinColumn({ name: 'userId' })
   user: User;
+  @Column({ type: 'uuid' })
+  userId: string;
 
   @Column({ type: 'character varying' })
   deviceName: string;
@@ -56,9 +58,6 @@ export class Session {
     return this;
   }
 
-  get userId(): string {
-    return this.user.id;
-  }
   get userLogin(): string {
     return this.user.login;
   }
