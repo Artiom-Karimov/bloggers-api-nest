@@ -16,9 +16,8 @@ export default class SqlBlogsRepository extends BlogsRepository {
     const result: Array<any> = await this.db.query(
       `
       select b."id", b."name", b."description", b."websiteUrl", b."createdAt",
-      o."userId", bb."isBanned", bb."banDate"
-      from 
-      ("blog" b left join "blogOwner" o on b."id" = o."blogId")
+      b."ownerId", bb."isBanned", bb."banDate"
+      from "blog" b
       left join "blogBan" bb
       on b."id" = bb."blogId"
       where b."id" = $1;
@@ -32,7 +31,6 @@ export default class SqlBlogsRepository extends BlogsRepository {
   public async create(blog: BlogModel): Promise<string | undefined> {
     const dbBlog = BlogMapper.fromDomain(blog);
     await this.createBlog(dbBlog);
-    await this.createOwner(dbBlog);
     await this.createBan(dbBlog);
     return dbBlog.id;
   }
@@ -49,7 +47,7 @@ export default class SqlBlogsRepository extends BlogsRepository {
     }
     if (blog.userId !== dbBlog.userId) {
       if (dbBlog.userId) await this.updateOwner(blog);
-      else await this.createOwner(blog);
+      else await this.updateOwner(blog);
     }
     if (blog.isBanned !== dbBlog.isBanned) {
       await this.updateBan(blog);
@@ -71,27 +69,24 @@ export default class SqlBlogsRepository extends BlogsRepository {
     await this.db.query(
       `
     insert into "blog"
-    ("id","name","description","websiteUrl","createdAt")
-    values ($1,$2,$3,$4,$5)
+    ("id","name","description","websiteUrl","createdAt","ownerId")
+    values ($1,$2,$3,$4,$5,$6)
     `,
-      [blog.id, blog.name, blog.description, blog.websiteUrl, blog.createdAt],
+      [
+        blog.id,
+        blog.name,
+        blog.description,
+        blog.websiteUrl,
+        blog.createdAt,
+        blog.userId,
+      ],
     );
   }
-  private async createOwner(blog: Blog) {
-    if (!blog.userId) return;
-    await this.db.query(
-      `
-    insert into "blogOwner"
-    ("blogId","userId")
-    values ($1,$2)
-    `,
-      [blog.id, blog.userId],
-    );
-  }
+
   private async createBan(blog: Blog) {
     await this.db.query(
       `
-    insert into "blogBan"
+    insert into "blog_ban"
     ("blogId","isBanned","banDate")
     values ($1,$2,$3)
     `,
@@ -112,9 +107,9 @@ export default class SqlBlogsRepository extends BlogsRepository {
   private async updateOwner(blog: Blog): Promise<boolean> {
     const result = await this.db.query(
       `
-    update "blogOwner"
-    set "userId" = $2
-    where "blogId" = $1
+    update "blog"
+    set "ownerId" = $2
+    where "id" = $1
     `,
       [blog.id, blog.userId],
     );
@@ -123,7 +118,7 @@ export default class SqlBlogsRepository extends BlogsRepository {
   private async updateBan(blog: Blog): Promise<boolean> {
     const result = await this.db.query(
       `
-    update "blogBan"
+    update "blog_ban"
     set "isBanned" = $2, "banDate" = $3
     where "blogId" = $1
     `,

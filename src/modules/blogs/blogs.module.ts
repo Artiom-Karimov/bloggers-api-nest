@@ -42,6 +42,10 @@ import SqlCommentsQueryRepository from './comments/sql/sql.comments.query.reposi
 import SqlBloggerCommentsQueryRepository from './comments/sql/sql.blogger.comments.query.repository';
 import SqlPostLikesRepository from './likes/sql/sql.post.likes.repository';
 import SqlCommentLikesRepository from './likes/sql/sql.comment.likes.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Blog } from './blogs/typeorm/models/blog';
+import { BlogBan } from './blogs/typeorm/models/blog.ban';
+import { BlogUserBan } from './blogs/typeorm/models/blog.user.ban';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -60,7 +64,13 @@ const commandHandlers = [
 ];
 
 @Module({
-  imports: [CqrsModule, UsersModule],
+  imports: [
+    TypeOrmModule.forFeature([Blog]),
+    TypeOrmModule.forFeature([BlogBan]),
+    TypeOrmModule.forFeature([BlogUserBan]),
+    CqrsModule,
+    UsersModule,
+  ],
   controllers: [BlogsController, PostsController, CommentsController],
   providers: [
     {

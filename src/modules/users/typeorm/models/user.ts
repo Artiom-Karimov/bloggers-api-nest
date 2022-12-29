@@ -12,6 +12,7 @@ import { Session } from './session';
 import UserInputModel from '../../models/input/user.input.model';
 import Hasher from '../../../../common/utils/hasher';
 import IdGenerator from '../../../../common/utils/id.generator';
+import { Blog } from '../../../blogs/blogs/typeorm/models/blog';
 
 @Entity()
 export class User {
@@ -41,6 +42,9 @@ export class User {
 
   @OneToMany(() => Session, (s) => s.user)
   sessions: Promise<Session[]>;
+
+  @OneToMany(() => Blog, (b) => b.owner)
+  blogs: Promise<Blog[]>;
 
   public static async create(data: UserInputModel): Promise<User> {
     const user = new User();
