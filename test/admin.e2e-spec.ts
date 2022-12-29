@@ -384,6 +384,26 @@ describe('AdminController (e2e)', () => {
 
     it('should get users with pagination', async () => {
       userSamples.outputs.sort((a, b) => {
+        return a.login.localeCompare(b.login);
+      });
+
+      const result = await request(app.getHttpServer())
+        .get(
+          `${userBase}?pageSize=15&pageNumber=1&searchLoginTerm=you&searchEmailTerm=.com&sortDirection=asc&sortBy=login`,
+        )
+        .auth(config.userName, config.password)
+        .expect(200);
+
+      const body = result.body as PageViewModel<UserViewModel>;
+      expect(body).toEqual(
+        new PageViewModel<UserViewModel>(1, 15, amount).add(
+          ...userSamples.outputs,
+        ),
+      );
+    });
+
+    it('should get users with pagination', async () => {
+      userSamples.outputs.sort((a, b) => {
         return b.createdAt.localeCompare(a.createdAt);
       });
 
