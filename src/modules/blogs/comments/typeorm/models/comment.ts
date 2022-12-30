@@ -26,6 +26,9 @@ export class Comment {
   @Column({ type: 'timestamptz', nullable: false })
   createdAt: Date;
 
+  @Column({ type: 'boolean', nullable: false })
+  bannedByBlogger: boolean;
+
   @ManyToOne(() => Post, (p) => p.comments)
   @JoinColumn({ name: 'postId' })
   post: Post;
