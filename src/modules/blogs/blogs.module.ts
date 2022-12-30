@@ -30,13 +30,6 @@ import { DeleteBlogHandler } from './blogs/commands/handlers/delete.blog.handler
 import { BlogUserBanHandler } from './blogs/commands/handlers/blog.user.ban.handler';
 import { UpdateCommentHandler } from './comments/commands/handlers/update.comment.handler';
 import { DeleteCommentHandler } from './comments/commands/handlers/delete.comment.handler';
-import SqlBlogsRepository from './blogs/sql/sql.blogs.repository';
-import SqlBlogsQueryRepository from './blogs/sql/sql.blogs.query.repository';
-import SqlAdminBlogsQueryRepository from './blogs/sql/sql.admin.blogs.query.repository';
-import SqlBlogUserBanRepository from './blogs/sql/sql.blog.user.ban.repository';
-import SqlBlogUserBanQueryRepository from './blogs/sql/sql.blog.user.ban.query.repository';
-import SqlPostsRepository from './posts/sql/sql.posts.repository';
-import SqlPostsQueryRepository from './posts/sql/sql.posts.query.repository';
 import SqlCommentsRepository from './comments/sql/sql.comments.repository';
 import SqlCommentsQueryRepository from './comments/sql/sql.comments.query.repository';
 import SqlBloggerCommentsQueryRepository from './comments/sql/sql.blogger.comments.query.repository';
@@ -50,6 +43,13 @@ import { Post } from './posts/typeorm/models/post';
 import { Comment } from './comments/typeorm/models/comment';
 import { PostLike } from './likes/typeorm/models/post.like';
 import { CommentLike } from './likes/typeorm/models/comment.like';
+import { OrmBlogsRepository } from './blogs/typeorm/orm.blogs.repository';
+import { OrmBlogsQueryRepository } from './blogs/typeorm/orm.blogs.query.repository';
+import { OrmAdminBlogsQueryRepository } from './blogs/typeorm/orm.admin.blogs.query.repository';
+import { OrmBlogUserBanRepository } from './blogs/typeorm/orm.blog.user.ban.repository';
+import { OrmBlogUserBanQueryRepository } from './blogs/typeorm/orm.blog.user.ban.query.repository';
+import { OrmPostsRepository } from './posts/typeorm/orm.posts.repository';
+import { OrmPostsQueryRepository } from './posts/typeorm/orm.posts.query.repository';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -83,31 +83,31 @@ const commandHandlers = [
   providers: [
     {
       provide: BlogsRepository,
-      useClass: SqlBlogsRepository,
+      useClass: OrmBlogsRepository,
     },
     {
       provide: BlogsQueryRepository,
-      useClass: SqlBlogsQueryRepository,
+      useClass: OrmBlogsQueryRepository,
     },
     {
       provide: AdminBlogsQueryRepository,
-      useClass: SqlAdminBlogsQueryRepository,
+      useClass: OrmAdminBlogsQueryRepository,
     },
     {
       provide: BlogUserBanRepository,
-      useClass: SqlBlogUserBanRepository,
+      useClass: OrmBlogUserBanRepository,
     },
     {
       provide: BlogUserBanQueryRepository,
-      useClass: SqlBlogUserBanQueryRepository,
+      useClass: OrmBlogUserBanQueryRepository,
     },
     {
       provide: PostsRepository,
-      useClass: SqlPostsRepository,
+      useClass: OrmPostsRepository,
     },
     {
       provide: PostsQueryRepository,
-      useClass: SqlPostsQueryRepository,
+      useClass: OrmPostsQueryRepository,
     },
     {
       provide: CommentsRepository,

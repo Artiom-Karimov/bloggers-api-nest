@@ -5,7 +5,7 @@ import { Blog } from './blog';
 export class BlogBan {
   @PrimaryColumn('uuid')
   blogId: string;
-  @OneToOne(() => Blog, (b) => b.ban)
+  @OneToOne(() => Blog, (b) => b.ban, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'blogId' })
   blog: Blog;
 

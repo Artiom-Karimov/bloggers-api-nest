@@ -5,7 +5,6 @@ export class PostCreateModel {
     public content: string,
     public blogId: string,
     public bloggerId: string,
-    public blogName?: string,
   ) { }
 }
 

@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import BlogsRepository from '../../../blogs/interfaces/blogs.repository';
 import { BlogError } from '../../../blogs/models/blog.error';
-import PostModel from '../../models/post.model';
 import PostsRepository from '../../interfaces/posts.repository';
 import CreatePostCommand from '../commands/create.post.command';
+import { Post } from '../../typeorm/models/post';
 
 @CommandHandler(CreatePostCommand)
 export class CreatePostHandler implements ICommandHandler<CreatePostCommand> {
@@ -19,8 +19,7 @@ export class CreatePostHandler implements ICommandHandler<CreatePostCommand> {
 
     if (blog.ownerId !== bloggerId || blog.isBanned) return BlogError.Forbidden;
 
-    command.data.blogName = blog.name;
-    const post = PostModel.create(command.data);
+    const post = Post.create(command.data, blog);
     const created = await this.postsRepo.create(post);
     return created ? created : BlogError.Unknown;
   }

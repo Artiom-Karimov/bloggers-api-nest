@@ -52,4 +52,8 @@ export class BlogUserBan {
     ban.banDate = new Date();
     return ban;
   }
+
+  get userLogin(): string {
+    return this.user.login;
+  }
 }

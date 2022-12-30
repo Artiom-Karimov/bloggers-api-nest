@@ -7,7 +7,7 @@ import PostsQueryRepository from '../interfaces/posts.query.repository';
 import GetPostsQuery from '../models/get.posts.query';
 import PostViewModel from '../models/post.view.model';
 import Post from './models/post';
-import PostMapper from './models/post.mapper';
+import PostMapper from '../typeorm/models/post.mapper';
 
 @Injectable()
 export default class SqlPostsQueryRepository extends PostsQueryRepository {
@@ -45,6 +45,7 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
     id: string,
     userId: string | undefined,
   ): Promise<PostViewModel | undefined> {
+    return undefined;
     const result = await this.db.query(
       `
       select p."id", p."blogId", p."blogBanned", p."title", 
@@ -59,7 +60,7 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
     );
     if (!result || result.length === 0) return undefined;
     const post = result[0] as Post & ExtendedLikesInfoModel;
-    return PostMapper.toView(post);
+    //return PostMapper.toView(post);
   }
   private getLikeSubqueries(userId: string | undefined): string {
     return `
@@ -120,6 +121,7 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
     page: PageViewModel<PostViewModel>,
     params: GetPostsQuery,
   ): Promise<PageViewModel<PostViewModel>> {
+    return page;
     const filter = this.getFilter(params);
     const order = params.sortDirection === 1 ? 'asc' : 'desc';
 
@@ -137,7 +139,7 @@ export default class SqlPostsQueryRepository extends PostsQueryRepository {
       `,
       [page.pageSize, page.calculateSkip()],
     );
-    const views = result.map((p) => PostMapper.toView(p));
-    return page.add(...views);
+    //const views = result.map((p) => PostMapper.toView(p));
+    //return page.add(...views);
   }
 }

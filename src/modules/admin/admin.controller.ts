@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import {
   BadRequestException,
-  ForbiddenException,
   NotFoundException,
 } from '@nestjs/common/exceptions';
 import PageViewModel from '../../common/models/page.view.model';
@@ -30,7 +29,6 @@ import BlogBanInputModel from '../blogs/blogs/models/input/blog.ban.input.model'
 import { CommandBus } from '@nestjs/cqrs';
 import BanBlogCommand from '../blogs/blogs/commands/commands/ban.blog.command';
 import AdminBlogsQueryRepository from '../blogs/blogs/interfaces/admin.blogs.query.repository';
-import AssignBlogOwnerCommand from '../blogs/blogs/commands/commands/assign.blog.owner.command';
 import BanUserCommand from './commands/commands/ban.user.command';
 import CreateConfirmedUserCommand from './commands/commands/create.confirmed.user.command';
 import DeleteUserCommand from './commands/commands/delete.user.command';
@@ -66,18 +64,6 @@ export default class AdminController {
     if (result === BlogError.NotFound)
       throwValidationException('id', 'blog not found');
     throw new BadRequestException();
-  }
-  @Put('blogs/:blogId/bind-with-user/:userId')
-  @HttpCode(204)
-  async assignBlogOwner(@Param() params: IdParams): Promise<void> {
-    const result = await this.commandBus.execute(
-      new AssignBlogOwnerCommand(params.userId, params.blogId),
-    );
-
-    if (result === BlogError.NoError) return;
-    if (result === BlogError.Forbidden) throw new ForbiddenException();
-    if (result === BlogError.NotFound) throw new NotFoundException();
-    throw new BadRequestException('unknown');
   }
 
   @Get('users')
