@@ -6,7 +6,7 @@ import BlogUserBanQueryRepository from '../interfaces/blog.user.ban.query.reposi
 import GetBlogUserBansQuery from '../models/input/get.blog.user.bans.query';
 import BlogUserBanViewModel from '../models/view/blog.user.ban.view.model';
 import { BlogUserBan } from './models/blog.user.ban';
-import BlogUserBanMapper from './models/blog.user.ban.mapper';
+import BlogUserBanMapper from '../typeorm/models/mappers/blog.user.ban.mapper';
 
 @Injectable()
 export default class SqlBlogUserBanQueryRepository extends BlogUserBanQueryRepository {

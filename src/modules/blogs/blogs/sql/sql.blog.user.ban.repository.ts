@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm';
 import BlogUserBanRepository from '../interfaces/blog.user.ban.repository';
 import BlogUserBanModel from '../models/blog.user.ban.model';
 import { BlogUserBan } from './models/blog.user.ban';
-import BlogUserBanMapper from './models/blog.user.ban.mapper';
+import BlogUserBanMapper from '../typeorm/models/mappers/blog.user.ban.mapper';
 
 @Injectable()
 export default class SqlBlogUserBanRepository extends BlogUserBanRepository {

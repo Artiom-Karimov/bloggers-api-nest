@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm';
 import BlogsRepository from '../interfaces/blogs.repository';
 import BlogModel from '../models/blog.model';
 import { Blog } from './models/blog';
-import BlogMapper from './models/blog.mapper';
+import BlogMapper from '../typeorm/models/mappers/blog.mapper';
 
 @Injectable()
 export default class SqlBlogsRepository extends BlogsRepository {

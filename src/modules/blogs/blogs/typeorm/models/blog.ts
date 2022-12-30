@@ -61,6 +61,15 @@ export class Blog {
   set isBanned(isBanned: boolean) {
     this.ban.setStatus(isBanned);
   }
+  get banDate(): Date {
+    return this.ban.banDate;
+  }
+  get ownerId(): string {
+    return this.owner.id;
+  }
+  get ownerLogin(): string {
+    return this.owner.login;
+  }
 
   public updateData(data: BlogInputModel) {
     this.name = data.name;

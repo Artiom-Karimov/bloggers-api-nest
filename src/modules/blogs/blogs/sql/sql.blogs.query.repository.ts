@@ -3,7 +3,7 @@ import PageViewModel from '../../../../common/models/page.view.model';
 import BlogViewModel from '../models/view/blog.view.model';
 import GetBlogsQuery from '../models/input/get.blogs.query';
 import BlogsQueryRepository from '../interfaces/blogs.query.repository';
-import BlogMapper from './models/blog.mapper';
+import BlogMapper from '../typeorm/models/mappers/blog.mapper';
 import { Blog } from './models/blog';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
