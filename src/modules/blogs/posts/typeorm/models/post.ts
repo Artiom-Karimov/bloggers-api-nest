@@ -9,6 +9,10 @@ import {
 import { Blog } from '../../../blogs/typeorm/models/blog';
 import { Comment } from '../../../comments/typeorm/models/comment';
 import { PostLike } from '../../../likes/typeorm/models/post.like';
+import IdGenerator from '../../../../../common/utils/id.generator';
+import { PostCreateModel } from '../../commands/commands/create.post.command';
+import { PostUpdateModel } from '../../commands/commands/update.post.command';
+import { BlogError } from '../../../blogs/models/blog.error';
 
 @Entity()
 export class Post {
@@ -42,13 +46,42 @@ export class Post {
   @Column({ type: 'timestamptz', nullable: false })
   createdAt: Date;
 
-  @ManyToOne(() => Blog, (b) => b.posts)
+  @ManyToOne(() => Blog, (b) => b.posts, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'blogId' })
   blog: Blog;
+  @Column({ type: 'uuid' })
+  blogId: string;
 
   @OneToMany(() => Comment, (c) => c.post)
   comments: Promise<Comment[]>;
 
   @OneToMany(() => PostLike, (l) => l.post)
   likes: Promise<PostLike[]>;
+
+  public static create(data: PostCreateModel, blog: Blog): Post {
+    const post = new Post();
+    post.blog = blog;
+    post.id = IdGenerator.generate();
+    post.title = data.title;
+    post.shortDescription = data.shortDescription;
+    post.content = data.content;
+    post.createdAt = new Date();
+    return post;
+  }
+
+  get blogName(): string {
+    return this.blog.name;
+  }
+
+  public updateData(data: PostUpdateModel): BlogError {
+    if (data.postId !== this.id) return BlogError.Forbidden;
+    if (data.blogId !== this.blogId) return BlogError.Forbidden;
+
+    const { title, shortDescription, content } = data.data;
+    this.title = title;
+    this.shortDescription = shortDescription;
+    this.content = content;
+
+    return BlogError.NoError;
+  }
 }

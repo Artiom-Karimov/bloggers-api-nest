@@ -38,7 +38,7 @@ export class OrmAdminBlogsQueryRepository extends AdminBlogsQueryRepository {
         .createQueryBuilder('blog')
         .leftJoinAndSelect('blog.ban', 'ban')
         .leftJoinAndSelect('blog.owner', 'owner')
-        .where('"id" = :id', { id })
+        .where('"blog"."id" = :id', { id })
         .getOne();
       return BlogMapper.toAdminView(blog) ?? undefined;
     } catch (error) {
@@ -79,7 +79,7 @@ export class OrmAdminBlogsQueryRepository extends AdminBlogsQueryRepository {
     const builder = this.getQueryBuilder(params);
 
     const result = await builder
-      .orderBy(`"${params.sortBy}"`, params.sortOrder)
+      .orderBy(`"blog"."${params.sortBy}"`, params.sortOrder)
       .offset(page.calculateSkip())
       .limit(page.pageSize)
       .getMany();

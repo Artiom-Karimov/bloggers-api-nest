@@ -1,40 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { Blog } from '../typeorm/models/blog';
-import BlogsRepository from '../interfaces/blogs.repository';
+import PostsRepository from '../interfaces/posts.repository';
+import { Post } from './models/post';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class OrmBlogsRepository extends BlogsRepository {
+export class OrmPostsRepository extends PostsRepository {
   constructor(
-    @InjectRepository(Blog)
-    private readonly repo: Repository<Blog>,
+    @InjectRepository(Post)
+    private readonly repo: Repository<Post>,
   ) {
     super();
   }
 
-  public async get(id: string): Promise<Blog | undefined> {
+  public async get(id: string): Promise<Post | undefined> {
     try {
-      const blog = await this.repo.findOne({
-        where: { id },
-        relations: { owner: true, ban: true },
-      });
-      return blog ?? undefined;
+      const post = await this.repo.findOne({ where: { id } });
+      return post ?? undefined;
     } catch (error) {
       console.error(error);
       return undefined;
     }
   }
-  public async create(blog: Blog): Promise<string | undefined> {
+  public async create(post: Post): Promise<string | undefined> {
     try {
-      const result = await this.repo.save(blog);
+      const result = await this.repo.save(post);
       return result.id;
     } catch (error) {
       console.error(error);
       return undefined;
     }
   }
-  public async update(model: Blog): Promise<boolean> {
+  public async update(model: Post): Promise<boolean> {
     return !!(await this.create(model));
   }
   public async delete(id: string): Promise<boolean> {

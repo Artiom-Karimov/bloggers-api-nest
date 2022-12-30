@@ -51,7 +51,7 @@ export class OrmBlogsQueryRepository extends BlogsQueryRepository {
         .where('"id" = :id', { id })
         .andWhere('("ban"."isBanned" = false or "ban"."isBanned" is null)')
         .getOne();
-      return BlogMapper.toView(blog) ?? undefined;
+      return blog ? BlogMapper.toView(blog) : undefined;
     } catch (error) {
       console.error(error);
       return undefined;

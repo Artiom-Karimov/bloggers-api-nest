@@ -6,10 +6,7 @@ import BanBlogCommand from '../commands/ban.blog.command';
 
 @CommandHandler(BanBlogCommand)
 export class BanBlogHandler implements ICommandHandler<BanBlogCommand> {
-  constructor(
-    private readonly repo: BlogsRepository,
-    private readonly postsRepo: PostsRepository,
-  ) { }
+  constructor(private readonly repo: BlogsRepository) { }
 
   async execute(command: BanBlogCommand): Promise<BlogError> {
     const blog = await this.repo.get(command.blogId);
@@ -17,9 +14,8 @@ export class BanBlogHandler implements ICommandHandler<BanBlogCommand> {
 
     if (blog.isBanned === command.data.isBanned) return BlogError.NoError;
     blog.isBanned = command.data.isBanned;
-    let result = await this.repo.update(blog);
+    const result = await this.repo.update(blog);
 
-    result &&= await this.postsRepo.setBlogBan(command.blogId, blog.isBanned);
     return result ? BlogError.NoError : BlogError.Unknown;
   }
 }

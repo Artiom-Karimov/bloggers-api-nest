@@ -41,9 +41,6 @@ describe('AdminController (e2e)', () => {
     it('unauthorized if no auth', async () => {
       const noAuth = [
         request(app.getHttpServer()).get(blogBase),
-        request(app.getHttpServer())
-          .put(`${blogBase}/123/bind-with-user/432`)
-          .send('boo!'),
         request(app.getHttpServer()).get(userBase),
         request(app.getHttpServer()).post(userBase).send('poop!'),
         request(app.getHttpServer())
@@ -59,9 +56,6 @@ describe('AdminController (e2e)', () => {
     it('unauthorized if wrong credentials', async () => {
       const noAuth = [
         request(app.getHttpServer()).get(blogBase),
-        request(app.getHttpServer())
-          .put(`${blogBase}/123/bind-with-user/432`)
-          .send('boo!'),
         request(app.getHttpServer())
           .get(userBase)
           .auth(config.userName, 'hell-o'),
