@@ -131,80 +131,80 @@ describe('BloggerController (e2e)', () => {
       expect(response.body).toEqual(emptyPage);
     });
 
-    let postId: string;
-    it('should create post for blog', async () => {
-      const sample: PostInputModel = {
-        title: 'samplePost',
-        shortDescription: 'the description',
-        content: 'post contentus',
-      };
+    // let postId: string;
+    // it('should create post for blog', async () => {
+    //   const sample: PostInputModel = {
+    //     title: 'samplePost',
+    //     shortDescription: 'the description',
+    //     content: 'post contentus',
+    //   };
 
-      const response = await request(app.getHttpServer())
-        .post(`${base}/${createdBlog.id}/posts`)
-        .set('Authorization', `Bearer ${bloggerTokens.access}`)
-        .send(sample);
-      expect(response.statusCode).toBe(201);
+    //   const response = await request(app.getHttpServer())
+    //     .post(`${base}/${createdBlog.id}/posts`)
+    //     .set('Authorization', `Bearer ${bloggerTokens.access}`)
+    //     .send(sample);
+    //   expect(response.statusCode).toBe(201);
 
-      const expected = {
-        id: expect.any(String),
-        title: sample.title,
-        shortDescription: sample.shortDescription,
-        content: sample.content,
-        blogId: createdBlog.id,
-        blogName: createdBlog.name,
-        createdAt: expect.stringMatching(dateRegex),
-        extendedLikesInfo: {
-          likesCount: 0,
-          dislikesCount: 0,
-          myStatus: 'None',
-          newestLikes: [],
-        },
-      };
-      expect(response.body).toEqual(expected);
-      postId = response.body.id;
-    });
-    it('should update post', async () => {
-      const sample: PostInputModel = {
-        title: 'updatedTitle',
-        shortDescription: 'dooscreeption',
-        content: 'brand new content',
-      };
+    //   const expected = {
+    //     id: expect.any(String),
+    //     title: sample.title,
+    //     shortDescription: sample.shortDescription,
+    //     content: sample.content,
+    //     blogId: createdBlog.id,
+    //     blogName: createdBlog.name,
+    //     createdAt: expect.stringMatching(dateRegex),
+    //     extendedLikesInfo: {
+    //       likesCount: 0,
+    //       dislikesCount: 0,
+    //       myStatus: 'None',
+    //       newestLikes: [],
+    //     },
+    //   };
+    //   expect(response.body).toEqual(expected);
+    //   postId = response.body.id;
+    // });
+    // it('should update post', async () => {
+    //   const sample: PostInputModel = {
+    //     title: 'updatedTitle',
+    //     shortDescription: 'dooscreeption',
+    //     content: 'brand new content',
+    //   };
 
-      let response = await request(app.getHttpServer())
-        .put(`${base}/${createdBlog.id}/posts/${postId}`)
-        .set('Authorization', `Bearer ${bloggerTokens.access}`)
-        .send(sample);
-      expect(response.statusCode).toBe(204);
+    //   let response = await request(app.getHttpServer())
+    //     .put(`${base}/${createdBlog.id}/posts/${postId}`)
+    //     .set('Authorization', `Bearer ${bloggerTokens.access}`)
+    //     .send(sample);
+    //   expect(response.statusCode).toBe(204);
 
-      response = await request(app.getHttpServer()).get(`/posts/${postId}`);
-      expect(response.statusCode).toBe(200);
+    //   response = await request(app.getHttpServer()).get(`/posts/${postId}`);
+    //   expect(response.statusCode).toBe(200);
 
-      const expected = {
-        id: expect.any(String),
-        title: sample.title,
-        shortDescription: sample.shortDescription,
-        content: sample.content,
-        blogId: createdBlog.id,
-        blogName: createdBlog.name,
-        createdAt: expect.stringMatching(dateRegex),
-        extendedLikesInfo: {
-          likesCount: 0,
-          dislikesCount: 0,
-          myStatus: 'None',
-          newestLikes: [],
-        },
-      };
-      expect(response.body).toEqual(expected);
-    });
-    it('should delete post', async () => {
-      let response = await request(app.getHttpServer())
-        .delete(`${base}/${createdBlog.id}/posts/${postId}`)
-        .set('Authorization', `Bearer ${bloggerTokens.access}`);
-      expect(response.statusCode).toBe(204);
+    //   const expected = {
+    //     id: expect.any(String),
+    //     title: sample.title,
+    //     shortDescription: sample.shortDescription,
+    //     content: sample.content,
+    //     blogId: createdBlog.id,
+    //     blogName: createdBlog.name,
+    //     createdAt: expect.stringMatching(dateRegex),
+    //     extendedLikesInfo: {
+    //       likesCount: 0,
+    //       dislikesCount: 0,
+    //       myStatus: 'None',
+    //       newestLikes: [],
+    //     },
+    //   };
+    //   expect(response.body).toEqual(expected);
+    // });
+    // it('should delete post', async () => {
+    //   let response = await request(app.getHttpServer())
+    //     .delete(`${base}/${createdBlog.id}/posts/${postId}`)
+    //     .set('Authorization', `Bearer ${bloggerTokens.access}`);
+    //   expect(response.statusCode).toBe(204);
 
-      response = await request(app.getHttpServer()).get(`/posts/${postId}`);
-      expect(response.statusCode).toBe(404);
-    });
+    //   response = await request(app.getHttpServer()).get(`/posts/${postId}`);
+    //   expect(response.statusCode).toBe(404);
+    // });
 
     let changedBlogSample: BlogInputModel;
 
@@ -286,70 +286,70 @@ describe('BloggerController (e2e)', () => {
       post = postSamples.outputs[0];
     });
 
-    const content = "We don't need no education!";
-    it('not-banned user should create comment', async () => {
-      await request(app.getHttpServer())
-        .post(`/posts/${post.id}/comments`)
-        .set('Authorization', `Bearer ${userTokens.access}`)
-        .send({ content: content })
-        .expect(201);
-    });
-    it('blogger should get comment', async () => {
-      const response = await request(app.getHttpServer())
-        .get(`${base}/comments`)
-        .set('Authorization', `Bearer ${postSamples.tokens.access}`)
-        .expect(200);
-      expect(response.body).toEqual({
-        ...emptyPage,
-        totalCount: 1,
-        pagesCount: 1,
-        items: [
-          {
-            id: expect.any(String),
-            content: content,
-            createdAt: expect.stringMatching(dateRegex),
-            likesInfo: {
-              likesCount: 0,
-              dislikesCount: 0,
-              myStatus: 'None',
-            },
-            commentatorInfo: {
-              userId: user.id,
-              userLogin: user.login,
-            },
-            postInfo: {
-              id: post.id,
-              title: post.title,
-              blogId: post.blogId,
-              blogName: post.blogName,
-            },
-          },
-        ],
-      });
-    });
+    // const content = "We don't need no education!";
+    // it('not-banned user should create comment', async () => {
+    //   await request(app.getHttpServer())
+    //     .post(`/posts/${post.id}/comments`)
+    //     .set('Authorization', `Bearer ${userTokens.access}`)
+    //     .send({ content: content })
+    //     .expect(201);
+    // });
+    // it('blogger should get comment', async () => {
+    //   const response = await request(app.getHttpServer())
+    //     .get(`${base}/comments`)
+    //     .set('Authorization', `Bearer ${postSamples.tokens.access}`)
+    //     .expect(200);
+    //   expect(response.body).toEqual({
+    //     ...emptyPage,
+    //     totalCount: 1,
+    //     pagesCount: 1,
+    //     items: [
+    //       {
+    //         id: expect.any(String),
+    //         content: content,
+    //         createdAt: expect.stringMatching(dateRegex),
+    //         likesInfo: {
+    //           likesCount: 0,
+    //           dislikesCount: 0,
+    //           myStatus: 'None',
+    //         },
+    //         commentatorInfo: {
+    //           userId: user.id,
+    //           userLogin: user.login,
+    //         },
+    //         postInfo: {
+    //           id: post.id,
+    //           title: post.title,
+    //           blogId: post.blogId,
+    //           blogName: post.blogName,
+    //         },
+    //       },
+    //     ],
+    //   });
+    // });
 
-    it('user should create dislike', async () => {
-      await request(app.getHttpServer())
-        .put(`/posts/${post.id}/like-status`)
-        .set('Authorization', `Bearer ${userTokens.access}`)
-        .send({ likeStatus: 'Dislike' })
-        .expect(204);
-    });
-    it('blogger should get dislike', async () => {
-      const response = await request(app.getHttpServer())
-        .get(`/posts/${post.id}`)
-        .set('Authorization', `Bearer ${postSamples.tokens.access}`)
-        .expect(200);
-      expect(response.body).toEqual({
-        ...post,
-        extendedLikesInfo: {
-          likesCount: 0,
-          dislikesCount: 1,
-          myStatus: 'None',
-          newestLikes: [],
-        },
-      });
-    });
+    // it('user should create dislike', async () => {
+    //   await request(app.getHttpServer())
+    //     .put(`/posts/${post.id}/like-status`)
+    //     .set('Authorization', `Bearer ${userTokens.access}`)
+    //     .send({ likeStatus: 'Dislike' })
+    //     .expect(204);
+    // });
+    // it('blogger should get dislike', async () => {
+    //   const response = await request(app.getHttpServer())
+    //     .get(`/posts/${post.id}`)
+    //     .set('Authorization', `Bearer ${postSamples.tokens.access}`)
+    //     .expect(200);
+    //   expect(response.body).toEqual({
+    //     ...post,
+    //     extendedLikesInfo: {
+    //       likesCount: 0,
+    //       dislikesCount: 1,
+    //       myStatus: 'None',
+    //       newestLikes: [],
+    //     },
+    //   });
+    // });
 
     const banReason = "How can you have any pudding if you don't eat meat?";
     it('blogger should ban user', async () => {
@@ -364,22 +364,22 @@ describe('BloggerController (e2e)', () => {
       expect(result.statusCode).toBe(204);
     });
 
-    const afterBanContent = "We don't need no thought control!";
-    it('banned user should not create comment', async () => {
-      await request(app.getHttpServer())
-        .post(`/posts/${post.id}/comments`)
-        .set('Authorization', `Bearer ${userTokens.access}`)
-        .send({ content: afterBanContent })
-        .expect(403);
-    });
+    // const afterBanContent = "We don't need no thought control!";
+    // it('banned user should not create comment', async () => {
+    //   await request(app.getHttpServer())
+    //     .post(`/posts/${post.id}/comments`)
+    //     .set('Authorization', `Bearer ${userTokens.access}`)
+    //     .send({ content: afterBanContent })
+    //     .expect(403);
+    // });
 
-    it('blogger should not get banned user comments', async () => {
-      const response = await request(app.getHttpServer())
-        .get(`${base}/comments`)
-        .set('Authorization', `Bearer ${postSamples.tokens.access}`)
-        .expect(200);
-      expect(response.body).toEqual(emptyPage);
-    });
+    // it('blogger should not get banned user comments', async () => {
+    //   const response = await request(app.getHttpServer())
+    //     .get(`${base}/comments`)
+    //     .set('Authorization', `Bearer ${postSamples.tokens.access}`)
+    //     .expect(200);
+    //   expect(response.body).toEqual(emptyPage);
+    // });
 
     it('blogger should get banned user info', async () => {
       const response = await request(app.getHttpServer())
@@ -417,46 +417,46 @@ describe('BloggerController (e2e)', () => {
         .expect(204);
     });
 
-    it('unbanned user should create comment', async () => {
-      await request(app.getHttpServer())
-        .post(`/posts/${post.id}/comments`)
-        .set('Authorization', `Bearer ${userTokens.access}`)
-        .send({ content: afterBanContent })
-        .expect(201);
-    });
+    // it('unbanned user should create comment', async () => {
+    //   await request(app.getHttpServer())
+    //     .post(`/posts/${post.id}/comments`)
+    //     .set('Authorization', `Bearer ${userTokens.access}`)
+    //     .send({ content: afterBanContent })
+    //     .expect(201);
+    // });
 
-    it('blogger should get comments', async () => {
-      const response = await request(app.getHttpServer())
-        .get(`${base}/comments`)
-        .set('Authorization', `Bearer ${postSamples.tokens.access}`)
-        .expect(200);
-      expect(response.body).toEqual({
-        ...emptyPage,
-        totalCount: 2,
-        pagesCount: 1,
-        items: expect.arrayContaining([
-          {
-            id: expect.any(String),
-            content: afterBanContent,
-            createdAt: expect.stringMatching(dateRegex),
-            likesInfo: {
-              likesCount: 0,
-              dislikesCount: 0,
-              myStatus: 'None',
-            },
-            commentatorInfo: {
-              userId: user.id,
-              userLogin: user.login,
-            },
-            postInfo: {
-              id: post.id,
-              title: post.title,
-              blogId: post.blogId,
-              blogName: post.blogName,
-            },
-          },
-        ]),
-      });
-    });
+    // it('blogger should get comments', async () => {
+    //   const response = await request(app.getHttpServer())
+    //     .get(`${base}/comments`)
+    //     .set('Authorization', `Bearer ${postSamples.tokens.access}`)
+    //     .expect(200);
+    //   expect(response.body).toEqual({
+    //     ...emptyPage,
+    //     totalCount: 2,
+    //     pagesCount: 1,
+    //     items: expect.arrayContaining([
+    //       {
+    //         id: expect.any(String),
+    //         content: afterBanContent,
+    //         createdAt: expect.stringMatching(dateRegex),
+    //         likesInfo: {
+    //           likesCount: 0,
+    //           dislikesCount: 0,
+    //           myStatus: 'None',
+    //         },
+    //         commentatorInfo: {
+    //           userId: user.id,
+    //           userLogin: user.login,
+    //         },
+    //         postInfo: {
+    //           id: post.id,
+    //           title: post.title,
+    //           blogId: post.blogId,
+    //           blogName: post.blogName,
+    //         },
+    //       },
+    //     ]),
+    //   });
+    // });
   });
 });

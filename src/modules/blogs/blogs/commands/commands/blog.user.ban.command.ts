@@ -5,7 +5,6 @@ export class BlogUserBanCreateModel {
     public blogId: string,
     public userId: string,
     public bloggerId: string,
-    public userLogin?: string,
   ) { }
 }
 

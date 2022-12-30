@@ -1,13 +1,13 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import UsersQueryRepository from '../../../../users/interfaces/users.query.repository';
 import CommentsRepository from '../../../comments/interfaces/comments.repository';
 import BlogUserBanRepository from '../../interfaces/blog.user.ban.repository';
 import BlogsRepository from '../../interfaces/blogs.repository';
 import { BlogError } from '../../models/blog.error';
-import BlogUserBanModel from '../../models/blog.user.ban.model';
-import BlogUserBanCommand, {
-  BlogUserBanCreateModel,
-} from '../commands/blog.user.ban.command';
+import BlogUserBanCommand from '../commands/blog.user.ban.command';
+import { BlogUserBan } from '../../typeorm/models/blog.user.ban';
+import { Blog } from '../../typeorm/models/blog';
+import { User } from '../../../../users/typeorm/models/user';
+import UsersRepository from '../../../../users/interfaces/users.repository';
 
 @CommandHandler(BlogUserBanCommand)
 export class BlogUserBanHandler implements ICommandHandler<BlogUserBanCommand> {
@@ -15,31 +15,33 @@ export class BlogUserBanHandler implements ICommandHandler<BlogUserBanCommand> {
     private readonly blogRepo: BlogsRepository,
     private readonly commentRepo: CommentsRepository,
     private readonly banRepo: BlogUserBanRepository,
-    private readonly usersRepo: UsersQueryRepository,
+    private readonly usersRepo: UsersRepository,
   ) { }
 
   async execute(command: BlogUserBanCommand): Promise<BlogError> {
-    const { blogId, bloggerId, isBanned, userId } = command.data;
+    const { blogId, bloggerId, isBanned, userId, banReason } = command.data;
     const blog = await this.blogRepo.get(blogId);
     if (!blog) return BlogError.NotFound;
     if (blog.ownerId !== bloggerId) return BlogError.Forbidden;
 
-    const user = await this.usersRepo.getUser(userId);
+    const user = await this.usersRepo.get(userId);
     if (!user) return BlogError.NotFound;
 
-    command.data.userLogin = user.login;
-
-    if (isBanned) return this.create(command.data);
+    if (isBanned) return this.create(banReason, blog, user);
     return this.delete(blogId, userId);
   }
 
-  private async create(data: BlogUserBanCreateModel): Promise<BlogError> {
-    const alreadyCreated = await this.banRepo.get(data.blogId, data.userId);
+  private async create(
+    banReason: string,
+    blog: Blog,
+    user: User,
+  ): Promise<BlogError> {
+    const alreadyCreated = await this.banRepo.get(blog.id, user.id);
     if (alreadyCreated) return BlogError.NoError;
 
-    const ban = BlogUserBanModel.create(data);
+    const ban = BlogUserBan.create(banReason, blog, user);
     const result = await this.banRepo.create(ban);
-    await this.commentRepo.banByBlogger(data.userId, data.blogId, true);
+    await this.commentRepo.banByBlogger(user.id, blog.id, true);
     return result ? BlogError.NoError : BlogError.Unknown;
   }
   private async delete(blogId: string, userId: string): Promise<BlogError> {

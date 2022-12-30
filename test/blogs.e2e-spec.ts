@@ -3,7 +3,6 @@ import { INestApplication } from '@nestjs/common';
 import { init, stop } from './utils/test.init';
 import PageViewModel from '../src/common/models/page.view.model';
 import BlogSampleGenerator from './utils/blog.sample.generator';
-import * as config from '../src/config/admin';
 import BlogViewModel from '../src/modules/blogs/blogs/models/view/blog.view.model';
 
 jest.useRealTimers();

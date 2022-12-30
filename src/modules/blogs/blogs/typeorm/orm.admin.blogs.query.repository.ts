@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import PageViewModel from '../../../../common/models/page.view.model';
-import BlogViewModel from '../models/view/blog.view.model';
 import GetBlogsQuery from '../models/input/get.blogs.query';
-import BlogsQueryRepository from '../interfaces/blogs.query.repository';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Blog } from './models/blog';
 import BlogMapper from './models/mappers/blog.mapper';
+import AdminBlogsQueryRepository from '../interfaces/admin.blogs.query.repository';
+import AdminBlogViewModel from '../models/view/admin.blog.view.model';
 
 @Injectable()
-export class OrmBlogsQueryRepository extends BlogsQueryRepository {
+export class OrmAdminBlogsQueryRepository extends AdminBlogsQueryRepository {
   constructor(
     @InjectRepository(Blog)
     private readonly repo: Repository<Blog>,
@@ -17,9 +17,9 @@ export class OrmBlogsQueryRepository extends BlogsQueryRepository {
     super();
   }
 
-  public async getBlogs(
+  public async getAdminBlogs(
     params: GetBlogsQuery,
-  ): Promise<PageViewModel<BlogViewModel>> {
+  ): Promise<PageViewModel<AdminBlogViewModel>> {
     try {
       const page = await this.getPage(params);
       await this.loadBlogs(page, params);
@@ -29,29 +29,18 @@ export class OrmBlogsQueryRepository extends BlogsQueryRepository {
       return new PageViewModel(params.pageNumber, params.pageSize, 0);
     }
   }
-  public async getBloggerBlogs(
-    params: GetBlogsQuery,
-    bloggerId: string,
-  ): Promise<PageViewModel<BlogViewModel>> {
-    try {
-      const page = await this.getPage(params, bloggerId);
-      await this.loadBlogs(page, params, bloggerId);
-      return page;
-    } catch (error) {
-      console.error(error);
-      return new PageViewModel(params.pageNumber, params.pageSize, 0);
-    }
-  }
 
-  public async getBlog(id: string): Promise<BlogViewModel | undefined> {
+  public async getAdminBlog(
+    id: string,
+  ): Promise<AdminBlogViewModel | undefined> {
     try {
       const blog = await this.repo
         .createQueryBuilder('blog')
         .leftJoinAndSelect('blog.ban', 'ban')
+        .leftJoinAndSelect('blog.owner', 'owner')
         .where('"id" = :id', { id })
-        .andWhere('("ban"."isBanned" = false or "ban"."isBanned" is null)')
         .getOne();
-      return BlogMapper.toView(blog) ?? undefined;
+      return BlogMapper.toAdminView(blog) ?? undefined;
     } catch (error) {
       console.error(error);
       return undefined;
@@ -60,44 +49,34 @@ export class OrmBlogsQueryRepository extends BlogsQueryRepository {
 
   private async getPage(
     params: GetBlogsQuery,
-    bloggerId?: string,
-  ): Promise<PageViewModel<BlogViewModel>> {
-    const count = await this.getCount(params, bloggerId);
-    return new PageViewModel<BlogViewModel>(
+  ): Promise<PageViewModel<AdminBlogViewModel>> {
+    const count = await this.getCount(params);
+    return new PageViewModel<AdminBlogViewModel>(
       params.pageNumber,
       params.pageSize,
       count,
     );
   }
-  private async getCount(
-    params: GetBlogsQuery,
-    bloggerId?: string,
-  ): Promise<number> {
-    const builder = this.getQueryBuilder(params, bloggerId);
+  private async getCount(params: GetBlogsQuery): Promise<number> {
+    const builder = this.getQueryBuilder(params);
     return builder.getCount();
   }
-  private getQueryBuilder(
-    params: GetBlogsQuery,
-    bloggerId?: string,
-  ): SelectQueryBuilder<Blog> {
+  private getQueryBuilder(params: GetBlogsQuery): SelectQueryBuilder<Blog> {
     const builder = this.repo
       .createQueryBuilder('blog')
       .leftJoinAndSelect('blog.ban', 'ban')
-      .where('("ban"."isBanned" = false or "ban"."isBanned" is null)');
-    if (bloggerId) {
-      builder.andWhere('"ownerId" = :bloggerId', { bloggerId });
-    }
+      .leftJoinAndSelect('blog.owner', 'owner');
+
     if (params.searchNameTerm) {
       builder.andWhere('"name" ilike :term', { term: params.searchNameTerm });
     }
     return builder;
   }
   private async loadBlogs(
-    page: PageViewModel<BlogViewModel>,
+    page: PageViewModel<AdminBlogViewModel>,
     params: GetBlogsQuery,
-    bloggerId?: string,
-  ): Promise<PageViewModel<BlogViewModel>> {
-    const builder = this.getQueryBuilder(params, bloggerId);
+  ): Promise<PageViewModel<AdminBlogViewModel>> {
+    const builder = this.getQueryBuilder(params);
 
     const result = await builder
       .orderBy(`"${params.sortBy}"`, params.sortOrder)
@@ -105,7 +84,7 @@ export class OrmBlogsQueryRepository extends BlogsQueryRepository {
       .limit(page.pageSize)
       .getMany();
 
-    const views = result.map((u) => BlogMapper.toView(u));
+    const views = result.map((u) => BlogMapper.toAdminView(u));
     return page.add(...views);
   }
 }
