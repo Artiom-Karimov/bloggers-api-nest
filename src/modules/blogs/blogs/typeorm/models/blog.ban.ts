@@ -14,4 +14,18 @@ export class BlogBan {
 
   @Column({ type: 'timestamptz', nullable: true })
   banDate: Date;
+
+  public static create(isBanned: boolean, blog: Blog): BlogBan {
+    const ban = new BlogBan();
+    ban.isBanned = isBanned;
+    ban.banDate = isBanned ? new Date() : null;
+    ban.blog = blog;
+    return ban;
+  }
+
+  public setStatus(isBanned: boolean) {
+    if (this.isBanned === isBanned) return;
+    this.isBanned = isBanned;
+    this.banDate = isBanned ? new Date() : null;
+  }
 }
