@@ -31,12 +31,7 @@ export class BlogUserBan {
   @Column({ type: 'boolean', nullable: false })
   isBanned: boolean;
 
-  @Column({
-    type: 'character varying',
-    length: 1000,
-    collation: 'C',
-    nullable: true,
-  })
+  @Column({ type: 'timestamp with time zone', nullable: true })
   banReason: string;
 
   @Column({ type: 'timestamptz', nullable: true })
