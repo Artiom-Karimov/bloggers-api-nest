@@ -13,7 +13,12 @@ export class UserBan {
   @Column({ type: 'boolean', nullable: false })
   isBanned: boolean;
 
-  @Column({ type: 'character varying', nullable: true, collation: 'C' })
+  @Column({
+    type: 'character varying',
+    length: 1000,
+    nullable: true,
+    collation: 'C',
+  })
   banReason: string;
 
   @Column({ type: 'timestamptz', nullable: true })
