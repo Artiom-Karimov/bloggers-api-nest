@@ -82,170 +82,170 @@ describe('AdminController (e2e)', () => {
     });
   });
 
-  // describe('admin blog operations', () => {
-  //   it('should get empty blogs', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .get(blogBase)
-  //       .auth(config.userName, config.password);
-  //     expect(response.body).toEqual(emptyPage);
-  //   });
+  describe('admin blog operations', () => {
+    it('should get empty blogs', async () => {
+      const response = await request(app.getHttpServer())
+        .get(blogBase)
+        .auth(config.userName, config.password);
+      expect(response.body).toEqual(emptyPage);
+    });
 
-  //   const amount = 2;
-  //   it('should get created blogs', async () => {
-  //     blogSamples.generateSamples(amount);
-  //     await blogSamples.createSamples();
+    const amount = 2;
+    it('should get created blogs', async () => {
+      blogSamples.generateSamples(amount);
+      await blogSamples.createSamples();
 
-  //     const response = await request(app.getHttpServer())
-  //       .get(blogBase)
-  //       .auth(config.userName, config.password);
+      const response = await request(app.getHttpServer())
+        .get(blogBase)
+        .auth(config.userName, config.password);
 
-  //     const expectedPage = {
-  //       pagesCount: 1,
-  //       page: 1,
-  //       pageSize: expect.any(Number),
-  //       totalCount: amount,
-  //       items: expect.arrayContaining([
-  //         {
-  //           id: expect.any(String),
-  //           name: blogSamples.samples[0].name,
-  //           description: blogSamples.samples[0].description,
-  //           websiteUrl: blogSamples.samples[0].websiteUrl,
-  //           createdAt: expect.stringMatching(dateRegex),
-  //           blogOwnerInfo: {
-  //             userId: expect.any(String),
-  //             userLogin: blogSamples.user.login,
-  //           },
-  //           banInfo: {
-  //             isBanned: false,
-  //             banDate: null,
-  //           },
-  //         },
-  //         {
-  //           id: expect.any(String),
-  //           name: blogSamples.samples[1].name,
-  //           description: blogSamples.samples[1].description,
-  //           websiteUrl: blogSamples.samples[1].websiteUrl,
-  //           createdAt: expect.stringMatching(dateRegex),
-  //           blogOwnerInfo: {
-  //             userId: expect.any(String),
-  //             userLogin: blogSamples.user.login,
-  //           },
-  //           banInfo: {
-  //             isBanned: false,
-  //             banDate: null,
-  //           },
-  //         },
-  //       ]),
-  //     };
+      const expectedPage = {
+        pagesCount: 1,
+        page: 1,
+        pageSize: expect.any(Number),
+        totalCount: amount,
+        items: expect.arrayContaining([
+          {
+            id: expect.any(String),
+            name: blogSamples.samples[0].name,
+            description: blogSamples.samples[0].description,
+            websiteUrl: blogSamples.samples[0].websiteUrl,
+            createdAt: expect.stringMatching(dateRegex),
+            blogOwnerInfo: {
+              userId: expect.any(String),
+              userLogin: blogSamples.user.login,
+            },
+            banInfo: {
+              isBanned: false,
+              banDate: null,
+            },
+          },
+          {
+            id: expect.any(String),
+            name: blogSamples.samples[1].name,
+            description: blogSamples.samples[1].description,
+            websiteUrl: blogSamples.samples[1].websiteUrl,
+            createdAt: expect.stringMatching(dateRegex),
+            blogOwnerInfo: {
+              userId: expect.any(String),
+              userLogin: blogSamples.user.login,
+            },
+            banInfo: {
+              isBanned: false,
+              banDate: null,
+            },
+          },
+        ]),
+      };
 
-  //     expect(response.body).toEqual(expectedPage);
-  //   });
+      expect(response.body).toEqual(expectedPage);
+    });
 
-  //   let bannedBlog: BlogViewModel;
-  //   let bannedPost: PostViewModel;
-  //   it('add a post to check blog ban', async () => {
-  //     bannedBlog = blogSamples.outputs[0];
-  //     const response = await request(app.getHttpServer())
-  //       .post(`/blogger/blogs/${bannedBlog.id}/posts`)
-  //       .set('Authorization', `Bearer ${blogSamples.tokens.access}`)
-  //       .send({
-  //         title: 'samplePost',
-  //         shortDescription: 'describe this!',
-  //         content: 'The best text piece in the whole world',
-  //       })
-  //       .expect(201);
-  //     bannedPost = response.body;
-  //   });
-  //   it('should ban a blog', async () => {
-  //     await request(app.getHttpServer())
-  //       .put(`${blogBase}/${bannedBlog.id}/ban`)
-  //       .auth(config.userName, config.password)
-  //       .send({ isBanned: true })
-  //       .expect(204);
-  //   });
-  //   it('user should not get banned blog', async () => {
-  //     await request(app.getHttpServer())
-  //       .get(`/blogs/${bannedBlog.id}`)
-  //       .expect(404);
+    let bannedBlog: BlogViewModel;
+    let bannedPost: PostViewModel;
+    it('add a post to check blog ban', async () => {
+      bannedBlog = blogSamples.outputs[0];
+      const response = await request(app.getHttpServer())
+        .post(`/blogger/blogs/${bannedBlog.id}/posts`)
+        .set('Authorization', `Bearer ${blogSamples.tokens.access}`)
+        .send({
+          title: 'samplePost',
+          shortDescription: 'describe this!',
+          content: 'The best text piece in the whole world',
+        })
+        .expect(201);
+      bannedPost = response.body;
+    });
+    it('should ban a blog', async () => {
+      await request(app.getHttpServer())
+        .put(`${blogBase}/${bannedBlog.id}/ban`)
+        .auth(config.userName, config.password)
+        .send({ isBanned: true })
+        .expect(204);
+    });
+    it('user should not get banned blog', async () => {
+      await request(app.getHttpServer())
+        .get(`/blogs/${bannedBlog.id}`)
+        .expect(404);
 
-  //     const retrieved = await request(app.getHttpServer())
-  //       .get(`/blogs`)
-  //       .expect(200);
-  //     const body = retrieved.body as PageViewModel<BlogViewModel>;
-  //     expect(body.totalCount).toBe(amount - 1);
-  //     expect(body.items.length).toBe(amount - 1);
-  //   });
-  //   it('user should not get banned blog posts', async () => {
-  //     await request(app.getHttpServer())
-  //       .get(`/blogs/${bannedBlog.id}/posts`)
-  //       .expect(404);
-  //     await request(app.getHttpServer())
-  //       .get(`/posts/${bannedPost.id}`)
-  //       .expect(404);
-  //   });
-  //   it('blogger should not create post for banned blog', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .post(`/blogger/blogs/${bannedBlog.id}/posts`)
-  //       .set('Authorization', `Bearer ${blogSamples.tokens.access}`)
-  //       .send({
-  //         title: 'sampl756ePost',
-  //         shortDescription: 'describe this!',
-  //         content: 'The best text piece in the whole world',
-  //       });
-  //     expect(response.statusCode).toBeGreaterThanOrEqual(400);
-  //   });
-  //   it('admin should get banned blog', async () => {
-  //     const response = await request(app.getHttpServer())
-  //       .get(blogBase)
-  //       .auth(config.userName, config.password)
-  //       .expect(200);
+      const retrieved = await request(app.getHttpServer())
+        .get(`/blogs`)
+        .expect(200);
+      const body = retrieved.body as PageViewModel<BlogViewModel>;
+      expect(body.totalCount).toBe(amount - 1);
+      expect(body.items.length).toBe(amount - 1);
+    });
+    it('user should not get banned blog posts', async () => {
+      await request(app.getHttpServer())
+        .get(`/blogs/${bannedBlog.id}/posts`)
+        .expect(404);
+      await request(app.getHttpServer())
+        .get(`/posts/${bannedPost.id}`)
+        .expect(404);
+    });
+    it('blogger should not create post for banned blog', async () => {
+      const response = await request(app.getHttpServer())
+        .post(`/blogger/blogs/${bannedBlog.id}/posts`)
+        .set('Authorization', `Bearer ${blogSamples.tokens.access}`)
+        .send({
+          title: 'sampl756ePost',
+          shortDescription: 'describe this!',
+          content: 'The best text piece in the whole world',
+        });
+      expect(response.statusCode).toBeGreaterThanOrEqual(400);
+    });
+    it('admin should get banned blog', async () => {
+      const response = await request(app.getHttpServer())
+        .get(blogBase)
+        .auth(config.userName, config.password)
+        .expect(200);
 
-  //     const expectedPage = {
-  //       pagesCount: 1,
-  //       page: 1,
-  //       pageSize: expect.any(Number),
-  //       totalCount: amount,
-  //       items: expect.arrayContaining([
-  //         {
-  //           id: bannedBlog.id,
-  //           name: bannedBlog.name,
-  //           description: bannedBlog.description,
-  //           websiteUrl: bannedBlog.websiteUrl,
-  //           createdAt: expect.stringMatching(dateRegex),
-  //           blogOwnerInfo: {
-  //             userId: expect.any(String),
-  //             userLogin: blogSamples.user.login,
-  //           },
-  //           banInfo: {
-  //             isBanned: true,
-  //             banDate: expect.stringMatching(dateRegex),
-  //           },
-  //         },
-  //       ]),
-  //     };
-  //     expect(response.body).toEqual(expectedPage);
-  //   });
-  //   it('should unban blog', async () => {
-  //     await request(app.getHttpServer())
-  //       .put(`${blogBase}/${bannedBlog.id}/ban`)
-  //       .auth(config.userName, config.password)
-  //       .send({ isBanned: false })
-  //       .expect(204);
-  //   });
-  //   it('user should get unbanned blog', async () => {
-  //     await request(app.getHttpServer())
-  //       .get(`/blogs/${bannedBlog.id}`)
-  //       .expect(200);
-  //   });
-  //   it('user should get unbanned blog posts', async () => {
-  //     await request(app.getHttpServer())
-  //       .get(`/blogs/${bannedBlog.id}/posts`)
-  //       .expect(200);
-  //     await request(app.getHttpServer())
-  //       .get(`/posts/${bannedPost.id}`)
-  //       .expect(200);
-  //   });
-  // });
+      const expectedPage = {
+        pagesCount: 1,
+        page: 1,
+        pageSize: expect.any(Number),
+        totalCount: amount,
+        items: expect.arrayContaining([
+          {
+            id: bannedBlog.id,
+            name: bannedBlog.name,
+            description: bannedBlog.description,
+            websiteUrl: bannedBlog.websiteUrl,
+            createdAt: expect.stringMatching(dateRegex),
+            blogOwnerInfo: {
+              userId: expect.any(String),
+              userLogin: blogSamples.user.login,
+            },
+            banInfo: {
+              isBanned: true,
+              banDate: expect.stringMatching(dateRegex),
+            },
+          },
+        ]),
+      };
+      expect(response.body).toEqual(expectedPage);
+    });
+    it('should unban blog', async () => {
+      await request(app.getHttpServer())
+        .put(`${blogBase}/${bannedBlog.id}/ban`)
+        .auth(config.userName, config.password)
+        .send({ isBanned: false })
+        .expect(204);
+    });
+    it('user should get unbanned blog', async () => {
+      await request(app.getHttpServer())
+        .get(`/blogs/${bannedBlog.id}`)
+        .expect(200);
+    });
+    it('user should get unbanned blog posts', async () => {
+      await request(app.getHttpServer())
+        .get(`/blogs/${bannedBlog.id}/posts`)
+        .expect(200);
+      await request(app.getHttpServer())
+        .get(`/posts/${bannedPost.id}`)
+        .expect(200);
+    });
+  });
 
   describe('admin user operations', () => {
     it('should create user', async () => {
