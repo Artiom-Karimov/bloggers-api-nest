@@ -29,11 +29,11 @@ export class Comment {
   @Column({ type: 'boolean', nullable: false })
   bannedByBlogger: boolean;
 
-  @ManyToOne(() => Post, (p) => p.comments)
+  @ManyToOne(() => Post, (p) => p.comments, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'postId' })
   post: Post;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'userId' })
   user: User;
 

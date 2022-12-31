@@ -8,7 +8,7 @@ import IdGenerator from '../../../../common/utils/id.generator';
 export class Recovery {
   @PrimaryColumn({ type: 'uuid' })
   userId: string;
-  @OneToOne(() => User, (u) => u.recovery)
+  @OneToOne(() => User, (u) => u.recovery, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
 

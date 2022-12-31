@@ -16,16 +16,26 @@ export class Session {
   @PrimaryGeneratedColumn('uuid')
   deviceId: string;
 
-  @ManyToOne(() => User, (u) => u.sessions)
+  @ManyToOne(() => User, (u) => u.sessions, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
   @Column({ type: 'uuid' })
   userId: string;
 
-  @Column({ type: 'character varying', length: 500, collation: 'C' })
+  @Column({
+    type: 'character varying',
+    length: 500,
+    collation: 'C',
+    nullable: true,
+  })
   deviceName: string;
 
-  @Column({ type: 'character varying', length: 500, collation: 'C' })
+  @Column({
+    type: 'character varying',
+    length: 500,
+    collation: 'C',
+    nullable: true,
+  })
   ip: string;
 
   @Column({ type: 'timestamptz' })

@@ -8,7 +8,7 @@ import IdGenerator from '../../../../common/utils/id.generator';
 export class EmailConfirmation {
   @PrimaryColumn({ type: 'uuid' })
   userId: string;
-  @OneToOne(() => User, (u) => u.emailConfirmation)
+  @OneToOne(() => User, (u) => u.emailConfirmation, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
 

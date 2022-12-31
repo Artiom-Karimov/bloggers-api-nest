@@ -6,7 +6,7 @@ import { BanUserCreateModel } from '../../../admin/commands/commands/ban.user.co
 export class UserBan {
   @PrimaryColumn({ type: 'uuid' })
   userId: string;
-  @OneToOne(() => User, (u) => u.ban)
+  @OneToOne(() => User, (u) => u.ban, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
 
