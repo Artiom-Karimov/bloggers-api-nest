@@ -7,7 +7,7 @@ import Comment from './models/comment';
 import CommentsQueryRepository from '../interfaces/comments.query.repository';
 import GetCommentsQuery from '../models/input/get.comments.query';
 import CommentViewModel from '../models/view/comment.view.model';
-import CommentMapper from './models/comment.mapper';
+import CommentMapper from '../typeorm/models/comment.mapper';
 
 @Injectable()
 export default class SqlCommentsQueryRepository extends CommentsQueryRepository {

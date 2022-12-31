@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm';
 import CommentsRepository from '../interfaces/comments.repository';
 import CommentModel from '../models/comment.model';
 import Comment from './models/comment';
-import CommentMapper from './models/comment.mapper';
+import CommentMapper from '../typeorm/models/comment.mapper';
 
 @Injectable()
 export default class SqlCommentsRepository extends CommentsRepository {
