@@ -46,7 +46,7 @@ export class Blog {
   @Column({ type: 'timestamptz', nullable: false })
   createdAt: Date;
 
-  @ManyToOne(() => User, (u) => u.blogs)
+  @ManyToOne(() => User, (u) => u.blogs, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'ownerId' })
   owner: User;
 

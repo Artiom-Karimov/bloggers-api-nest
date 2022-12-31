@@ -5,7 +5,7 @@ import PostViewModel from '../models/post.view.model';
 import PostsQueryRepository from '../interfaces/posts.query.repository';
 import { Post } from './models/post';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import PostMapper from './models/post.mapper';
 import { ExtendedLikesInfoModel } from '../../likes/models/likes.info.model';
 
@@ -18,10 +18,18 @@ export class OrmPostsQueryRepository extends PostsQueryRepository {
     super();
   }
 
+  // TODO: Get actual likes
   public async getPosts(
     params: GetPostsQuery,
   ): Promise<PageViewModel<PostViewModel>> {
-    throw new Error('GetPosts not implemented');
+    try {
+      const page = await this.getPage(params);
+      await this.loadPosts(page, params);
+      return page;
+    } catch (error) {
+      console.error(error);
+      return new PageViewModel(params.pageNumber, params.pageSize, 0);
+    }
   }
 
   public async getPost(
@@ -43,5 +51,48 @@ export class OrmPostsQueryRepository extends PostsQueryRepository {
       console.error(error);
       return undefined;
     }
+  }
+
+  private async getPage(
+    params: GetPostsQuery,
+  ): Promise<PageViewModel<PostViewModel>> {
+    const count = await this.getCount(params);
+    return new PageViewModel<PostViewModel>(
+      params.pageNumber,
+      params.pageSize,
+      count,
+    );
+  }
+  private async getCount(params: GetPostsQuery): Promise<number> {
+    const builder = this.getQueryBuilder(params);
+    return builder.getCount();
+  }
+  private getQueryBuilder(params: GetPostsQuery): SelectQueryBuilder<Post> {
+    const builder = this.repo
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.blog', 'blog')
+      .leftJoin('blog.ban', 'ban')
+      .where('("ban"."isBanned" = false or "ban"."isBanned" is null)');
+    if (params.blogId) {
+      builder.andWhere('"blog"."id" = :blogId', { blogId: params.blogId });
+    }
+    return builder;
+  }
+  private async loadPosts(
+    page: PageViewModel<PostViewModel>,
+    params: GetPostsQuery,
+  ): Promise<PageViewModel<PostViewModel>> {
+    const builder = this.getQueryBuilder(params);
+
+    const result = await builder
+      .orderBy(`"post"."${params.sortBy}"`, params.sortOrder)
+      .offset(page.calculateSkip())
+      .limit(page.pageSize)
+      .getMany();
+
+    const views = result.map((p) =>
+      PostMapper.toView(p, new ExtendedLikesInfoModel()),
+    );
+    return page.add(...views);
   }
 }

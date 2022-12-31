@@ -26,13 +26,13 @@ export class CommentLike {
   @Column({ type: 'timestamptz', nullable: false })
   lastModified: Date;
 
-  @ManyToOne(() => Comment, (c) => c.likes)
+  @ManyToOne(() => Comment, (c) => c.likes, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'commentId' })
   comment: Comment;
   @Column({ type: 'uuid' })
   commentId: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'userId' })
   user: User;
   @Column({ type: 'uuid' })
