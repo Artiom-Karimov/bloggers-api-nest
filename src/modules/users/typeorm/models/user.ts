@@ -47,13 +47,13 @@ export class User {
   createdAt: Date;
 
   @OneToOne(() => EmailConfirmation, (ec) => ec.user)
-  emailConfirmation: Promise<EmailConfirmation>;
+  emailConfirmation: EmailConfirmation;
 
   @OneToOne(() => Recovery, (rec) => rec.user)
-  recovery: Promise<Recovery>;
+  recovery: Recovery;
 
-  @OneToOne(() => UserBan, (b) => b.user)
-  ban: Promise<UserBan>;
+  @OneToOne(() => UserBan, (b) => b.user, { eager: true })
+  ban: UserBan;
 
   @OneToMany(() => Session, (s) => s.user)
   sessions: Promise<Session[]>;
@@ -70,6 +70,11 @@ export class User {
     user.createdAt = new Date();
 
     return user;
+  }
+
+  get isBanned(): boolean {
+    if (!this.ban) return false;
+    return this.ban.isBanned;
   }
 
   public async checkPassword(password: string): Promise<boolean> {

@@ -4,20 +4,20 @@ import UserViewModel from '../../../models/view/user.view.model';
 import UserBanViewModel from '../../../models/view/user.ban.view.model';
 
 export default class UserMapper {
-  public static async toView(model: User): Promise<UserViewModel> {
+  public static toView(model: User): UserViewModel {
     return new UserViewModel(
       model.id,
       model.login,
       model.email,
       model.createdAt.toISOString(),
-      await this.getBanView(model),
+      this.getBanView(model),
     );
   }
   public static toSessionView(model: User): SessionUserViewModel {
     return new SessionUserViewModel(model.email, model.login, model.id);
   }
-  private static async getBanView(model: User): Promise<UserBanViewModel> {
-    const ban = await model.ban;
+  private static getBanView(model: User): UserBanViewModel {
+    const ban = model.ban;
     if (ban?.isBanned)
       return new UserBanViewModel(
         ban.isBanned,

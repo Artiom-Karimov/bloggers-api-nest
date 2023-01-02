@@ -3,11 +3,10 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import PageViewModel from '../../../../common/models/page.view.model';
 import { LikesInfoModel } from '../../likes/models/likes.info.model';
-import Comment from './models/comment';
 import CommentsQueryRepository from '../interfaces/comments.query.repository';
 import GetCommentsQuery from '../models/input/get.comments.query';
 import CommentViewModel from '../models/view/comment.view.model';
-import CommentMapper from './models/comment.mapper';
+import CommentMapper from '../typeorm/models/comment.mapper';
 
 @Injectable()
 export default class SqlCommentsQueryRepository extends CommentsQueryRepository {
@@ -44,6 +43,7 @@ export default class SqlCommentsQueryRepository extends CommentsQueryRepository 
     id: string,
     userId: string | undefined,
   ): Promise<CommentViewModel | undefined> {
+    return undefined;
     const result = await this.db.query(
       `
       select c."id", c."postId", c."userId", u."login" as "userLogin",
@@ -56,8 +56,8 @@ export default class SqlCommentsQueryRepository extends CommentsQueryRepository 
       [id],
     );
     if (!result || result.length === 0) return undefined;
-    const comment = result[0] as Comment & LikesInfoModel;
-    return CommentMapper.toView(comment);
+    //const comment = result[0] as Comment & LikesInfoModel;
+    //return CommentMapper.toView(comment);
   }
   private getLikeSubqueries(userId: string | undefined): string {
     return `
@@ -104,6 +104,7 @@ export default class SqlCommentsQueryRepository extends CommentsQueryRepository 
     page: PageViewModel<CommentViewModel>,
     params: GetCommentsQuery,
   ): Promise<PageViewModel<CommentViewModel>> {
+    return page;
     const filter = this.getFilter(params);
     const order = params.sortDirection === 1 ? 'asc' : 'desc';
 
@@ -119,7 +120,7 @@ export default class SqlCommentsQueryRepository extends CommentsQueryRepository 
       `,
       [page.pageSize, page.calculateSkip()],
     );
-    const views = result.map((c) => CommentMapper.toView(c));
-    return page.add(...views);
+    //const views = result.map((c) => CommentMapper.toView(c));
+    //return page.add(...views);
   }
 }

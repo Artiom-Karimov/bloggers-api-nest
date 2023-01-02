@@ -7,7 +7,6 @@ import PostsQueryRepository from '../interfaces/posts.query.repository';
 import GetPostsQuery from '../models/get.posts.query';
 import PostViewModel from '../models/post.view.model';
 import Post from './models/post';
-import PostMapper from '../typeorm/models/post.mapper';
 
 @Injectable()
 export default class SqlPostsQueryRepository extends PostsQueryRepository {
