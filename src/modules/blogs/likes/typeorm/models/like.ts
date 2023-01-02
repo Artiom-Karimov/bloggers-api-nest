@@ -4,7 +4,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
 } from 'typeorm';
 import { User } from '../../../../users/typeorm/models/user';
 import { BlogError } from '../../../blogs/models/blog.error';
@@ -13,9 +13,6 @@ import { LikeStatus } from '../../models/like.input.model';
 @Entity()
 @Index(['userId', 'entityId'], { unique: true })
 export class Like {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
   @Column({
     type: 'character varying',
     length: 20,
@@ -30,10 +27,10 @@ export class Like {
   @ManyToOne(() => User, { onDelete: 'SET NULL', eager: true })
   @JoinColumn({ name: 'userId' })
   user: User;
-  @Column({ type: 'uuid' })
+  @PrimaryColumn({ type: 'uuid' })
   userId: string;
 
-  @Column({ type: 'uuid' })
+  @PrimaryColumn({ type: 'uuid' })
   entityId: string;
 
   get userLogin(): string {

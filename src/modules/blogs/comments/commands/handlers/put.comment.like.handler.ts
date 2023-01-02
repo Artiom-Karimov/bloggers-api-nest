@@ -3,6 +3,8 @@ import { BlogError } from '../../../blogs/models/blog.error';
 import CommentsRepository from '../../interfaces/comments.repository';
 import PutCommentLikeCommand from '../commands/put.comment.like.command';
 import UsersRepository from '../../../../users/interfaces/users.repository';
+import { CommentLike } from '../../../likes/typeorm/models/comment.like';
+import { CommentLikeRepository } from '../../../likes/interfaces/comment.like.repository';
 
 @CommandHandler(PutCommentLikeCommand)
 export class PutCommentLikeHandler
@@ -10,6 +12,7 @@ export class PutCommentLikeHandler
 {
   constructor(
     private readonly commentsRepo: CommentsRepository,
+    private readonly likeRepo: CommentLikeRepository,
     private readonly usersRepo: UsersRepository,
   ) { }
 
@@ -21,8 +24,8 @@ export class PutCommentLikeHandler
     const user = await this.usersRepo.get(userId);
     if (!user || user.isBanned) return BlogError.Forbidden;
 
-    comment.putLike(command.data, user);
-    const result = await this.commentsRepo.update(comment);
+    const like = CommentLike.create(command.data, user, comment);
+    const result = await this.likeRepo.put(like);
 
     return result ? BlogError.NoError : BlogError.Unknown;
   }

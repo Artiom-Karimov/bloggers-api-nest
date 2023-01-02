@@ -46,6 +46,10 @@ import { OrmPostsQueryRepository } from './posts/typeorm/orm.posts.query.reposit
 import { OrmCommentsRepository } from './comments/typeorm/orm.comments.repository';
 import { OrmCommentsQueryRepository } from './comments/typeorm/orm.comments.query.reository';
 import { OrmBloggerCommentsQueryRepository } from './comments/typeorm/orm.blogger.comments.query.repository';
+import { OrmPostLikeRepository } from './likes/typeorm/orm.post.like.repository';
+import { OrmCommentLikeRepository } from './likes/typeorm/orm.comment.like.repository';
+import { PostLikeRepository } from './likes/interfaces/post.like.repository';
+import { CommentLikeRepository } from './likes/interfaces/comment.like.repository';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -116,6 +120,14 @@ const commandHandlers = [
     {
       provide: BloggerCommentsQueryRepository,
       useClass: OrmBloggerCommentsQueryRepository,
+    },
+    {
+      provide: PostLikeRepository,
+      useClass: OrmPostLikeRepository,
+    },
+    {
+      provide: CommentLikeRepository,
+      useClass: OrmCommentLikeRepository,
     },
     BlogIdValidator,
     ...commandHandlers,
