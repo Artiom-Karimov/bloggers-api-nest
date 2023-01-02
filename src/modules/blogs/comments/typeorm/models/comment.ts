@@ -76,9 +76,4 @@ export class Comment {
     this.content = content;
     return BlogError.NoError;
   }
-
-  public putLike(data: LikeCreateModel, user: User) {
-    if (!this.likes) this.likes = [];
-    this.likes.push(CommentLike.create(data, user, this));
-  }
 }

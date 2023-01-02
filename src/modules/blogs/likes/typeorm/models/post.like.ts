@@ -3,7 +3,6 @@ import { Post } from '../../../posts/typeorm/models/post';
 import { Like } from './like';
 import LikeCreateModel from '../../models/like.create.model';
 import { User } from '../../../../users/typeorm/models/user';
-import IdGenerator from '../../../../../common/utils/id.generator';
 
 @Entity()
 export class PostLike extends Like {
@@ -17,8 +16,6 @@ export class PostLike extends Like {
     post: Post,
   ): PostLike {
     const like = new PostLike();
-    like.id = IdGenerator.generate();
-    like.entityId = data.entityId;
     like.status = data.likeStatus;
     like.lastModified = new Date();
     like.user = user;
