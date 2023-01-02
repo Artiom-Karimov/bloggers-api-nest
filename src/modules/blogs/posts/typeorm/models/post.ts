@@ -53,10 +53,10 @@ export class Post {
   blogId: string;
 
   @OneToMany(() => Comment, (c) => c.post)
-  comments: Promise<Comment[]>;
+  comments: Comment[];
 
   @OneToMany(() => PostLike, (l) => l.post)
-  likes: Promise<PostLike[]>;
+  likes: PostLike[];
 
   public static create(data: PostCreateModel, blog: Blog): Post {
     const post = new Post();

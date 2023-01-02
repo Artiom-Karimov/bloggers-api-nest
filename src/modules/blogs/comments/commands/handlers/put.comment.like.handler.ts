@@ -3,8 +3,8 @@ import { BlogError } from '../../../blogs/models/blog.error';
 import CommentLikesRepository from '../../../likes/interfaces/comment.likes.repository';
 import CommentsRepository from '../../interfaces/comments.repository';
 import PutCommentLikeCommand from '../commands/put.comment.like.command';
-import { Like } from '../../../likes/typeorm/models/like';
 import UsersRepository from '../../../../users/interfaces/users.repository';
+import { CommentLike } from '../../../likes/typeorm/models/comment.like';
 
 @CommandHandler(PutCommentLikeCommand)
 export class PutCommentLikeHandler
@@ -30,7 +30,7 @@ export class PutCommentLikeHandler
       const result = await this.likesRepo.update(like);
       return result ? BlogError.NoError : BlogError.Unknown;
     }
-    like = Like.create(command.data, user);
+    like = CommentLike.create(command.data, user, comment);
     const result = await this.likesRepo.create(like);
     return result ? BlogError.NoError : BlogError.Unknown;
   }
