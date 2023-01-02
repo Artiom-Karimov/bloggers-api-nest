@@ -1,13 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import LikeModel from '../models/like.model';
+import { Like } from '../typeorm/models/like';
 
 @Injectable()
 export default abstract class LikesRepository {
-  public abstract get(entityId: string, userId: string): Promise<LikeModel>;
-  public abstract create(data: LikeModel): Promise<boolean>;
-  public abstract update(data: LikeModel): Promise<boolean>;
-  public abstract setUserBanned(
-    userId: string,
-    userBanned: boolean,
-  ): Promise<void>;
+  public abstract get(entityId: string, userId: string): Promise<Like>;
+  public abstract create(data: Like): Promise<boolean>;
+  public abstract update(data: Like): Promise<boolean>;
 }
