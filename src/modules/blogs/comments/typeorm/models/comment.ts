@@ -32,7 +32,10 @@ export class Comment {
   @Column({ type: 'boolean', nullable: false })
   bannedByBlogger: boolean;
 
-  @ManyToOne(() => Post, (p) => p.comments, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Post, (p) => p.comments, {
+    onDelete: 'CASCADE',
+    eager: true,
+  })
   @JoinColumn({ name: 'postId' })
   post: Post;
   @Column({ type: 'uuid' })

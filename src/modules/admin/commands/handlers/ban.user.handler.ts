@@ -1,9 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import SessionsRepository from '../../../users/interfaces/sessions.repository';
 import { BlogError } from '../../../blogs/blogs/models/blog.error';
-import CommentsRepository from '../../../blogs/comments/interfaces/comments.repository';
-import CommentLikesRepository from '../../../blogs/likes/interfaces/comment.likes.repository';
-import PostLikesRepository from '../../../blogs/likes/interfaces/post.likes.repository';
 import UsersBanRepository from '../../../users/interfaces/users.ban.repository';
 import UsersRepository from '../../../users/interfaces/users.repository';
 import BanUserCommand, {
@@ -17,17 +14,11 @@ export class BanUserHandler implements ICommandHandler<BanUserCommand> {
     private readonly usersRepo: UsersRepository,
     private readonly banRepo: UsersBanRepository,
     private readonly sessionsRepo: SessionsRepository,
-    private readonly postLikesRepo: PostLikesRepository,
-    private readonly commentsRepo: CommentsRepository,
-    private readonly commentLikesRepo: CommentLikesRepository,
   ) { }
 
   async execute(command: BanUserCommand): Promise<BlogError> {
     const userBanResult = await this.setUserBan(command.data);
     if (userBanResult !== BlogError.NoError) return userBanResult;
-
-    await this.setCommentsBan(command.data);
-    await this.setLikesBan(command.data);
 
     return BlogError.NoError;
   }
@@ -44,12 +35,5 @@ export class BanUserHandler implements ICommandHandler<BanUserCommand> {
     if (ban.isBanned) await this.sessionsRepo.deleteAll(user.id);
 
     return created ? BlogError.NoError : BlogError.Unknown;
-  }
-  private async setCommentsBan(data: BanUserCreateModel): Promise<void> {
-    await this.commentsRepo.banByAdmin(data.userId, data.isBanned);
-  }
-  private async setLikesBan(data: BanUserCreateModel): Promise<void> {
-    await this.postLikesRepo.setUserBanned(data.userId, data.isBanned);
-    await this.commentLikesRepo.setUserBanned(data.userId, data.isBanned);
   }
 }

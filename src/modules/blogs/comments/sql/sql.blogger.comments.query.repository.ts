@@ -7,7 +7,6 @@ import BloggerCommentsQueryRepository from '../interfaces/blogger.comments.query
 import GetBloggerCommentsQuery from '../models/input/get.blogger.comments.query';
 import BloggerCommentViewModel from '../models/view/blogger.comment.view.model';
 import CommentMapper from '../typeorm/models/comment.mapper';
-import CommentWithPost from './models/comment.with.post';
 
 @Injectable()
 export default class SqlBloggerCommentsQueryRepository extends BloggerCommentsQueryRepository {
@@ -61,28 +60,29 @@ export default class SqlBloggerCommentsQueryRepository extends BloggerCommentsQu
     page: PageViewModel<BloggerCommentViewModel>,
     params: GetBloggerCommentsQuery,
   ): Promise<PageViewModel<BloggerCommentViewModel>> {
-    const filter = this.getFilter(params);
-    const order = params.sortDirection === 1 ? 'asc' : 'desc';
+    return page;
+    // const filter = this.getFilter(params);
+    // const order = params.sortDirection === 1 ? 'asc' : 'desc';
 
-    const result: Array<CommentWithPost & LikesInfoModel> = await this.db.query(
-      `
-      select c."id",c."postId",c."userId",u."login" as "userLogin",c."bannedByAdmin",
-      c."bannedByBlogger",c."content",c."createdAt",
-      p."id" as "postId", p."title" as "postTitle", p."blogId", b."name" as "blogName",
-      ${this.getLikeSubqueries(params.bloggerId)}
-      from "comment" c 
-      left join "user" u on c."userId" = u."id"
-      left join "post" p on c."postId" = p."id"
-      left join "blog" b on p."blogId" = b."id"
-      left join "blogOwner" bo on b."id" = bo."blogId"
-      ${filter}
-      order by "${params.sortBy}" ${order}
-      limit $1 offset $2;
-      `,
-      [page.pageSize, page.calculateSkip()],
-    );
-    const views = result.map((u) => CommentMapper.toBloggerView(u));
-    return page.add(...views);
+    // const result: Array<CommentWithPost & LikesInfoModel> = await this.db.query(
+    //   `
+    //   select c."id",c."postId",c."userId",u."login" as "userLogin",c."bannedByAdmin",
+    //   c."bannedByBlogger",c."content",c."createdAt",
+    //   p."id" as "postId", p."title" as "postTitle", p."blogId", b."name" as "blogName",
+    //   ${this.getLikeSubqueries(params.bloggerId)}
+    //   from "comment" c
+    //   left join "user" u on c."userId" = u."id"
+    //   left join "post" p on c."postId" = p."id"
+    //   left join "blog" b on p."blogId" = b."id"
+    //   left join "blogOwner" bo on b."id" = bo."blogId"
+    //   ${filter}
+    //   order by "${params.sortBy}" ${order}
+    //   limit $1 offset $2;
+    //   `,
+    //   [page.pageSize, page.calculateSkip()],
+    // );
+    // const views = result.map((u) => CommentMapper.toBloggerView(u));
+    // return page.add(...views);
   }
   private getLikeSubqueries(userId: string | undefined): string {
     return `
