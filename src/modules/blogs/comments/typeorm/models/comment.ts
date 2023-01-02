@@ -12,6 +12,7 @@ import { CommentLike } from '../../../likes/typeorm/models/comment.like';
 import { CommentCreateModel } from '../../commands/commands/create.comment.command';
 import IdGenerator from '../../../../../common/utils/id.generator';
 import { BlogError } from '../../../blogs/models/blog.error';
+import LikeCreateModel from '../../../likes/models/like.create.model';
 
 @Entity()
 export class Comment {
@@ -47,8 +48,8 @@ export class Comment {
   @Column({ type: 'uuid' })
   userId: string;
 
-  @OneToMany(() => CommentLike, (l) => l.comment)
-  likes: Promise<CommentLike[]>;
+  @OneToMany(() => CommentLike, (l) => l.comment, { cascade: true })
+  likes: CommentLike[];
 
   public static create(
     data: CommentCreateModel,
@@ -74,5 +75,10 @@ export class Comment {
     if (userId !== this.userId) return BlogError.Forbidden;
     this.content = content;
     return BlogError.NoError;
+  }
+
+  public putLike(data: LikeCreateModel, user: User) {
+    if (!this.likes) this.likes = [];
+    this.likes.push(CommentLike.create(data, user, this));
   }
 }

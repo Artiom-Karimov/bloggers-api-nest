@@ -6,7 +6,7 @@ import { ExtendedLikesInfoModel } from '../../likes/models/likes.info.model';
 import PostsQueryRepository from '../interfaces/posts.query.repository';
 import GetPostsQuery from '../models/get.posts.query';
 import PostViewModel from '../models/post.view.model';
-import Post from './models/post';
+import { Post } from '../typeorm/models/post';
 
 @Injectable()
 export default class SqlPostsQueryRepository extends PostsQueryRepository {

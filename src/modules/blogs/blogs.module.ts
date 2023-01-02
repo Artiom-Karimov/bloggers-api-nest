@@ -5,8 +5,6 @@ import BlogsRepository from './blogs/interfaces/blogs.repository';
 import CommentsController from './comments/comments.controller';
 import CommentsQueryRepository from './comments/interfaces/comments.query.repository';
 import CommentsRepository from './comments/interfaces/comments.repository';
-import CommentLikesRepository from './likes/interfaces/comment.likes.repository';
-import PostLikesRepository from './likes/interfaces/post.likes.repository';
 import { BlogIdValidator } from './blogs/models/input/blog.id.validator';
 import PostsController from './posts/posts.controller';
 import PostsQueryRepository from './posts/interfaces/posts.query.repository';
@@ -30,8 +28,6 @@ import { DeleteBlogHandler } from './blogs/commands/handlers/delete.blog.handler
 import { BlogUserBanHandler } from './blogs/commands/handlers/blog.user.ban.handler';
 import { UpdateCommentHandler } from './comments/commands/handlers/update.comment.handler';
 import { DeleteCommentHandler } from './comments/commands/handlers/delete.comment.handler';
-import SqlPostLikesRepository from './likes/sql/sql.post.likes.repository';
-import SqlCommentLikesRepository from './likes/sql/sql.comment.likes.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Blog } from './blogs/typeorm/models/blog';
 import { BlogBan } from './blogs/typeorm/models/blog.ban';
@@ -121,14 +117,6 @@ const commandHandlers = [
       provide: BloggerCommentsQueryRepository,
       useClass: OrmBloggerCommentsQueryRepository,
     },
-    {
-      provide: PostLikesRepository,
-      useClass: SqlPostLikesRepository,
-    },
-    {
-      provide: CommentLikesRepository,
-      useClass: SqlCommentLikesRepository,
-    },
     BlogIdValidator,
     ...commandHandlers,
   ],
@@ -137,9 +125,7 @@ const commandHandlers = [
     BlogUserBanQueryRepository,
     AdminBlogsQueryRepository,
     PostsQueryRepository,
-    PostLikesRepository,
     CommentsRepository,
-    CommentLikesRepository,
     BloggerCommentsQueryRepository,
   ],
 })
