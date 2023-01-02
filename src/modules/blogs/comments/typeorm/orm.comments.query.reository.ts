@@ -79,7 +79,7 @@ export class OrmCommentsQueryRepository extends CommentsQueryRepository {
       .where('"bannedByBlogger" = false')
       .andWhere('("ban"."isBanned" = false or "ban"."isBanned" is null)');
     if (params.postId) {
-      builder.andWhere('"post"."id" = :postId', { postId: params.postId });
+      builder.andWhere('"postId" = :postId', { postId: params.postId });
     }
     return builder;
   }
