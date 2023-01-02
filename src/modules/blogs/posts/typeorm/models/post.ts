@@ -13,6 +13,8 @@ import IdGenerator from '../../../../../common/utils/id.generator';
 import { PostCreateModel } from '../../commands/commands/create.post.command';
 import { PostUpdateModel } from '../../commands/commands/update.post.command';
 import { BlogError } from '../../../blogs/models/blog.error';
+import LikeCreateModel from '../../../likes/models/like.create.model';
+import { User } from '../../../../users/typeorm/models/user';
 
 @Entity()
 export class Post {
@@ -53,10 +55,10 @@ export class Post {
   blogId: string;
 
   @OneToMany(() => Comment, (c) => c.post)
-  comments: Promise<Comment[]>;
+  comments: Comment[];
 
-  @OneToMany(() => PostLike, (l) => l.post)
-  likes: Promise<PostLike[]>;
+  @OneToMany(() => PostLike, (l) => l.post, { cascade: true })
+  likes: PostLike[];
 
   public static create(data: PostCreateModel, blog: Blog): Post {
     const post = new Post();
@@ -83,5 +85,10 @@ export class Post {
     this.content = content;
 
     return BlogError.NoError;
+  }
+
+  public putLike(data: LikeCreateModel, user: User) {
+    if (!this.likes) this.likes = [];
+    this.likes.push(PostLike.create(data, user, this));
   }
 }

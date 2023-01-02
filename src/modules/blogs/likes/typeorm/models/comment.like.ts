@@ -1,40 +1,28 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { User } from '../../../../users/typeorm/models/user';
+import { Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Comment } from '../../../comments/typeorm/models/comment';
+import { Like } from './like';
+import LikeCreateModel from '../../models/like.create.model';
+import { User } from '../../../../users/typeorm/models/user';
+import IdGenerator from '../../../../../common/utils/id.generator';
 
 @Entity()
-@Index(['userId', 'commentId'], { unique: true })
-export class CommentLike {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column({
-    type: 'character varying',
-    length: 20,
-    nullable: false,
-    collation: 'C',
-  })
-  status: string;
-
-  @Column({ type: 'timestamptz', nullable: false })
-  lastModified: Date;
-
+export class CommentLike extends Like {
   @ManyToOne(() => Comment, (c) => c.likes, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'commentId' })
+  @JoinColumn({ name: 'entityId' })
   comment: Comment;
-  @Column({ type: 'uuid' })
-  commentId: string;
 
-  @ManyToOne(() => User, { onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'userId' })
-  user: User;
-  @Column({ type: 'uuid' })
-  userId: string;
+  public static create(
+    data: LikeCreateModel,
+    user: User,
+    comment: Comment,
+  ): CommentLike {
+    const like = new CommentLike();
+    like.id = IdGenerator.generate();
+    like.entityId = data.entityId;
+    like.status = data.likeStatus;
+    like.lastModified = new Date();
+    like.user = user;
+    like.comment = comment;
+    return like;
+  }
 }

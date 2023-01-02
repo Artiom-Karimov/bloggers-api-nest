@@ -1,40 +1,28 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Post } from '../../../posts/typeorm/models/post';
+import { Like } from './like';
+import LikeCreateModel from '../../models/like.create.model';
 import { User } from '../../../../users/typeorm/models/user';
+import IdGenerator from '../../../../../common/utils/id.generator';
 
 @Entity()
-@Index(['userId', 'postId'], { unique: true })
-export class PostLike {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column({
-    type: 'character varying',
-    length: 20,
-    nullable: false,
-    collation: 'C',
-  })
-  status: string;
-
-  @Column({ type: 'timestamptz', nullable: false })
-  lastModified: Date;
-
+export class PostLike extends Like {
   @ManyToOne(() => Post, (p) => p.likes, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'postId' })
+  @JoinColumn({ name: 'entityId' })
   post: Post;
-  @Column({ type: 'uuid' })
-  postId: string;
 
-  @ManyToOne(() => User, { onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'userId' })
-  user: User;
-  @Column({ type: 'uuid' })
-  userId: string;
+  public static create(
+    data: LikeCreateModel,
+    user: User,
+    post: Post,
+  ): PostLike {
+    const like = new PostLike();
+    like.id = IdGenerator.generate();
+    like.entityId = data.entityId;
+    like.status = data.likeStatus;
+    like.lastModified = new Date();
+    like.user = user;
+    like.post = post;
+    return like;
+  }
 }
