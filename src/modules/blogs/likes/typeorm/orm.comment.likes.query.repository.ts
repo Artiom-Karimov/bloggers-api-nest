@@ -3,9 +3,10 @@ import { Comment } from '../../comments/typeorm/models/comment';
 import CommentViewModel from '../../comments/models/view/comment.view.model';
 import { CommentLikesQueryRepository } from '../interfaces/comment.likes.query.repository';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { DataSource, ObjectLiteral } from 'typeorm';
 import CommentMapper from '../../comments/typeorm/models/comment.mapper';
 import { LikesInfoModel } from '../models/likes.info.model';
+import BloggerCommentViewModel from '../../comments/models/view/blogger.comment.view.model';
 
 @Injectable()
 export class OrmCommentLikesQueryRepository extends CommentLikesQueryRepository {
@@ -29,7 +30,7 @@ export class OrmCommentLikesQueryRepository extends CommentLikesQueryRepository 
       new LikesInfoModel(
         +result[0].likesCount,
         +result[0].dislikesCount,
-        result[0].myStatus,
+        result[0].myStatus ?? 'None',
       ),
     );
   }
@@ -37,6 +38,41 @@ export class OrmCommentLikesQueryRepository extends CommentLikesQueryRepository 
     comments: Comment[],
     userId?: string,
   ): Promise<CommentViewModel[]> {
+    const likes = await this.getLikesArray(comments, userId);
+    return comments.map((c) => {
+      const info = likes.find((i) => i.id === c.id);
+      return CommentMapper.toView(
+        c,
+        new LikesInfoModel(
+          +info.likesCount,
+          +info.dislikesCount,
+          info.myStatus ?? 'None',
+        ),
+      );
+    });
+  }
+  async mergeManyWithLikesBlogger(
+    comments: Comment[],
+    userId?: string,
+  ): Promise<BloggerCommentViewModel[]> {
+    const likes = await this.getLikesArray(comments, userId);
+    return comments.map((c) => {
+      const info = likes.find((i) => i.id === c.id);
+      return CommentMapper.toBloggerView(
+        c,
+        new LikesInfoModel(
+          +info.likesCount,
+          +info.dislikesCount,
+          info.myStatus ?? 'None',
+        ),
+      );
+    });
+  }
+
+  private async getLikesArray(
+    comments: Comment[],
+    userId?: string,
+  ): Promise<ObjectLiteral[]> {
     if (comments.length === 0) return [];
 
     const ids = comments.map((c) => `'${c.id}'`);
@@ -48,17 +84,7 @@ export class OrmCommentLikesQueryRepository extends CommentLikesQueryRepository 
       where c."id" in (${ids.join(', ')})
       `,
     );
-    return comments.map((c) => {
-      const info = result.find((i) => i.id === c.id);
-      return CommentMapper.toView(
-        c,
-        new LikesInfoModel(
-          +info.likesCount,
-          +info.dislikesCount,
-          info.myStatus,
-        ),
-      );
-    });
+    return result;
   }
 
   private getLikesQuery(userId?: string): string {

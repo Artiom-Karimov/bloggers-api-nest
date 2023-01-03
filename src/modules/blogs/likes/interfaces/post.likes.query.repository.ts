@@ -4,6 +4,9 @@ import PostViewModel from '../../posts/models/post.view.model';
 
 @Injectable()
 export abstract class PostLikesQueryRepository {
-  abstract mergeWithLikes(post: Post): Promise<PostViewModel>;
-  abstract mergeManyWithLikes(posts: Post[]): Promise<PostViewModel[]>;
+  abstract mergeWithLikes(post: Post, userId?: string): Promise<PostViewModel>;
+  abstract mergeManyWithLikes(
+    posts: Post[],
+    userId?: string,
+  ): Promise<PostViewModel[]>;
 }

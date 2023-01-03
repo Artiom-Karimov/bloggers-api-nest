@@ -6,19 +6,18 @@ import PostsQueryRepository from '../interfaces/posts.query.repository';
 import { Post } from './models/post';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import PostMapper from './models/post.mapper';
-import { ExtendedLikesInfoModel } from '../../likes/models/likes.info.model';
+import { PostLikesQueryRepository } from '../../likes/interfaces/post.likes.query.repository';
 
 @Injectable()
 export class OrmPostsQueryRepository extends PostsQueryRepository {
   constructor(
     @InjectRepository(Post)
     private readonly repo: Repository<Post>,
+    private readonly likesRepo: PostLikesQueryRepository,
   ) {
     super();
   }
 
-  // TODO: Get actual likes
   public async getPosts(
     params: GetPostsQuery,
   ): Promise<PageViewModel<PostViewModel>> {
@@ -34,7 +33,7 @@ export class OrmPostsQueryRepository extends PostsQueryRepository {
 
   public async getPost(
     id: string,
-    userId: string | undefined,
+    userId?: string,
   ): Promise<PostViewModel | undefined> {
     try {
       const post = await this.repo
@@ -44,9 +43,7 @@ export class OrmPostsQueryRepository extends PostsQueryRepository {
         .where('"post"."id" = :id', { id })
         .andWhere('("ban"."isBanned" = false or "ban"."isBanned" is null)')
         .getOne();
-      return post
-        ? PostMapper.toView(post, new ExtendedLikesInfoModel())
-        : undefined;
+      return post ? this.likesRepo.mergeWithLikes(post, userId) : undefined;
     } catch (error) {
       console.error(error);
       return undefined;
@@ -90,8 +87,9 @@ export class OrmPostsQueryRepository extends PostsQueryRepository {
       .limit(page.pageSize)
       .getMany();
 
-    const views = result.map((p) =>
-      PostMapper.toView(p, new ExtendedLikesInfoModel()),
+    const views = await this.likesRepo.mergeManyWithLikes(
+      result,
+      params.userId,
     );
     return page.add(...views);
   }
