@@ -3,17 +3,17 @@ import PageViewModel from '../../../../common/models/page.view.model';
 import CommentViewModel from '../models/view/comment.view.model';
 import GetCommentsQuery from '../models/input/get.comments.query';
 import CommentsQueryRepository from '../interfaces/comments.query.repository';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-import CommentMapper from './models/comment.mapper';
-import { LikesInfoModel } from '../../likes/models/likes.info.model';
 import { Comment } from './models/comment';
+import { CommentLikesQueryRepository } from '../../likes/interfaces/comment.likes.query.repository';
+import { Repository, SelectQueryBuilder } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class OrmCommentsQueryRepository extends CommentsQueryRepository {
   constructor(
     @InjectRepository(Comment)
     private readonly repo: Repository<Comment>,
+    private readonly likesRepo: CommentLikesQueryRepository,
   ) {
     super();
   }
@@ -22,8 +22,7 @@ export class OrmCommentsQueryRepository extends CommentsQueryRepository {
     params: GetCommentsQuery,
   ): Promise<PageViewModel<CommentViewModel>> {
     try {
-      const page = await this.getPage(params);
-      await this.loadComments(page, params);
+      const page = await this.loadComments(params);
       return page;
     } catch (error) {
       console.error(error);
@@ -36,7 +35,7 @@ export class OrmCommentsQueryRepository extends CommentsQueryRepository {
     userId: string | undefined,
   ): Promise<CommentViewModel | undefined> {
     try {
-      const comment: Comment = await this.repo
+      const comment = await this.repo
         .createQueryBuilder('comment')
         .leftJoinAndSelect('comment.user', 'user')
         .leftJoinAndSelect('user.ban', 'ban')
@@ -45,7 +44,7 @@ export class OrmCommentsQueryRepository extends CommentsQueryRepository {
         .getOne();
 
       return comment
-        ? CommentMapper.toView(comment, new LikesInfoModel())
+        ? this.likesRepo.mergeWithLikes(comment, userId)
         : undefined;
     } catch (error) {
       console.error(error);
@@ -53,24 +52,9 @@ export class OrmCommentsQueryRepository extends CommentsQueryRepository {
     }
   }
 
-  private async getPage(
-    params: GetCommentsQuery,
-  ): Promise<PageViewModel<CommentViewModel>> {
-    const count = await this.getCount(params);
-    return new PageViewModel<CommentViewModel>(
-      params.pageNumber,
-      params.pageSize,
-      count,
-    );
-  }
-
-  private async getCount(params: GetCommentsQuery): Promise<number> {
-    const builder = this.getQueryBuilder(params);
-    return builder.getCount();
-  }
-
   private getQueryBuilder(
     params: GetCommentsQuery,
+    page: PageViewModel<CommentViewModel>,
   ): SelectQueryBuilder<Comment> {
     const builder = this.repo
       .createQueryBuilder('comment')
@@ -81,23 +65,27 @@ export class OrmCommentsQueryRepository extends CommentsQueryRepository {
     if (params.postId) {
       builder.andWhere('"postId" = :postId', { postId: params.postId });
     }
-    return builder;
+    return builder
+      .orderBy(`"comment"."${params.sortBy}"`, params.sortOrder)
+      .offset(page.calculateSkip())
+      .limit(page.pageSize);
   }
 
   private async loadComments(
-    page: PageViewModel<CommentViewModel>,
     params: GetCommentsQuery,
   ): Promise<PageViewModel<CommentViewModel>> {
-    const builder = this.getQueryBuilder(params);
+    const page = new PageViewModel<CommentViewModel>(
+      params.pageNumber,
+      params.pageSize,
+      0,
+    );
+    const builder = this.getQueryBuilder(params, page);
+    const [result, count] = await builder.getManyAndCount();
+    page.setTotalCount(count);
 
-    const result = await builder
-      .orderBy(`"comment"."${params.sortBy}"`, params.sortOrder)
-      .offset(page.calculateSkip())
-      .limit(page.pageSize)
-      .getMany();
-
-    const views = result.map((c) =>
-      CommentMapper.toView(c, new LikesInfoModel()),
+    const views = await this.likesRepo.mergeManyWithLikes(
+      result,
+      params.userId,
     );
     return page.add(...views);
   }

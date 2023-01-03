@@ -48,8 +48,10 @@ import { OrmCommentsQueryRepository } from './comments/typeorm/orm.comments.quer
 import { OrmBloggerCommentsQueryRepository } from './comments/typeorm/orm.blogger.comments.query.repository';
 import { OrmPostLikeRepository } from './likes/typeorm/orm.post.like.repository';
 import { OrmCommentLikeRepository } from './likes/typeorm/orm.comment.like.repository';
-import { PostLikeRepository } from './likes/interfaces/post.like.repository';
-import { CommentLikeRepository } from './likes/interfaces/comment.like.repository';
+import { CommentLikesQueryRepository } from './likes/interfaces/comment.likes.query.repository';
+import { OrmCommentLikesQueryRepository } from './likes/typeorm/orm.comment.likes.query.repository';
+import { PostLikesQueryRepository } from './likes/interfaces/post.likes.query.repository';
+import { OrmPostLikesQueryRepository } from './likes/typeorm/orm.post.likes.query.repository';
 
 const commandHandlers = [
   CreateBlogHandler,
@@ -122,12 +124,20 @@ const commandHandlers = [
       useClass: OrmBloggerCommentsQueryRepository,
     },
     {
-      provide: PostLikeRepository,
+      provide: 'PostLikesRepository',
       useClass: OrmPostLikeRepository,
     },
     {
-      provide: CommentLikeRepository,
+      provide: 'CommentLikesRepository',
       useClass: OrmCommentLikeRepository,
+    },
+    {
+      provide: CommentLikesQueryRepository,
+      useClass: OrmCommentLikesQueryRepository,
+    },
+    {
+      provide: PostLikesQueryRepository,
+      useClass: OrmPostLikesQueryRepository,
     },
     BlogIdValidator,
     ...commandHandlers,

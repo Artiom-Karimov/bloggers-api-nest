@@ -4,7 +4,8 @@ import CommentsRepository from '../../interfaces/comments.repository';
 import PutCommentLikeCommand from '../commands/put.comment.like.command';
 import UsersRepository from '../../../../users/interfaces/users.repository';
 import { CommentLike } from '../../../likes/typeorm/models/comment.like';
-import { CommentLikeRepository } from '../../../likes/interfaces/comment.like.repository';
+import { LikesRepository } from '../../../likes/interfaces/likes.repository';
+import { Inject } from '@nestjs/common';
 
 @CommandHandler(PutCommentLikeCommand)
 export class PutCommentLikeHandler
@@ -12,7 +13,8 @@ export class PutCommentLikeHandler
 {
   constructor(
     private readonly commentsRepo: CommentsRepository,
-    private readonly likeRepo: CommentLikeRepository,
+    @Inject('CommentLikesRepository')
+    private readonly likeRepo: LikesRepository<CommentLike>,
     private readonly usersRepo: UsersRepository,
   ) { }
 

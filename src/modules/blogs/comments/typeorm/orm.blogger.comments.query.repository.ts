@@ -6,14 +6,14 @@ import BloggerCommentsQueryRepository from '../interfaces/blogger.comments.query
 import { Comment } from './models/comment';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import CommentMapper from './models/comment.mapper';
-import { LikesInfoModel } from '../../likes/models/likes.info.model';
+import { CommentLikesQueryRepository } from '../../likes/interfaces/comment.likes.query.repository';
 
 @Injectable()
 export class OrmBloggerCommentsQueryRepository extends BloggerCommentsQueryRepository {
   constructor(
     @InjectRepository(Comment)
     private readonly repo: Repository<Comment>,
+    private readonly likeRepo: CommentLikesQueryRepository,
   ) {
     super();
   }
@@ -71,8 +71,9 @@ export class OrmBloggerCommentsQueryRepository extends BloggerCommentsQueryRepos
       .limit(page.pageSize)
       .getMany();
 
-    const views = result.map((c) =>
-      CommentMapper.toBloggerView(c, new LikesInfoModel()),
+    const views = await this.likeRepo.mergeManyWithLikesBlogger(
+      result,
+      params.bloggerId,
     );
     return page.add(...views);
   }
