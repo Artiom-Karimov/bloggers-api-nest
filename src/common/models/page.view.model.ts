@@ -9,16 +9,21 @@ export default class PageViewModel<TviewModel> {
     this.page = page;
     this.pageSize = pageSize;
     this.totalCount = totalCount;
-    this.pagesCount = this.calcPagesCount();
+    this.calcPagesCount();
   }
   public add(...models: TviewModel[]): PageViewModel<TviewModel> {
     this.items.push(...models);
     return this;
   }
+  public setTotalCount(value: number): PageViewModel<TviewModel> {
+    this.totalCount = value;
+    this.calcPagesCount();
+    return this;
+  }
   public calculateSkip(): number {
     return (this.page - 1) * this.pageSize;
   }
-  private calcPagesCount(): number {
-    return Math.ceil(this.totalCount / this.pageSize);
+  private calcPagesCount() {
+    this.pagesCount = Math.ceil(this.totalCount / this.pageSize);
   }
 }
