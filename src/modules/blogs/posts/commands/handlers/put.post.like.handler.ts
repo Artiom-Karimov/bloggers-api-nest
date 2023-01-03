@@ -3,14 +3,16 @@ import { BlogError } from '../../../blogs/models/blog.error';
 import PostsRepository from '../../interfaces/posts.repository';
 import PutPostLikeCommand from '../commands/put.post.like.command';
 import UsersRepository from '../../../../users/interfaces/users.repository';
-import { PostLikeRepository } from '../../../likes/interfaces/post.like.repository';
+import { LikesRepository } from '../../../likes/interfaces/likes.repository';
 import { PostLike } from '../../../likes/typeorm/models/post.like';
+import { Inject } from '@nestjs/common';
 
 @CommandHandler(PutPostLikeCommand)
 export class PutPostLikeHandler implements ICommandHandler<PutPostLikeCommand> {
   constructor(
     private readonly postsRepo: PostsRepository,
-    private readonly likeRepo: PostLikeRepository,
+    @Inject('PostLikesRepository')
+    private readonly likeRepo: LikesRepository<PostLike>,
     private readonly usersRepo: UsersRepository,
   ) { }
 

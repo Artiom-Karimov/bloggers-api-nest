@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PostLike } from './models/post.like';
-import { PostLikeRepository } from '../interfaces/post.like.repository';
+import { LikesRepository } from '../interfaces/likes.repository';
 
 @Injectable()
-export class OrmPostLikeRepository extends PostLikeRepository {
+export class OrmPostLikeRepository extends LikesRepository<PostLike> {
   constructor(
     @InjectRepository(PostLike)
     private readonly repo: Repository<PostLike>,
