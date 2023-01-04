@@ -10,14 +10,17 @@ export default class BlogSampleGenerator extends TestSampleGenerator<
   BlogInputModel,
   BlogViewModel
 > {
-  public readonly user: UserInputModel;
   private readonly userGenerator: UserSampleGenerator;
+
+  get user(): UserInputModel {
+    return this.userGenerator.samples[0];
+  }
   public tokens: Tokens = undefined;
 
   constructor(app: INestApplication) {
     super(app);
     this.userGenerator = new UserSampleGenerator(app);
-    this.user = this.userGenerator.generateOne();
+    this.userGenerator.generateOne();
   }
 
   public generateOne(): BlogInputModel {
