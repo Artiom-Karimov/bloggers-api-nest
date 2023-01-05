@@ -24,9 +24,10 @@ export class OrmPostLikesQueryRepository extends PostLikesQueryRepository {
     return PostMapper.toView(
       post,
       new ExtendedLikesInfoModel(
-        +result[0].likesCount,
-        +result[0].dislikesCount,
-        result[0].myStatus ?? 'None',
+        result[0].likesCount,
+        result[0].dislikesCount,
+        result[0].myStatus,
+        result[0].newestLikes,
       ),
     );
   }
@@ -50,9 +51,10 @@ export class OrmPostLikesQueryRepository extends PostLikesQueryRepository {
       return PostMapper.toView(
         p,
         new ExtendedLikesInfoModel(
-          +info.likesCount,
-          +info.dislikesCount,
-          info.myStatus ?? 'None',
+          info.likesCount,
+          info.dislikesCount,
+          info.myStatus,
+          info.newestLikes,
         ),
       );
     });
@@ -70,7 +72,8 @@ export class OrmPostLikesQueryRepository extends PostLikesQueryRepository {
       where (b."isBanned" = false or b."isBanned" is null) 
       and l."entityId" = p."id" and l."status" = 'Dislike') as "dislikesCount",
       
-      ${this.getStatusSubquery(userId)}
+      ${this.getStatusSubquery(userId)},
+      ${this.getNewestLikesSubquery()}
     `;
   }
   private getStatusSubquery(userId?: string): string {
@@ -79,5 +82,17 @@ export class OrmPostLikesQueryRepository extends PostLikesQueryRepository {
     left join "user_ban" b on l."userId" = b."userId" 
     where (b."isBanned" = false or b."isBanned" is null)
     and l."entityId" = p."id" and l."userId" = '${userId}') as "myStatus"`;
+  }
+  private getNewestLikesSubquery(): string {
+    return `(
+      select json_agg(row_to_json(nl)) as "newestLikes" from (
+        select l."lastModified" as "addedAt", l."userId", u."login"
+        from "post_like" l left join "user" u on l."userId" = u."id"
+        left join "user_ban" b on l."userId" = b."userId"
+        where "entityId" = p."id" and "status" = 'Like' 
+        and (b."isBanned" = false or b."isBanned" is null)
+        order by "lastModified" desc limit 3
+      ) nl
+    )`;
   }
 }

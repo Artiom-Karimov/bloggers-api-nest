@@ -31,7 +31,7 @@ describe('BlogsController (e2e)', () => {
   let blogId: string;
 
   it('should create new blog', async () => {
-    samples.generateSamples(1)[0];
+    samples.generateOne();
     await samples.createSamples();
     const blog = samples.outputs[0];
     expect(blog).toBeTruthy();

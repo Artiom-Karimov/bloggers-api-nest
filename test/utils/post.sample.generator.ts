@@ -12,19 +12,25 @@ export default class PostSampleGenerator extends TestSampleGenerator<
   PostInputModel,
   PostViewModel
 > {
-  public readonly user: UserInputModel;
-  public readonly blog: BlogInputModel;
-
-  public tokens: Tokens = undefined;
-  public blogId: string = undefined;
+  get user(): UserInputModel {
+    return this.blogGenerator.user;
+  }
+  get blog(): BlogInputModel {
+    return this.blogGenerator.samples[0];
+  }
+  get tokens(): Tokens {
+    return this.blogGenerator.tokens;
+  }
+  get blogId(): string {
+    return this.blogGenerator.outputs[0].id;
+  }
 
   private readonly blogGenerator: BlogSampleGenerator;
 
   constructor(app: INestApplication) {
     super(app);
     this.blogGenerator = new BlogSampleGenerator(app);
-    this.user = this.blogGenerator.user;
-    this.blog = this.blogGenerator.generateSamples(1)[0];
+    this.blogGenerator.generateOne();
   }
   public generateOne(): PostInputModel {
     const rand = this.rand();
@@ -61,9 +67,6 @@ export default class PostSampleGenerator extends TestSampleGenerator<
   }
   private async checkBlog() {
     if (this.blogGenerator.outputs.length !== 0) return;
-
     await this.blogGenerator.createSamples();
-    this.tokens = this.blogGenerator.tokens;
-    this.blogId = this.blogGenerator.outputs[0].id;
   }
 }
