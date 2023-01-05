@@ -204,6 +204,11 @@ describe('Posts (e2e)', () => {
 
       const info = (result.body as PostViewModel).extendedLikesInfo;
       expect(info.newestLikes.length).toBe(3);
+      expect(info.newestLikes[0]).toEqual({
+        addedAt: expect.any(String),
+        userId: expect.stringMatching(regex.uuid),
+        login: expect.any(String),
+      });
       expect(result.body).toEqual({
         ...post,
         extendedLikesInfo: {
