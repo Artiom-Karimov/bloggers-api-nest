@@ -68,7 +68,9 @@ export class OrmAdminBlogsQueryRepository extends AdminBlogsQueryRepository {
       .leftJoinAndSelect('blog.owner', 'owner');
 
     if (params.searchNameTerm) {
-      builder.andWhere('"name" ilike :term', { term: params.searchNameTerm });
+      builder.andWhere('"name" ilike :term', {
+        term: `%${params.searchNameTerm}%`,
+      });
     }
     return builder;
   }
