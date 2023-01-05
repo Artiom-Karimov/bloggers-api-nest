@@ -116,21 +116,31 @@ export class OrmUsersQueryRepository extends UsersQueryRepository {
       params.pageSize,
       0,
     );
-    const qb = this.repo
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.ban', 'ban');
-    this.appendFilter(qb, params);
 
-    const [result, count] = await qb
-      .orderBy(`"${params.sortBy}"`, params.sortOrder)
-      .offset(page.calculateSkip())
-      .limit(page.pageSize)
-      .getManyAndCount();
+    const [result, count] = await this.getQueryBuilder(
+      params,
+      page,
+    ).getManyAndCount();
 
     page.setTotalCount(count);
     const promises = result.map((u) => UserMapper.toView(u));
     const views = await Promise.all(promises);
 
     return page.add(...views);
+  }
+  private getQueryBuilder(
+    params: GetUsersQuery,
+    page: PageViewModel<UserViewModel>,
+  ): SelectQueryBuilder<User> {
+    const qb = this.repo
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.ban', 'ban');
+    this.appendFilter(qb, params);
+
+    qb.orderBy(`"${params.sortBy}"`, params.sortOrder)
+      .offset(page.calculateSkip())
+      .limit(page.pageSize);
+
+    return qb;
   }
 }
