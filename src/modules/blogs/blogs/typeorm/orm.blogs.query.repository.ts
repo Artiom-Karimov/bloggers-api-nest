@@ -21,8 +21,7 @@ export class OrmBlogsQueryRepository extends BlogsQueryRepository {
     params: GetBlogsQuery,
   ): Promise<PageViewModel<BlogViewModel>> {
     try {
-      const page = await this.getPage(params);
-      await this.loadBlogs(page, params);
+      const page = await this.loadBlogs(params);
       return page;
     } catch (error) {
       console.error(error);
@@ -34,8 +33,7 @@ export class OrmBlogsQueryRepository extends BlogsQueryRepository {
     bloggerId: string,
   ): Promise<PageViewModel<BlogViewModel>> {
     try {
-      const page = await this.getPage(params, bloggerId);
-      await this.loadBlogs(page, params, bloggerId);
+      const page = await this.loadBlogs(params, bloggerId);
       return page;
     } catch (error) {
       console.error(error);
@@ -58,24 +56,6 @@ export class OrmBlogsQueryRepository extends BlogsQueryRepository {
     }
   }
 
-  private async getPage(
-    params: GetBlogsQuery,
-    bloggerId?: string,
-  ): Promise<PageViewModel<BlogViewModel>> {
-    const count = await this.getCount(params, bloggerId);
-    return new PageViewModel<BlogViewModel>(
-      params.pageNumber,
-      params.pageSize,
-      count,
-    );
-  }
-  private async getCount(
-    params: GetBlogsQuery,
-    bloggerId?: string,
-  ): Promise<number> {
-    const builder = this.getQueryBuilder(params, bloggerId);
-    return builder.getCount();
-  }
   private getQueryBuilder(
     params: GetBlogsQuery,
     bloggerId?: string,
@@ -95,18 +75,23 @@ export class OrmBlogsQueryRepository extends BlogsQueryRepository {
     return builder;
   }
   private async loadBlogs(
-    page: PageViewModel<BlogViewModel>,
     params: GetBlogsQuery,
     bloggerId?: string,
   ): Promise<PageViewModel<BlogViewModel>> {
+    const page = new PageViewModel<BlogViewModel>(
+      params.pageNumber,
+      params.pageSize,
+      0,
+    );
     const builder = this.getQueryBuilder(params, bloggerId);
 
-    const result = await builder
+    const [result, count] = await builder
       .orderBy(`"${params.sortBy}"`, params.sortOrder)
       .offset(page.calculateSkip())
       .limit(page.pageSize)
-      .getMany();
+      .getManyAndCount();
 
+    page.setTotalCount(count);
     const views = result.map((u) => BlogMapper.toView(u));
     return page.add(...views);
   }

@@ -20,8 +20,7 @@ export class OrmUsersQueryRepository extends UsersQueryRepository {
     params: GetUsersQuery,
   ): Promise<PageViewModel<UserViewModel>> {
     try {
-      const page = await this.getPage(params);
-      await this.loadPageUsers(page, params);
+      const page = await this.loadPageUsers(params);
       return page;
     } catch (error) {
       console.error(error);
@@ -56,26 +55,6 @@ export class OrmUsersQueryRepository extends UsersQueryRepository {
       console.error(error);
       return undefined;
     }
-  }
-
-  private async getPage(
-    params: GetUsersQuery,
-  ): Promise<PageViewModel<UserViewModel>> {
-    const count = await this.getCount(params);
-    return new PageViewModel<UserViewModel>(
-      params.pageNumber,
-      params.pageSize,
-      count,
-    );
-  }
-
-  private async getCount(params: GetUsersQuery): Promise<number> {
-    const qb = this.repo
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.ban', 'ban');
-    this.appendFilter(qb, params);
-    const result = await qb.getCount();
-    return result;
   }
 
   private appendFilter(
@@ -130,20 +109,25 @@ export class OrmUsersQueryRepository extends UsersQueryRepository {
   }
 
   private async loadPageUsers(
-    page: PageViewModel<UserViewModel>,
     params: GetUsersQuery,
   ): Promise<PageViewModel<UserViewModel>> {
+    const page = new PageViewModel<UserViewModel>(
+      params.pageNumber,
+      params.pageSize,
+      0,
+    );
     const qb = this.repo
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.ban', 'ban');
     this.appendFilter(qb, params);
 
-    const result = await qb
+    const [result, count] = await qb
       .orderBy(`"${params.sortBy}"`, params.sortOrder)
       .offset(page.calculateSkip())
       .limit(page.pageSize)
-      .getMany();
+      .getManyAndCount();
 
+    page.setTotalCount(count);
     const promises = result.map((u) => UserMapper.toView(u));
     const views = await Promise.all(promises);
 
