@@ -88,7 +88,9 @@ export class OrmBlogsQueryRepository extends BlogsQueryRepository {
       builder.andWhere('"ownerId" = :bloggerId', { bloggerId });
     }
     if (params.searchNameTerm) {
-      builder.andWhere('"name" ilike :term', { term: params.searchNameTerm });
+      builder.andWhere('"name" ilike :term', {
+        term: `%${params.searchNameTerm}%`,
+      });
     }
     return builder;
   }

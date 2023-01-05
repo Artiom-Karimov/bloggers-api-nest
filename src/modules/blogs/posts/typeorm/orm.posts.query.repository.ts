@@ -53,16 +53,30 @@ export class OrmPostsQueryRepository extends PostsQueryRepository {
   private async getPage(
     params: GetPostsQuery,
   ): Promise<PageViewModel<PostViewModel>> {
-    const count = await this.getCount(params);
     return new PageViewModel<PostViewModel>(
       params.pageNumber,
       params.pageSize,
-      count,
+      0,
     );
   }
-  private async getCount(params: GetPostsQuery): Promise<number> {
+  private async loadPosts(
+    page: PageViewModel<PostViewModel>,
+    params: GetPostsQuery,
+  ): Promise<PageViewModel<PostViewModel>> {
     const builder = this.getQueryBuilder(params);
-    return builder.getCount();
+
+    const [result, count] = await builder
+      .orderBy(this.getSortParam(params), params.sortOrder)
+      .offset(page.calculateSkip())
+      .limit(page.pageSize)
+      .getManyAndCount();
+
+    page.setTotalCount(count);
+    const views = await this.likesRepo.mergeManyWithLikes(
+      result,
+      params.userId,
+    );
+    return page.add(...views);
   }
   private getQueryBuilder(params: GetPostsQuery): SelectQueryBuilder<Post> {
     const builder = this.repo
@@ -75,22 +89,8 @@ export class OrmPostsQueryRepository extends PostsQueryRepository {
     }
     return builder;
   }
-  private async loadPosts(
-    page: PageViewModel<PostViewModel>,
-    params: GetPostsQuery,
-  ): Promise<PageViewModel<PostViewModel>> {
-    const builder = this.getQueryBuilder(params);
-
-    const result = await builder
-      .orderBy(`"post"."${params.sortBy}"`, params.sortOrder)
-      .offset(page.calculateSkip())
-      .limit(page.pageSize)
-      .getMany();
-
-    const views = await this.likesRepo.mergeManyWithLikes(
-      result,
-      params.userId,
-    );
-    return page.add(...views);
+  private getSortParam(params: GetPostsQuery): string {
+    if (params.sortBy === 'blogName') return '"blog"."name"';
+    return `"post"."${params.sortBy}"`;
   }
 }
