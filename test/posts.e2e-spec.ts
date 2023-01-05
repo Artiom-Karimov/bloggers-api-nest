@@ -217,7 +217,7 @@ describe('Posts (e2e)', () => {
     it('check likesInfo on getMany', async () => {
       const result = await request(app.getHttpServer())
         .get(`/posts`)
-        .set('Authorization', `Bearer ${loginTokens.values()[0]}`)
+        .set('Authorization', `Bearer ${[...loginTokens.values()][0]}`)
         .expect(200);
 
       const view = result.body as PageViewModel<PostViewModel>;
