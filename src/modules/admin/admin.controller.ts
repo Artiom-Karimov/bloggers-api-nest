@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import {
   BadRequestException,
+  ForbiddenException,
   NotFoundException,
 } from '@nestjs/common/exceptions';
 import PageViewModel from '../../common/models/page.view.model';
@@ -34,6 +35,7 @@ import CreateConfirmedUserCommand from './commands/commands/create.confirmed.use
 import DeleteUserCommand from './commands/commands/delete.user.command';
 import { UserError } from '../users/models/user.error';
 import IdParams from '../../common/models/id.param';
+import AssignBlogOwnerCommand from '../blogs/blogs/commands/commands/assign.blog.owner.command';
 
 @Controller('sa')
 @UseGuards(BasicAuthGuard)
@@ -64,6 +66,18 @@ export default class AdminController {
     if (result === BlogError.NotFound)
       throwValidationException('id', 'blog not found');
     throw new BadRequestException();
+  }
+  @Put('blogs/:blogId/bind-with-user/:userId')
+  @HttpCode(204)
+  async assignBlogOwner(@Param() params: IdParams): Promise<void> {
+    const result = await this.commandBus.execute(
+      new AssignBlogOwnerCommand(params.userId, params.blogId),
+    );
+
+    if (result === BlogError.NoError) return;
+    if (result === BlogError.Forbidden) throw new ForbiddenException();
+    if (result === BlogError.NotFound) throw new NotFoundException();
+    throw new BadRequestException('unknown');
   }
 
   @Get('users')

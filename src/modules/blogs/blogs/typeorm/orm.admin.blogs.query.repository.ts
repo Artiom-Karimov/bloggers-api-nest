@@ -21,8 +21,7 @@ export class OrmAdminBlogsQueryRepository extends AdminBlogsQueryRepository {
     params: GetBlogsQuery,
   ): Promise<PageViewModel<AdminBlogViewModel>> {
     try {
-      const page = await this.getPage(params);
-      await this.loadBlogs(page, params);
+      const page = await this.loadBlogs(params);
       return page;
     } catch (error) {
       console.error(error);
@@ -47,20 +46,6 @@ export class OrmAdminBlogsQueryRepository extends AdminBlogsQueryRepository {
     }
   }
 
-  private async getPage(
-    params: GetBlogsQuery,
-  ): Promise<PageViewModel<AdminBlogViewModel>> {
-    const count = await this.getCount(params);
-    return new PageViewModel<AdminBlogViewModel>(
-      params.pageNumber,
-      params.pageSize,
-      count,
-    );
-  }
-  private async getCount(params: GetBlogsQuery): Promise<number> {
-    const builder = this.getQueryBuilder(params);
-    return builder.getCount();
-  }
   private getQueryBuilder(params: GetBlogsQuery): SelectQueryBuilder<Blog> {
     const builder = this.repo
       .createQueryBuilder('blog')
@@ -75,17 +60,22 @@ export class OrmAdminBlogsQueryRepository extends AdminBlogsQueryRepository {
     return builder;
   }
   private async loadBlogs(
-    page: PageViewModel<AdminBlogViewModel>,
     params: GetBlogsQuery,
   ): Promise<PageViewModel<AdminBlogViewModel>> {
+    const page = new PageViewModel<AdminBlogViewModel>(
+      params.pageNumber,
+      params.pageSize,
+      0,
+    );
     const builder = this.getQueryBuilder(params);
 
-    const result = await builder
+    const [result, count] = await builder
       .orderBy(`"blog"."${params.sortBy}"`, params.sortOrder)
       .offset(page.calculateSkip())
       .limit(page.pageSize)
-      .getMany();
+      .getManyAndCount();
 
+    page.setTotalCount(count);
     const views = result.map((u) => BlogMapper.toAdminView(u));
     return page.add(...views);
   }

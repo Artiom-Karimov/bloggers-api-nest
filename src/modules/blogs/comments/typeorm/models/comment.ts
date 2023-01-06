@@ -12,7 +12,6 @@ import { CommentLike } from '../../../likes/typeorm/models/comment.like';
 import { CommentCreateModel } from '../../commands/commands/create.comment.command';
 import IdGenerator from '../../../../../common/utils/id.generator';
 import { BlogError } from '../../../blogs/models/blog.error';
-import LikeCreateModel from '../../../likes/models/like.create.model';
 
 @Entity()
 export class Comment {
@@ -42,7 +41,7 @@ export class Comment {
   @Column({ type: 'uuid' })
   postId: string;
 
-  @ManyToOne(() => User, { onDelete: 'SET NULL', eager: true })
+  @ManyToOne(() => User, { onDelete: 'CASCADE', eager: true })
   @JoinColumn({ name: 'userId' })
   user: User;
   @Column({ type: 'uuid' })

@@ -22,8 +22,7 @@ export class OrmPostsQueryRepository extends PostsQueryRepository {
     params: GetPostsQuery,
   ): Promise<PageViewModel<PostViewModel>> {
     try {
-      const page = await this.getPage(params);
-      await this.loadPosts(page, params);
+      const page = await this.loadPosts(params);
       return page;
     } catch (error) {
       console.error(error);
@@ -50,19 +49,14 @@ export class OrmPostsQueryRepository extends PostsQueryRepository {
     }
   }
 
-  private async getPage(
+  private async loadPosts(
     params: GetPostsQuery,
   ): Promise<PageViewModel<PostViewModel>> {
-    return new PageViewModel<PostViewModel>(
+    const page = new PageViewModel<PostViewModel>(
       params.pageNumber,
       params.pageSize,
       0,
     );
-  }
-  private async loadPosts(
-    page: PageViewModel<PostViewModel>,
-    params: GetPostsQuery,
-  ): Promise<PageViewModel<PostViewModel>> {
     const builder = this.getQueryBuilder(params);
 
     const [result, count] = await builder

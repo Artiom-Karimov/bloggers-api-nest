@@ -22,28 +22,14 @@ export class OrmBloggerCommentsQueryRepository extends BloggerCommentsQueryRepos
     params: GetBloggerCommentsQuery,
   ): Promise<PageViewModel<BloggerCommentViewModel>> {
     try {
-      const page = await this.getPage(params);
-      await this.loadComments(page, params);
+      const page = await this.loadComments(params);
       return page;
     } catch (error) {
       console.error(error);
       return new PageViewModel(params.pageNumber, params.pageSize, 0);
     }
   }
-  private async getPage(
-    params: GetBloggerCommentsQuery,
-  ): Promise<PageViewModel<BloggerCommentViewModel>> {
-    const count = await this.getCount(params);
-    return new PageViewModel<BloggerCommentViewModel>(
-      params.pageNumber,
-      params.pageSize,
-      count,
-    );
-  }
-  private async getCount(params: GetBloggerCommentsQuery): Promise<number> {
-    const builder = this.getQueryBuilder(params);
-    return builder.getCount();
-  }
+
   private getQueryBuilder(
     params: GetBloggerCommentsQuery,
   ): SelectQueryBuilder<Comment> {
@@ -60,17 +46,22 @@ export class OrmBloggerCommentsQueryRepository extends BloggerCommentsQueryRepos
     return builder;
   }
   private async loadComments(
-    page: PageViewModel<BloggerCommentViewModel>,
     params: GetBloggerCommentsQuery,
   ): Promise<PageViewModel<BloggerCommentViewModel>> {
+    const page = new PageViewModel<BloggerCommentViewModel>(
+      params.pageNumber,
+      params.pageSize,
+      0,
+    );
     const builder = this.getQueryBuilder(params);
 
-    const result = await builder
+    const [result, count] = await builder
       .orderBy(`"comment"."${params.sortBy}"`, params.sortOrder)
       .offset(page.calculateSkip())
       .limit(page.pageSize)
-      .getMany();
+      .getManyAndCount();
 
+    page.setTotalCount(count);
     const views = await this.likeRepo.mergeManyWithLikesBlogger(
       result,
       params.bloggerId,

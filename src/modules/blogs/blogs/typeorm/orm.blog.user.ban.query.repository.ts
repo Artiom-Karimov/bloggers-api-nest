@@ -21,8 +21,7 @@ export class OrmBlogUserBanQueryRepository extends BlogUserBanQueryRepository {
     params: GetBlogUserBansQuery,
   ): Promise<PageViewModel<BlogUserBanViewModel>> {
     try {
-      const page = await this.getPage(params);
-      await this.loadPageBans(page, params);
+      const page = await this.loadPageBans(params);
       return page;
     } catch (error) {
       console.error(error);
@@ -30,20 +29,6 @@ export class OrmBlogUserBanQueryRepository extends BlogUserBanQueryRepository {
     }
   }
 
-  private async getPage(
-    params: GetBlogUserBansQuery,
-  ): Promise<PageViewModel<BlogUserBanViewModel>> {
-    const count = await this.getCount(params);
-    return new PageViewModel<BlogUserBanViewModel>(
-      params.pageNumber,
-      params.pageSize,
-      count,
-    );
-  }
-  private async getCount(params: GetBlogUserBansQuery): Promise<number> {
-    const builder = this.getQueryBuilder(params);
-    return builder.getCount();
-  }
   private getQueryBuilder(
     params: GetBlogUserBansQuery,
   ): SelectQueryBuilder<BlogUserBan> {
@@ -60,16 +45,21 @@ export class OrmBlogUserBanQueryRepository extends BlogUserBanQueryRepository {
     return builder;
   }
   private async loadPageBans(
-    page: PageViewModel<BlogUserBanViewModel>,
     params: GetBlogUserBansQuery,
   ): Promise<PageViewModel<BlogUserBanViewModel>> {
+    const page = new PageViewModel<BlogUserBanViewModel>(
+      params.pageNumber,
+      params.pageSize,
+      0,
+    );
     const builder = this.getQueryBuilder(params);
-    const result = await builder
+    const [result, count] = await builder
       .orderBy(`"${params.sortBy}"`, params.sortOrder)
       .offset(page.calculateSkip())
       .limit(page.pageSize)
-      .getMany();
+      .getManyAndCount();
 
+    page.setTotalCount(count);
     const views = result.map((u) => BlogUserBanMapper.toView(u));
     return page.add(...views);
   }

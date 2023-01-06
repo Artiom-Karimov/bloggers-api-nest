@@ -24,7 +24,7 @@ export class Like {
   @Column({ type: 'timestamptz', nullable: false })
   lastModified: Date;
 
-  @ManyToOne(() => User, { onDelete: 'SET NULL', eager: true })
+  @ManyToOne(() => User, { onDelete: 'CASCADE', eager: true })
   @JoinColumn({ name: 'userId' })
   user: User;
   @PrimaryColumn({ type: 'uuid' })
