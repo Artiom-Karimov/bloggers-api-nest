@@ -46,7 +46,10 @@ export class Blog {
   @Column({ type: 'timestamptz', nullable: false })
   createdAt: Date;
 
-  @ManyToOne(() => User, (u) => u.blogs, { onDelete: 'SET NULL' })
+  @ManyToOne(() => User, (u) => u.blogs, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
   @JoinColumn({ name: 'ownerId' })
   owner: User;
 
@@ -80,15 +83,19 @@ export class Blog {
     return this.ban.banDate;
   }
   get ownerId(): string {
-    return this.owner.id;
+    return this.owner?.id ?? null;
   }
   get ownerLogin(): string {
-    return this.owner.login;
+    return this.owner?.login ?? null;
   }
 
   public updateData(data: BlogInputModel) {
     this.name = data.name;
     this.websiteUrl = data.websiteUrl;
     this.description = data.description;
+  }
+  public assignOwner(owner: User) {
+    if (this.ownerId) throw new Error('Blog already has an owner');
+    this.owner = owner;
   }
 }
