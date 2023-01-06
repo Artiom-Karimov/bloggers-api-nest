@@ -16,13 +16,13 @@ export class BlogUserBan {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Blog)
+  @ManyToOne(() => Blog, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'blogId' })
   blog: Blog;
   @Column({ type: 'uuid' })
   blogId: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
   @Column({ type: 'uuid' })
