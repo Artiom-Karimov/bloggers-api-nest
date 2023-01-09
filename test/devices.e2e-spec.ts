@@ -2,8 +2,8 @@ import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { init, stop } from './utils/test.init';
 import UserSampleGenerator, { Tokens } from './utils/user.sample.generator';
-import { dateRegex } from '../src/common/utils/date.generator';
 import SessionViewModel from '../src/modules/users/models/view/session.view.model';
+import { regex } from '../src/common/utils/validation.regex';
 
 jest.useRealTimers();
 
@@ -40,7 +40,7 @@ describe('DevicesController (e2e)', () => {
     expect(body).toContainEqual({
       ip: expect.any(String),
       title: expect.any(String),
-      lastActiveDate: expect.stringMatching(dateRegex),
+      lastActiveDate: expect.stringMatching(regex.isoDate),
       deviceId: expect.any(String),
     });
     expect(body.length).toBe(4);

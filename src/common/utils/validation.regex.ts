@@ -9,6 +9,8 @@ export const regex = {
   postTitle: /^[a-z0-9_-\s]{1,30}$/i,
   httpsUrl:
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/,
+  isoDate:
+    /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/,
 };
 
 Object.freeze(regex);
