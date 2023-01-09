@@ -8,6 +8,6 @@ export const config: TypeOrmModuleOptions = {
   password: process.env.sqlPass || 'postgres',
   database: process.env.sqlDatabase || 'bloggers',
   autoLoadEntities: true,
-  synchronize: true,
+  synchronize: false,
   extra: { poolSize: +process.env.sqlConnections || 4 },
 };

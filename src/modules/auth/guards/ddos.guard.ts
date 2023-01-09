@@ -31,11 +31,11 @@ export class DdosGuard implements CanActivate {
     const fromTime = new Date().getTime() - config.ddosTimeoutSeconds * 1000;
     this.history = this.history.filter((a) => a.timestamp > fromTime);
   }
-  private getAction(req: Request) {
+  private getAction(req: Request): Action {
     return {
       ip: req.ip,
       endpoint: req.path,
-      timestamp: new Date().getTime(),
+      timestamp: Date.now(),
     };
   }
   private checkHistory(action: Action): boolean {
