@@ -1,5 +1,7 @@
 import { Controller, Delete, HttpCode } from '@nestjs/common';
 import TestRepository from './test.repository';
+import * as config from '../../config/root';
+import { ForbiddenException } from '@nestjs/common/exceptions';
 
 @Controller('testing')
 export default class TestController {
@@ -8,6 +10,10 @@ export default class TestController {
   @Delete('all-data')
   @HttpCode(204)
   async dropAll() {
-    await this.repo.dropAll();
+    if (config.enableTesting) {
+      await this.repo.dropAll();
+      return;
+    }
+    throw new ForbiddenException('Testing disabled');
   }
 }
