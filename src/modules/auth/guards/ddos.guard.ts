@@ -28,7 +28,7 @@ export class DdosGuard implements CanActivate {
   }
 
   private flushOutdated() {
-    const fromTime = new Date().getTime() - config.ddosTimeoutSeconds * 1000;
+    const fromTime = Date.now() - config.ddosTimeoutSeconds * 1000;
     this.history = this.history.filter((a) => a.timestamp > fromTime);
   }
   private getAction(req: Request): Action {
