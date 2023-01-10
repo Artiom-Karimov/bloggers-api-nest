@@ -1,10 +1,10 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { init, stop } from './utils/test.init';
-import { dateRegex } from '../src/common/utils/date.generator';
 import PostSampleGenerator from './utils/post.sample.generator';
 import CommentSampleGenerator from './utils/comment.sample.generator';
 import CommentViewModel from '../src/modules/blogs/comments/models/view/comment.view.model';
+import { regex } from '../src/common/utils/validation.regex';
 
 jest.useRealTimers();
 
@@ -28,7 +28,7 @@ describe('CommentsController (e2e)', () => {
     content: expect.any(String),
     userId: expect.any(String),
     userLogin: expect.any(String),
-    createdAt: expect.stringMatching(dateRegex),
+    createdAt: expect.stringMatching(regex.isoDate),
     likesInfo: {
       likesCount: 0,
       dislikesCount: 0,

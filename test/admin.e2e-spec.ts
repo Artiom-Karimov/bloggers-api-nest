@@ -3,12 +3,12 @@ import { INestApplication } from '@nestjs/common';
 import { init, stop } from './utils/test.init';
 import BlogSampleGenerator from './utils/blog.sample.generator';
 import * as config from '../src/config/admin';
-import { dateRegex } from '../src/common/utils/date.generator';
 import UserSampleGenerator from './utils/user.sample.generator';
 import BlogViewModel from '../src/modules/blogs/blogs/models/view/blog.view.model';
 import PageViewModel from '../src/common/models/page.view.model';
 import PostViewModel from '../src/modules/blogs/posts/models/post.view.model';
 import UserViewModel from '../src/modules/users/models/view/user.view.model';
+import { regex } from '../src/common/utils/validation.regex';
 
 jest.useRealTimers();
 
@@ -104,7 +104,7 @@ describe('AdminController (e2e)', () => {
             name: blogSamples.samples[0].name,
             description: blogSamples.samples[0].description,
             websiteUrl: blogSamples.samples[0].websiteUrl,
-            createdAt: expect.stringMatching(dateRegex),
+            createdAt: expect.stringMatching(regex.isoDate),
             blogOwnerInfo: {
               userId: expect.any(String),
               userLogin: blogSamples.user.login,
@@ -119,7 +119,7 @@ describe('AdminController (e2e)', () => {
             name: blogSamples.samples[1].name,
             description: blogSamples.samples[1].description,
             websiteUrl: blogSamples.samples[1].websiteUrl,
-            createdAt: expect.stringMatching(dateRegex),
+            createdAt: expect.stringMatching(regex.isoDate),
             blogOwnerInfo: {
               userId: expect.any(String),
               userLogin: blogSamples.user.login,
@@ -205,14 +205,14 @@ describe('AdminController (e2e)', () => {
             name: bannedBlog.name,
             description: bannedBlog.description,
             websiteUrl: bannedBlog.websiteUrl,
-            createdAt: expect.stringMatching(dateRegex),
+            createdAt: expect.stringMatching(regex.isoDate),
             blogOwnerInfo: {
               userId: expect.any(String),
               userLogin: blogSamples.user.login,
             },
             banInfo: {
               isBanned: true,
-              banDate: expect.stringMatching(dateRegex),
+              banDate: expect.stringMatching(regex.isoDate),
             },
           },
         ]),
@@ -251,7 +251,7 @@ describe('AdminController (e2e)', () => {
         id: expect.any(String),
         login: sample.login,
         email: sample.email,
-        createdAt: expect.stringMatching(dateRegex),
+        createdAt: expect.stringMatching(regex.isoDate),
         banInfo: {
           isBanned: false,
           banDate: null,
@@ -281,10 +281,10 @@ describe('AdminController (e2e)', () => {
         id: user.id,
         login: user.login,
         email: user.email,
-        createdAt: expect.stringMatching(dateRegex),
+        createdAt: expect.stringMatching(regex.isoDate),
         banInfo: {
           isBanned: true,
-          banDate: expect.stringMatching(dateRegex),
+          banDate: expect.stringMatching(regex.isoDate),
           banReason: expect.any(String),
         },
       };
@@ -318,7 +318,7 @@ describe('AdminController (e2e)', () => {
         id: user.id,
         login: user.login,
         email: user.email,
-        createdAt: expect.stringMatching(dateRegex),
+        createdAt: expect.stringMatching(regex.isoDate),
         banInfo: {
           isBanned: false,
           banDate: null,
@@ -359,7 +359,7 @@ describe('AdminController (e2e)', () => {
           id: expect.any(String),
           login: expect.any(String),
           email: expect.any(String),
-          createdAt: expect.stringMatching(dateRegex),
+          createdAt: expect.stringMatching(regex.isoDate),
           banInfo: {
             isBanned: false,
             banDate: null,

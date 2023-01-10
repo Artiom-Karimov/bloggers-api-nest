@@ -4,13 +4,13 @@ import { init, stop } from './utils/test.init';
 import PageViewModel from '../src/common/models/page.view.model';
 import BlogSampleGenerator from './utils/blog.sample.generator';
 import UserSampleGenerator, { Tokens } from './utils/user.sample.generator';
-import { dateRegex } from '../src/common/utils/date.generator';
 import BlogInputModel from '../src/modules/blogs/blogs/models/input/blog.input.model';
 import PostInputModel from '../src/modules/blogs/posts/models/post.input.model';
 import BlogViewModel from '../src/modules/blogs/blogs/models/view/blog.view.model';
 import UserViewModel from '../src/modules/users/models/view/user.view.model';
 import PostSampleGenerator from './utils/post.sample.generator';
 import PostViewModel from '../src/modules/blogs/posts/models/post.view.model';
+import { regex } from '../src/common/utils/validation.regex';
 
 jest.useRealTimers();
 
@@ -99,7 +99,7 @@ describe('BloggerController (e2e)', () => {
         name: sample.name,
         description: sample.description,
         websiteUrl: sample.websiteUrl,
-        createdAt: expect.stringMatching(dateRegex),
+        createdAt: expect.stringMatching(regex.isoDate),
       };
 
       await samples.createSamples();
@@ -152,7 +152,7 @@ describe('BloggerController (e2e)', () => {
         content: sample.content,
         blogId: createdBlog.id,
         blogName: createdBlog.name,
-        createdAt: expect.stringMatching(dateRegex),
+        createdAt: expect.stringMatching(regex.isoDate),
         extendedLikesInfo: {
           likesCount: 0,
           dislikesCount: 0,
@@ -186,7 +186,7 @@ describe('BloggerController (e2e)', () => {
         content: sample.content,
         blogId: createdBlog.id,
         blogName: createdBlog.name,
-        createdAt: expect.stringMatching(dateRegex),
+        createdAt: expect.stringMatching(regex.isoDate),
         extendedLikesInfo: {
           likesCount: 0,
           dislikesCount: 0,
@@ -231,7 +231,7 @@ describe('BloggerController (e2e)', () => {
         name: changedBlogSample.name,
         description: changedBlogSample.description,
         websiteUrl: changedBlogSample.websiteUrl,
-        createdAt: expect.stringMatching(dateRegex),
+        createdAt: expect.stringMatching(regex.isoDate),
       };
 
       response = await request(app.getHttpServer())
@@ -307,7 +307,7 @@ describe('BloggerController (e2e)', () => {
           {
             id: expect.any(String),
             content: content,
-            createdAt: expect.stringMatching(dateRegex),
+            createdAt: expect.stringMatching(regex.isoDate),
             likesInfo: {
               likesCount: 0,
               dislikesCount: 0,
@@ -397,7 +397,7 @@ describe('BloggerController (e2e)', () => {
             login: user.login,
             banInfo: {
               isBanned: true,
-              banDate: expect.stringMatching(dateRegex),
+              banDate: expect.stringMatching(regex.isoDate),
               banReason,
             },
           },
@@ -438,7 +438,7 @@ describe('BloggerController (e2e)', () => {
           {
             id: expect.any(String),
             content: afterBanContent,
-            createdAt: expect.stringMatching(dateRegex),
+            createdAt: expect.stringMatching(regex.isoDate),
             likesInfo: {
               likesCount: 0,
               dislikesCount: 0,

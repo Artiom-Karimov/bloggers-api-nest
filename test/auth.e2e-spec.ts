@@ -6,8 +6,8 @@ import UserInputModel from '../src/modules/users/models/input/user.input.model';
 import EmailConfirmationRepository from '../src/modules/users/interfaces/email.confirmation.repository';
 import UsersRepository from '../src/modules/users/interfaces/users.repository';
 import RecoveryRepository from '../src/modules/users/interfaces/recovery.repository';
-import { dateRegex } from '../src/common/utils/date.generator';
 import SessionViewModel from '../src/modules/users/models/view/session.view.model';
+import { regex } from '../src/common/utils/validation.regex';
 
 jest.useRealTimers();
 
@@ -342,7 +342,7 @@ describe('AuthController (e2e)', () => {
         {
           ip: expect.any(String),
           title: expect.any(String),
-          lastActiveDate: expect.stringMatching(dateRegex),
+          lastActiveDate: expect.stringMatching(regex.isoDate),
           deviceId: expect.any(String),
         },
       ]);
@@ -386,7 +386,7 @@ describe('AuthController (e2e)', () => {
         {
           ip: deviceInfo.ip,
           title: deviceInfo.title,
-          lastActiveDate: expect.stringMatching(dateRegex),
+          lastActiveDate: expect.stringMatching(regex.isoDate),
           deviceId: deviceInfo.deviceId,
         },
       ]);
