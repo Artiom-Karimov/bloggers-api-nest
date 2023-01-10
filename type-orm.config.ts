@@ -14,7 +14,7 @@ import { Post } from './src/modules/blogs/posts/typeorm/models/post';
 import { Comment } from './src/modules/blogs/comments/typeorm/models/comment';
 import { PostLike } from './src/modules/blogs/likes/typeorm/models/post.like';
 import { CommentLike } from './src/modules/blogs/likes/typeorm/models/comment.like';
-import { Question } from './src/modules/quiz/models/question';
+import { Question } from './src/modules/quiz/typeorm/models/question';
 
 export default new DataSource({
   ...sql.config,
