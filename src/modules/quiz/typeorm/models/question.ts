@@ -36,10 +36,9 @@ export class Question {
 
   @Column({
     type: 'timestamptz',
-    nullable: false,
-    default: () => 'CURRENT_TIMESTAMP',
+    nullable: true,
   })
-  updatedAt: Date;
+  updatedAt: Date | null;
 
   public static create(data: QuestionInputModel): Question {
     const question = new Question();
@@ -48,7 +47,7 @@ export class Question {
     question.answers = [...data.correctAnswers];
     question.published = false;
     question.createdAt = new Date();
-    question.updatedAt = new Date(question.createdAt);
+    question.updatedAt = null;
     return question;
   }
 
