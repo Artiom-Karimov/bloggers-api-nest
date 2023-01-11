@@ -5,6 +5,6 @@ export class QuestionViewModel {
     public correctAnswers: string[],
     public published: boolean,
     public createdAt: string,
-    public updatedAt: string,
+    public updatedAt: string | null,
   ) { }
 }
