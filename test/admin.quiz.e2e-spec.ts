@@ -24,7 +24,7 @@ describe('AdminQuizController (e2e)', () => {
     correctAnswers: expect.any(Array<string>),
     published: expect.any(Boolean),
     createdAt: expect.stringMatching(regex.isoDate),
-    updatedAt: expect.stringMatching(regex.isoDate),
+    updatedAt: null,
   };
 
   beforeAll(async () => {

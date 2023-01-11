@@ -9,7 +9,7 @@ export class QuestionMapper {
       q.answers,
       q.published,
       q.createdAt.toISOString(),
-      q.updatedAt.toISOString(),
+      q.updatedAt ? q.updatedAt.toISOString() : null,
     );
   }
 }
