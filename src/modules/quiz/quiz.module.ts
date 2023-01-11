@@ -31,5 +31,6 @@ const commandHandlers = [
     },
     ...commandHandlers,
   ],
+  exports: [QuestionQueryRepository],
 })
 export class QuizModule { }
