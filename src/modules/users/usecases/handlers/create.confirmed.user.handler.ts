@@ -1,11 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import EmailConfirmationRepository from '../../../users/interfaces/email.confirmation.repository';
-import { UserError } from '../../../users/models/user.error';
-import UserInputModel from '../../../users/models/input/user.input.model';
-import UsersRepository from '../../../users/interfaces/users.repository';
+import EmailConfirmationRepository from '../../interfaces/email.confirmation.repository';
+import { UserError } from '../../models/user.error';
+import UserInputModel from '../../models/input/user.input.model';
+import UsersRepository from '../../interfaces/users.repository';
 import CreateConfirmedUserCommand from '../commands/create.confirmed.user.command';
-import { User } from '../../../users/typeorm/models/user';
-import { EmailConfirmation } from '../../../users/typeorm/models/email.confirmation';
+import { User } from '../../typeorm/models/user';
+import { EmailConfirmation } from '../../typeorm/models/email.confirmation';
 
 @CommandHandler(CreateConfirmedUserCommand)
 export default class CreateConfirmedUserHandler

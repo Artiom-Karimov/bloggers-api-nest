@@ -1,12 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import SessionsRepository from '../../../users/interfaces/sessions.repository';
+import SessionsRepository from '../../interfaces/sessions.repository';
 import { BlogError } from '../../../blogs/blogs/models/blog.error';
-import UsersBanRepository from '../../../users/interfaces/users.ban.repository';
-import UsersRepository from '../../../users/interfaces/users.repository';
+import UsersBanRepository from '../../interfaces/users.ban.repository';
+import UsersRepository from '../../interfaces/users.repository';
 import BanUserCommand, {
   BanUserCreateModel,
 } from '../commands/ban.user.command';
-import { UserBan } from '../../../users/typeorm/models/user.ban';
+import { UserBan } from '../../typeorm/models/user.ban';
 
 @CommandHandler(BanUserCommand)
 export class BanUserHandler implements ICommandHandler<BanUserCommand> {

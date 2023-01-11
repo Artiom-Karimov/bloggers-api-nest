@@ -7,6 +7,7 @@ export const regex = {
   uuid: /^[a-f,0-9,-]{36,36}$/,
   blogName: /^[a-z0-9_-\s]{1,15}$/i,
   postTitle: /^[a-z0-9_-\s]{1,30}$/i,
+  questionBody: /^[a-z0-9_-\s]{1,100}$/i,
   httpsUrl:
     /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/,
   isoDate:

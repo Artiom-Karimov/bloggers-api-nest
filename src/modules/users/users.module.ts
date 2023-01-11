@@ -26,6 +26,15 @@ import { OrmEmailConfirmationRepository } from './typeorm/orm.email.confirmation
 import { OrmSessionsRepository } from './typeorm/orm.sessions.repository';
 import { OrmSessionsQueryRepository } from './typeorm/orm.sessions.query.repository';
 import { OrmRecoveryRepository } from './typeorm/orm.recovery.repository';
+import { BanUserHandler } from './usecases/handlers/ban.user.handler';
+import CreateConfirmedUserHandler from './usecases/handlers/create.confirmed.user.handler';
+import DeleteUserHandler from './usecases/handlers/delete.user.handler';
+
+const commandHandlers = [
+  BanUserHandler,
+  CreateConfirmedUserHandler,
+  DeleteUserHandler,
+];
 
 @Module({
   imports: [
@@ -68,6 +77,7 @@ import { OrmRecoveryRepository } from './typeorm/orm.recovery.repository';
       provide: RecoveryRepository,
       useClass: OrmRecoveryRepository,
     },
+    ...commandHandlers,
   ],
   exports: [
     UsersRepository,
