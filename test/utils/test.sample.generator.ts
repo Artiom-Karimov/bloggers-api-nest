@@ -1,4 +1,5 @@
 import { INestApplication } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 
 export default abstract class TestSampleGenerator<Tinput, Toutput> {
   public samples: Array<Tinput> = [];
@@ -33,9 +34,8 @@ export default abstract class TestSampleGenerator<Tinput, Toutput> {
   }
 
   protected rand = () => {
-    let result = Math.floor(Math.random() * 999);
-    result *= new Date().getTime() % 100;
-    return result;
+    const id = uuidv4();
+    return id.substring(0, 6);
   };
   protected getLastSamples = (length: number) => {
     return this.samples.slice(this.samples.length - length);

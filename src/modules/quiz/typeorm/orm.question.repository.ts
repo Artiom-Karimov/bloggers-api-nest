@@ -37,7 +37,7 @@ export class OrmQuestionRepository extends QuestionRepository {
 
   public async delete(id: string): Promise<boolean> {
     try {
-      const result = await this.repo.delete(id);
+      const result = await this.repo.delete({ id });
       return !!result.affected;
     } catch (error) {
       console.error(error);

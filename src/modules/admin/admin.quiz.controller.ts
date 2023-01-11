@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -36,6 +37,12 @@ export default class AdminQuizController {
   async get(@Query() reqQuery: any): Promise<PageViewModel<QuestionViewModel>> {
     const query = new GetQuestionsQuery(reqQuery);
     return this.questionQueryRepo.getQuestions(query);
+  }
+  @Get(':id')
+  async getOne(@Param() params: IdParams): Promise<QuestionViewModel> {
+    const result = await this.questionQueryRepo.getQuestion(params.id);
+    if (!result) throw new NotFoundException();
+    return result;
   }
   @Post('')
   @HttpCode(201)
