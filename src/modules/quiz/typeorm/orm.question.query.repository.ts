@@ -26,6 +26,15 @@ export class OrmQuestionQueryRepository extends QuestionQueryRepository {
       return new PageViewModel(params.pageNumber, params.pageSize, 0);
     }
   }
+  public async getQuestion(id: string): Promise<QuestionViewModel> {
+    try {
+      const result = await this.repo.findOneBy({ id });
+      return result ? QuestionMapper.toView(result) : undefined;
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
 
   private async loadQuestions(
     params: GetQuestionsQuery,

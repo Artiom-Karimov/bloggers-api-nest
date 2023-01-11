@@ -24,9 +24,9 @@ import UserViewModel from '../users/models/view/user.view.model';
 import UsersQueryRepository from '../users/interfaces/users.query.repository';
 import { BlogError } from '../blogs/blogs/models/blog.error';
 import { CommandBus } from '@nestjs/cqrs';
-import BanUserCommand from './commands/commands/ban.user.command';
-import CreateConfirmedUserCommand from './commands/commands/create.confirmed.user.command';
-import DeleteUserCommand from './commands/commands/delete.user.command';
+import BanUserCommand from '../users/usecases/commands/ban.user.command';
+import CreateConfirmedUserCommand from '../users/usecases/commands/create.confirmed.user.command';
+import DeleteUserCommand from '../users/usecases/commands/delete.user.command';
 import { UserError } from '../users/models/user.error';
 import IdParams from '../../common/models/id.param';
 

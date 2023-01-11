@@ -6,4 +6,7 @@ export abstract class QuestionQueryRepository {
   public abstract getQuestions(
     params: GetQuestionsQuery,
   ): Promise<PageViewModel<QuestionViewModel>>;
+  public abstract getQuestion(
+    id: string,
+  ): Promise<QuestionViewModel | undefined>;
 }

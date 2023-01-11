@@ -5,9 +5,21 @@ import { QuestionRepository } from './interfaces/question.repository';
 import { OrmQuestionRepository } from './typeorm/orm.question.repository';
 import { QuestionQueryRepository } from './interfaces/question.query.repository';
 import { OrmQuestionQueryRepository } from './typeorm/orm.question.query.repository';
+import { CreateQuestionHandler } from './usecases/handlers/create.qustion.handler';
+import { DeleteQuestionHandler } from './usecases/handlers/delete.question.handler';
+import { PublishQuestionHandler } from './usecases/handlers/publish.question.handler';
+import { UpdateQuestionHandler } from './usecases/handlers/update.question.handler';
+import { CqrsModule } from '@nestjs/cqrs';
+
+const commandHandlers = [
+  CreateQuestionHandler,
+  DeleteQuestionHandler,
+  PublishQuestionHandler,
+  UpdateQuestionHandler,
+];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Question])],
+  imports: [TypeOrmModule.forFeature([Question]), CqrsModule],
   providers: [
     {
       provide: QuestionRepository,
@@ -17,6 +29,7 @@ import { OrmQuestionQueryRepository } from './typeorm/orm.question.query.reposit
       provide: QuestionQueryRepository,
       useClass: OrmQuestionQueryRepository,
     },
+    ...commandHandlers,
   ],
 })
 export class QuizModule { }

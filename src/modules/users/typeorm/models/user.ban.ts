@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { User } from './user';
-import { BanUserCreateModel } from '../../../admin/commands/commands/ban.user.command';
+import { BanUserCreateModel } from '../../usecases/commands/ban.user.command';
 
 @Entity()
 export class UserBan {
