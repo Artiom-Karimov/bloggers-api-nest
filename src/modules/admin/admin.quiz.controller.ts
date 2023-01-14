@@ -16,13 +16,13 @@ import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 import { CommandBus } from '@nestjs/cqrs';
 import IdParams from '../../common/models/id.param';
 import { QuestionQueryRepository } from '../quiz/interfaces/question.query.repository';
-import { QuestionViewModel } from '../quiz/models/question.view.model';
-import { GetQuestionsQuery } from '../quiz/models/get.questions.query';
-import { QuestionInputModel } from '../quiz/models/question.input.model';
+import { QuestionViewModel } from '../quiz/models/view/question.view.model';
+import { GetQuestionsQuery } from '../quiz/models/input/get.questions.query';
+import { QuestionInputModel } from '../quiz/models/input/question.input.model';
 import { CreateQuestionCommand } from '../quiz/usecases/commands/create.question.command';
 import { DeleteQuestionCommand } from '../quiz/usecases/commands/delete.question.command';
 import { UpdateQuestionCommand } from '../quiz/usecases/commands/update.question.command';
-import { QuestionPublishModel } from '../quiz/models/question.publish.model';
+import { QuestionPublishModel } from '../quiz/models/input/question.publish.model';
 import { PublishQuestionCommand } from '../quiz/usecases/commands/publish.question.command';
 
 @Controller('sa/quiz/questions')

@@ -1,5 +1,5 @@
-import PageQueryParams from '../../../common/models/page.query.params';
-import { regex } from '../../../common/utils/validation.regex';
+import PageQueryParams from '../../../../common/models/page.query.params';
+import { regex } from '../../../../common/utils/validation.regex';
 
 export class GetQuestionsQuery extends PageQueryParams {
   public bodySearchTerm: string | null = null;

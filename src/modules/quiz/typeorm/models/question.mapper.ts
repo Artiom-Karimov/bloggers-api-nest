@@ -1,4 +1,4 @@
-import { QuestionViewModel } from '../../models/question.view.model';
+import { QuestionViewModel } from '../../models/view/question.view.model';
 import { Question } from './question';
 
 export class QuestionMapper {

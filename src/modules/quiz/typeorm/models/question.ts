@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { QuestionInputModel } from '../../models/question.input.model';
+import { QuestionInputModel } from '../../models/input/question.input.model';
 import IdGenerator from '../../../../common/utils/id.generator';
 
 @Entity()
