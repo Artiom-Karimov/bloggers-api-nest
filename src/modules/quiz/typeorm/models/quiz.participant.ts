@@ -4,10 +4,12 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Quiz } from './quiz';
 import { User } from '../../../users/typeorm/models/user';
+import { QuizAnswer } from './quiz.answer';
 
 @Entity()
 @Index(['quizId', 'userId'], { unique: true })
@@ -20,7 +22,7 @@ export class QuizParticipant {
   @Column({ type: 'uuid', nullable: true })
   userId: string | null;
 
-  @ManyToOne(() => Quiz, { eager: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Quiz, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'quizId' })
   quiz: Quiz;
 
@@ -33,4 +35,18 @@ export class QuizParticipant {
 
   @Column({ type: 'boolean', nullable: true })
   isWinner: boolean | null;
+
+  @OneToMany(() => QuizAnswer, (a) => a.participant, {
+    eager: true,
+    cascade: true,
+  })
+  answers: QuizAnswer[];
+
+  public static create(user: User, quiz: Quiz): QuizParticipant {
+    const qp = new QuizParticipant();
+    qp.quiz = quiz;
+    qp.user = user;
+    qp.score = 0;
+    return qp;
+  }
 }

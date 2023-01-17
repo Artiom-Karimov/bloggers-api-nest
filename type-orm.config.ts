@@ -15,6 +15,10 @@ import { Comment } from './src/modules/blogs/comments/typeorm/models/comment';
 import { PostLike } from './src/modules/blogs/likes/typeorm/models/post.like';
 import { CommentLike } from './src/modules/blogs/likes/typeorm/models/comment.like';
 import { Question } from './src/modules/quiz/typeorm/models/question';
+import { Quiz } from './src/modules/quiz/typeorm/models/quiz';
+import { QuizQuestion } from './src/modules/quiz/typeorm/models/quiz.question';
+import { QuizAnswer } from './src/modules/quiz/typeorm/models/quiz.answer';
+import { QuizParticipant } from './src/modules/quiz/typeorm/models/quiz.participant';
 
 export default new DataSource({
   ...sql.config,
@@ -34,6 +38,10 @@ export default new DataSource({
     CommentLike,
 
     Question,
+    Quiz,
+    QuizParticipant,
+    QuizQuestion,
+    QuizAnswer,
   ],
   migrations: [__dirname + '/src/migrations/*.ts'],
 } as DataSourceOptions);

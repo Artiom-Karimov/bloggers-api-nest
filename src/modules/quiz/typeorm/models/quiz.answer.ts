@@ -1,26 +1,46 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+} from 'typeorm';
 import { QuizQuestion } from './quiz.question';
-import { User } from '../../../users/typeorm/models/user';
+import { QuizParticipant } from './quiz.participant';
 
 @Entity()
-@Index(['questionId', 'userId'], { unique: true })
+@Index(['questionId', 'participantId'], { unique: true })
 export class QuizAnswer {
-  @Column({ type: 'uuid' })
+  @PrimaryColumn({ type: 'uuid' })
   questionId: string;
-  @Column({ type: 'uuid' })
-  userId: string;
+  @PrimaryColumn({ type: 'uuid' })
+  participantId: string;
 
   @ManyToOne(() => QuizQuestion, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'questionId' })
   question: QuizQuestion;
 
-  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
-  @JoinColumn({ name: 'userId' })
-  user: User;
+  @ManyToOne(() => QuizParticipant, { onDelete: 'SET NULL', nullable: true })
+  @JoinColumn({ name: 'participantId' })
+  participant: QuizParticipant;
 
   @Column({ type: 'character varying', nullable: true })
   answer: string;
 
   @Column({ type: 'timestamptz', nullable: false })
   createdAt: Date;
+
+  public static create(
+    participant: QuizParticipant,
+    question: QuizQuestion,
+    answer: string,
+  ): QuizAnswer {
+    const a = new QuizAnswer();
+    a.question = question;
+    a.participant = participant;
+    a.answer = answer;
+    a.createdAt = new Date();
+    return a;
+  }
 }

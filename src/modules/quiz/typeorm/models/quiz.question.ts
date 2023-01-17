@@ -3,12 +3,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Quiz } from './quiz';
 import { Question } from './question';
-import { QuizAnswer } from './quiz.answer';
+import IdGenerator from '../../../../common/utils/id.generator';
 
 @Entity()
 export class QuizQuestion {
@@ -24,13 +23,23 @@ export class QuizQuestion {
   @JoinColumn({ name: 'quizId' })
   quiz: Quiz;
 
-  @ManyToOne(() => Question, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => Question, { onDelete: 'RESTRICT', eager: true })
   @JoinColumn({ name: 'questionId' })
   question: Question;
 
   @Column({ type: 'int', nullable: false })
   questionOrder: number;
 
-  @OneToMany(() => QuizAnswer, (a) => a.question)
-  answers: QuizAnswer[];
+  public static create(
+    quiz: Quiz,
+    question: Question,
+    questionOrder: number,
+  ): QuizQuestion {
+    const q = new QuizQuestion();
+    q.id = IdGenerator.generate();
+    q.quiz = quiz;
+    q.question = question;
+    q.questionOrder = questionOrder;
+    return q;
+  }
 }

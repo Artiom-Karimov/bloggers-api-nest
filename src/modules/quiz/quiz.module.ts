@@ -10,6 +10,10 @@ import { DeleteQuestionHandler } from './usecases/handlers/delete.question.handl
 import { PublishQuestionHandler } from './usecases/handlers/publish.question.handler';
 import { UpdateQuestionHandler } from './usecases/handlers/update.question.handler';
 import { CqrsModule } from '@nestjs/cqrs';
+import { Quiz } from './typeorm/models/quiz';
+import { QuizQuestion } from './typeorm/models/quiz.question';
+import { QuizParticipant } from './typeorm/models/quiz.participant';
+import { QuizAnswer } from './typeorm/models/quiz.answer';
 
 const commandHandlers = [
   CreateQuestionHandler,
@@ -19,7 +23,16 @@ const commandHandlers = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Question]), CqrsModule],
+  imports: [
+    TypeOrmModule.forFeature([
+      Question,
+      Quiz,
+      QuizQuestion,
+      QuizParticipant,
+      QuizAnswer,
+    ]),
+    CqrsModule,
+  ],
   providers: [
     {
       provide: QuestionRepository,
