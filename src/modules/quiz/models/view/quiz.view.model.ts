@@ -23,11 +23,11 @@ export class QuizViewModel {
   constructor(
     public id: string,
     public firstPlayerProgress: PlayerProgress,
-    public secondPlayerProgress: PlayerProgress,
-    public questions: QuestionInfo[],
+    public secondPlayerProgress: PlayerProgress | null,
+    public questions: QuestionInfo[] | null,
     public status: 'PendingSecondPlayer' | 'Active' | 'Finished',
     public pairCreatedDate: string,
-    public startGameDate: string,
-    public finishGameDate: string,
+    public startGameDate: string | null,
+    public finishGameDate: string | null,
   ) { }
 }
