@@ -97,7 +97,6 @@ export default class CommentsController {
       new PutCommentLikeCommand({
         entityId: params.id,
         userId: user.userId,
-        userLogin: user.userLogin,
         likeStatus: data.likeStatus,
       }),
     );

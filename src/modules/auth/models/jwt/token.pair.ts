@@ -16,7 +16,6 @@ export default class TokenPair {
       const result: any = verify(token, config.jwtSecret);
       return {
         userId: result.userId,
-        userLogin: result.userLogin,
         deviceId: result.deviceId,
         issuedAt: result.issuedAt,
         exp: result.exp,

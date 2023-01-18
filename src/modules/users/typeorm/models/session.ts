@@ -78,7 +78,6 @@ export class Session {
   public getTokens(): TokenPair {
     return new TokenPair({
       userId: this.userId,
-      userLogin: this.userLogin,
       deviceId: this.deviceId,
       issuedAt: this.issuedAt.getTime(),
       exp: this.expiresAt.getTime(),
