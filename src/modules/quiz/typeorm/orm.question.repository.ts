@@ -44,4 +44,19 @@ export class OrmQuestionRepository extends QuestionRepository {
       return false;
     }
   }
+
+  public async getRandom(amount: number): Promise<Question[]> {
+    try {
+      const result = await this.repo
+        .createQueryBuilder('q')
+        .orderBy('random()')
+        .limit(amount)
+        .getMany();
+
+      return result;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
 }

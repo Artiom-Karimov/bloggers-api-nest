@@ -8,4 +8,6 @@ export abstract class QuestionRepository {
   public abstract update(question: Question): Promise<boolean>;
 
   public abstract delete(id: string): Promise<boolean>;
+
+  public abstract getRandom(amount: number): Promise<Question[]>;
 }

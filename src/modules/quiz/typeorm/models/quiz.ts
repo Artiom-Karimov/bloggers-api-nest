@@ -39,16 +39,22 @@ export class Quiz {
     quiz.mapQuestions(questions);
     return quiz;
   }
+  public addParticipant(user: User) {
+    if (!this.participants) this.participants = [];
+    if (this.participants.length === 2)
+      throw new Error('quiz cannot take more than 2 users');
+
+    this.participants.push(QuizParticipant.create(user, this));
+  }
 
   protected mapQuestions(questions: Question[]) {
+    if (questions.length !== 5)
+      throw new Error('quiz must contain 5 questions');
+
     if (!this.questions) this.questions = [];
+
     questions.forEach((q, i) => {
       this.questions.push(QuizQuestion.create(this, q, i + 1));
     });
-  }
-
-  protected addParticipant(user: User) {
-    if (!this.participants) this.participants = [];
-    this.participants.push(QuizParticipant.create(user, this));
   }
 }
