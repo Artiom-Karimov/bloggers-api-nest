@@ -5,7 +5,10 @@ import { regex } from '../src/common/utils/validation.regex';
 import UserSampleGenerator, { Tokens } from './utils/user.sample.generator';
 import UserViewModel from '../src/modules/users/models/view/user.view.model';
 import IdGenerator from '../src/common/utils/id.generator';
-import { QuizViewModel } from '../src/modules/quiz/models/view/quiz.view.model';
+import { AnswerInfo, QuizViewModel } from '../src/modules/quiz/models/view/quiz.view.model'; \
+import * as config from '../src/config/admin';
+import { QuestionViewModel } from '../src/modules/quiz/models/view/question.view.model';
+import { QuestionSampleGenerator } from './utils/question.sample.generator';
 
 jest.useRealTimers();
 
@@ -14,6 +17,7 @@ describe('QuizController (e2e)', () => {
   let app: INestApplication;
 
   let samples: UserSampleGenerator;
+  let questionSamples: QuestionSampleGenerator;
   let users: Array<UserViewModel & Tokens>;
 
   beforeAll(async () => {
@@ -23,6 +27,10 @@ describe('QuizController (e2e)', () => {
     samples = new UserSampleGenerator(app);
     samples.generateSamples(3);
     await samples.createSamples();
+
+    questionSamples = new QuestionSampleGenerator(app);
+    questionSamples.generateSamples(10);
+    await questionSamples.createSamples();
 
     users = [];
     for (const s of samples.samples) {
@@ -151,5 +159,170 @@ describe('QuizController (e2e)', () => {
     expect(result.statusCode).toBe(200);
     const body = result.body as QuizViewModel;
     expect(body).toEqual(game);
+  });
+
+  let questions: Array<QuestionViewModel>;
+  it('get all answers as admin', async () => {
+    questions = [];
+    for (const q of game.questions) {
+      const result = await request(app.getHttpServer())
+        .get(`${base}/${q.id}`)
+        .auth(config.userName, config.password)
+        .expect(200);
+
+      const body = result.body as QuestionViewModel;
+      expect(body.correctAnswers.length).toBeGreaterThan(0);
+      questions.push(body);
+    }
+  });
+
+  it('start the game', async () => {
+    for (let i = 0; i < 4; i++) {
+      const u1 = request(app.getHttpServer())
+        .post(`${base}/my-current/answers`)
+        .set('Authorization', `Bearer ${users[0].access}`)
+        .send({ answer: 'sorry, idk' })
+        .expect(200);
+
+      const u2 = request(app.getHttpServer())
+        .post(`${base}/my-current/answers`)
+        .set('Authorization', `Bearer ${users[1].access}`)
+        .send({ answer: questions[i].correctAnswers[0] })
+        .expect(200);
+
+      const results = await Promise.all([u1, u2]);
+
+      expect(results[0].body).toEqual({
+        questionId: questions[i].id,
+        answerStatus: 'Incorrect',
+        addedAt: expect.stringMatching(regex.isoDate),
+      })
+      expect(results[1].body).toEqual({
+        questionId: questions[i].id,
+        answerStatus: 'Correct',
+        addedAt: expect.stringMatching(regex.isoDate),
+      })
+    }
+  })
+
+  it('check game status after answers', async () => {
+    const result = await request(app.getHttpServer())
+      .get(`${base}/my-current`)
+      .set('Authorization', `Bearer ${users[0].access}`);
+
+    expect(result.statusCode).toBe(200);
+    const body = result.body as QuizViewModel;
+    expect(body).toEqual({
+      ...game,
+      firstPlayerProgress: {
+        ...game.firstPlayerProgress,
+        answers: [
+          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Incorrect', addedAt: expect.stringMatching(regex.isoDate) },
+          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Incorrect', addedAt: expect.stringMatching(regex.isoDate) },
+          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Incorrect', addedAt: expect.stringMatching(regex.isoDate) },
+          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Incorrect', addedAt: expect.stringMatching(regex.isoDate) },
+        ]
+      },
+      secondPlayerProgress: {
+        ...game.secondPlayerProgress,
+        answers: [
+          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Correct', addedAt: expect.stringMatching(regex.isoDate) },
+          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Correct', addedAt: expect.stringMatching(regex.isoDate) },
+          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Correct', addedAt: expect.stringMatching(regex.isoDate) },
+          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Correct', addedAt: expect.stringMatching(regex.isoDate) },
+        ]
+      },
+      score: 4,
+    });
+
+    game = body;
+  });
+
+  it('user1 sends the last answer, game should not be ended', async () => {
+    const u1 = await request(app.getHttpServer())
+      .post(`${base}/my-current/answers`)
+      .set('Authorization', `Bearer ${users[0].access}`)
+      .send({ answer: questions.at(-1).correctAnswers.at(-1) })
+      .expect(200);
+
+    expect(u1.body).toEqual({
+      ...game,
+      firstPlayerProgress: {
+        ...game.firstPlayerProgress,
+        answers: [
+          ...game.firstPlayerProgress.answers,
+          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Correct', addedAt: expect.stringMatching(regex.isoDate) }
+        ]
+      },
+      score: 2, // bonus for finishing first
+    });
+
+    game = u1.body as QuizViewModel;
+  });
+
+  it('user1 should not be able to send more answers', async () => {
+    const u1 = await request(app.getHttpServer())
+      .post(`${base}/my-current/answers`)
+      .set('Authorization', `Bearer ${users[0].access}`)
+      .send({ answer: questions.at(-1).correctAnswers.at(-1) })
+      .expect(403);
+  });
+
+  it('user1 should get current game until user2 sends the last answer', async () => {
+    const result = await request(app.getHttpServer())
+      .get(`${base}/my-current`)
+      .set('Authorization', `Bearer ${users[0].access}`)
+      .expect(200);
+
+    expect(result.body).toEqual(game);
+  })
+
+  it('user2 sends the last answer, should get ended game result', async () => {
+    const u2 = await request(app.getHttpServer())
+      .post(`${base}/my-current/answers`)
+      .set('Authorization', `Bearer ${users[1].access}`)
+      .send({ answer: 'Doesnt matter' })
+      .expect(200);
+
+    const body = u2.body as QuizViewModel;
+    expect(body).toEqual({
+      ...game,
+      secondPlayerProgress: {
+        ...game.secondPlayerProgress,
+        answers: [
+          ...game.secondPlayerProgress.answers,
+          { questionId: questions.at(-1).id, answerStatus: 'Incorrect', addedAt: expect.stringMatching(regex.isoDate) }
+        ]
+      },
+      status: 'Finished',
+      finishGameDate: expect.stringMatching(regex.isoDate),
+    });
+
+    game = body;
+  })
+
+  it('user1 should not get my-current', async () => {
+    const result = await request(app.getHttpServer())
+      .get(`${base}/my-current`)
+      .set('Authorization', `Bearer ${users[0].access}`);
+
+    expect(result.statusCode).toBe(404);
+  })
+
+  it('user2 should be able to get game by id', async () => {
+    const result = await request(app.getHttpServer())
+      .get(`${base}/${game.id}`)
+      .set('Authorization', `Bearer ${users[1].access}`);
+
+    expect(result.statusCode).toBe(200);
+    expect(result.body).toEqual(game);
+  });
+
+  it('user3 should not be able to get game by id', async () => {
+    const result = await request(app.getHttpServer())
+      .get(`${base}/${game.id}`)
+      .set('Authorization', `Bearer ${users[2].access}`);
+
+    expect(result.statusCode).toBe(403);
   });
 });
