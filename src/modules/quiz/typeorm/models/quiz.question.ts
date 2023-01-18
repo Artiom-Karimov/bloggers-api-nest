@@ -42,4 +42,8 @@ export class QuizQuestion {
     q.questionOrder = questionOrder;
     return q;
   }
+
+  public checkAnswer(answer: string): boolean {
+    return this.question.checkAnswer(answer);
+  }
 }

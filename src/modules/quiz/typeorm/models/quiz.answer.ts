@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { QuizQuestion } from './quiz.question';
 import { QuizParticipant } from './quiz.participant';
+import { AnswerInfo } from '../../models/view/quiz.view.model';
 
 @Entity()
 @Index(['questionId', 'participantId'], { unique: true })
@@ -28,6 +29,9 @@ export class QuizAnswer {
   @Column({ type: 'character varying', nullable: true })
   answer: string;
 
+  @Column({ type: 'boolean', nullable: false })
+  isCorrect: boolean;
+
   @Column({ type: 'timestamptz', nullable: false })
   createdAt: Date;
 
@@ -41,6 +45,15 @@ export class QuizAnswer {
     a.participant = participant;
     a.answer = answer;
     a.createdAt = new Date();
+    a.isCorrect = question.checkAnswer(answer);
     return a;
+  }
+
+  public getInfo(): AnswerInfo {
+    return new AnswerInfo(
+      this.question.questionId,
+      this.isCorrect ? 'Correct' : 'Incorrect',
+      this.createdAt.toISOString(),
+    );
   }
 }

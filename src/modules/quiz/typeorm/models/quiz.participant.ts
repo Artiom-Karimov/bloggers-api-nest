@@ -10,6 +10,8 @@ import {
 import { Quiz } from './quiz';
 import { User } from '../../../users/typeorm/models/user';
 import { QuizAnswer } from './quiz.answer';
+import * as config from '../../../../config/quiz';
+import { AnswerInfo } from '../../models/view/quiz.view.model';
 
 @Entity()
 @Index(['quizId', 'userId'], { unique: true })
@@ -48,5 +50,15 @@ export class QuizParticipant {
     qp.user = user;
     qp.score = 0;
     return qp;
+  }
+  public acceptAnswer(answer: string): AnswerInfo {
+    if (!this.answers) this.answers = [];
+    if (this.answers.length === config.questionAmount) {
+      throw new Error('all the answers were already sent');
+    }
+    const question = this.quiz.questions[this.answers.length];
+    const ans = QuizAnswer.create(this, question, answer);
+    this.answers.push(ans);
+    return ans.getInfo();
   }
 }

@@ -62,4 +62,8 @@ export class Question {
     this.answers = [...data.correctAnswers];
     this.updatedAt = new Date();
   }
+
+  public checkAnswer(answer: string): boolean {
+    return this.answers.some((a) => a === answer);
+  }
 }
