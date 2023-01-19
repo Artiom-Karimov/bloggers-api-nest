@@ -21,7 +21,7 @@ export class SendQuizAnswerHandler
     } catch (error) {
       console.error(error);
       throw new ForbiddenException(
-        'game is not started or user anwered all questions',
+        'game is not started or user answered all questions',
       );
     }
   }
