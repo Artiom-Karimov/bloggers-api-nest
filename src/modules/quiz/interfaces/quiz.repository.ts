@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Quiz } from '../typeorm/models/quiz';
+import { Quiz } from '../models/domain/quiz';
 
 @Injectable()
 export abstract class QuizRepository {

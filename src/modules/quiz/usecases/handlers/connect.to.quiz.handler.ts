@@ -7,7 +7,7 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common/exceptions';
-import { Quiz } from '../../typeorm/models/quiz';
+import { Quiz } from '../../models/domain/quiz';
 import UsersRepository from '../../../users/interfaces/users.repository';
 import { QuestionRepository } from '../../interfaces/question.repository';
 import { GetCurrentGameQuery } from '../queries/get.current.game.query';

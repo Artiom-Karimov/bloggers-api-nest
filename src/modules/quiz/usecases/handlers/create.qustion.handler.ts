@@ -3,7 +3,7 @@ import { CreateQuestionCommand } from '../commands/create.question.command';
 import { QuestionRepository } from '../../interfaces/question.repository';
 import { QuestionQueryRepository } from '../../interfaces/question.query.repository';
 import { QuestionViewModel } from '../../models/view/question.view.model';
-import { Question } from '../../typeorm/models/question';
+import { Question } from '../../models/domain/question';
 import { BadRequestException } from '@nestjs/common';
 
 @CommandHandler(CreateQuestionCommand)

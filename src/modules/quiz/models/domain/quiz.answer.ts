@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { QuizQuestion } from './quiz.question';
 import { QuizParticipant } from './quiz.participant';
-import { AnswerInfo } from '../../models/view/quiz.view.model';
+import { AnswerInfo } from '../view/quiz.view.model';
 
 @Entity()
 @Index(['questionId', 'participantId'], { unique: true })
@@ -42,7 +42,9 @@ export class QuizAnswer {
   ): QuizAnswer {
     const a = new QuizAnswer();
     a.question = question;
+    a.questionId = question.id;
     a.participant = participant;
+    a.participantId = participant.id;
     a.answer = answer;
     a.createdAt = new Date();
     a.isCorrect = question.checkAnswer(answer);

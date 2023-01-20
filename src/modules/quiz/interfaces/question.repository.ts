@@ -1,4 +1,4 @@
-import { Question } from '../typeorm/models/question';
+import { Question } from '../models/domain/question';
 
 export abstract class QuestionRepository {
   public abstract get(id: string): Promise<Question | undefined>;

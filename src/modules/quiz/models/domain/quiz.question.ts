@@ -38,7 +38,9 @@ export class QuizQuestion {
     const q = new QuizQuestion();
     q.id = IdGenerator.generate();
     q.quiz = quiz;
+    q.quizId = quiz.id;
     q.question = question;
+    q.questionId = question.id;
     q.questionOrder = questionOrder;
     return q;
   }

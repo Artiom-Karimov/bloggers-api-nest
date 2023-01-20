@@ -3,9 +3,9 @@ import PageViewModel from '../../../common/models/page.view.model';
 import { QuestionQueryRepository } from '../interfaces/question.query.repository';
 import { GetQuestionsQuery } from '../models/input/get.questions.query';
 import { QuestionViewModel } from '../models/view/question.view.model';
-import { Question } from './models/question';
+import { Question } from '../models/domain/question';
 import { InjectRepository } from '@nestjs/typeorm';
-import { QuestionMapper } from './models/question.mapper';
+import { QuestionMapper } from './question.mapper';
 
 export class OrmQuestionQueryRepository extends QuestionQueryRepository {
   constructor(

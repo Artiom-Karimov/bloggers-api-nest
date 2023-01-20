@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import { QuestionRepository } from '../interfaces/question.repository';
-import { Question } from './models/question';
+import { Question } from '../models/domain/question';
 import { InjectRepository } from '@nestjs/typeorm';
 
 export class OrmQuestionRepository extends QuestionRepository {
