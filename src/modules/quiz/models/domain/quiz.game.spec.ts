@@ -135,4 +135,19 @@ describe('Quiz game tests', () => {
     expect(p2.isWinner).toBe(false);
     expect(p2.score).toBe(questionAmount - 1);
   });
+
+  it('no more answers should be accepted', () => {
+    const illegalActivity = (player: User) => {
+      quiz.acceptAnswer(player.id, 'Here you go, backend');
+    };
+    const p1 = () => {
+      illegalActivity(player1);
+    };
+    const p2 = () => {
+      illegalActivity(player2);
+    };
+
+    expect(p1).toThrow(Error);
+    expect(p2).toThrow(Error);
+  });
 });
