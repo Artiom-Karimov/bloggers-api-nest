@@ -39,6 +39,9 @@ export class QuizParticipant {
   @Column({ type: 'boolean', nullable: true })
   isWinner: boolean | null;
 
+  @Column({ type: 'timestamptz', nullable: false })
+  addedAt: Date;
+
   @OneToMany(() => QuizAnswer, (a) => a.participant, {
     eager: true,
     cascade: true,
@@ -53,7 +56,13 @@ export class QuizParticipant {
     qp.user = user;
     qp.userId = user.id;
     qp.score = 0;
+    qp.addedAt = new Date();
     return qp;
+  }
+  public sortChildren() {
+    this.answers?.sort((a, b) => {
+      return a.createdAt.getTime() - b.createdAt.getTime();
+    });
   }
   public acceptAnswer(answer: string): AnswerInfo {
     if (!this.answers) this.answers = [];
