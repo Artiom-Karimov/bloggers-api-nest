@@ -46,7 +46,7 @@ describe('Quiz game tests', () => {
     expect(illegalActivity).toThrow(Error);
   });
 
-  it('Create quiz, add second player', () => {
+  it('second player should be added', () => {
     quiz.addParticipant(player2);
 
     expect(quiz.startedAt).toBeInstanceOf(Date);
@@ -55,10 +55,13 @@ describe('Quiz game tests', () => {
     const firstParticipant = QuizParticipant.create(player1, quiz);
     const secondParticipant = QuizParticipant.create(player2, quiz);
 
-    expect(quiz.participants).toEqual([firstParticipant, secondParticipant]);
+    expect(quiz.participants).toEqual([
+      { ...firstParticipant, id: expect.stringMatching(regex.uuid) },
+      { ...secondParticipant, id: expect.stringMatching(regex.uuid) },
+    ]);
   });
 
-  it('ansers from non-participating user should make error', () => {
+  it('answers from non-participating user should make error', () => {
     const illegalActivity = () => {
       quiz.acceptAnswer(IdGenerator.generate(), 'Here you go, backend');
     };
@@ -66,7 +69,7 @@ describe('Quiz game tests', () => {
     expect(illegalActivity).toThrow(Error);
   });
 
-  it('player2 should be able to send ansers', () => {
+  it('player2 should be able to send answers', () => {
     const wrongAnswer = 'I am so wrong, fogive me';
     quiz.acceptAnswer(player2.id, wrongAnswer);
     const answers = quiz.participants[1].answers;
@@ -87,14 +90,14 @@ describe('Quiz game tests', () => {
     });
   });
 
-  it('player1 should be able to send ansers', () => {
+  it('player1 should be able to send answers', () => {
     expect(quiz.participants[0].answers).toBeFalsy();
 
     quiz.acceptAnswer(player1.id, questions[0].answers[1]);
     quiz.acceptAnswer(player1.id, questions[1].answers[0]);
 
     const answers = quiz.participants[0].answers;
-
+    expect(quiz.participants[0].score).toBe(2);
     expect(answers.length).toBe(2);
 
     answers.forEach((a, i) => {
@@ -108,5 +111,28 @@ describe('Quiz game tests', () => {
         addedAt: a.createdAt.toISOString(),
       });
     });
+  });
+
+  it('game should be finished', () => {
+    for (let i = 2; i < questionAmount; i++) {
+      quiz.acceptAnswer(player1.id, questions[i].answers[0]);
+    }
+    for (let i = 1; i < questionAmount; i++) {
+      quiz.acceptAnswer(player2.id, questions[i].answers[0]);
+    }
+
+    expect(quiz.endedAt).toBeInstanceOf(Date);
+    for (const p of quiz.participants) {
+      expect(p.allAnswersMade()).toBe(true);
+      expect(p.answers.length).toBe(questionAmount);
+    }
+
+    const p1 = quiz.participants.find((p) => p.userId === player1.id);
+    expect(p1.isWinner).toBe(true);
+    expect(p1.score).toBe(questionAmount + 1); // Time bonus
+
+    const p2 = quiz.participants.find((p) => p.userId === player2.id);
+    expect(p2.isWinner).toBe(false);
+    expect(p2.score).toBe(questionAmount - 1);
   });
 });

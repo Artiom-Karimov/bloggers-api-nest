@@ -79,7 +79,6 @@ export class Quiz {
       this.questions.push(QuizQuestion.create(this, q, i + 1));
     });
   }
-
   protected checkIfGameEnded() {
     for (const p of this.participants) {
       if (!p.allAnswersMade()) return;
@@ -89,7 +88,6 @@ export class Quiz {
     this.assignTimeBonus();
     this.assignWinner();
   }
-
   protected assignWinner() {
     let winner: QuizParticipant;
     for (const p of this.participants) {
@@ -107,7 +105,6 @@ export class Quiz {
       else p.isWinner = false;
     }
   }
-
   protected assignTimeBonus() {
     let fastest: QuizParticipant;
     for (const p of this.participants) {

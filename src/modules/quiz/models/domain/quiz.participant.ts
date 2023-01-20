@@ -12,6 +12,7 @@ import { User } from '../../../users/typeorm/models/user';
 import { QuizAnswer } from './quiz.answer';
 import * as config from '../../../../config/quiz';
 import { AnswerInfo } from '../view/quiz.view.model';
+import IdGenerator from '../../../../common/utils/id.generator';
 
 @Entity()
 @Index(['quizId', 'userId'], { unique: true })
@@ -46,6 +47,7 @@ export class QuizParticipant {
 
   public static create(user: User, quiz: Quiz): QuizParticipant {
     const qp = new QuizParticipant();
+    qp.id = IdGenerator.generate();
     qp.quiz = quiz;
     qp.quizId = quiz.id;
     qp.user = user;
@@ -61,6 +63,7 @@ export class QuizParticipant {
     const question = this.quiz.questions[this.answers.length];
     const ans = QuizAnswer.create(this, question, answer);
     this.answers.push(ans);
+    if (ans.isCorrect) this.score++;
     return ans.getInfo();
   }
   public allAnswersMade(): boolean {
