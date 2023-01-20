@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Quiz } from '../models/domain/quiz';
 import { QuizRepository } from '../interfaces/quiz.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 
 @Injectable()
 export class OrmQuizRepository extends QuizRepository {
@@ -14,7 +14,7 @@ export class OrmQuizRepository extends QuizRepository {
   }
   public async hasCurrentGame(userId: string): Promise<boolean> {
     const result = await this.repo.exist({
-      where: { endedAt: null, participants: { userId } },
+      where: { endedAt: IsNull(), participants: { userId } },
     });
     return result;
   }
@@ -23,13 +23,13 @@ export class OrmQuizRepository extends QuizRepository {
     const result = await this.repo.findOne({
       where: { endedAt: null, participants: { userId } },
     });
-    return result.sortChildren();
+    return result ? result.sortChildren() : undefined;
   }
   public async getPendingGame(): Promise<Quiz> {
     const result = await this.repo.findOne({
-      where: { startedAt: null },
+      where: { startedAt: IsNull() },
     });
-    return result.sortChildren();
+    return result ? result.sortChildren() : undefined;
   }
   public async save(quiz: Quiz): Promise<boolean> {
     await this.repo.save(quiz);

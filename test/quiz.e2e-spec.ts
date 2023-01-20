@@ -5,7 +5,7 @@ import { regex } from '../src/common/utils/validation.regex';
 import UserSampleGenerator, { Tokens } from './utils/user.sample.generator';
 import UserViewModel from '../src/modules/users/models/view/user.view.model';
 import IdGenerator from '../src/common/utils/id.generator';
-import { AnswerInfo, QuizViewModel } from '../src/modules/quiz/models/view/quiz.view.model'; \
+import { QuizViewModel } from '../src/modules/quiz/models/view/quiz.view.model';
 import * as config from '../src/config/admin';
 import { QuestionViewModel } from '../src/modules/quiz/models/view/question.view.model';
 import { QuestionSampleGenerator } from './utils/question.sample.generator';
@@ -39,6 +39,10 @@ describe('QuizController (e2e)', () => {
       users.push({ ...user, ...tokens });
     }
   }, 10000);
+
+  afterAll(async () => {
+    await stop();
+  });
 
   it('unauthorized access', async () => {
     const noAuth = [
@@ -196,14 +200,14 @@ describe('QuizController (e2e)', () => {
         questionId: questions[i].id,
         answerStatus: 'Incorrect',
         addedAt: expect.stringMatching(regex.isoDate),
-      })
+      });
       expect(results[1].body).toEqual({
         questionId: questions[i].id,
         answerStatus: 'Correct',
         addedAt: expect.stringMatching(regex.isoDate),
-      })
+      });
     }
-  })
+  });
 
   it('check game status after answers', async () => {
     const result = await request(app.getHttpServer())
@@ -217,20 +221,52 @@ describe('QuizController (e2e)', () => {
       firstPlayerProgress: {
         ...game.firstPlayerProgress,
         answers: [
-          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Incorrect', addedAt: expect.stringMatching(regex.isoDate) },
-          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Incorrect', addedAt: expect.stringMatching(regex.isoDate) },
-          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Incorrect', addedAt: expect.stringMatching(regex.isoDate) },
-          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Incorrect', addedAt: expect.stringMatching(regex.isoDate) },
-        ]
+          {
+            questionId: expect.stringMatching(regex.uuid),
+            answerStatus: 'Incorrect',
+            addedAt: expect.stringMatching(regex.isoDate),
+          },
+          {
+            questionId: expect.stringMatching(regex.uuid),
+            answerStatus: 'Incorrect',
+            addedAt: expect.stringMatching(regex.isoDate),
+          },
+          {
+            questionId: expect.stringMatching(regex.uuid),
+            answerStatus: 'Incorrect',
+            addedAt: expect.stringMatching(regex.isoDate),
+          },
+          {
+            questionId: expect.stringMatching(regex.uuid),
+            answerStatus: 'Incorrect',
+            addedAt: expect.stringMatching(regex.isoDate),
+          },
+        ],
       },
       secondPlayerProgress: {
         ...game.secondPlayerProgress,
         answers: [
-          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Correct', addedAt: expect.stringMatching(regex.isoDate) },
-          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Correct', addedAt: expect.stringMatching(regex.isoDate) },
-          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Correct', addedAt: expect.stringMatching(regex.isoDate) },
-          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Correct', addedAt: expect.stringMatching(regex.isoDate) },
-        ]
+          {
+            questionId: expect.stringMatching(regex.uuid),
+            answerStatus: 'Correct',
+            addedAt: expect.stringMatching(regex.isoDate),
+          },
+          {
+            questionId: expect.stringMatching(regex.uuid),
+            answerStatus: 'Correct',
+            addedAt: expect.stringMatching(regex.isoDate),
+          },
+          {
+            questionId: expect.stringMatching(regex.uuid),
+            answerStatus: 'Correct',
+            addedAt: expect.stringMatching(regex.isoDate),
+          },
+          {
+            questionId: expect.stringMatching(regex.uuid),
+            answerStatus: 'Correct',
+            addedAt: expect.stringMatching(regex.isoDate),
+          },
+        ],
       },
       score: 4,
     });
@@ -251,8 +287,12 @@ describe('QuizController (e2e)', () => {
         ...game.firstPlayerProgress,
         answers: [
           ...game.firstPlayerProgress.answers,
-          { questionId: expect.stringMatching(regex.uuid), answerStatus: 'Correct', addedAt: expect.stringMatching(regex.isoDate) }
-        ]
+          {
+            questionId: expect.stringMatching(regex.uuid),
+            answerStatus: 'Correct',
+            addedAt: expect.stringMatching(regex.isoDate),
+          },
+        ],
       },
       score: 2, // bonus for finishing first
     });
@@ -275,7 +315,7 @@ describe('QuizController (e2e)', () => {
       .expect(200);
 
     expect(result.body).toEqual(game);
-  })
+  });
 
   it('user2 sends the last answer, should get ended game result', async () => {
     const u2 = await request(app.getHttpServer())
@@ -291,15 +331,19 @@ describe('QuizController (e2e)', () => {
         ...game.secondPlayerProgress,
         answers: [
           ...game.secondPlayerProgress.answers,
-          { questionId: questions.at(-1).id, answerStatus: 'Incorrect', addedAt: expect.stringMatching(regex.isoDate) }
-        ]
+          {
+            questionId: questions.at(-1).id,
+            answerStatus: 'Incorrect',
+            addedAt: expect.stringMatching(regex.isoDate),
+          },
+        ],
       },
       status: 'Finished',
       finishGameDate: expect.stringMatching(regex.isoDate),
     });
 
     game = body;
-  })
+  });
 
   it('user1 should not get my-current', async () => {
     const result = await request(app.getHttpServer())
@@ -307,7 +351,7 @@ describe('QuizController (e2e)', () => {
       .set('Authorization', `Bearer ${users[0].access}`);
 
     expect(result.statusCode).toBe(404);
-  })
+  });
 
   it('user2 should be able to get game by id', async () => {
     const result = await request(app.getHttpServer())

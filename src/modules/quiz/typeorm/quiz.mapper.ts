@@ -1,6 +1,5 @@
 import { Quiz } from '../models/domain/quiz';
 import { QuizParticipant } from '../models/domain/quiz.participant';
-import { QuizQuestion } from '../models/domain/quiz.question';
 import {
   PlayerInfo,
   PlayerProgress,
@@ -15,7 +14,7 @@ export class QuizMapper {
       quiz.id,
       QuizMapper.getPlayer(quiz.participants[0]),
       QuizMapper.getPlayer(quiz.participants[1] ?? null),
-      QuizMapper.getQuestions(quiz.questions),
+      QuizMapper.getQuestions(quiz),
       QuizMapper.getStatus(quiz),
       quiz.createdAt.toISOString(),
       quiz.startedAt ? quiz.startedAt.toISOString() : null,
@@ -33,8 +32,9 @@ export class QuizMapper {
   private static getPlayerInfo(player: QuizParticipant): PlayerInfo {
     return new PlayerInfo(player.user.id, player.user.login);
   }
-  private static getQuestions(questions: QuizQuestion[]): QuestionInfo[] {
-    return questions.map((q) => {
+  private static getQuestions(quiz: Quiz): QuestionInfo[] {
+    if (quiz.participants.length < 2) return null;
+    return quiz.questions.map((q) => {
       return new QuestionInfo(q.question.id, q.question.body);
     });
   }

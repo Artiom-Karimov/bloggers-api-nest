@@ -10,6 +10,7 @@ import IdParams from '../../common/models/id.param';
 import { ConnectToQuizCommand } from './usecases/commands/connect.to.quiz.command';
 import { AnswerInputModel } from './models/input/answer.input.model';
 import { SendQuizAnswerCommand } from './usecases/commands/send.quiz.answer.command';
+import { HttpCode } from '@nestjs/common/decorators';
 
 @Controller('pair-game-quiz/pairs')
 @UseGuards(BearerAuthGuard)
@@ -33,11 +34,13 @@ export class QuizController {
   }
 
   @Post('connection')
+  @HttpCode(200)
   async connect(@User() user: TokenPayload): Promise<QuizViewModel> {
     return this.commandBus.execute(new ConnectToQuizCommand(user.userId));
   }
 
-  @Post('answers')
+  @Post('my-current/answers')
+  @HttpCode(200)
   async sendAnswer(
     @User() user: TokenPayload,
     @Body() data: AnswerInputModel,

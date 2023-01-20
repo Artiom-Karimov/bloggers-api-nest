@@ -14,12 +14,26 @@ import { Quiz } from './models/domain/quiz';
 import { QuizQuestion } from './models/domain/quiz.question';
 import { QuizParticipant } from './models/domain/quiz.participant';
 import { QuizAnswer } from './models/domain/quiz.answer';
+import { QuizRepository } from './interfaces/quiz.repository';
+import { OrmQuizRepository } from './typeorm/orm.quiz.repository';
+import { QuizQueryRepository } from './interfaces/quiz.query.repository';
+import { OrmQuizQueryRepository } from './typeorm/orm.quiz.query.repository';
+import { ConnectToQuizHandler } from './usecases/handlers/connect.to.quiz.handler';
+import { GetCurrentGameHandler } from './usecases/handlers/get.current.game.handler';
+import { SendQuizAnswerHandler } from './usecases/handlers/send.quiz.answer.handler';
+import { GetGameHandler } from './usecases/handlers/get.game.handler';
+import { QuizController } from './quiz.controller';
+import { UsersModule } from '../users/users.module';
 
 const commandHandlers = [
   CreateQuestionHandler,
   DeleteQuestionHandler,
   PublishQuestionHandler,
   UpdateQuestionHandler,
+  ConnectToQuizHandler,
+  SendQuizAnswerHandler,
+  GetCurrentGameHandler,
+  GetGameHandler,
 ];
 
 @Module({
@@ -32,6 +46,7 @@ const commandHandlers = [
       QuizAnswer,
     ]),
     CqrsModule,
+    UsersModule,
   ],
   providers: [
     {
@@ -42,8 +57,17 @@ const commandHandlers = [
       provide: QuestionQueryRepository,
       useClass: OrmQuestionQueryRepository,
     },
+    {
+      provide: QuizRepository,
+      useClass: OrmQuizRepository,
+    },
+    {
+      provide: QuizQueryRepository,
+      useClass: OrmQuizQueryRepository,
+    },
     ...commandHandlers,
   ],
+  controllers: [QuizController],
   exports: [QuestionQueryRepository],
 })
 export class QuizModule { }
