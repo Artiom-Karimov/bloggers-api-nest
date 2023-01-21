@@ -23,13 +23,11 @@ export class Quiz {
 
   @OneToMany(() => QuizQuestion, (qn) => qn.quiz, {
     eager: true,
-    cascade: true,
   })
   questions: QuizQuestion[];
 
   @OneToMany(() => QuizParticipant, (p) => p.quiz, {
     eager: true,
-    cascade: true,
   })
   participants: QuizParticipant[];
 

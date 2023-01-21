@@ -44,7 +44,6 @@ export class QuizParticipant {
 
   @OneToMany(() => QuizAnswer, (a) => a.participant, {
     eager: true,
-    cascade: true,
   })
   answers: QuizAnswer[];
 
@@ -93,7 +92,7 @@ export class QuizParticipant {
   public fixRelations(quiz: Quiz) {
     this.quiz = quiz;
     for (const a of this.answers) {
-      a.fixRelations(quiz.questions);
+      a.fixRelations(this, quiz.questions);
     }
     this.sortChildren();
   }

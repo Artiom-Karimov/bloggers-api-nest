@@ -4,7 +4,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { QuizQuestion } from './quiz.question';
 import { QuizParticipant } from './quiz.participant';
@@ -13,9 +13,12 @@ import { AnswerInfo } from '../view/quiz.view.model';
 @Entity()
 @Index(['questionId', 'participantId'], { unique: true })
 export class QuizAnswer {
-  @PrimaryColumn({ type: 'uuid' })
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ type: 'uuid' })
   questionId: string;
-  @PrimaryColumn({ type: 'uuid' })
+  @Column({ type: 'uuid' })
   participantId: string;
 
   @ManyToOne(() => QuizQuestion, { onDelete: 'CASCADE', nullable: false })
@@ -35,12 +38,16 @@ export class QuizAnswer {
   @Column({ type: 'timestamptz', nullable: false })
   createdAt: Date;
 
+  // So you don't need to save it each time
+  isNew: boolean;
+
   public static create(
     participant: QuizParticipant,
     question: QuizQuestion,
     answer: string,
   ): QuizAnswer {
     const a = new QuizAnswer();
+    a.isNew = true;
     a.question = question;
     a.questionId = question.id;
     a.participant = participant;
@@ -58,7 +65,8 @@ export class QuizAnswer {
       this.createdAt.toISOString(),
     );
   }
-  public fixRelations(questions: QuizQuestion[]) {
+  public fixRelations(participant: QuizParticipant, questions: QuizQuestion[]) {
+    this.participant = participant;
     this.question = questions.find((q) => q.id === this.questionId);
   }
 }

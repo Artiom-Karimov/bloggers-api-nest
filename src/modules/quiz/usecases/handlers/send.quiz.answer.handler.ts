@@ -52,6 +52,7 @@ export class SendQuizAnswerHandler
 
       return result;
     } catch (error) {
+      console.error(error);
       if (qr) await qr.rollbackTransaction();
     } finally {
       if (qr) await qr.release();

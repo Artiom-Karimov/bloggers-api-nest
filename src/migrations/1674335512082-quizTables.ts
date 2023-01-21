@@ -1,20 +1,23 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class quizTables1673968750416 implements MigrationInterface {
-  name = 'quizTables1673968750416';
+export class quizTables1674335512082 implements MigrationInterface {
+  name = 'quizTables1674335512082';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `CREATE TABLE "question" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "body" character varying(500) COLLATE "C" NOT NULL, "answers" character varying(500) array COLLATE "C" NOT NULL, "published" boolean NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE, CONSTRAINT "PK_21e5786aa0ea704ae185a79b2d5" PRIMARY KEY ("id"))`,
+    );
     await queryRunner.query(
       `CREATE TABLE "quiz_question" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "quizId" uuid NOT NULL, "questionId" uuid NOT NULL, "questionOrder" integer NOT NULL, CONSTRAINT "PK_0bab74c2a71b9b3f8a941104083" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "quiz_answer" ("questionId" uuid NOT NULL, "participantId" uuid NOT NULL, "answer" character varying, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "PK_db98d60a9fae0d7478aa9543198" PRIMARY KEY ("questionId", "participantId"))`,
+      `CREATE TABLE "quiz_answer" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "questionId" uuid NOT NULL, "participantId" uuid NOT NULL, "answer" character varying, "isCorrect" boolean NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "PK_926d49bc4559c8200b6c6c2c22f" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE UNIQUE INDEX "IDX_db98d60a9fae0d7478aa954319" ON "quiz_answer" ("questionId", "participantId") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "quiz_participant" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "quizId" uuid NOT NULL, "userId" uuid, "score" integer NOT NULL DEFAULT '0', "isWinner" boolean, CONSTRAINT "PK_70aabc69ff5a35ea9276eef792b" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "quiz_participant" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "quizId" uuid NOT NULL, "userId" uuid, "score" integer NOT NULL DEFAULT '0', "isWinner" boolean, "addedAt" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "PK_70aabc69ff5a35ea9276eef792b" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE UNIQUE INDEX "IDX_816e42b14354167db5e874ead6" ON "quiz_participant" ("quizId", "userId") `,
@@ -71,5 +74,6 @@ export class quizTables1673968750416 implements MigrationInterface {
     );
     await queryRunner.query(`DROP TABLE "quiz_answer"`);
     await queryRunner.query(`DROP TABLE "quiz_question"`);
+    await queryRunner.query(`DROP TABLE "question"`);
   }
 }
