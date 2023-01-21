@@ -3,12 +3,15 @@ import { Quiz } from '../models/domain/quiz';
 import { QuizRepository } from '../interfaces/quiz.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
+import { QuizParticipant } from '../models/domain/quiz.participant';
 
 @Injectable()
 export class OrmQuizRepository extends QuizRepository {
   constructor(
     @InjectRepository(Quiz)
     private readonly repo: Repository<Quiz>,
+    @InjectRepository(QuizParticipant)
+    private readonly participantRepo: Repository<QuizParticipant>,
   ) {
     super();
   }
@@ -20,16 +23,22 @@ export class OrmQuizRepository extends QuizRepository {
   }
   // TODO: add pessimistic lock on get, release on save
   public async getCurrentGame(userId: string): Promise<Quiz> {
-    const result = await this.repo.findOne({
-      where: { endedAt: null, participants: { userId } },
+    const participant = await this.participantRepo.findOne({
+      where: { userId, isWinner: IsNull() },
+      loadEagerRelations: false,
     });
-    return result ? result.sortChildren() : undefined;
+    if (!participant) return undefined;
+
+    const result = await this.repo.findOne({
+      where: { endedAt: IsNull(), id: participant.quizId },
+    });
+    return result ? result.fixRelations() : undefined;
   }
   public async getPendingGame(): Promise<Quiz> {
     const result = await this.repo.findOne({
       where: { startedAt: IsNull() },
     });
-    return result ? result.sortChildren() : undefined;
+    return result ? result.fixRelations() : undefined;
   }
   public async save(quiz: Quiz): Promise<boolean> {
     await this.repo.save(quiz);

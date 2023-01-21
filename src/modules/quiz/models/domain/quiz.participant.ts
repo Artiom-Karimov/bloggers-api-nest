@@ -59,11 +59,7 @@ export class QuizParticipant {
     qp.addedAt = new Date();
     return qp;
   }
-  public sortChildren() {
-    this.answers?.sort((a, b) => {
-      return a.createdAt.getTime() - b.createdAt.getTime();
-    });
-  }
+
   public acceptAnswer(answer: string): AnswerInfo {
     if (!this.answers) this.answers = [];
     if (this.allAnswersMade()) {
@@ -93,5 +89,17 @@ export class QuizParticipant {
       }
     }
     return result;
+  }
+  public fixRelations(quiz: Quiz) {
+    this.quiz = quiz;
+    for (const a of this.answers) {
+      a.fixRelations(quiz.questions);
+    }
+    this.sortChildren();
+  }
+  protected sortChildren() {
+    this.answers?.sort((a, b) => {
+      return a.createdAt.getTime() - b.createdAt.getTime();
+    });
   }
 }

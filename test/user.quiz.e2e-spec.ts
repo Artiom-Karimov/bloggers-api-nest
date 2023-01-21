@@ -170,7 +170,7 @@ describe('QuizController (e2e)', () => {
     questions = [];
     for (const q of game.questions) {
       const result = await request(app.getHttpServer())
-        .get(`${base}/${q.id}`)
+        .get(`/sa/quiz/questions/${q.id}`)
         .auth(config.userName, config.password)
         .expect(200);
 

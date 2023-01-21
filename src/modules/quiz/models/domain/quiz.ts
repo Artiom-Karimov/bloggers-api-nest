@@ -41,18 +41,18 @@ export class Quiz {
     quiz.mapQuestions(questions);
     return quiz;
   }
-  public sortChildren(): Quiz {
-    this.questions?.sort((a, b) => {
-      return a.questionOrder - b.questionOrder;
-    });
-    this.participants.sort((a, b) => {
-      return a.addedAt.getTime() - b.addedAt.getTime();
-    });
-    for (const p of this.participants) {
-      p.sortChildren();
+  public fixRelations(): Quiz {
+    for (const q of this.questions) {
+      q.fixRelations(this);
     }
+    for (const p of this.participants) {
+      p.fixRelations(this);
+    }
+    this.sortChildren();
+
     return this;
   }
+
   public addParticipant(user: User) {
     if (!user) throw new Error('quiz should be created with a user');
     if (!this.participants) this.participants = [];
@@ -129,5 +129,13 @@ export class Quiz {
       }
     }
     fastest.score++;
+  }
+  protected sortChildren() {
+    this.questions?.sort((a, b) => {
+      return a.questionOrder - b.questionOrder;
+    });
+    this.participants.sort((a, b) => {
+      return a.addedAt.getTime() - b.addedAt.getTime();
+    });
   }
 }

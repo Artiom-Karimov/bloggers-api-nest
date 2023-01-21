@@ -36,7 +36,6 @@ export class ConnectToQuizHandler
       const game = await this.getGameAppendUser(user);
       await this.repo.save(game);
     } catch (error) {
-      console.error(error);
       throw new BadRequestException('something went wrong');
     }
 

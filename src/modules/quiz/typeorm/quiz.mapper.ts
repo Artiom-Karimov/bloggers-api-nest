@@ -9,7 +9,7 @@ import {
 
 export class QuizMapper {
   public static toView(quiz: Quiz): QuizViewModel {
-    quiz.sortChildren();
+    quiz.fixRelations();
     return new QuizViewModel(
       quiz.id,
       QuizMapper.getPlayer(quiz.participants[0]),

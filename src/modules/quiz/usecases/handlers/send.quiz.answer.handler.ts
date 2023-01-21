@@ -19,7 +19,6 @@ export class SendQuizAnswerHandler
       await this.repo.save(game);
       return result;
     } catch (error) {
-      console.error(error);
       throw new ForbiddenException(
         'game is not started or user answered all questions',
       );

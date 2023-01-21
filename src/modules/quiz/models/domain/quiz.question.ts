@@ -48,4 +48,7 @@ export class QuizQuestion {
   public checkAnswer(answer: string): boolean {
     return this.question.checkAnswer(answer);
   }
+  public fixRelations(quiz: Quiz) {
+    this.quiz = quiz;
+  }
 }

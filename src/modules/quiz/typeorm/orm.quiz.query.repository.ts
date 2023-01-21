@@ -3,14 +3,17 @@ import { QuizViewModel } from '../models/view/quiz.view.model';
 import { QuizQueryRepository } from '../interfaces/quiz.query.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Quiz } from '../models/domain/quiz';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { QuizMapper } from './quiz.mapper';
+import { QuizParticipant } from '../models/domain/quiz.participant';
 
 @Injectable()
 export class OrmQuizQueryRepository extends QuizQueryRepository {
   constructor(
     @InjectRepository(Quiz)
     private readonly repo: Repository<Quiz>,
+    @InjectRepository(QuizParticipant)
+    private readonly participantRepo: Repository<QuizParticipant>,
   ) {
     super();
   }
@@ -20,9 +23,12 @@ export class OrmQuizQueryRepository extends QuizQueryRepository {
     return game ? QuizMapper.toView(game) : undefined;
   }
   public async getCurrentGame(userId: string): Promise<QuizViewModel> {
-    const game = await this.repo.findOne({
-      where: { endedAt: null, participants: { userId } },
+    const participant = await this.participantRepo.findOne({
+      where: { userId, isWinner: IsNull() },
+      loadEagerRelations: false,
     });
-    return game ? QuizMapper.toView(game) : undefined;
+
+    if (!participant) return undefined;
+    return this.getGame(participant.quizId);
   }
 }

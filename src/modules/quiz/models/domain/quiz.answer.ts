@@ -58,4 +58,7 @@ export class QuizAnswer {
       this.createdAt.toISOString(),
     );
   }
+  public fixRelations(questions: QuizQuestion[]) {
+    this.question = questions.find((q) => q.id === this.questionId);
+  }
 }
