@@ -12,6 +12,7 @@ import UsersRepository from '../../../users/interfaces/users.repository';
 import { QuestionRepository } from '../../interfaces/question.repository';
 import { GetCurrentGameQuery } from '../queries/get.current.game.query';
 import { User } from '../../../users/typeorm/models/user';
+import { QueryRunner } from 'typeorm';
 
 @CommandHandler(ConnectToQuizCommand)
 export class ConnectToQuizHandler
@@ -25,16 +26,15 @@ export class ConnectToQuizHandler
   ) { }
 
   async execute(command: ConnectToQuizCommand): Promise<QuizViewModel> {
-    const alreadyConnected = await this.repo.hasCurrentGame(command.userId);
-    if (alreadyConnected)
-      throw new ForbiddenException('user is already connected to a quiz');
-
     const user = await this.userRepo.get(command.userId);
     if (!user) throw new NotFoundException('user not found');
 
+    const alreadyConnected = await this.repo.getCurrentGameId(command.userId);
+    if (alreadyConnected)
+      throw new ForbiddenException('user is already connected to a quiz');
+
     try {
-      const game = await this.getGameAppendUser(user);
-      await this.repo.save(game);
+      await this.getGameAppendUser(user);
     } catch (error) {
       throw new BadRequestException('something went wrong');
     }
@@ -42,14 +42,29 @@ export class ConnectToQuizHandler
     return this.queryBus.execute(new GetCurrentGameQuery(command.userId));
   }
 
-  private async getGameAppendUser(user: User): Promise<Quiz> {
-    let game = await this.repo.getPendingGame();
-    if (game) {
-      game.addParticipant(user);
-    } else {
-      const questions = await this.questionRepo.getRandom(5);
-      game = Quiz.create(user, questions);
+  private async getGameAppendUser(user: User): Promise<void> {
+    let qr: QueryRunner;
+    try {
+      qr = await this.repo.startTransaction();
+      let game = await this.repo.getPendingGame(qr);
+
+      if (game) {
+        game.addParticipant(user);
+      } else {
+        await qr.release();
+        qr = null;
+        const questions = await this.questionRepo.getRandom(5);
+        game = Quiz.create(user, questions);
+      }
+
+      await this.repo.save(game, qr);
+      if (qr) await qr.commitTransaction();
+    } catch (error) {
+      console.error(error);
+      if (qr) qr.rollbackTransaction();
+      throw error;
+    } finally {
+      if (qr) qr.release();
     }
-    return game;
   }
 }

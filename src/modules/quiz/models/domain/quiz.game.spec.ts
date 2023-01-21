@@ -56,8 +56,16 @@ describe('Quiz game tests', () => {
     const secondParticipant = QuizParticipant.create(player2, quiz);
 
     expect(quiz.participants).toEqual([
-      { ...firstParticipant, id: expect.stringMatching(regex.uuid) },
-      { ...secondParticipant, id: expect.stringMatching(regex.uuid) },
+      {
+        ...firstParticipant,
+        id: expect.stringMatching(regex.uuid),
+        addedAt: expect.any(Date),
+      },
+      {
+        ...secondParticipant,
+        id: expect.stringMatching(regex.uuid),
+        addedAt: expect.any(Date),
+      },
     ]);
   });
 

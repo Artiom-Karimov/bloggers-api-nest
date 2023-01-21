@@ -74,6 +74,12 @@ describe('Quiz creation tests', () => {
     });
 
     const firstParticipant = QuizParticipant.create(player1, quiz);
-    expect(quiz.participants).toEqual([firstParticipant]);
+    expect(quiz.participants).toEqual([
+      {
+        ...firstParticipant,
+        id: expect.stringMatching(regex.uuid),
+        addedAt: expect.any(Date),
+      },
+    ]);
   });
 });

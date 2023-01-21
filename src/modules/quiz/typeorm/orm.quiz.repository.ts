@@ -1,47 +1,68 @@
 import { Injectable } from '@nestjs/common';
 import { Quiz } from '../models/domain/quiz';
 import { QuizRepository } from '../interfaces/quiz.repository';
-import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource, IsNull, QueryRunner, SelectQueryBuilder } from 'typeorm';
 import { QuizParticipant } from '../models/domain/quiz.participant';
 
 @Injectable()
 export class OrmQuizRepository extends QuizRepository {
   constructor(
-    @InjectRepository(Quiz)
-    private readonly repo: Repository<Quiz>,
-    @InjectRepository(QuizParticipant)
-    private readonly participantRepo: Repository<QuizParticipant>,
+    @InjectDataSource()
+    private readonly db: DataSource,
   ) {
     super();
   }
-  public async hasCurrentGame(userId: string): Promise<boolean> {
-    const result = await this.repo.exist({
-      where: { endedAt: IsNull(), participants: { userId } },
-    });
-    return result;
-  }
-  // TODO: add pessimistic lock on get, release on save
-  public async getCurrentGame(userId: string): Promise<Quiz> {
-    const participant = await this.participantRepo.findOne({
+  public async getCurrentGameId(userId: string): Promise<string> {
+    const result = await this.db.getRepository(QuizParticipant).findOne({
+      select: { quizId: true },
       where: { userId, isWinner: IsNull() },
       loadEagerRelations: false,
     });
-    if (!participant) return undefined;
+    return result ? result.quizId : undefined;
+  }
 
-    const result = await this.repo.findOne({
-      where: { endedAt: IsNull(), id: participant.quizId },
-    });
+  public async startTransaction(): Promise<QueryRunner> {
+    const qr = this.db.createQueryRunner();
+    await qr.connect();
+    await qr.startTransaction();
+    return qr;
+  }
+
+  public async getCurrentGame(
+    quizId: string,
+    runner: QueryRunner,
+  ): Promise<Quiz> {
+    const result = await this.prepareQuery(runner)
+      .where('"quiz"."id" = :quizId', { quizId })
+      .getOne();
+
     return result ? result.fixRelations() : undefined;
   }
-  public async getPendingGame(): Promise<Quiz> {
-    const result = await this.repo.findOne({
-      where: { startedAt: IsNull() },
-    });
+  public async getPendingGame(runner: QueryRunner): Promise<Quiz> {
+    const result = await this.prepareQuery(runner)
+      .where('"quiz"."startedAt" is null')
+      .getOne();
+
     return result ? result.fixRelations() : undefined;
   }
-  public async save(quiz: Quiz): Promise<boolean> {
-    await this.repo.save(quiz);
+  public async save(quiz: Quiz, runner?: QueryRunner): Promise<boolean> {
+    const quizRepo = runner
+      ? runner.manager.getRepository(Quiz)
+      : this.db.getRepository(Quiz);
+
+    await quizRepo.save(quiz);
     return true;
+  }
+  private prepareQuery(runner: QueryRunner): SelectQueryBuilder<Quiz> {
+    const quizRepo = runner.manager.getRepository(Quiz);
+    return quizRepo
+      .createQueryBuilder('quiz')
+      .leftJoinAndSelect('quiz.questions', 'q')
+      .leftJoinAndSelect('quiz.participants', 'p')
+      .leftJoinAndSelect('q.question', 'qq')
+      .leftJoinAndSelect('p.answers', 'qa')
+      .useTransaction(true)
+      .setLock('pessimistic_write', undefined, ['quiz']);
   }
 }

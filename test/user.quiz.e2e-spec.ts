@@ -180,8 +180,33 @@ describe('QuizController (e2e)', () => {
     }
   });
 
-  it('start the game', async () => {
-    for (let i = 0; i < 4; i++) {
+  it('start the game sequential', async () => {
+    const u1 = await request(app.getHttpServer())
+      .post(`${base}/my-current/answers`)
+      .set('Authorization', `Bearer ${users[0].access}`)
+      .send({ answer: 'sorry, idk' })
+      .expect(200);
+
+    const u2 = await request(app.getHttpServer())
+      .post(`${base}/my-current/answers`)
+      .set('Authorization', `Bearer ${users[1].access}`)
+      .send({ answer: questions[0].correctAnswers[0] })
+      .expect(200);
+
+    expect(u1.body).toEqual({
+      questionId: questions[0].id,
+      answerStatus: 'Incorrect',
+      addedAt: expect.stringMatching(regex.isoDate),
+    });
+    expect(u2.body).toEqual({
+      questionId: questions[0].id,
+      answerStatus: 'Correct',
+      addedAt: expect.stringMatching(regex.isoDate),
+    });
+  });
+
+  it('continue game concurrent', async () => {
+    for (let i = 1; i < 4; i++) {
       const u1 = request(app.getHttpServer())
         .post(`${base}/my-current/answers`)
         .set('Authorization', `Bearer ${users[0].access}`)
