@@ -210,13 +210,13 @@ describe('QuizController (e2e)', () => {
       const u1 = request(app.getHttpServer())
         .post(`${base}/my-current/answers`)
         .set('Authorization', `Bearer ${users[0].access}`)
-        .send({ answer: 'sorry, idk' })
+        .send({ answer: `user1, question ${i}` })
         .expect(200);
 
       const u2 = request(app.getHttpServer())
         .post(`${base}/my-current/answers`)
         .set('Authorization', `Bearer ${users[1].access}`)
-        .send({ answer: questions[i].correctAnswers[0] })
+        .send({ answer: `user2, question ${i}` })
         .expect(200);
 
       const results = await Promise.all([u1, u2]);
@@ -228,7 +228,7 @@ describe('QuizController (e2e)', () => {
       });
       expect(results[1].body).toEqual({
         questionId: questions[i].id,
-        answerStatus: 'Correct',
+        answerStatus: 'Incorrect',
         addedAt: expect.stringMatching(regex.isoDate),
       });
     }

@@ -9,6 +9,7 @@ import {
 import { QuizQuestion } from './quiz.question';
 import { QuizParticipant } from './quiz.participant';
 import { AnswerInfo } from '../view/quiz.view.model';
+import IdGenerator from '../../../../common/utils/id.generator';
 
 @Entity()
 @Index(['questionId', 'participantId'], { unique: true })
@@ -16,9 +17,9 @@ export class QuizAnswer {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'uuid' })
+  @Column({ type: 'uuid', readonly: true })
   questionId: string;
-  @Column({ type: 'uuid' })
+  @Column({ type: 'uuid', readonly: true })
   participantId: string;
 
   @ManyToOne(() => QuizQuestion, { onDelete: 'CASCADE', nullable: false })
@@ -47,6 +48,7 @@ export class QuizAnswer {
     answer: string,
   ): QuizAnswer {
     const a = new QuizAnswer();
+    a.id = IdGenerator.generate();
     a.isNew = true;
     a.question = question;
     a.questionId = question.id;
