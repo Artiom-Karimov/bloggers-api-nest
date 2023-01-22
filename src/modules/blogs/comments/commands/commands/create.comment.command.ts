@@ -1,7 +1,6 @@
 export type CommentCreateModel = {
   postId: string;
   userId: string;
-  userLogin: string;
   content: string;
 };
 

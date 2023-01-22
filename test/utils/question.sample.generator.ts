@@ -1,6 +1,6 @@
 import * as request from 'supertest';
-import { QuestionInputModel } from '../../src/modules/quiz/models/question.input.model';
-import { QuestionViewModel } from '../../src/modules/quiz/models/question.view.model';
+import { QuestionInputModel } from '../../src/modules/quiz/models/input/question.input.model';
+import { QuestionViewModel } from '../../src/modules/quiz/models/view/question.view.model';
 import TestSampleGenerator from './test.sample.generator';
 import * as config from '../../src/config/admin';
 
@@ -37,6 +37,16 @@ export class QuestionSampleGenerator extends TestSampleGenerator<
 
     this.removeFromArrays(id, 'body');
     await req;
+  }
+  public async publishCreated(questions?: QuestionViewModel[]) {
+    if (!questions) questions = [...this.outputs];
+    const requests = questions.map((q) => {
+      return request(this.app.getHttpServer())
+        .put(`/sa/quiz/questions/${q.id}/publish`)
+        .auth(config.userName, config.password)
+        .send({ published: true });
+    });
+    await Promise.all(requests);
   }
   protected alreadyCreated(sample: QuestionInputModel): boolean {
     return this.outputs.some((o) => o.body === sample.body);

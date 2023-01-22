@@ -17,10 +17,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json --runInBand",
+    "test:e2e:quiz": "jest --config ./test/jest-e2e.json --runInBand ./test/user.quiz.e2e-spec.ts",
     "typeorm": "ts-node ./node_modules/typeorm/cli",
     "typeorm:run-migrations": "npm run typeorm migration:run -- -d ./type-orm.config.ts",
     "typeorm:generate-migration": "npm run build && npm run typeorm -- -d ./type-orm.config.ts migration:generate",
-    "typeorm:create-migration": "npm run build && npm run typeorm -- migration:create",
     "typeorm:revert-migration": "npm run build && npm run typeorm -- -d ./type-orm.config.ts migration:revert"
   },
   "dependencies": {

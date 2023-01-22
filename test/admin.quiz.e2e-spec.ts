@@ -5,7 +5,7 @@ import * as config from '../src/config/admin';
 import { QuestionSampleGenerator } from './utils/question.sample.generator';
 import { regex } from '../src/common/utils/validation.regex';
 import PageViewModel from '../src/common/models/page.view.model';
-import { QuestionViewModel } from '../src/modules/quiz/models/question.view.model';
+import { QuestionViewModel } from '../src/modules/quiz/models/view/question.view.model';
 
 describe('AdminQuizController (e2e)', () => {
   const base = '/sa/quiz/questions';

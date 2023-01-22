@@ -84,7 +84,6 @@ export default class PostsController {
       new CreateCommentCommand({
         postId: params.id,
         userId: user.userId,
-        userLogin: user.userLogin,
         content: data.content,
       }),
     );
@@ -114,7 +113,6 @@ export default class PostsController {
       new PutPostLikeCommand({
         entityId: params.id,
         userId: user.userId,
-        userLogin: user.userLogin,
         likeStatus: data.likeStatus,
       }),
     );

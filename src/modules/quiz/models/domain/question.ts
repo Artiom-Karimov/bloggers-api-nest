@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { QuestionInputModel } from '../../models/question.input.model';
+import { QuestionInputModel } from '../input/question.input.model';
 import IdGenerator from '../../../../common/utils/id.generator';
 
 @Entity()
@@ -61,5 +61,9 @@ export class Question {
     this.body = data.body;
     this.answers = [...data.correctAnswers];
     this.updatedAt = new Date();
+  }
+
+  public checkAnswer(answer: string): boolean {
+    return this.answers.some((a) => a === answer);
   }
 }

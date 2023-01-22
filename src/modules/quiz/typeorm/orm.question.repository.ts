@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import { QuestionRepository } from '../interfaces/question.repository';
-import { Question } from './models/question';
+import { Question } from '../models/domain/question';
 import { InjectRepository } from '@nestjs/typeorm';
 
 export class OrmQuestionRepository extends QuestionRepository {
@@ -42,6 +42,22 @@ export class OrmQuestionRepository extends QuestionRepository {
     } catch (error) {
       console.error(error);
       return false;
+    }
+  }
+
+  public async getRandom(amount: number): Promise<Question[]> {
+    try {
+      const result = await this.repo
+        .createQueryBuilder('q')
+        .orderBy('random()')
+        .where('q."published" = true')
+        .limit(amount)
+        .getMany();
+
+      return result;
+    } catch (error) {
+      console.error(error);
+      return [];
     }
   }
 }

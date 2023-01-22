@@ -1,5 +1,5 @@
-import { QuestionViewModel } from '../../models/question.view.model';
-import { Question } from './question';
+import { QuestionViewModel } from '../models/view/question.view.model';
+import { Question } from '../models/domain/question';
 
 export class QuestionMapper {
   public static toView(q: Question): QuestionViewModel {
