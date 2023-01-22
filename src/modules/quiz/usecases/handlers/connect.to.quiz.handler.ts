@@ -51,8 +51,6 @@ export class ConnectToQuizHandler
       if (game) {
         game.addParticipant(user);
       } else {
-        await qr.release();
-        qr = null;
         const questions = await this.questionRepo.getRandom(5);
         game = Quiz.create(user, questions);
       }
