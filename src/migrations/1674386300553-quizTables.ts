@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class quizTables1674384291869 implements MigrationInterface {
-  name = 'quizTables1674384291869';
+export class quizTables1674386300553 implements MigrationInterface {
+  name = 'quizTables1674386300553';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -11,7 +11,7 @@ export class quizTables1674384291869 implements MigrationInterface {
       `CREATE TABLE "quiz_question" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "quizId" uuid NOT NULL, "questionId" uuid NOT NULL, "questionOrder" integer NOT NULL, CONSTRAINT "PK_0bab74c2a71b9b3f8a941104083" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "quiz_answer" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "questionId" uuid NOT NULL, "participantId" uuid NOT NULL, "answer" character varying, "isCorrect" boolean NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "PK_926d49bc4559c8200b6c6c2c22f" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "quiz_answer" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "questionId" uuid NOT NULL, "participantId" uuid, "answer" character varying, "isCorrect" boolean NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "PK_926d49bc4559c8200b6c6c2c22f" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE UNIQUE INDEX "IDX_db98d60a9fae0d7478aa954319" ON "quiz_answer" ("questionId", "participantId") `,

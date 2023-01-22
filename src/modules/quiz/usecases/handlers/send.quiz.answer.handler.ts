@@ -30,8 +30,7 @@ export class SendQuizAnswerHandler
       return result;
     } catch (error) {
       if (error instanceof HttpException) throw error;
-      console.error(error);
-      throw new BadRequestException('something went wrong');
+      throw new ForbiddenException('cannot commit the answer');
     }
   }
 
@@ -54,6 +53,7 @@ export class SendQuizAnswerHandler
     } catch (error) {
       console.error(error);
       if (qr) await qr.rollbackTransaction();
+      throw error;
     } finally {
       if (qr) await qr.release();
     }

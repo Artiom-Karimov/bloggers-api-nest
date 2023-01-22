@@ -17,9 +17,9 @@ export class QuizAnswer {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'uuid', readonly: true })
+  @Column({ type: 'uuid' })
   questionId: string;
-  @Column({ type: 'uuid', readonly: true })
+  @Column({ type: 'uuid', nullable: true })
   participantId: string;
 
   @ManyToOne(() => QuizQuestion, { onDelete: 'CASCADE', nullable: false })
@@ -39,8 +39,8 @@ export class QuizAnswer {
   @Column({ type: 'timestamptz', nullable: false })
   createdAt: Date;
 
-  // So you don't need to save it each time
-  isNew: boolean;
+  // Save only on creation
+  isNew = false;
 
   public static create(
     participant: QuizParticipant,
@@ -51,9 +51,7 @@ export class QuizAnswer {
     a.id = IdGenerator.generate();
     a.isNew = true;
     a.question = question;
-    a.questionId = question.id;
     a.participant = participant;
-    a.participantId = participant.id;
     a.answer = answer;
     a.createdAt = new Date();
     a.isCorrect = question.checkAnswer(answer);

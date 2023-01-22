@@ -15,7 +15,7 @@ export class GetGameHandler implements IQueryHandler<GetGameQuery> {
 
     const userInGame =
       game.firstPlayerProgress.player.id === query.userId ||
-      game.secondPlayerProgress.player.id;
+      game.secondPlayerProgress.player.id === query.userId;
 
     if (!userInGame)
       throw new ForbiddenException("user is not in game's player list");

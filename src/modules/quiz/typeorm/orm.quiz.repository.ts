@@ -67,7 +67,7 @@ export class OrmQuizRepository extends QuizRepository {
       .leftJoinAndSelect('q.question', 'qq')
       .leftJoinAndSelect('p.answers', 'qa')
       .useTransaction(true)
-      .setLock('pessimistic_write', undefined, ['quiz']);
+      .setLock('pessimistic_read', undefined, ['quiz']);
   }
   private async saveChildren(quiz: Quiz, runner?: QueryRunner): Promise<void> {
     await this.saveParticipants(quiz, runner);
@@ -92,7 +92,7 @@ export class OrmQuizRepository extends QuizRepository {
     }
     all = all.filter((a) => a.isNew);
     if (all.length === 0) return;
-    console.log(all);
+
     await repo.save(all);
   }
   private async saveQuestions(quiz: Quiz, runner: QueryRunner) {
