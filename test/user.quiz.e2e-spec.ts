@@ -34,6 +34,7 @@ describe('QuizController (e2e)', () => {
     questionSamples = new QuestionSampleGenerator(app);
     questionSamples.generateSamples(10);
     await questionSamples.createSamples();
+    await questionSamples.publishCreated();
 
     users = [];
     for (const s of samples.samples) {

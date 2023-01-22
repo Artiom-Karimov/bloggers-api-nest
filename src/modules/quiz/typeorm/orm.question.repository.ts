@@ -50,6 +50,7 @@ export class OrmQuestionRepository extends QuestionRepository {
       const result = await this.repo
         .createQueryBuilder('q')
         .orderBy('random()')
+        .where('q."published" = true')
         .limit(amount)
         .getMany();
 

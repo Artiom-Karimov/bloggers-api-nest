@@ -38,6 +38,16 @@ export class QuestionSampleGenerator extends TestSampleGenerator<
     this.removeFromArrays(id, 'body');
     await req;
   }
+  public async publishCreated(questions?: QuestionViewModel[]) {
+    if (!questions) questions = [...this.outputs];
+    const requests = questions.map((q) => {
+      return request(this.app.getHttpServer())
+        .put(`/sa/quiz/questions/${q.id}/publish`)
+        .auth(config.userName, config.password)
+        .send({ published: true });
+    });
+    await Promise.all(requests);
+  }
   protected alreadyCreated(sample: QuestionInputModel): boolean {
     return this.outputs.some((o) => o.body === sample.body);
   }
