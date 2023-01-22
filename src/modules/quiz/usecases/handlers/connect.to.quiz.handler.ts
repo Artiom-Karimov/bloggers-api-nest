@@ -13,6 +13,7 @@ import { QuestionRepository } from '../../interfaces/question.repository';
 import { GetCurrentGameQuery } from '../queries/get.current.game.query';
 import { User } from '../../../users/typeorm/models/user';
 import { QueryRunner } from 'typeorm';
+import * as config from '../../../../config/quiz';
 
 @CommandHandler(ConnectToQuizCommand)
 export class ConnectToQuizHandler
@@ -51,7 +52,9 @@ export class ConnectToQuizHandler
       if (game) {
         game.addParticipant(user);
       } else {
-        const questions = await this.questionRepo.getRandom(5);
+        const questions = await this.questionRepo.getRandom(
+          config.questionAmount,
+        );
         game = Quiz.create(user, questions);
       }
 
