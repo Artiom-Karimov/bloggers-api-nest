@@ -6,6 +6,8 @@ import UsersRepository from '../../interfaces/users.repository';
 import CreateConfirmedUserCommand from '../commands/create.confirmed.user.command';
 import { User } from '../../typeorm/models/user';
 import { EmailConfirmation } from '../../typeorm/models/email.confirmation';
+import { throwValidationException } from '../../../../common/utils/validation.options';
+import { BadRequestException } from '@nestjs/common';
 
 @CommandHandler(CreateConfirmedUserCommand)
 export default class CreateConfirmedUserHandler
@@ -16,15 +18,12 @@ export default class CreateConfirmedUserHandler
     private readonly emailRepo: EmailConfirmationRepository,
   ) { }
 
-  public async execute(
-    command: CreateConfirmedUserCommand,
-  ): Promise<string | UserError> {
-    const exists = await this.checkLoginEmailExists(command.data);
-    if (exists !== UserError.NoError) return exists;
+  public async execute(command: CreateConfirmedUserCommand): Promise<string> {
+    await this.checkLoginEmailExists(command.data);
 
     const user = await User.create(command.data);
     const created = await this.usersRepo.create(user);
-    if (!created) return UserError.Unknown;
+    if (!created) throw new BadRequestException('cannot create user');
 
     const emailConfirmation = EmailConfirmation.create(user, true);
     await this.emailRepo.create(emailConfirmation);
@@ -32,14 +31,10 @@ export default class CreateConfirmedUserHandler
     return created;
   }
 
-  private async checkLoginEmailExists(
-    data: UserInputModel,
-  ): Promise<UserError> {
+  private async checkLoginEmailExists(data: UserInputModel): Promise<void> {
     const loginExists = await this.usersRepo.getByLoginOrEmail(data.login);
-    if (loginExists) return UserError.LoginExists;
+    if (loginExists) throwValidationException('login', 'login already taken');
     const emailExists = await this.usersRepo.getByLoginOrEmail(data.email);
-    if (emailExists) return UserError.EmailExists;
-
-    return UserError.NoError;
+    if (emailExists) throwValidationException('email', 'email already taken');
   }
 }

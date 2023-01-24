@@ -1,12 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import SessionsRepository from '../../interfaces/sessions.repository';
-import { BlogError } from '../../../blogs/blogs/models/blog.error';
 import UsersBanRepository from '../../interfaces/users.ban.repository';
 import UsersRepository from '../../interfaces/users.repository';
-import BanUserCommand, {
-  BanUserCreateModel,
-} from '../commands/ban.user.command';
+import BanUserCommand from '../commands/ban.user.command';
 import { UserBan } from '../../typeorm/models/user.ban';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 @CommandHandler(BanUserCommand)
 export class BanUserHandler implements ICommandHandler<BanUserCommand> {
@@ -16,16 +14,10 @@ export class BanUserHandler implements ICommandHandler<BanUserCommand> {
     private readonly sessionsRepo: SessionsRepository,
   ) { }
 
-  async execute(command: BanUserCommand): Promise<BlogError> {
-    const userBanResult = await this.setUserBan(command.data);
-    if (userBanResult !== BlogError.NoError) return userBanResult;
-
-    return BlogError.NoError;
-  }
-
-  private async setUserBan(data: BanUserCreateModel): Promise<BlogError> {
+  async execute(command: BanUserCommand): Promise<void> {
+    const { data } = command;
     const user = await this.usersRepo.get(data.userId);
-    if (!user) return BlogError.NotFound;
+    if (!user) throw new NotFoundException('user not found');
     let ban = await this.banRepo.get(user.id);
 
     if (ban) ban.setBan(data);
@@ -34,6 +26,6 @@ export class BanUserHandler implements ICommandHandler<BanUserCommand> {
 
     if (ban.isBanned) await this.sessionsRepo.deleteAll(user.id);
 
-    return created ? BlogError.NoError : BlogError.Unknown;
+    if (!created) throw new BadRequestException('cannot set ban');
   }
 }

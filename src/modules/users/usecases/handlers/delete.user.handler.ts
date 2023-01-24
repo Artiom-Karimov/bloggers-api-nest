@@ -1,10 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import SessionsRepository from '../../interfaces/sessions.repository';
 import EmailConfirmationRepository from '../../interfaces/email.confirmation.repository';
-import { UserError } from '../../models/user.error';
 import UsersBanRepository from '../../interfaces/users.ban.repository';
 import UsersRepository from '../../interfaces/users.repository';
 import DeleteUserCommand from '../commands/delete.user.command';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 @CommandHandler(DeleteUserCommand)
 export default class DeleteUserHandler
@@ -17,16 +17,16 @@ export default class DeleteUserHandler
     private readonly banRepo: UsersBanRepository,
   ) { }
 
-  public async execute(command: DeleteUserCommand): Promise<UserError> {
+  public async execute(command: DeleteUserCommand): Promise<void> {
     const { userId } = command;
     const user = await this.usersRepo.get(userId);
-    if (!user) return UserError.NotFound;
+    if (!user) throw new NotFoundException('user not found');
 
     await this.sessionsRepo.deleteAll(userId);
     await this.emailRepo.delete(userId);
     await this.banRepo.delete(userId);
     const deleted = await this.usersRepo.delete(userId);
 
-    return deleted ? UserError.NoError : UserError.Unknown;
+    if (!deleted) throw new BadRequestException('cannot delete user');
   }
 }
