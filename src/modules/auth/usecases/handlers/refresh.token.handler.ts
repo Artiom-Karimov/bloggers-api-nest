@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserError } from '../../../users/models/user.error';
 import TokenPair from '../../models/jwt/token.pair';
 import SessionsRepository from '../../../users/interfaces/sessions.repository';
 import SessionsService from '../../sessions.service';
 import RefreshTokenCommand from '../commands/refresh.token.command';
+import { UnauthorizedException } from '@nestjs/common/exceptions';
 
 @CommandHandler(RefreshTokenCommand)
 export default class RefreshTokenHandler
@@ -14,28 +14,27 @@ export default class RefreshTokenHandler
     private readonly sessionsRepo: SessionsRepository,
   ) { }
 
-  public async execute(
-    command: RefreshTokenCommand,
-  ): Promise<TokenPair | UserError> {
+  public async execute(command: RefreshTokenCommand): Promise<TokenPair> {
     const { token, ip, deviceName } = command.data;
+    const ex = new UnauthorizedException('invalid or expired token');
 
     const payload = TokenPair.unpackToken(token);
-    if (!payload) return UserError.InvalidCode;
+    if (!payload) throw ex;
 
     const loginAllowed = await this.service.checkLoginAllowed(payload.userId);
-    if (loginAllowed !== UserError.NoError) return loginAllowed;
+    if (!loginAllowed) throw ex;
 
     const session = await this.sessionsRepo.get(payload.deviceId);
-    if (!session) return UserError.InvalidCode;
+    if (!session) throw ex;
 
     try {
       session.refresh(ip, deviceName, payload.userId);
     } catch (error) {
-      return UserError.InvalidCode;
+      throw ex;
     }
 
     const updated = this.sessionsRepo.update(session);
-    if (!updated) return UserError.Unknown;
+    if (!updated) throw ex;
 
     return session.getTokens();
   }

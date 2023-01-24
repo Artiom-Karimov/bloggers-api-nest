@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import EmailConfirmationRepository from '../../interfaces/email.confirmation.repository';
-import { UserError } from '../../models/user.error';
 import UserInputModel from '../../models/input/user.input.model';
 import UsersRepository from '../../interfaces/users.repository';
 import CreateConfirmedUserCommand from '../commands/create.confirmed.user.command';

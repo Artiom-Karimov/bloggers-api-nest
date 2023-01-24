@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserError } from '../../../users/models/user.error';
 import SessionsRepository from '../../../users/interfaces/sessions.repository';
 import LogoutAnotherSessionsCommand from '../commands/logout.another.sessions.command';
 
@@ -9,10 +8,7 @@ export default class LogoutAnotherSessionsHandler
 {
   constructor(private readonly sessionsRepo: SessionsRepository) { }
 
-  public async execute(
-    command: LogoutAnotherSessionsCommand,
-  ): Promise<UserError> {
+  public async execute(command: LogoutAnotherSessionsCommand): Promise<void> {
     await this.sessionsRepo.deleteAllButOne(command.userId, command.deviceId);
-    return UserError.NoError;
   }
 }

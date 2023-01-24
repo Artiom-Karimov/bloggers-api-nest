@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -16,13 +15,10 @@ import CodeInputModel from './models/input/code.input.model';
 import EmailInputModel from './models/input/email.input.model';
 import LoginInputModel from './models/input/login.input.model';
 import NewPasswordInputModel from './models/input/new.password.input.model';
-import { throwValidationException } from '../../common/utils/validation.options';
 import { Request, Response } from 'express';
-import TokenPair from './models/jwt/token.pair';
 import SessionUserViewModel from '../users/models/view/session.user.view.model';
 import { RefreshTokenGuard } from './guards/refresh.token.guard';
 import { BearerAuthGuard } from './guards/bearer.auth.guard';
-import { UserError } from '../users/models/user.error';
 import { CommandBus } from '@nestjs/cqrs';
 import RegisterCommand from './usecases/commands/register.command';
 import EmailResendCommand from './usecases/commands/email.resend.command';
@@ -92,12 +88,8 @@ export default class AuthController {
       }),
     );
 
-    if (result instanceof TokenPair) {
-      this.setCookie(res, result.refreshToken);
-      res.status(200).send({ accessToken: result.accessToken });
-      return;
-    }
-    throw new UnauthorizedException();
+    this.setCookie(res, result.refreshToken);
+    res.status(200).send({ accessToken: result.accessToken });
   }
 
   @Post('refresh-token')
@@ -111,24 +103,16 @@ export default class AuthController {
         deviceName: req.headers['user-agent'] || '<unknown>',
       }),
     );
-    if (result instanceof TokenPair) {
-      this.setCookie(res, result.refreshToken);
-      res.status(200).send({ accessToken: result.accessToken });
-      return;
-    }
-    throw new UnauthorizedException();
+
+    this.setCookie(res, result.refreshToken);
+    res.status(200).send({ accessToken: result.accessToken });
   }
 
   @Post('logout')
   @HttpCode(204)
   @UseGuards(RefreshTokenGuard)
   async logout(@Req() req: Request): Promise<void> {
-    const result = await this.commandBus.execute(
-      new LogoutCommand(req.refreshToken),
-    );
-
-    if (result === UserError.NoError) return;
-    throw new UnauthorizedException();
+    return this.commandBus.execute(new LogoutCommand(req.refreshToken));
   }
 
   @Get('me')
