@@ -184,6 +184,14 @@ describe('QuizController (e2e)', () => {
     }
   });
 
+  it('try to send an answer as user3', async () => {
+    const u3 = await request(app.getHttpServer())
+      .post(`${base}/my-current/answers`)
+      .set('Authorization', `Bearer ${users[2].access}`)
+      .send({ answer: 'sorry, idk' })
+      .expect(403);
+  });
+
   it('start the game sequential', async () => {
     const u1 = await request(app.getHttpServer())
       .post(`${base}/my-current/answers`)
