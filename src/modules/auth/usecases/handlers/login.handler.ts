@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserError } from '../../../users/models/user.error';
 import UsersRepository from '../../../users/interfaces/users.repository';
 import TokenPair from '../../models/jwt/token.pair';
 import SessionsRepository from '../../../users/interfaces/sessions.repository';
@@ -8,6 +7,7 @@ import LoginCommand from '../commands/login.command';
 import { User } from '../../../users/typeorm/models/user';
 import { SessionCreateType } from '../../../users/models/input/session.create.type';
 import { Session } from '../../../users/typeorm/models/session';
+import { UnauthorizedException } from '@nestjs/common/exceptions';
 
 @CommandHandler(LoginCommand)
 export default class LoginHandler implements ICommandHandler<LoginCommand> {
@@ -17,10 +17,9 @@ export default class LoginHandler implements ICommandHandler<LoginCommand> {
     private readonly sessionsRepo: SessionsRepository,
   ) { }
 
-  public async execute(command: LoginCommand): Promise<TokenPair | UserError> {
+  public async execute(command: LoginCommand): Promise<TokenPair> {
     const { loginOrEmail, password, deviceName, ip } = command.data;
     const user = await this.checkLoginGetUser(loginOrEmail, password);
-    if (!(user instanceof User)) return user;
 
     const session = await this.createSession(
       {
@@ -37,15 +36,17 @@ export default class LoginHandler implements ICommandHandler<LoginCommand> {
   private async checkLoginGetUser(
     loginOrEmail: string,
     password: string,
-  ): Promise<User | UserError> {
+  ): Promise<User> {
+    const ex = new UnauthorizedException('wrong credentials');
+
     const user = await this.usersRepo.getByLoginOrEmail(loginOrEmail);
-    if (!user) return UserError.WrongCredentials;
+    if (!user) throw ex;
 
     const loginAllowed = await this.service.checkLoginAllowed(user.id);
-    if (loginAllowed !== UserError.NoError) return loginAllowed;
+    if (!loginAllowed) throw ex;
 
     const passwordMatch = await user.checkPassword(password);
-    if (!passwordMatch) return UserError.WrongCredentials;
+    if (!passwordMatch) throw ex;
 
     return user;
   }

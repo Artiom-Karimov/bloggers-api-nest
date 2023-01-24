@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import EmailConfirmationRepository from '../users/interfaces/email.confirmation.repository';
-import { UserError } from '../users/models/user.error';
 import UsersBanQueryRepository from '../users/interfaces/users.ban.query.repository';
 
 @Injectable()
@@ -10,11 +9,10 @@ export default class SessionsService {
     private readonly emailRepo: EmailConfirmationRepository,
   ) { }
 
-  public async checkLoginAllowed(id: string): Promise<UserError> {
+  public async checkLoginAllowed(id: string): Promise<boolean> {
     const ec = await this.emailRepo.getByUser(id);
-    if (!ec || !ec.isConfirmed) return UserError.Unconfirmed;
+    if (!ec || !ec.isConfirmed) return false;
     const ban = await this.banRepo.get(id);
-    if (ban === undefined || !ban.isBanned) return UserError.NoError;
-    return UserError.Forbidden;
+    return ban === undefined || !ban.isBanned;
   }
 }

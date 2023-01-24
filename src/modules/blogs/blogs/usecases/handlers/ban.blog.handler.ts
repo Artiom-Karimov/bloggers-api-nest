@@ -1,21 +1,20 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import PostsRepository from '../../../posts/interfaces/posts.repository';
 import BlogsRepository from '../../interfaces/blogs.repository';
-import { BlogError } from '../../models/blog.error';
 import BanBlogCommand from '../commands/ban.blog.command';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 @CommandHandler(BanBlogCommand)
 export class BanBlogHandler implements ICommandHandler<BanBlogCommand> {
   constructor(private readonly repo: BlogsRepository) { }
 
-  async execute(command: BanBlogCommand): Promise<BlogError> {
+  async execute(command: BanBlogCommand): Promise<void> {
     const blog = await this.repo.get(command.blogId);
-    if (!blog) return BlogError.NotFound;
+    if (!blog) throw new NotFoundException('blog not found');
 
-    if (blog.isBanned === command.data.isBanned) return BlogError.NoError;
+    if (blog.isBanned === command.data.isBanned) return;
     blog.isBanned = command.data.isBanned;
     const result = await this.repo.update(blog);
 
-    return result ? BlogError.NoError : BlogError.Unknown;
+    if (!result) throw new BadRequestException('something went wrong');
   }
 }

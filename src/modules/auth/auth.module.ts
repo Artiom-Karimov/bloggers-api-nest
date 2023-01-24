@@ -5,17 +5,17 @@ import SessionsService from './sessions.service';
 import SecurityDevicesController from './security.devices.controller';
 import { MailModule } from '../mail/mail.module';
 import { UsersModule } from '../users/users.module';
-import RegisterHandler from './commands/handlers/register.handler';
+import RegisterHandler from './usecases/handlers/register.handler';
 import { CqrsModule } from '@nestjs/cqrs';
-import EmailResendHandler from './commands/handlers/email.resend.handler';
-import EmailConfirmHandler from './commands/handlers/email.confirm.handler';
-import RecoverPasswordHandler from './commands/handlers/recover.password.handler';
-import SetNewPasswordPasswordHandler from './commands/handlers/set.new.password.handler';
-import LoginHandler from './commands/handlers/login.handler';
-import RefreshTokenHandler from './commands/handlers/refresh.token.handler';
-import LogoutHandler from './commands/handlers/logout.handler';
-import LogoutAnotherSessionsHandler from './commands/handlers/logout.another.sessions.handler';
-import DeleteSessionHandler from './commands/handlers/delete.session.handler';
+import EmailResendHandler from './usecases/handlers/email.resend.handler';
+import EmailConfirmHandler from './usecases/handlers/email.confirm.handler';
+import RecoverPasswordHandler from './usecases/handlers/recover.password.handler';
+import SetNewPasswordPasswordHandler from './usecases/handlers/set.new.password.handler';
+import LoginHandler from './usecases/handlers/login.handler';
+import RefreshTokenHandler from './usecases/handlers/refresh.token.handler';
+import LogoutHandler from './usecases/handlers/logout.handler';
+import LogoutAnotherSessionsHandler from './usecases/handlers/logout.another.sessions.handler';
+import DeleteSessionHandler from './usecases/handlers/delete.session.handler';
 import CheckUserBanHandler from './queries/handlers/check.user.ban.handler';
 
 const commandHandlers = [

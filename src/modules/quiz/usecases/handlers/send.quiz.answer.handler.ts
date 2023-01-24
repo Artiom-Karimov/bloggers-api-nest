@@ -2,7 +2,6 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AnswerInfo } from '../../models/view/quiz.view.model';
 import { QuizRepository } from '../../interfaces/quiz.repository';
 import {
-  BadRequestException,
   ForbiddenException,
   HttpException,
   NotFoundException,

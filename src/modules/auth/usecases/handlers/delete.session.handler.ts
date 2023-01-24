@@ -1,7 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserError } from '../../../users/models/user.error';
 import SessionsRepository from '../../../users/interfaces/sessions.repository';
 import DeleteSessionCommand from '../commands/delete.session.command';
+import {
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common/exceptions';
 
 @CommandHandler(DeleteSessionCommand)
 export default class DeleteSessionHandler
@@ -9,11 +12,12 @@ export default class DeleteSessionHandler
 {
   constructor(private readonly sessionsRepo: SessionsRepository) { }
 
-  public async execute(command: DeleteSessionCommand): Promise<UserError> {
+  public async execute(command: DeleteSessionCommand): Promise<void> {
     const session = await this.sessionsRepo.get(command.deviceId);
-    if (!session) return UserError.NotFound;
-    if (session.userId !== command.userId) return UserError.WrongCredentials;
+    if (!session) throw new NotFoundException('session not found');
+
+    if (session.userId !== command.userId) throw new ForbiddenException();
+
     await this.sessionsRepo.delete(command.deviceId);
-    return UserError.NoError;
   }
 }

@@ -23,10 +23,10 @@ import BlogsQueryRepository from '../blogs/blogs/interfaces/blogs.query.reposito
 import BlogViewModel from '../blogs/blogs/models/view/blog.view.model';
 import GetBlogsQuery from '../blogs/blogs/models/input/get.blogs.query';
 import { CommandBus } from '@nestjs/cqrs';
-import CreateBlogCommand from '../blogs/blogs/commands/commands/create.blog.command';
-import UpdateBlogCommand from '../blogs/blogs/commands/commands/update.blog.command';
+import CreateBlogCommand from '../blogs/blogs/usecases/commands/create.blog.command';
+import UpdateBlogCommand from '../blogs/blogs/usecases/commands/update.blog.command';
 import { BlogError } from '../blogs/blogs/models/blog.error';
-import DeleteBlogCommand from '../blogs/blogs/commands/commands/delete.blog.command';
+import DeleteBlogCommand from '../blogs/blogs/usecases/commands/delete.blog.command';
 import { User } from '../auth/guards/user.decorator';
 import TokenPayload from '../auth/models/jwt/token.payload';
 import CreatePostCommand from '../blogs/posts/commands/commands/create.post.command';

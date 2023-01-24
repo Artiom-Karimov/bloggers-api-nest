@@ -1,11 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { MailService } from '../../../mail/mail.service';
 import EmailConfirmationRepository from '../../../users/interfaces/email.confirmation.repository';
-import { UserError } from '../../../users/models/user.error';
 import UsersRepository from '../../../users/interfaces/users.repository';
 import EmailResendCommand from '../commands/email.resend.command';
 import { User } from '../../../users/typeorm/models/user';
 import { EmailConfirmation } from '../../../users/typeorm/models/email.confirmation';
+import { throwValidationException } from '../../../../common/utils/validation.options';
 
 @CommandHandler(EmailResendCommand)
 export default class EmailResendHandler
@@ -17,18 +17,20 @@ export default class EmailResendHandler
     private readonly mailService: MailService,
   ) { }
 
-  public async execute(command: EmailResendCommand): Promise<UserError> {
+  public async execute(command: EmailResendCommand): Promise<void> {
     const retrieved = await this.usersRepo.getByLoginOrEmail(command.email);
-    if (!retrieved) return UserError.NotFound;
+    if (!retrieved)
+      throwValidationException('email', 'email is wrong or already confirmed');
 
     const result = await this.createEmailConfirmation(retrieved);
 
     return result;
   }
 
-  private async createEmailConfirmation(user: User): Promise<UserError> {
+  private async createEmailConfirmation(user: User): Promise<void> {
     const existing = await this.emailRepo.getByUser(user.id);
-    if (existing?.isConfirmed) return UserError.AlreadyConfirmed;
+    if (existing?.isConfirmed)
+      throwValidationException('email', 'email is wrong or already confirmed');
 
     const ec = EmailConfirmation.create(user);
 
@@ -37,7 +39,5 @@ export default class EmailResendHandler
     } else await this.emailRepo.create(ec);
 
     await this.mailService.sendEmailConfirmation(user, ec.confirmationCode);
-
-    return UserError.NoError;
   }
 }
