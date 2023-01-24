@@ -16,8 +16,8 @@ import TokenPayload from './models/jwt/token.payload';
 import { User } from './guards/user.decorator';
 import { UserError } from '../users/models/user.error';
 import { CommandBus } from '@nestjs/cqrs';
-import LogoutAnotherSessionsCommand from './commands/commands/logout.another.sessions.command';
-import DeleteSessionCommand from './commands/commands/delete.session.command';
+import LogoutAnotherSessionsCommand from './usecases/commands/logout.another.sessions.command';
+import DeleteSessionCommand from './usecases/commands/delete.session.command';
 import IdParams from '../../common/models/id.param';
 
 @Controller('security/devices')

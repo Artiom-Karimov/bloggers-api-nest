@@ -24,14 +24,14 @@ import { RefreshTokenGuard } from './guards/refresh.token.guard';
 import { BearerAuthGuard } from './guards/bearer.auth.guard';
 import { UserError } from '../users/models/user.error';
 import { CommandBus } from '@nestjs/cqrs';
-import RegisterCommand from './commands/commands/register.command';
-import EmailResendCommand from './commands/commands/email.resend.command';
-import EmailConfirmCommand from './commands/commands/email.confirm.command';
-import RecoverPasswordCommand from './commands/commands/recover.password.command';
-import SetNewPasswordCommand from './commands/commands/set.new.password.command';
-import LoginCommand from './commands/commands/login.command';
-import RefreshTokenCommand from './commands/commands/refresh.token.command';
-import LogoutCommand from './commands/commands/logout.command';
+import RegisterCommand from './usecases/commands/register.command';
+import EmailResendCommand from './usecases/commands/email.resend.command';
+import EmailConfirmCommand from './usecases/commands/email.confirm.command';
+import RecoverPasswordCommand from './usecases/commands/recover.password.command';
+import SetNewPasswordCommand from './usecases/commands/set.new.password.command';
+import LoginCommand from './usecases/commands/login.command';
+import RefreshTokenCommand from './usecases/commands/refresh.token.command';
+import LogoutCommand from './usecases/commands/logout.command';
 import UsersQueryRepository from '../users/interfaces/users.query.repository';
 
 @Controller('auth')
