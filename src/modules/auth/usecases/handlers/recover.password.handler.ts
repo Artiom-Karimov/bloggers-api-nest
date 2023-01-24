@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { MailService } from '../../../mail/mail.service';
-import { UserError } from '../../../users/models/user.error';
 import UsersRepository from '../../../users/interfaces/users.repository';
 import RecoveryRepository from '../../../users/interfaces/recovery.repository';
 import RecoverPasswordCommand from '../commands/recover.password.command';
@@ -16,15 +15,13 @@ export default class RecoverPasswordHandler
     private readonly mailService: MailService,
   ) { }
 
-  public async execute(command: RecoverPasswordCommand): Promise<UserError> {
+  public async execute(command: RecoverPasswordCommand): Promise<void> {
     const user = await this.usersRepo.getByLoginOrEmail(command.email);
-    if (!user) return UserError.NotFound;
+    if (!user) return;
 
     const recovery = Recovery.create(user);
-    const created = await this.recoveryRepo.createOrUpdate(recovery);
+    await this.recoveryRepo.createOrUpdate(recovery);
 
     await this.mailService.sendPasswordRecovery(user, recovery.code);
-
-    return created ? UserError.NoError : UserError.Unknown;
   }
 }

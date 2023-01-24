@@ -45,57 +45,35 @@ export default class AuthController {
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async register(@Body() data: UserInputModel): Promise<void> {
-    const result = await this.commandBus.execute(new RegisterCommand(data));
-
-    if (result === UserError.NoError) return;
-    if (result === UserError.LoginExists)
-      throwValidationException('login', 'login already exists');
-    if (result === UserError.EmailExists)
-      throwValidationException('email', 'email already exists');
-    throw new BadRequestException();
+    return this.commandBus.execute(new RegisterCommand(data));
   }
 
   @Post('registration-email-resending')
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async resendEmail(@Body() data: EmailInputModel): Promise<void> {
-    const result = await this.commandBus.execute(
-      new EmailResendCommand(data.email),
-    );
-
-    if (result === UserError.NoError) return;
-    throwValidationException('email', 'email is wrong or already confirmed');
+    return this.commandBus.execute(new EmailResendCommand(data.email));
   }
 
   @Post('registration-confirmation')
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async confirmEmail(@Body() data: CodeInputModel): Promise<void> {
-    const result = await this.commandBus.execute(
-      new EmailConfirmCommand(data.code),
-    );
-
-    if (result === UserError.NoError) return;
-    throwValidationException('code', 'wrong or already confirmed code');
+    return this.commandBus.execute(new EmailConfirmCommand(data.code));
   }
 
   @Post('password-recovery')
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async recover(@Body() data: EmailInputModel): Promise<void> {
-    await this.commandBus.execute(new RecoverPasswordCommand(data.email));
-    return;
+    return this.commandBus.execute(new RecoverPasswordCommand(data.email));
   }
 
   @Post('new-password')
   @HttpCode(204)
   @UseGuards(DdosGuard)
   async changePassword(@Body() data: NewPasswordInputModel): Promise<void> {
-    const result = await this.commandBus.execute(
-      new SetNewPasswordCommand(data),
-    );
-    if (result === UserError.NoError) return;
-    throwValidationException('recoveryCode', 'wrong or outdated code');
+    return this.commandBus.execute(new SetNewPasswordCommand(data));
   }
 
   @Post('login')

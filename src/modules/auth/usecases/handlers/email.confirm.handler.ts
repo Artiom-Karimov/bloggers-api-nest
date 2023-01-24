@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import EmailConfirmationRepository from '../../../users/interfaces/email.confirmation.repository';
-import { UserError } from '../../../users/models/user.error';
 import EmailConfirmCommand from '../commands/email.confirm.command';
+import { throwValidationException } from '../../../../common/utils/validation.options';
 
 @CommandHandler(EmailConfirmCommand)
 export default class EmailConfirmHandler
@@ -9,15 +9,15 @@ export default class EmailConfirmHandler
 {
   constructor(private readonly emailRepo: EmailConfirmationRepository) { }
 
-  public async execute(command: EmailConfirmCommand): Promise<UserError> {
+  public async execute(command: EmailConfirmCommand): Promise<void> {
     const ec = await this.emailRepo.getByCode(command.code);
 
     try {
       ec.confirm();
       const result = await this.emailRepo.update(ec);
-      return result ? UserError.NoError : UserError.Unknown;
+      if (!result) throw new Error();
     } catch (error) {
-      return UserError.InvalidCode;
+      throwValidationException('code', 'wrong or already confirmed code');
     }
   }
 }

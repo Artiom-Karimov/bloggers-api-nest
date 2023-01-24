@@ -7,6 +7,8 @@ import UsersRepository from '../../../users/interfaces/users.repository';
 import RegisterCommand from '../commands/register.command';
 import { User } from '../../../users/typeorm/models/user';
 import { EmailConfirmation } from '../../../users/typeorm/models/email.confirmation';
+import { throwValidationException } from '../../../../common/utils/validation.options';
+import { BadRequestException } from '@nestjs/common';
 
 @CommandHandler(RegisterCommand)
 export default class RegisterHandler
@@ -18,31 +20,26 @@ export default class RegisterHandler
     private readonly mailService: MailService,
   ) { }
 
-  public async execute(command: RegisterCommand): Promise<UserError> {
-    const exists = await this.checkLoginEmailExists(command.data);
-    if (exists !== UserError.NoError) return exists;
+  public async execute(command: RegisterCommand): Promise<void> {
+    await this.checkLoginEmailExists(command.data);
 
     const user = await User.create(command.data);
     const created = await this.usersRepo.create(user);
-    if (!created) return UserError.Unknown;
+    if (!created) throw new BadRequestException('cannot create user');
 
     const retrieved = await this.usersRepo.get(created);
-    if (!retrieved) return UserError.Unknown;
+    if (!retrieved) throw new BadRequestException('cannot create user');
 
     const success = await this.createEmailConfirmation(retrieved);
 
-    return success ? UserError.NoError : UserError.Unknown;
+    if (!success) throw new BadRequestException('cannot create user');
   }
 
-  private async checkLoginEmailExists(
-    data: UserInputModel,
-  ): Promise<UserError> {
+  private async checkLoginEmailExists(data: UserInputModel): Promise<void> {
     const loginExists = await this.usersRepo.getByLoginOrEmail(data.login);
-    if (loginExists) return UserError.LoginExists;
+    if (loginExists) throwValidationException('login', 'login already exists');
     const emailExists = await this.usersRepo.getByLoginOrEmail(data.email);
-    if (emailExists) return UserError.EmailExists;
-
-    return UserError.NoError;
+    if (emailExists) throwValidationException('email', 'email already exists');
   }
 
   private async createEmailConfirmation(user: User): Promise<boolean> {
