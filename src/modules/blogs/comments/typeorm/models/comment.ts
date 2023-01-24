@@ -9,7 +9,7 @@ import {
 import { Post } from '../../../posts/typeorm/models/post';
 import { User } from '../../../../users/typeorm/models/user';
 import { CommentLike } from '../../../likes/typeorm/models/comment.like';
-import { CommentCreateModel } from '../../commands/commands/create.comment.command';
+import { CommentCreateModel } from '../../usecases/commands/create.comment.command';
 import IdGenerator from '../../../../../common/utils/id.generator';
 import { BlogError } from '../../../blogs/models/blog.error';
 

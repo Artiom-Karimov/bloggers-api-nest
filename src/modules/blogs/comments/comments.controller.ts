@@ -21,11 +21,11 @@ import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.
 import LikeInputModel from '../likes/models/like.input.model';
 import { User } from '../../auth/guards/user.decorator';
 import TokenPayload from '../../auth/models/jwt/token.payload';
-import PutCommentLikeCommand from './commands/commands/put.comment.like.command';
+import PutCommentLikeCommand from './usecases/commands/put.comment.like.command';
 import { CommandBus } from '@nestjs/cqrs';
-import UpdateCommentCommand from './commands/commands/update.comment.command';
+import UpdateCommentCommand from './usecases/commands/update.comment.command';
 import { BlogError } from '../blogs/models/blog.error';
-import DeleteCommentCommand from './commands/commands/delete.comment.command';
+import DeleteCommentCommand from './usecases/commands/delete.comment.command';
 import IdParams from '../../../common/models/id.param';
 
 @Controller('comments')

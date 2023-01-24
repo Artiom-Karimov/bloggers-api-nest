@@ -27,7 +27,7 @@ import TokenPayload from '../../auth/models/jwt/token.payload';
 import { User } from '../../auth/guards/user.decorator';
 import { CommandBus } from '@nestjs/cqrs';
 import PutPostLikeCommand from './usecases/commands/put.post.like.command';
-import CreateCommentCommand from '../comments/commands/commands/create.comment.command';
+import CreateCommentCommand from '../comments/usecases/commands/create.comment.command';
 import { BlogError } from '../blogs/models/blog.error';
 import IdParams from '../../../common/models/id.param';
 
