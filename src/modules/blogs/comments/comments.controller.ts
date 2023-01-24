@@ -1,11 +1,4 @@
-import {
-  BadRequestException,
-  Controller,
-  ForbiddenException,
-  Get,
-  NotFoundException,
-  Param,
-} from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
 import CommentsQueryRepository from './interfaces/comments.query.repository';
 import CommentViewModel from './models/view/comment.view.model';
 import {
@@ -21,11 +14,10 @@ import { OptionalBearerAuthGuard } from '../../auth/guards/optional.bearer.auth.
 import LikeInputModel from '../likes/models/like.input.model';
 import { User } from '../../auth/guards/user.decorator';
 import TokenPayload from '../../auth/models/jwt/token.payload';
-import PutCommentLikeCommand from './commands/commands/put.comment.like.command';
+import PutCommentLikeCommand from './usecases/commands/put.comment.like.command';
 import { CommandBus } from '@nestjs/cqrs';
-import UpdateCommentCommand from './commands/commands/update.comment.command';
-import { BlogError } from '../blogs/models/blog.error';
-import DeleteCommentCommand from './commands/commands/delete.comment.command';
+import UpdateCommentCommand from './usecases/commands/update.comment.command';
+import DeleteCommentCommand from './usecases/commands/delete.comment.command';
 import IdParams from '../../../common/models/id.param';
 
 @Controller('comments')
@@ -54,18 +46,13 @@ export default class CommentsController {
     @Body() data: CommentInputModel,
     @User() user: TokenPayload,
   ): Promise<void> {
-    const result = await this.commandBus.execute(
+    return this.commandBus.execute(
       new UpdateCommentCommand({
         commentId: params.id,
         userId: user.userId,
         content: data.content,
       }),
     );
-
-    if (result === BlogError.NoError) return;
-    if (result === BlogError.NotFound) throw new NotFoundException();
-    if (result === BlogError.Forbidden) throw new ForbiddenException();
-    throw new BadRequestException();
   }
 
   @Delete(':id')
@@ -75,14 +62,9 @@ export default class CommentsController {
     @Param() params: IdParams,
     @User() user: TokenPayload,
   ): Promise<void> {
-    const result = await this.commandBus.execute(
+    return this.commandBus.execute(
       new DeleteCommentCommand(params.id, user.userId),
     );
-
-    if (result === BlogError.NoError) return;
-    if (result === BlogError.NotFound) throw new NotFoundException();
-    if (result === BlogError.Forbidden) throw new ForbiddenException();
-    throw new BadRequestException();
   }
 
   @Put(':id/like-status')
@@ -93,15 +75,12 @@ export default class CommentsController {
     @Body() data: LikeInputModel,
     @User() user: TokenPayload,
   ) {
-    const result = await this.commandBus.execute(
+    return this.commandBus.execute(
       new PutCommentLikeCommand({
         entityId: params.id,
         userId: user.userId,
         likeStatus: data.likeStatus,
       }),
     );
-    if (result === BlogError.NoError) return;
-    if (result === BlogError.NotFound) throw new NotFoundException();
-    throw new BadRequestException();
   }
 }

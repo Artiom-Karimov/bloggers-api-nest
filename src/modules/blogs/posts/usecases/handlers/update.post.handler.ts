@@ -1,8 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import BlogsRepository from '../../../blogs/interfaces/blogs.repository';
-import { BlogError } from '../../../blogs/models/blog.error';
 import PostsRepository from '../../interfaces/posts.repository';
 import UpdatePostCommand from '../commands/update.post.command';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common/exceptions';
 
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
@@ -11,19 +15,23 @@ export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
     private readonly postsRepo: PostsRepository,
   ) { }
 
-  async execute(command: UpdatePostCommand): Promise<BlogError> {
+  async execute(command: UpdatePostCommand): Promise<void> {
     const { blogId, bloggerId, postId } = command.data;
     const blog = await this.blogsRepo.get(blogId);
-    if (!blog) return BlogError.NotFound;
-    if (blog.ownerId !== bloggerId) return BlogError.Forbidden;
+    if (!blog) throw new NotFoundException('blog not found');
+    if (blog.ownerId !== bloggerId)
+      throw new ForbiddenException('operation not allowed');
 
     const post = await this.postsRepo.get(postId);
-    if (!post) return BlogError.NotFound;
+    if (!post) throw new NotFoundException('post not found');
 
-    const modelUpdated = post.updateData(command.data);
-    if (modelUpdated !== BlogError.NoError) return modelUpdated;
+    try {
+      post.updateData(command.data);
+    } catch (error) {
+      throw new ForbiddenException('operation not allowed');
+    }
 
-    const dbUpdated = await this.postsRepo.update(post);
-    return dbUpdated ? BlogError.NoError : BlogError.Unknown;
+    const updated = await this.postsRepo.update(post);
+    if (!updated) throw new BadRequestException('cannot update post');
   }
 }

@@ -1,7 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogError } from '../../../blogs/models/blog.error';
 import CommentsRepository from '../../interfaces/comments.repository';
 import UpdateCommentCommand from '../commands/update.comment.command';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 
 @CommandHandler(UpdateCommentCommand)
 export class UpdateCommentHandler
@@ -9,15 +13,18 @@ export class UpdateCommentHandler
 {
   constructor(private readonly repo: CommentsRepository) { }
 
-  async execute(command: UpdateCommentCommand): Promise<BlogError> {
+  async execute(command: UpdateCommentCommand): Promise<void> {
     const { commentId, userId, content } = command.data;
     const comment = await this.repo.get(commentId);
-    if (!comment) return BlogError.NotFound;
+    if (!comment) throw new NotFoundException('comment not found');
 
-    const modelUpdated = comment.setContent(content, userId);
-    if (modelUpdated !== BlogError.NoError) return modelUpdated;
+    try {
+      comment.setContent(content, userId);
+    } catch (error) {
+      throw new ForbiddenException('operation not allowed');
+    }
 
-    const dbUpdated = this.repo.update(comment);
-    return dbUpdated ? BlogError.NoError : BlogError.Unknown;
+    const updated = this.repo.update(comment);
+    if (!updated) throw new BadRequestException('cannot update comment');
   }
 }

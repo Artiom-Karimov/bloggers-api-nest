@@ -1,11 +1,15 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogError } from '../../../blogs/models/blog.error';
 import CommentsRepository from '../../interfaces/comments.repository';
 import PutCommentLikeCommand from '../commands/put.comment.like.command';
 import UsersRepository from '../../../../users/interfaces/users.repository';
 import { CommentLike } from '../../../likes/typeorm/models/comment.like';
 import { LikesRepository } from '../../../likes/interfaces/likes.repository';
-import { Inject } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Inject,
+  NotFoundException,
+} from '@nestjs/common';
 
 @CommandHandler(PutCommentLikeCommand)
 export class PutCommentLikeHandler
@@ -18,17 +22,18 @@ export class PutCommentLikeHandler
     private readonly usersRepo: UsersRepository,
   ) { }
 
-  async execute(command: PutCommentLikeCommand): Promise<BlogError> {
+  async execute(command: PutCommentLikeCommand): Promise<void> {
     const { entityId, userId } = command.data;
     const comment = await this.commentsRepo.get(entityId);
-    if (!comment) return BlogError.NotFound;
+    if (!comment) throw new NotFoundException('comment not found');
 
     const user = await this.usersRepo.get(userId);
-    if (!user || user.isBanned) return BlogError.Forbidden;
+    if (!user || user.isBanned)
+      throw new ForbiddenException('operation not alowed');
 
     const like = CommentLike.create(command.data, user, comment);
     const result = await this.likeRepo.put(like);
 
-    return result ? BlogError.NoError : BlogError.Unknown;
+    if (!result) throw new BadRequestException('cannot create like');
   }
 }

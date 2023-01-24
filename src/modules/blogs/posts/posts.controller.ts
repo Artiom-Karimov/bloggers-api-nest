@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Body,
   Controller,
-  ForbiddenException,
   Get,
   HttpCode,
   NotFoundException,
@@ -26,9 +25,8 @@ import LikeInputModel from '../likes/models/like.input.model';
 import TokenPayload from '../../auth/models/jwt/token.payload';
 import { User } from '../../auth/guards/user.decorator';
 import { CommandBus } from '@nestjs/cqrs';
-import PutPostLikeCommand from './commands/commands/put.post.like.command';
-import CreateCommentCommand from '../comments/commands/commands/create.comment.command';
-import { BlogError } from '../blogs/models/blog.error';
+import PutPostLikeCommand from './usecases/commands/put.post.like.command';
+import CreateCommentCommand from '../comments/usecases/commands/create.comment.command';
 import IdParams from '../../../common/models/id.param';
 
 @Controller('posts')
@@ -88,16 +86,11 @@ export default class PostsController {
       }),
     );
 
-    if (typeof result === 'string') {
-      const comment = await this.commentsQueryRepo.getComment(
-        result,
-        undefined,
-      );
-      if (comment) return comment;
-      throw new BadRequestException();
-    }
-    if (result === BlogError.NotFound) throw new NotFoundException();
-    if (result === BlogError.Forbidden) throw new ForbiddenException();
+    const comment = await this.commentsQueryRepo.getComment(
+      result,
+      user.userId,
+    );
+    if (comment) return comment;
     throw new BadRequestException();
   }
 
@@ -109,15 +102,12 @@ export default class PostsController {
     @Body() data: LikeInputModel,
     @User() user: TokenPayload,
   ) {
-    const result = await this.commandBus.execute(
+    return this.commandBus.execute(
       new PutPostLikeCommand({
         entityId: params.id,
         userId: user.userId,
         likeStatus: data.likeStatus,
       }),
     );
-    if (result === BlogError.NoError) return;
-    if (result === BlogError.NotFound) throw new NotFoundException();
-    throw new BadRequestException();
   }
 }
