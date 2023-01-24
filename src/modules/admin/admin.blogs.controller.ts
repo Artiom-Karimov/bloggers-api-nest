@@ -21,10 +21,10 @@ import GetBlogsQuery from '../blogs/blogs/models/input/get.blogs.query';
 import { BlogError } from '../blogs/blogs/models/blog.error';
 import BlogBanInputModel from '../blogs/blogs/models/input/blog.ban.input.model';
 import { CommandBus } from '@nestjs/cqrs';
-import BanBlogCommand from '../blogs/blogs/commands/commands/ban.blog.command';
+import BanBlogCommand from '../blogs/blogs/usecases/commands/ban.blog.command';
 import AdminBlogsQueryRepository from '../blogs/blogs/interfaces/admin.blogs.query.repository';
 import IdParams from '../../common/models/id.param';
-import AssignBlogOwnerCommand from '../blogs/blogs/commands/commands/assign.blog.owner.command';
+import AssignBlogOwnerCommand from '../blogs/blogs/usecases/commands/assign.blog.owner.command';
 
 @Controller('sa/blogs')
 @UseGuards(BasicAuthGuard)
