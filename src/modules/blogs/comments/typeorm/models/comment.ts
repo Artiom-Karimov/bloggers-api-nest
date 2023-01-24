@@ -11,7 +11,6 @@ import { User } from '../../../../users/typeorm/models/user';
 import { CommentLike } from '../../../likes/typeorm/models/comment.like';
 import { CommentCreateModel } from '../../usecases/commands/create.comment.command';
 import IdGenerator from '../../../../../common/utils/id.generator';
-import { BlogError } from '../../../blogs/models/blog.error';
 
 @Entity()
 export class Comment {
@@ -70,9 +69,8 @@ export class Comment {
     return this.user.login;
   }
 
-  public setContent(content: string, userId: string): BlogError {
-    if (userId !== this.userId) return BlogError.Forbidden;
+  public setContent(content: string, userId: string) {
+    if (userId !== this.userId) throw new Error('illegal comment update');
     this.content = content;
-    return BlogError.NoError;
   }
 }

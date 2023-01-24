@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Body,
   Controller,
-  ForbiddenException,
   Get,
   HttpCode,
   NotFoundException,
@@ -28,7 +27,6 @@ import { User } from '../../auth/guards/user.decorator';
 import { CommandBus } from '@nestjs/cqrs';
 import PutPostLikeCommand from './usecases/commands/put.post.like.command';
 import CreateCommentCommand from '../comments/usecases/commands/create.comment.command';
-import { BlogError } from '../blogs/models/blog.error';
 import IdParams from '../../../common/models/id.param';
 
 @Controller('posts')
@@ -88,16 +86,11 @@ export default class PostsController {
       }),
     );
 
-    if (typeof result === 'string') {
-      const comment = await this.commentsQueryRepo.getComment(
-        result,
-        undefined,
-      );
-      if (comment) return comment;
-      throw new BadRequestException();
-    }
-    if (result === BlogError.NotFound) throw new NotFoundException();
-    if (result === BlogError.Forbidden) throw new ForbiddenException();
+    const comment = await this.commentsQueryRepo.getComment(
+      result,
+      user.userId,
+    );
+    if (comment) return comment;
     throw new BadRequestException();
   }
 
