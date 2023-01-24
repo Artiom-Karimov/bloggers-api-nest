@@ -65,7 +65,6 @@ export default class BloggerController {
     const created = await this.commandBus.execute(
       new CreateBlogCommand(data, user.userId),
     );
-    if (!created) throw new BadRequestException();
     const retrieved = await this.blogsQueryRepo.getBlog(created);
     if (!retrieved) throw new NotFoundException();
     return retrieved;
@@ -78,13 +77,9 @@ export default class BloggerController {
     @Param() params: IdParams,
     @User() user: TokenPayload,
   ): Promise<void> {
-    const result = await this.commandBus.execute(
+    return this.commandBus.execute(
       new UpdateBlogCommand(params.id, data, user.userId),
     );
-    if (result === BlogError.NoError) return;
-    if (result === BlogError.NotFound) throw new NotFoundException();
-    if (result === BlogError.Forbidden) throw new ForbiddenException();
-    throw new BadRequestException();
   }
 
   @Delete(':id')
@@ -93,13 +88,9 @@ export default class BloggerController {
     @Param() params: IdParams,
     @User() user: TokenPayload,
   ): Promise<void> {
-    const result = await this.commandBus.execute(
+    return this.commandBus.execute(
       new DeleteBlogCommand(params.id, user.userId),
     );
-    if (result === BlogError.NoError) return;
-    if (result === BlogError.NotFound) throw new NotFoundException();
-    if (result === BlogError.Forbidden) throw new ForbiddenException();
-    throw new BadRequestException();
   }
 
   @Post(':blogId/posts')
