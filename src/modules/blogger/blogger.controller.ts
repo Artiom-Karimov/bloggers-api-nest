@@ -16,7 +16,6 @@ import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
 import PostsQueryRepository from '../blogs/posts/interfaces/posts.query.repository';
 import PageViewModel from '../../common/models/page.view.model';
 import BlogInputModel from '../blogs/blogs/models/input/blog.input.model';
-import { ForbiddenException } from '@nestjs/common/exceptions';
 import PostInputModel from '../blogs/posts/models/post.input.model';
 import PostViewModel from '../blogs/posts/models/post.view.model';
 import BlogsQueryRepository from '../blogs/blogs/interfaces/blogs.query.repository';
@@ -25,7 +24,6 @@ import GetBlogsQuery from '../blogs/blogs/models/input/get.blogs.query';
 import { CommandBus } from '@nestjs/cqrs';
 import CreateBlogCommand from '../blogs/blogs/usecases/commands/create.blog.command';
 import UpdateBlogCommand from '../blogs/blogs/usecases/commands/update.blog.command';
-import { BlogError } from '../blogs/blogs/models/blog.error';
 import DeleteBlogCommand from '../blogs/blogs/usecases/commands/delete.blog.command';
 import { User } from '../auth/guards/user.decorator';
 import TokenPayload from '../auth/models/jwt/token.payload';
@@ -108,12 +106,6 @@ export default class BloggerController {
       }),
     );
 
-    if (typeof created !== 'string') {
-      if (created === BlogError.NotFound) throw new NotFoundException();
-      if (created === BlogError.Forbidden) throw new ForbiddenException();
-      throw new BadRequestException();
-    }
-
     const retrieved = await this.postsQueryRepo.getPost(created, undefined);
     if (!retrieved) throw new BadRequestException();
 
@@ -127,7 +119,7 @@ export default class BloggerController {
     @Body() data: PostInputModel,
     @User() user: TokenPayload,
   ): Promise<void> {
-    const updated = await this.commandBus.execute(
+    return this.commandBus.execute(
       new UpdatePostCommand({
         postId: params.postId,
         blogId: params.blogId,
@@ -135,10 +127,6 @@ export default class BloggerController {
         data,
       }),
     );
-    if (updated === BlogError.NoError) return;
-    if (updated === BlogError.NotFound) throw new NotFoundException();
-    if (updated === BlogError.Forbidden) throw new ForbiddenException();
-    throw new BadRequestException();
   }
 
   @Delete(':blogId/posts/:postId')
@@ -147,17 +135,13 @@ export default class BloggerController {
     @Param() params: IdParams,
     @User() user: TokenPayload,
   ): Promise<void> {
-    const deleted = await this.commandBus.execute(
+    return this.commandBus.execute(
       new DeletePostCommand({
         blogId: params.blogId,
         postId: params.postId,
         bloggerId: user.userId,
       }),
     );
-    if (deleted === BlogError.NoError) return;
-    if (deleted === BlogError.NotFound) throw new NotFoundException();
-    if (deleted === BlogError.Forbidden) throw new ForbiddenException();
-    throw new BadRequestException();
   }
 
   @Get('comments')

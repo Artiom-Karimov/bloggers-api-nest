@@ -12,9 +12,6 @@ import { PostLike } from '../../../likes/typeorm/models/post.like';
 import IdGenerator from '../../../../../common/utils/id.generator';
 import { PostCreateModel } from '../../usecases/commands/create.post.command';
 import { PostUpdateModel } from '../../usecases/commands/update.post.command';
-import { BlogError } from '../../../blogs/models/blog.error';
-import LikeCreateModel from '../../../likes/models/like.create.model';
-import { User } from '../../../../users/typeorm/models/user';
 
 @Entity()
 export class Post {
@@ -57,7 +54,7 @@ export class Post {
   @OneToMany(() => Comment, (c) => c.post)
   comments: Comment[];
 
-  @OneToMany(() => PostLike, (l) => l.post, { cascade: true })
+  @OneToMany(() => PostLike, (l) => l.post)
   likes: PostLike[];
 
   public static create(data: PostCreateModel, blog: Blog): Post {
@@ -75,20 +72,13 @@ export class Post {
     return this.blog.name;
   }
 
-  public updateData(data: PostUpdateModel): BlogError {
-    if (data.postId !== this.id) return BlogError.Forbidden;
-    if (data.blogId !== this.blogId) return BlogError.Forbidden;
+  public updateData(data: PostUpdateModel) {
+    if (data.postId !== this.id || data.blogId !== this.blogId)
+      throw new Error('illegal post update');
 
     const { title, shortDescription, content } = data.data;
     this.title = title;
     this.shortDescription = shortDescription;
     this.content = content;
-
-    return BlogError.NoError;
-  }
-
-  public putLike(data: LikeCreateModel, user: User) {
-    if (!this.likes) this.likes = [];
-    this.likes.push(PostLike.create(data, user, this));
   }
 }
