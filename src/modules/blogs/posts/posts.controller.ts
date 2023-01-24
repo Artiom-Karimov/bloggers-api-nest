@@ -109,15 +109,12 @@ export default class PostsController {
     @Body() data: LikeInputModel,
     @User() user: TokenPayload,
   ) {
-    const result = await this.commandBus.execute(
+    return this.commandBus.execute(
       new PutPostLikeCommand({
         entityId: params.id,
         userId: user.userId,
         likeStatus: data.likeStatus,
       }),
     );
-    if (result === BlogError.NoError) return;
-    if (result === BlogError.NotFound) throw new NotFoundException();
-    throw new BadRequestException();
   }
 }
