@@ -11,9 +11,12 @@ import { ConnectToQuizCommand } from './usecases/commands/connect.to.quiz.comman
 import { AnswerInputModel } from './models/input/answer.input.model';
 import { SendQuizAnswerCommand } from './usecases/commands/send.quiz.answer.command';
 import { HttpCode } from '@nestjs/common/decorators';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger/dist/decorators';
 
 @Controller('pair-game-quiz/pairs')
 @UseGuards(BearerAuthGuard)
+@ApiTags('Quiz')
+@ApiBearerAuth()
 export class QuizController {
   constructor(
     private readonly commandBus: CommandBus,

@@ -24,9 +24,12 @@ import { DeleteQuestionCommand } from '../quiz/usecases/commands/delete.question
 import { UpdateQuestionCommand } from '../quiz/usecases/commands/update.question.command';
 import { QuestionPublishModel } from '../quiz/models/input/question.publish.model';
 import { PublishQuestionCommand } from '../quiz/usecases/commands/publish.question.command';
+import { ApiBasicAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('sa/quiz/questions')
 @UseGuards(BasicAuthGuard)
+@ApiTags('Admin quiz')
+@ApiBasicAuth()
 export default class AdminQuizController {
   constructor(
     private readonly commandBus: CommandBus,

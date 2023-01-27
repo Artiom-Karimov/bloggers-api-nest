@@ -17,8 +17,10 @@ import GetPostsQuery from '../posts/models/get.posts.query';
 import TokenPayload from '../../auth/models/jwt/token.payload';
 import { User } from '../../auth/guards/user.decorator';
 import IdParams from '../../../common/models/id.param';
+import { ApiTags } from '@nestjs/swagger/dist';
 
 @Controller('blogs')
+@ApiTags('Blogs')
 export default class BlogsController {
   constructor(
     private readonly queryRepo: BlogsQueryRepository,

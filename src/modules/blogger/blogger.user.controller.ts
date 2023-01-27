@@ -22,9 +22,12 @@ import BlogUserBanInputModel from '../blogs/blogs/models/input/blog.user.ban.inp
 import GetBlogUserBansQuery from '../blogs/blogs/models/input/get.blog.user.bans.query';
 import BlogUserBanViewModel from '../blogs/blogs/models/view/blog.user.ban.view.model';
 import IdParams from '../../common/models/id.param';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger/dist';
 
 @Controller('blogger/users')
 @UseGuards(BearerAuthGuard)
+@ApiTags("Blogger's users")
+@ApiBearerAuth()
 export default class BloggerUserController {
   constructor(
     private readonly commandBus: CommandBus,

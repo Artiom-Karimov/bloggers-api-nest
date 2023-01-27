@@ -19,8 +19,10 @@ import { CommandBus } from '@nestjs/cqrs';
 import UpdateCommentCommand from './usecases/commands/update.comment.command';
 import DeleteCommentCommand from './usecases/commands/delete.comment.command';
 import IdParams from '../../../common/models/id.param';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger/dist/decorators';
 
 @Controller('comments')
+@ApiTags('Comments')
 export default class CommentsController {
   constructor(
     private readonly commandBus: CommandBus,
@@ -41,6 +43,7 @@ export default class CommentsController {
   @Put(':id')
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
+  @ApiBearerAuth()
   async update(
     @Param() params: IdParams,
     @Body() data: CommentInputModel,
@@ -58,6 +61,7 @@ export default class CommentsController {
   @Delete(':id')
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
+  @ApiBearerAuth()
   async delete(
     @Param() params: IdParams,
     @User() user: TokenPayload,
@@ -70,6 +74,7 @@ export default class CommentsController {
   @Put(':id/like-status')
   @UseGuards(BearerAuthGuard)
   @HttpCode(204)
+  @ApiBearerAuth()
   async putLike(
     @Param() params: IdParams,
     @Body() data: LikeInputModel,

@@ -34,9 +34,12 @@ import BloggerCommentViewModel from '../blogs/comments/models/view/blogger.comme
 import BloggerCommentsQueryRepository from '../blogs/comments/interfaces/blogger.comments.query.repository';
 import GetBloggerCommentsQuery from '../blogs/comments/models/input/get.blogger.comments.query';
 import IdParams from '../../common/models/id.param';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger/dist';
 
 @Controller('blogger/blogs')
 @UseGuards(BearerAuthGuard)
+@ApiTags("Blogger's blogs")
+@ApiBearerAuth()
 export default class BloggerController {
   constructor(
     private readonly blogsQueryRepo: BlogsQueryRepository,

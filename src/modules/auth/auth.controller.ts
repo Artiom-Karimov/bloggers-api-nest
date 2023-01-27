@@ -29,8 +29,11 @@ import LoginCommand from './usecases/commands/login.command';
 import RefreshTokenCommand from './usecases/commands/refresh.token.command';
 import LogoutCommand from './usecases/commands/logout.command';
 import UsersQueryRepository from '../users/interfaces/users.query.repository';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth } from '@nestjs/swagger/dist';
 
 @Controller('auth')
+@ApiTags('Auth')
 export default class AuthController {
   constructor(
     private readonly commandBus: CommandBus,
@@ -95,6 +98,7 @@ export default class AuthController {
   @Post('refresh-token')
   @HttpCode(200)
   @UseGuards(DdosGuard, RefreshTokenGuard)
+  @ApiCookieAuth()
   async refresh(@Req() req: Request, @Res() res: Response): Promise<void> {
     const result = await this.commandBus.execute(
       new RefreshTokenCommand({
@@ -111,12 +115,14 @@ export default class AuthController {
   @Post('logout')
   @HttpCode(204)
   @UseGuards(RefreshTokenGuard)
+  @ApiCookieAuth()
   async logout(@Req() req: Request): Promise<void> {
     return this.commandBus.execute(new LogoutCommand(req.refreshToken));
   }
 
   @Get('me')
   @UseGuards(BearerAuthGuard)
+  @ApiBearerAuth()
   async getMe(@Req() req: Request): Promise<SessionUserViewModel> {
     const result = await this.usersRepo.getSessionUserView(req.user.userId);
     if (!result) throw new UnauthorizedException();
