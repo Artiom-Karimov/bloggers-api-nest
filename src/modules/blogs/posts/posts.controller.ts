@@ -28,8 +28,10 @@ import { CommandBus } from '@nestjs/cqrs';
 import PutPostLikeCommand from './usecases/commands/put.post.like.command';
 import CreateCommentCommand from '../comments/usecases/commands/create.comment.command';
 import IdParams from '../../../common/models/id.param';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger/dist/decorators';
 
 @Controller('posts')
+@ApiTags('Posts')
 export default class PostsController {
   constructor(
     private readonly commandBus: CommandBus,
@@ -73,6 +75,7 @@ export default class PostsController {
 
   @Post(':id/comments')
   @UseGuards(BearerAuthGuard)
+  @ApiBearerAuth()
   async createComment(
     @Param() params: IdParams,
     @Body() data: CommentInputModel,
@@ -97,6 +100,7 @@ export default class PostsController {
   @Put(':id/like-status')
   @UseGuards(BearerAuthGuard)
   @HttpCode(204)
+  @ApiBearerAuth()
   async putLike(
     @Param() params: IdParams,
     @Body() data: LikeInputModel,

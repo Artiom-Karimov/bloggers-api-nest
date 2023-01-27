@@ -26,9 +26,12 @@ import BanUserCommand from '../users/usecases/commands/ban.user.command';
 import CreateConfirmedUserCommand from '../users/usecases/commands/create.confirmed.user.command';
 import DeleteUserCommand from '../users/usecases/commands/delete.user.command';
 import IdParams from '../../common/models/id.param';
+import { ApiBasicAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('sa/users')
 @UseGuards(BasicAuthGuard)
+@ApiTags('Admin users')
+@ApiBasicAuth()
 export default class AdminUsersController {
   constructor(
     private readonly commandBus: CommandBus,

@@ -18,9 +18,12 @@ import BanBlogCommand from '../blogs/blogs/usecases/commands/ban.blog.command';
 import AdminBlogsQueryRepository from '../blogs/blogs/interfaces/admin.blogs.query.repository';
 import IdParams from '../../common/models/id.param';
 import AssignBlogOwnerCommand from '../blogs/blogs/usecases/commands/assign.blog.owner.command';
+import { ApiBasicAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('sa/blogs')
 @UseGuards(BasicAuthGuard)
+@ApiTags('Admin blogs')
+@ApiBasicAuth()
 export default class AdminBlogsController {
   constructor(
     private readonly commandBus: CommandBus,
