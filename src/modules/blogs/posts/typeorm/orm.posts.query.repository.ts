@@ -60,7 +60,7 @@ export class OrmPostsQueryRepository extends PostsQueryRepository {
     const builder = this.getQueryBuilder(params);
 
     const [result, count] = await builder
-      .orderBy(this.getSortParam(params), params.sortOrder)
+      .orderBy(this.getSortParam(params), params.sortDirection)
       .offset(page.calculateSkip())
       .limit(page.pageSize)
       .getManyAndCount();

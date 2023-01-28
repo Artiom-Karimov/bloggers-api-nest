@@ -137,7 +137,7 @@ export class OrmUsersQueryRepository extends UsersQueryRepository {
       .leftJoinAndSelect('user.ban', 'ban');
     this.appendFilter(qb, params);
 
-    qb.orderBy(`"${params.sortBy}"`, params.sortOrder)
+    qb.orderBy(`"${params.sortBy}"`, params.sortDirection)
       .offset(page.calculateSkip())
       .limit(page.pageSize);
 

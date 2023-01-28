@@ -17,7 +17,14 @@ import GetPostsQuery from '../posts/models/get.posts.query';
 import TokenPayload from '../../auth/models/jwt/token.payload';
 import { User } from '../../auth/guards/user.decorator';
 import IdParams from '../../../common/models/id.param';
-import { ApiTags } from '@nestjs/swagger/dist';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger/dist';
+import { SwaggerBlogPage, SwaggerPostPage } from '../../swagger/models/pages';
 
 @Controller('blogs')
 @ApiTags('Blogs')
@@ -28,28 +35,55 @@ export default class BlogsController {
   ) { }
 
   @Get()
+  @ApiOperation({ summary: 'Get blog list with pagination' })
+  @ApiQuery({ type: GetBlogsQuery })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: SwaggerBlogPage,
+  })
   async get(@Query() reqQuery: any): Promise<PageViewModel<BlogViewModel>> {
     const query = new GetBlogsQuery(reqQuery);
     return this.queryRepo.getBlogs(query);
   }
+
   @Get(':id')
+  @ApiOperation({ summary: 'Get blog by id' })
+  @ApiParam({ name: 'id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: BlogViewModel,
+  })
+  @ApiResponse({ status: 404, description: 'Not found' })
+  @ApiResponse({ status: 400, description: 'Wrong id format' })
   async getOne(@Param() params: IdParams): Promise<BlogViewModel> {
     const blog = await this.queryRepo.getBlog(params.id);
     if (blog) return blog;
     throw new NotFoundException();
   }
 
-  @Get(':id/posts')
+  @Get(':blogId/posts')
   @UseGuards(OptionalBearerAuthGuard)
+  @ApiOperation({ summary: 'Get post list by blog id' })
+  @ApiQuery({ type: GetPostsQuery })
+  @ApiParam({ name: 'blogId' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: SwaggerPostPage,
+  })
+  @ApiResponse({ status: 404, description: 'Blog not found' })
+  @ApiResponse({ status: 400, description: 'Wrong id format' })
   async getPosts(
     @Query() reqQuery: any,
     @Param() params: IdParams,
     @User() user: TokenPayload,
   ): Promise<PageViewModel<PostViewModel>> {
-    const blog = await this.queryRepo.getBlog(params.id);
+    const blog = await this.queryRepo.getBlog(params.blogId);
     if (!blog) throw new NotFoundException();
     const userId = user ? user.userId : undefined;
-    const query = new GetPostsQuery(reqQuery, params.id, userId);
+    const query = new GetPostsQuery(reqQuery, params.blogId, userId);
     return this.postsQueryRepo.getPosts(query);
   }
 }

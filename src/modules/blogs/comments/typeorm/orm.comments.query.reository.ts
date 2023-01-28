@@ -66,7 +66,7 @@ export class OrmCommentsQueryRepository extends CommentsQueryRepository {
       builder.andWhere('"postId" = :postId', { postId: params.postId });
     }
     return builder
-      .orderBy(`"comment"."${params.sortBy}"`, params.sortOrder)
+      .orderBy(`"comment"."${params.sortBy}"`, params.sortDirection)
       .offset(page.calculateSkip())
       .limit(page.pageSize);
   }

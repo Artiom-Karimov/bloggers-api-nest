@@ -56,7 +56,7 @@ export class OrmBloggerCommentsQueryRepository extends BloggerCommentsQueryRepos
     const builder = this.getQueryBuilder(params);
 
     const [result, count] = await builder
-      .orderBy(`"comment"."${params.sortBy}"`, params.sortOrder)
+      .orderBy(`"comment"."${params.sortBy}"`, params.sortDirection)
       .offset(page.calculateSkip())
       .limit(page.pageSize)
       .getManyAndCount();
