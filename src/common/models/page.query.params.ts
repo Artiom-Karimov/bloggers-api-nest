@@ -10,7 +10,7 @@ export default class PageQueryParams {
   @ApiProperty({ type: 'string', required: false, default: 'createdAt' })
   public sortBy = 'createdAt';
 
-  @ApiProperty({ enum: ['asc', 'desc'], default: 'desc' })
+  @ApiProperty({ enum: ['asc', 'desc'], required: false, default: 'desc' })
   public sortDirection: 'ASC' | 'DESC' = 'DESC';
 
   protected sortByValues: string[] = [];

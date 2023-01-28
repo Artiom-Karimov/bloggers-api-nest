@@ -6,7 +6,7 @@ export class LikesInfoModel {
   public likesCount: number;
   @ApiProperty()
   public dislikesCount: number;
-  @ApiProperty()
+  @ApiProperty({ enum: LikeStatus })
   public myStatus: LikeStatus;
 
   constructor(

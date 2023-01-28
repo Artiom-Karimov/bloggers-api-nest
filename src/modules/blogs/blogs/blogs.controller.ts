@@ -62,25 +62,27 @@ export default class BlogsController {
     throw new NotFoundException();
   }
 
-  @Get(':id/posts')
+  @Get(':blogId/posts')
   @UseGuards(OptionalBearerAuthGuard)
   @ApiOperation({ summary: 'Get post list by blog id' })
-  @ApiParam({ name: 'id' })
+  @ApiQuery({ type: GetPostsQuery })
+  @ApiParam({ name: 'blogId' })
   @ApiResponse({
     status: 200,
     description: 'Success',
     type: SwaggerPostPage,
   })
   @ApiResponse({ status: 404, description: 'Blog not found' })
+  @ApiResponse({ status: 400, description: 'Wrong id format' })
   async getPosts(
     @Query() reqQuery: any,
     @Param() params: IdParams,
     @User() user: TokenPayload,
   ): Promise<PageViewModel<PostViewModel>> {
-    const blog = await this.queryRepo.getBlog(params.id);
+    const blog = await this.queryRepo.getBlog(params.blogId);
     if (!blog) throw new NotFoundException();
     const userId = user ? user.userId : undefined;
-    const query = new GetPostsQuery(reqQuery, params.id, userId);
+    const query = new GetPostsQuery(reqQuery, params.blogId, userId);
     return this.postsQueryRepo.getPosts(query);
   }
 }
