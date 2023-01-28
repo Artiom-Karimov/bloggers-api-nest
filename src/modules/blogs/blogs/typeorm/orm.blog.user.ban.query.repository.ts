@@ -54,7 +54,7 @@ export class OrmBlogUserBanQueryRepository extends BlogUserBanQueryRepository {
     );
     const builder = this.getQueryBuilder(params);
     const [result, count] = await builder
-      .orderBy(`"${params.sortBy}"`, params.sortOrder)
+      .orderBy(`"${params.sortBy}"`, params.sortDirection)
       .offset(page.calculateSkip())
       .limit(page.pageSize)
       .getManyAndCount();

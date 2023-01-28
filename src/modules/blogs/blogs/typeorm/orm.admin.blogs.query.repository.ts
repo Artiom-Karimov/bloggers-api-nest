@@ -70,7 +70,7 @@ export class OrmAdminBlogsQueryRepository extends AdminBlogsQueryRepository {
     const builder = this.getQueryBuilder(params);
 
     const [result, count] = await builder
-      .orderBy(`"blog"."${params.sortBy}"`, params.sortOrder)
+      .orderBy(`"blog"."${params.sortBy}"`, params.sortDirection)
       .offset(page.calculateSkip())
       .limit(page.pageSize)
       .getManyAndCount();

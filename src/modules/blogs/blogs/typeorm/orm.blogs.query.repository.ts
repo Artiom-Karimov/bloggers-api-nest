@@ -86,7 +86,7 @@ export class OrmBlogsQueryRepository extends BlogsQueryRepository {
     const builder = this.getQueryBuilder(params, bloggerId);
 
     const [result, count] = await builder
-      .orderBy(`"${params.sortBy}"`, params.sortOrder)
+      .orderBy(`"${params.sortBy}"`, params.sortDirection)
       .offset(page.calculateSkip())
       .limit(page.pageSize)
       .getManyAndCount();

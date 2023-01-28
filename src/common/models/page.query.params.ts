@@ -10,7 +10,8 @@ export default class PageQueryParams {
   @ApiProperty({ type: 'string', required: false, default: 'createdAt' })
   public sortBy = 'createdAt';
 
-  public sortOrder: 'ASC' | 'DESC' = 'DESC';
+  @ApiProperty({ enum: ['asc', 'desc'], default: 'desc' })
+  public sortDirection: 'ASC' | 'DESC' = 'DESC';
 
   protected sortByValues: string[] = [];
 
@@ -30,7 +31,7 @@ export default class PageQueryParams {
   }
   protected assignSortDirection(value: any) {
     if (!value || typeof value !== 'string') return;
-    this.sortOrder = value === 'asc' ? 'ASC' : 'DESC';
+    this.sortDirection = value === 'asc' ? 'ASC' : 'DESC';
   }
   protected checkNumber(value: any): number | undefined {
     if (!value) return undefined;
