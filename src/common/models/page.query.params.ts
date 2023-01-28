@@ -1,8 +1,15 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export default class PageQueryParams {
+  @ApiProperty({ type: 'integer', required: false, default: 1 })
   public pageNumber = 1;
+
+  @ApiProperty({ type: 'integer', required: false, default: 10 })
   public pageSize = 10;
+
+  @ApiProperty({ type: 'string', required: false, default: 'createdAt' })
   public sortBy = 'createdAt';
-  public sortDirection = -1;
+
   public sortOrder: 'ASC' | 'DESC' = 'DESC';
 
   protected sortByValues: string[] = [];
@@ -23,7 +30,6 @@ export default class PageQueryParams {
   }
   protected assignSortDirection(value: any) {
     if (!value || typeof value !== 'string') return;
-    this.sortDirection = value === 'asc' ? 1 : -1;
     this.sortOrder = value === 'asc' ? 'ASC' : 'DESC';
   }
   protected checkNumber(value: any): number | undefined {

@@ -20,9 +20,11 @@ import IdParams from '../../../common/models/id.param';
 import {
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger/dist';
+import { SwaggerBlogPage, SwaggerPostPage } from '../../swagger/models/pages';
 
 @Controller('blogs')
 @ApiTags('Blogs')
@@ -34,10 +36,11 @@ export default class BlogsController {
 
   @Get()
   @ApiOperation({ summary: 'Get blog list with pagination' })
+  @ApiQuery({ type: GetBlogsQuery })
   @ApiResponse({
     status: 200,
     description: 'Success',
-    type: PageViewModel<BlogViewModel>,
+    type: SwaggerBlogPage,
   })
   async get(@Query() reqQuery: any): Promise<PageViewModel<BlogViewModel>> {
     const query = new GetBlogsQuery(reqQuery);
@@ -61,6 +64,14 @@ export default class BlogsController {
 
   @Get(':id/posts')
   @UseGuards(OptionalBearerAuthGuard)
+  @ApiOperation({ summary: 'Get post list by blog id' })
+  @ApiParam({ name: 'id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: SwaggerPostPage,
+  })
+  @ApiResponse({ status: 404, description: 'Blog not found' })
   async getPosts(
     @Query() reqQuery: any,
     @Param() params: IdParams,
