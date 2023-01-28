@@ -46,6 +46,7 @@ export default class BlogsController {
     const query = new GetBlogsQuery(reqQuery);
     return this.queryRepo.getBlogs(query);
   }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get blog by id' })
   @ApiParam({ name: 'id' })
