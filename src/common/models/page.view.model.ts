@@ -1,8 +1,19 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export default class PageViewModel<TviewModel> {
+  @ApiProperty()
   public pagesCount: number;
+
+  @ApiProperty()
   public page: number;
+
+  @ApiProperty()
   public pageSize: number;
+
+  @ApiProperty()
   public totalCount: number;
+
+  @ApiProperty()
   public items: Array<TviewModel> = [];
 
   constructor(page: number, pageSize: number, totalCount: number) {

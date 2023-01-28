@@ -17,7 +17,12 @@ import GetPostsQuery from '../posts/models/get.posts.query';
 import TokenPayload from '../../auth/models/jwt/token.payload';
 import { User } from '../../auth/guards/user.decorator';
 import IdParams from '../../../common/models/id.param';
-import { ApiTags } from '@nestjs/swagger/dist';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger/dist';
 
 @Controller('blogs')
 @ApiTags('Blogs')
@@ -28,11 +33,26 @@ export default class BlogsController {
   ) { }
 
   @Get()
+  @ApiOperation({ summary: 'Get blog list with pagination' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: PageViewModel<BlogViewModel>,
+  })
   async get(@Query() reqQuery: any): Promise<PageViewModel<BlogViewModel>> {
     const query = new GetBlogsQuery(reqQuery);
     return this.queryRepo.getBlogs(query);
   }
   @Get(':id')
+  @ApiOperation({ summary: 'Get blog by id' })
+  @ApiParam({ name: 'id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: BlogViewModel,
+  })
+  @ApiResponse({ status: 404, description: 'Not found' })
+  @ApiResponse({ status: 400, description: 'Wrong id format' })
   async getOne(@Param() params: IdParams): Promise<BlogViewModel> {
     const blog = await this.queryRepo.getBlog(params.id);
     if (blog) return blog;
