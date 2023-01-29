@@ -28,7 +28,7 @@ import { ApiBasicAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('sa/quiz/questions')
 @UseGuards(BasicAuthGuard)
-@ApiTags('Admin quiz')
+@ApiTags('Quiz (for admin)')
 @ApiBasicAuth()
 export default class AdminQuizController {
   constructor(

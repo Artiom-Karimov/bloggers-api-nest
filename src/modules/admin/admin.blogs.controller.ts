@@ -22,7 +22,7 @@ import { ApiBasicAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('sa/blogs')
 @UseGuards(BasicAuthGuard)
-@ApiTags('Admin blogs')
+@ApiTags('Blogs (for admin)')
 @ApiBasicAuth()
 export default class AdminBlogsController {
   constructor(
