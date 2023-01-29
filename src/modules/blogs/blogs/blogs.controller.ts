@@ -24,11 +24,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger/dist';
-import { SwaggerBlogPage, SwaggerPostPage } from '../../swagger/models/pages';
+import { BlogPage, PostPage } from '../../swagger/models/pages';
 
 @Controller('blogs')
-@ApiTags('Blogs')
-export default class BlogsController {
+@ApiTags('Blogs (for user)')
+export class BlogsController {
   constructor(
     private readonly queryRepo: BlogsQueryRepository,
     private readonly postsQueryRepo: PostsQueryRepository,
@@ -40,7 +40,7 @@ export default class BlogsController {
   @ApiResponse({
     status: 200,
     description: 'Success',
-    type: SwaggerBlogPage,
+    type: BlogPage,
   })
   async get(@Query() reqQuery: any): Promise<PageViewModel<BlogViewModel>> {
     const query = new GetBlogsQuery(reqQuery);
@@ -56,7 +56,7 @@ export default class BlogsController {
     type: BlogViewModel,
   })
   @ApiResponse({ status: 404, description: 'Not found' })
-  @ApiResponse({ status: 400, description: 'Wrong id format' })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
   async getOne(@Param() params: IdParams): Promise<BlogViewModel> {
     const blog = await this.queryRepo.getBlog(params.id);
     if (blog) return blog;
@@ -71,10 +71,10 @@ export default class BlogsController {
   @ApiResponse({
     status: 200,
     description: 'Success',
-    type: SwaggerPostPage,
+    type: PostPage,
   })
   @ApiResponse({ status: 404, description: 'Blog not found' })
-  @ApiResponse({ status: 400, description: 'Wrong id format' })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
   async getPosts(
     @Query() reqQuery: any,
     @Param() params: IdParams,

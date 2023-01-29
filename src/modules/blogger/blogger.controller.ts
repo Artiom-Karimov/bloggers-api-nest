@@ -38,7 +38,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger/dist';
 
 @Controller('blogger/blogs')
 @UseGuards(BearerAuthGuard)
-@ApiTags("Blogger's blogs")
+@ApiTags('Blogs (for blogger)')
 @ApiBearerAuth()
 export default class BloggerController {
   constructor(

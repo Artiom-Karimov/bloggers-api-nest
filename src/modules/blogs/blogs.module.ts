@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import BlogsController from './blogs/blogs.controller';
+import { BlogsController } from './blogs/blogs.controller';
 import BlogsQueryRepository from './blogs/interfaces/blogs.query.repository';
 import BlogsRepository from './blogs/interfaces/blogs.repository';
-import CommentsController from './comments/comments.controller';
+import { CommentsController } from './comments/comments.controller';
 import CommentsQueryRepository from './comments/interfaces/comments.query.repository';
 import CommentsRepository from './comments/interfaces/comments.repository';
 import { BlogIdValidator } from './blogs/models/input/blog.id.validator';
-import PostsController from './posts/posts.controller';
+import { PostsController } from './posts/posts.controller';
 import PostsQueryRepository from './posts/interfaces/posts.query.repository';
 import PostsRepository from './posts/interfaces/posts.repository';
 import { CreatePostHandler } from './posts/usecases/handlers/create.post.handler';

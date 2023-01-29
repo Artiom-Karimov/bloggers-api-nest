@@ -15,7 +15,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger/dist/decorators';
 
 @Controller('pair-game-quiz/pairs')
 @UseGuards(BearerAuthGuard)
-@ApiTags('Quiz')
+@ApiTags('Quiz (for user)')
 @ApiBearerAuth()
 export class QuizController {
   constructor(

@@ -30,7 +30,7 @@ import { ApiBasicAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('sa/users')
 @UseGuards(BasicAuthGuard)
-@ApiTags('Admin users')
+@ApiTags('Users (for admin)')
 @ApiBasicAuth()
 export default class AdminUsersController {
   constructor(

@@ -19,11 +19,17 @@ import { CommandBus } from '@nestjs/cqrs';
 import UpdateCommentCommand from './usecases/commands/update.comment.command';
 import DeleteCommentCommand from './usecases/commands/delete.comment.command';
 import IdParams from '../../../common/models/id.param';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger/dist/decorators';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger/dist/decorators';
 
 @Controller('comments')
-@ApiTags('Comments')
-export default class CommentsController {
+@ApiTags('Comments (for user)')
+export class CommentsController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryRepo: CommentsQueryRepository,
@@ -31,6 +37,16 @@ export default class CommentsController {
 
   @Get(':id')
   @UseGuards(OptionalBearerAuthGuard)
+  @UseGuards(OptionalBearerAuthGuard)
+  @ApiOperation({ summary: 'Get comment by id' })
+  @ApiParam({ name: 'id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: CommentViewModel,
+  })
+  @ApiResponse({ status: 404, description: 'Not found' })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
   async getOne(
     @Param() params: IdParams,
     @User() user: TokenPayload,
@@ -44,6 +60,15 @@ export default class CommentsController {
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update comment' })
+  @ApiParam({ name: 'id' })
+  @ApiResponse({ status: 204, description: 'Success, no data' })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
+  @ApiResponse({
+    status: 403,
+    description: "Trying to edit someone else's comment",
+  })
+  @ApiResponse({ status: 404, description: 'Not found' })
   async update(
     @Param() params: IdParams,
     @Body() data: CommentInputModel,
@@ -62,6 +87,15 @@ export default class CommentsController {
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete comment' })
+  @ApiParam({ name: 'id' })
+  @ApiResponse({ status: 204, description: 'Success, no data' })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
+  @ApiResponse({
+    status: 403,
+    description: "Trying to delete someone else's comment",
+  })
+  @ApiResponse({ status: 404, description: 'Not found' })
   async delete(
     @Param() params: IdParams,
     @User() user: TokenPayload,
@@ -75,6 +109,13 @@ export default class CommentsController {
   @UseGuards(BearerAuthGuard)
   @HttpCode(204)
   @ApiBearerAuth()
+  @ApiOperation({ summary: 'Put like for comment' })
+  @ApiParam({ name: 'id' })
+  @ApiResponse({ status: 204, description: 'Success, no data' })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'User is banned' })
+  @ApiResponse({ status: 404, description: 'Comment not found' })
   async putLike(
     @Param() params: IdParams,
     @Body() data: LikeInputModel,
