@@ -30,7 +30,6 @@ import CreateCommentCommand from '../comments/usecases/commands/create.comment.c
 import IdParams from '../../../common/models/id.param';
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -38,8 +37,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger/dist/decorators';
 import {
-  SwaggerCommentPage,
-  SwaggerPostPage,
+  CommentPage,
+  PostPage,
 } from '../../swagger/models/pages';
 
 @Controller('posts')
@@ -58,7 +57,7 @@ export class PostsController {
   @ApiResponse({
     status: 200,
     description: 'Success',
-    type: SwaggerPostPage,
+    type: PostPage,
   })
   async get(
     @Query() reqQuery: any,
@@ -96,7 +95,7 @@ export class PostsController {
   @ApiResponse({
     status: 200,
     description: 'Success',
-    type: SwaggerCommentPage,
+    type: CommentPage,
   })
   @ApiResponse({ status: 404, description: 'Post not found' })
   @ApiResponse({ status: 400, description: 'Illegal values received' })

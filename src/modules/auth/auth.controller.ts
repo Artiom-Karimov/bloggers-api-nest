@@ -29,8 +29,14 @@ import LoginCommand from './usecases/commands/login.command';
 import RefreshTokenCommand from './usecases/commands/refresh.token.command';
 import LogoutCommand from './usecases/commands/logout.command';
 import UsersQueryRepository from '../users/interfaces/users.query.repository';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger/dist/decorators';
 import { ApiCookieAuth } from '@nestjs/swagger/dist';
+import { AccessTokenViewModel } from '../users/models/view/access.token.view.model';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -43,6 +49,12 @@ export default class AuthController {
   @Post('registration')
   @HttpCode(204)
   @UseGuards(DdosGuard)
+  @ApiOperation({
+    summary: 'Register as new user. Confirmation email will be sent',
+  })
+  @ApiResponse({ status: 204, description: 'Success, email sent' })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
+  @ApiResponse({ status: 429, description: 'Too many requests from this ip' })
   async register(@Body() data: UserInputModel): Promise<void> {
     return this.commandBus.execute(new RegisterCommand(data));
   }
@@ -50,6 +62,12 @@ export default class AuthController {
   @Post('registration-email-resending')
   @HttpCode(204)
   @UseGuards(DdosGuard)
+  @ApiOperation({
+    summary: 'Resend email for user to confirm his account',
+  })
+  @ApiResponse({ status: 204, description: 'Success, email sent' })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
+  @ApiResponse({ status: 429, description: 'Too many requests from this ip' })
   async resendEmail(@Body() data: EmailInputModel): Promise<void> {
     return this.commandBus.execute(new EmailResendCommand(data.email));
   }
@@ -57,6 +75,12 @@ export default class AuthController {
   @Post('registration-confirmation')
   @HttpCode(204)
   @UseGuards(DdosGuard)
+  @ApiOperation({
+    summary: 'Confirm user account with code from email',
+  })
+  @ApiResponse({ status: 204, description: 'Success, account confirmed' })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
+  @ApiResponse({ status: 429, description: 'Too many requests from this ip' })
   async confirmEmail(@Body() data: CodeInputModel): Promise<void> {
     return this.commandBus.execute(new EmailConfirmCommand(data.code));
   }
@@ -64,6 +88,15 @@ export default class AuthController {
   @Post('password-recovery')
   @HttpCode(204)
   @UseGuards(DdosGuard)
+  @ApiOperation({
+    summary: 'Send email for user to set new password',
+  })
+  @ApiResponse({
+    status: 204,
+    description: "Success, even if user doesn't exist",
+  })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
+  @ApiResponse({ status: 429, description: 'Too many requests from this ip' })
   async recover(@Body() data: EmailInputModel): Promise<void> {
     return this.commandBus.execute(new RecoverPasswordCommand(data.email));
   }
@@ -71,6 +104,12 @@ export default class AuthController {
   @Post('new-password')
   @HttpCode(204)
   @UseGuards(DdosGuard)
+  @ApiOperation({
+    summary: 'Set new password with secret code from recovery email',
+  })
+  @ApiResponse({ status: 204, description: 'Success, password updated' })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
+  @ApiResponse({ status: 429, description: 'Too many requests from this ip' })
   async changePassword(@Body() data: NewPasswordInputModel): Promise<void> {
     return this.commandBus.execute(new SetNewPasswordCommand(data));
   }
@@ -78,6 +117,17 @@ export default class AuthController {
   @Post('login')
   @HttpCode(200)
   @UseGuards(DdosGuard)
+  @ApiOperation({
+    summary: 'Create user session with login or email',
+  })
+  @ApiResponse({
+    status: 200,
+    type: AccessTokenViewModel,
+    description:
+      'Success, JWT tokens generated. Refresh token is returned as "refreshToken" cookie',
+  })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
+  @ApiResponse({ status: 429, description: 'Too many requests from this ip' })
   async login(
     @Body() data: LoginInputModel,
     @Req() req: Request,
@@ -98,7 +148,16 @@ export default class AuthController {
   @Post('refresh-token')
   @HttpCode(200)
   @UseGuards(DdosGuard, RefreshTokenGuard)
-  @ApiCookieAuth()
+  @ApiCookieAuth('refreshToken')
+  @ApiOperation({ summary: 'Generate new token pair' })
+  @ApiResponse({
+    status: 200,
+    type: AccessTokenViewModel,
+    description:
+      'Success, JWT tokens generated. Refresh token is returned as "refreshToken" cookie',
+  })
+  @ApiResponse({ status: 401, description: 'Missing or expired refreshToken' })
+  @ApiResponse({ status: 429, description: 'Too many requests from this ip' })
   async refresh(@Req() req: Request, @Res() res: Response): Promise<void> {
     const result = await this.commandBus.execute(
       new RefreshTokenCommand({
@@ -115,7 +174,10 @@ export default class AuthController {
   @Post('logout')
   @HttpCode(204)
   @UseGuards(RefreshTokenGuard)
-  @ApiCookieAuth()
+  @ApiCookieAuth('refreshToken')
+  @ApiOperation({ summary: 'Remove current session' })
+  @ApiResponse({ status: 204, description: 'Success, session removed' })
+  @ApiResponse({ status: 401, description: 'Missing or expired refreshToken' })
   async logout(@Req() req: Request): Promise<void> {
     return this.commandBus.execute(new LogoutCommand(req.refreshToken));
   }
@@ -123,6 +185,13 @@ export default class AuthController {
   @Get('me')
   @UseGuards(BearerAuthGuard)
   @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user info' })
+  @ApiResponse({
+    status: 200,
+    description: 'User info',
+    type: SessionUserViewModel,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async getMe(@Req() req: Request): Promise<SessionUserViewModel> {
     const result = await this.usersRepo.getSessionUserView(req.user.userId);
     if (!result) throw new UnauthorizedException();

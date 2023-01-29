@@ -24,7 +24,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger/dist';
-import { SwaggerBlogPage, SwaggerPostPage } from '../../swagger/models/pages';
+import { BlogPage, PostPage } from '../../swagger/models/pages';
 
 @Controller('blogs')
 @ApiTags('Blogs (for user)')
@@ -40,7 +40,7 @@ export class BlogsController {
   @ApiResponse({
     status: 200,
     description: 'Success',
-    type: SwaggerBlogPage,
+    type: BlogPage,
   })
   async get(@Query() reqQuery: any): Promise<PageViewModel<BlogViewModel>> {
     const query = new GetBlogsQuery(reqQuery);
@@ -71,7 +71,7 @@ export class BlogsController {
   @ApiResponse({
     status: 200,
     description: 'Success',
-    type: SwaggerPostPage,
+    type: PostPage,
   })
   @ApiResponse({ status: 404, description: 'Blog not found' })
   @ApiResponse({ status: 400, description: 'Illegal values received' })

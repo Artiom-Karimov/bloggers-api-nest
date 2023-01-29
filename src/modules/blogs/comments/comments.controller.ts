@@ -28,7 +28,7 @@ import {
 } from '@nestjs/swagger/dist/decorators';
 
 @Controller('comments')
-@ApiTags('Comments')
+@ApiTags('Comments (for user)')
 export class CommentsController {
   constructor(
     private readonly commandBus: CommandBus,
