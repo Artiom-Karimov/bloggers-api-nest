@@ -28,11 +28,23 @@ import { CommandBus } from '@nestjs/cqrs';
 import PutPostLikeCommand from './usecases/commands/put.post.like.command';
 import CreateCommentCommand from '../comments/usecases/commands/create.comment.command';
 import IdParams from '../../../common/models/id.param';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger/dist/decorators';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger/dist/decorators';
+import {
+  SwaggerCommentPage,
+  SwaggerPostPage,
+} from '../../swagger/models/pages';
 
 @Controller('posts')
-@ApiTags('Posts')
-export default class PostsController {
+@ApiTags('Posts (for user)')
+export class PostsController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryRepo: PostsQueryRepository,
@@ -41,6 +53,13 @@ export default class PostsController {
 
   @Get()
   @UseGuards(OptionalBearerAuthGuard)
+  @ApiOperation({ summary: 'Get post list with pagination' })
+  @ApiQuery({ type: GetPostsQuery })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: SwaggerPostPage,
+  })
   async get(
     @Query() reqQuery: any,
     @User() user: TokenPayload,
@@ -48,8 +67,18 @@ export default class PostsController {
     const query = new GetPostsQuery(reqQuery, undefined, user?.userId);
     return this.queryRepo.getPosts(query);
   }
+
   @Get(':id')
   @UseGuards(OptionalBearerAuthGuard)
+  @ApiOperation({ summary: 'Get post by id' })
+  @ApiParam({ name: 'id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: PostViewModel,
+  })
+  @ApiResponse({ status: 404, description: 'Not found' })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
   async getOne(
     @Param() params: IdParams,
     @User() user: TokenPayload,
@@ -59,23 +88,45 @@ export default class PostsController {
     return result;
   }
 
-  @Get(':id/comments')
+  @Get(':postId/comments')
   @UseGuards(OptionalBearerAuthGuard)
+  @ApiOperation({ summary: 'Get comments by post id' })
+  @ApiParam({ name: 'postId' })
+  @ApiQuery({ type: GetCommentsQuery })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: SwaggerCommentPage,
+  })
+  @ApiResponse({ status: 404, description: 'Post not found' })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
   async getComments(
     @Param() params: IdParams,
     @Query() reqQuery: any,
     @User() user: TokenPayload,
   ): Promise<PageViewModel<CommentViewModel>> {
-    const post = await this.queryRepo.getPost(params.id, undefined);
+    const post = await this.queryRepo.getPost(params.postId, undefined);
     if (!post) throw new NotFoundException();
 
-    const query = new GetCommentsQuery(reqQuery, params.id, user?.userId);
+    const query = new GetCommentsQuery(reqQuery, params.postId, user?.userId);
     return this.commentsQueryRepo.getComments(query);
   }
 
-  @Post(':id/comments')
+  @Post(':postId/comments')
   @UseGuards(BearerAuthGuard)
   @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create comment' })
+  @ApiParam({ name: 'postId' })
+  @ApiBody({ type: CommentInputModel })
+  @ApiResponse({
+    status: 201,
+    description: 'Returns created comment',
+    type: CommentViewModel,
+  })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'User is banned' })
+  @ApiResponse({ status: 404, description: 'Post not found' })
   async createComment(
     @Param() params: IdParams,
     @Body() data: CommentInputModel,
@@ -83,7 +134,7 @@ export default class PostsController {
   ): Promise<CommentViewModel> {
     const result = await this.commandBus.execute(
       new CreateCommentCommand({
-        postId: params.id,
+        postId: params.postId,
         userId: user.userId,
         content: data.content,
       }),
@@ -97,10 +148,18 @@ export default class PostsController {
     throw new BadRequestException();
   }
 
-  @Put(':id/like-status')
+  @Put(':postId/like-status')
   @UseGuards(BearerAuthGuard)
   @HttpCode(204)
   @ApiBearerAuth()
+  @ApiOperation({ summary: 'Put like for post' })
+  @ApiParam({ name: 'postId' })
+  @ApiBody({ type: LikeInputModel })
+  @ApiResponse({ status: 204, description: 'Success, no data' })
+  @ApiResponse({ status: 400, description: 'Illegal values received' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'User is banned' })
+  @ApiResponse({ status: 404, description: 'Post not found' })
   async putLike(
     @Param() params: IdParams,
     @Body() data: LikeInputModel,
@@ -108,7 +167,7 @@ export default class PostsController {
   ) {
     return this.commandBus.execute(
       new PutPostLikeCommand({
-        entityId: params.id,
+        entityId: params.postId,
         userId: user.userId,
         likeStatus: data.likeStatus,
       }),
