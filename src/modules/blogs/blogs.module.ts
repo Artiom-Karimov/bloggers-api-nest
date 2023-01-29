@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { BlogsController } from './blogs/blogs.controller';
 import BlogsQueryRepository from './blogs/interfaces/blogs.query.repository';
 import BlogsRepository from './blogs/interfaces/blogs.repository';
-import CommentsController from './comments/comments.controller';
+import { CommentsController } from './comments/comments.controller';
 import CommentsQueryRepository from './comments/interfaces/comments.query.repository';
 import CommentsRepository from './comments/interfaces/comments.repository';
 import { BlogIdValidator } from './blogs/models/input/blog.id.validator';

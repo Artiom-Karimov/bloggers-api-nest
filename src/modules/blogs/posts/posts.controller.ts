@@ -117,7 +117,6 @@ export class PostsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create comment' })
   @ApiParam({ name: 'postId' })
-  @ApiBody({ type: CommentInputModel })
   @ApiResponse({
     status: 201,
     description: 'Returns created comment',
@@ -154,7 +153,6 @@ export class PostsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Put like for post' })
   @ApiParam({ name: 'postId' })
-  @ApiBody({ type: LikeInputModel })
   @ApiResponse({ status: 204, description: 'Success, no data' })
   @ApiResponse({ status: 400, description: 'Illegal values received' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
