@@ -8,8 +8,8 @@ import {
 } from 'typeorm';
 import { QuizQuestion } from './quiz.question';
 import { QuizParticipant } from './quiz.participant';
-import { AnswerInfo } from '../view/quiz.view.model';
 import IdGenerator from '../../../../common/utils/id.generator';
+import { AnswerInfo, AnswerStatus } from '../view/player.progress';
 
 @Entity()
 @Index(['questionId', 'participantId'], { unique: true })
@@ -61,7 +61,7 @@ export class QuizAnswer {
   public getInfo(): AnswerInfo {
     return new AnswerInfo(
       this.question.questionId,
-      this.isCorrect ? 'Correct' : 'Incorrect',
+      this.isCorrect ? AnswerStatus.Correct : AnswerStatus.Incorrect,
       this.createdAt.toISOString(),
     );
   }

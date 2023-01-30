@@ -5,13 +5,11 @@ import { regex } from '../src/common/utils/validation.regex';
 import UserSampleGenerator, { Tokens } from './utils/user.sample.generator';
 import UserViewModel from '../src/modules/users/models/view/user.view.model';
 import IdGenerator from '../src/common/utils/id.generator';
-import {
-  AnswerInfo,
-  QuizViewModel,
-} from '../src/modules/quiz/models/view/quiz.view.model';
+import { QuizViewModel } from '../src/modules/quiz/models/view/quiz.view.model';
 import * as config from '../src/config/admin';
 import { QuestionViewModel } from '../src/modules/quiz/models/view/question.view.model';
 import { QuestionSampleGenerator } from './utils/question.sample.generator';
+import { AnswerInfo } from '../src/modules/quiz/models/view/player.progress';
 
 jest.useRealTimers();
 

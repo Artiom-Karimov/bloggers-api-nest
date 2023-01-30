@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { AnswerInfo } from '../../models/view/quiz.view.model';
 import { QuizRepository } from '../../interfaces/quiz.repository';
 import {
   ForbiddenException,
@@ -8,6 +7,7 @@ import {
 } from '@nestjs/common/exceptions';
 import { SendQuizAnswerCommand } from '../commands/send.quiz.answer.command';
 import { QueryRunner } from 'typeorm';
+import { AnswerInfo } from '../../models/view/player.progress';
 
 @CommandHandler(SendQuizAnswerCommand)
 export class SendQuizAnswerHandler

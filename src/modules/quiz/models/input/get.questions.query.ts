@@ -1,8 +1,11 @@
+import { ApiProperty } from '@nestjs/swagger';
 import PageQueryParams from '../../../../common/models/page.query.params';
 import { regex } from '../../../../common/utils/validation.regex';
 
 export class GetQuestionsQuery extends PageQueryParams {
+  @ApiProperty({ required: false })
   public bodySearchTerm: string | null = null;
+
   protected override sortByValues = [
     'createdAt',
     'updatedAt',
