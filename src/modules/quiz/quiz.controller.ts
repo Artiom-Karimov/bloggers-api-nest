@@ -14,6 +14,7 @@ import { HttpCode } from '@nestjs/common/decorators';
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger/dist/decorators';
@@ -39,6 +40,15 @@ export class QuizController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get game by id' })
+  @ApiParam({ name: 'id' })
+  @ApiResponse({ status: 200, description: 'Success', type: QuizViewModel })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 403,
+    description: 'User did not participate in this game',
+  })
+  @ApiResponse({ status: 404, description: 'Game not found' })
   async get(
     @Param() params: IdParams,
     @User() user: TokenPayload,
@@ -48,12 +58,23 @@ export class QuizController {
 
   @Post('connection')
   @HttpCode(200)
+  @ApiOperation({ summary: 'Create new game or connect to existing one' })
+  @ApiResponse({ status: 200, description: 'Success', type: QuizViewModel })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'User already has current game' })
   async connect(@User() user: TokenPayload): Promise<QuizViewModel> {
     return this.commandBus.execute(new ConnectToQuizCommand(user.userId));
   }
 
   @Post('my-current/answers')
   @HttpCode(200)
+  @ApiOperation({ summary: 'Send an answer to the next question' })
+  @ApiResponse({ status: 200, description: 'Success', type: AnswerInfo })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 403,
+    description: 'User already answered all questions or has no current game',
+  })
   async sendAnswer(
     @User() user: TokenPayload,
     @Body() data: AnswerInputModel,
