@@ -22,7 +22,15 @@ import BlogUserBanInputModel from '../blogs/blogs/models/input/blog.user.ban.inp
 import GetBlogUserBansQuery from '../blogs/blogs/models/input/get.blog.user.bans.query';
 import BlogUserBanViewModel from '../blogs/blogs/models/view/blog.user.ban.view.model';
 import IdParams from '../../common/models/id.param';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger/dist';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger/dist/decorators';
+import { BloggerUserBanPage } from '../swagger/models/pages';
 
 @Controller('blogger/users')
 @UseGuards(BearerAuthGuard)
@@ -35,8 +43,17 @@ export default class BloggerUserController {
     private readonly blogRepo: AdminBlogsQueryRepository,
   ) { }
 
-  @Put(':id/ban')
+  @Put(':userId/ban')
   @HttpCode(204)
+  @ApiOperation({ summary: 'Ban/unban user for specified blog' })
+  @ApiParam({ name: 'userId' })
+  @ApiResponse({ status: 204, description: 'Success' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 403,
+    description: 'Blog is not owned by this blogger',
+  })
+  @ApiResponse({ status: 404, description: 'User or blog not found' })
   public async putBan(
     @Param() params: IdParams,
     @Body() data: BlogUserBanInputModel,
@@ -45,24 +62,38 @@ export default class BloggerUserController {
     return this.commandBus.execute(
       new BlogUserBanCommand({
         ...data,
-        userId: params.id,
+        userId: params.userId,
         bloggerId: blogger.userId,
       }),
     );
   }
 
-  @Get('blog/:id')
+  @Get('blog/:blogId')
+  @ApiOperation({ summary: 'Get banned users for specified blog' })
+  @ApiParam({ name: 'blogId' })
+  @ApiQuery({ type: GetBlogUserBansQuery })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: BloggerUserBanPage,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 403,
+    description: 'Blog is not owned by this blogger',
+  })
+  @ApiResponse({ status: 404, description: 'Blog not found' })
   public async getBannedUsers(
     @Param() params: IdParams,
     @User() blogger: TokenPayload,
     @Query() reqQuery: any,
   ): Promise<PageViewModel<BlogUserBanViewModel>> {
-    const blog = await this.blogRepo.getAdminBlog(params.id);
+    const blog = await this.blogRepo.getAdminBlog(params.blogId);
     if (!blog) throw new NotFoundException();
     if (blog.blogOwnerInfo?.userId !== blogger.userId)
       throw new ForbiddenException();
 
-    const query = new GetBlogUserBansQuery(reqQuery, params.id);
+    const query = new GetBlogUserBansQuery(reqQuery, params.blogId);
     return this.banRepo.getUsers(query);
   }
 }

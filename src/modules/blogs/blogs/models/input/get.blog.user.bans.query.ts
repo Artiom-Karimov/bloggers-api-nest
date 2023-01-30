@@ -1,6 +1,8 @@
+import { ApiProperty } from '@nestjs/swagger';
 import PageQueryParams from '../../../../../common/models/page.query.params';
 
 export default class GetBlogUserBansQuery extends PageQueryParams {
+  @ApiProperty({ required: false })
   public searchLoginTerm: string | null = null;
 
   protected override sortByValues = ['login', 'banDate', 'banReason'];
