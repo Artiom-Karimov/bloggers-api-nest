@@ -36,10 +36,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger/dist/decorators';
-import {
-  CommentPage,
-  PostPage,
-} from '../../swagger/models/pages';
+import { CommentPage, PostPage } from '../../swagger/models/pages';
 
 @Controller('posts')
 @ApiTags('Posts (for user)')
