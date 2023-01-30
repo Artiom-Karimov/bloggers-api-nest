@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import PageQueryParams from '../../../../common/models/page.query.params';
 import { regex } from '../../../../common/utils/validation.regex';
 
@@ -8,8 +9,11 @@ export enum BanStatus {
 }
 
 export default class GetUsersQuery extends PageQueryParams {
+  @ApiProperty({ required: false })
   public searchLoginTerm: string | null = null;
+  @ApiProperty({ required: false })
   public searchEmailTerm: string | null = null;
+  @ApiProperty({ required: false, enum: BanStatus })
   public banStatus: BanStatus = BanStatus.All;
 
   protected override sortByValues = ['createdAt', 'login', 'email'];

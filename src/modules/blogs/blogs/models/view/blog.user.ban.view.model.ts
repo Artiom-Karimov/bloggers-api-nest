@@ -1,13 +1,25 @@
-export type BanInfo = {
+import { ApiProperty } from '@nestjs/swagger';
+
+export class BanInfo {
+  @ApiProperty()
   isBanned: boolean;
-  banDate: string | undefined;
-  banReason: string | undefined;
-};
+  @ApiProperty({ nullable: true })
+  banDate?: string;
+  @ApiProperty({ nullable: true })
+  banReason?: string;
+}
 
 export default class BlogUserBanViewModel {
-  constructor(
-    public id: string,
-    public login: string,
-    public banInfo: BanInfo,
-  ) { }
+  @ApiProperty()
+  public id: string;
+  @ApiProperty()
+  public login: string;
+  @ApiProperty()
+  public banInfo: BanInfo;
+
+  constructor(id: string, login: string, banInfo: BanInfo) {
+    this.id = id;
+    this.login = login;
+    this.banInfo = banInfo;
+  }
 }

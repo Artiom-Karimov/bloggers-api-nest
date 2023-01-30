@@ -3,6 +3,10 @@ import BlogViewModel from '../../blogs/blogs/models/view/blog.view.model';
 import PageViewModel from '../../../common/models/page.view.model';
 import PostViewModel from '../../blogs/posts/models/post.view.model';
 import CommentViewModel from '../../blogs/comments/models/view/comment.view.model';
+import BloggerCommentViewModel from '../../blogs/comments/models/view/blogger.comment.view.model';
+import BlogUserBanViewModel from '../../blogs/blogs/models/view/blog.user.ban.view.model';
+import AdminBlogViewModel from '../../blogs/blogs/models/view/admin.blog.view.model';
+import UserViewModel from '../../users/models/view/user.view.model';
 
 export class BlogPage extends PageViewModel<BlogViewModel> {
   @ApiProperty({ type: BlogViewModel, isArray: true })
@@ -13,6 +17,22 @@ export class PostPage extends PageViewModel<PostViewModel> {
   public items: PostViewModel[];
 }
 export class CommentPage extends PageViewModel<CommentViewModel> {
-  @ApiProperty({ type: PostViewModel, isArray: true })
+  @ApiProperty({ type: CommentViewModel, isArray: true })
   public items: CommentViewModel[];
+}
+export class BloggerCommentPage extends PageViewModel<BloggerCommentViewModel> {
+  @ApiProperty({ type: BloggerCommentViewModel, isArray: true })
+  public items: BloggerCommentViewModel[];
+}
+export class BloggerUserBanPage extends PageViewModel<BlogUserBanViewModel> {
+  @ApiProperty({ type: BlogUserBanViewModel, isArray: true })
+  public items: BlogUserBanViewModel[];
+}
+export class AdminBlogPage extends PageViewModel<AdminBlogViewModel> {
+  @ApiProperty({ type: AdminBlogViewModel, isArray: true })
+  public items: AdminBlogViewModel[];
+}
+export class AdminUserPage extends PageViewModel<UserViewModel> {
+  @ApiProperty({ type: UserViewModel, isArray: true })
+  public items: UserViewModel[];
 }
