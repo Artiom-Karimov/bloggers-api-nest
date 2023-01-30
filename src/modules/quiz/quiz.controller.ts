@@ -11,7 +11,12 @@ import { ConnectToQuizCommand } from './usecases/commands/connect.to.quiz.comman
 import { AnswerInputModel } from './models/input/answer.input.model';
 import { SendQuizAnswerCommand } from './usecases/commands/send.quiz.answer.command';
 import { HttpCode } from '@nestjs/common/decorators';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger/dist/decorators';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger/dist/decorators';
 
 @Controller('pair-game-quiz/pairs')
 @UseGuards(BearerAuthGuard)
@@ -24,6 +29,10 @@ export class QuizController {
   ) { }
 
   @Get('my-current')
+  @ApiOperation({ summary: 'Get current (not finished) game' })
+  @ApiResponse({ status: 200, description: 'Success', type: QuizViewModel })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'User does not have current game' })
   async getCurrent(@User() user: TokenPayload): Promise<QuizViewModel> {
     return this.queryBus.execute(new GetCurrentGameQuery(user.userId));
   }
