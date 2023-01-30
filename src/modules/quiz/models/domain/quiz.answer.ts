@@ -8,8 +8,8 @@ import {
 } from 'typeorm';
 import { QuizQuestion } from './quiz.question';
 import { QuizParticipant } from './quiz.participant';
-import { AnswerInfo } from '../view/quiz.view.model';
 import IdGenerator from '../../../../common/utils/id.generator';
+import { AnswerInfo } from '../view/player.progress';
 
 @Entity()
 @Index(['questionId', 'participantId'], { unique: true })

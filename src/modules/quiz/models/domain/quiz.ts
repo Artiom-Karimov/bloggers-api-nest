@@ -4,8 +4,8 @@ import { QuizParticipant } from './quiz.participant';
 import { User } from '../../../users/typeorm/models/user';
 import { Question } from './question';
 import IdGenerator from '../../../../common/utils/id.generator';
-import { AnswerInfo } from '../view/quiz.view.model';
 import * as config from '../../../../config/quiz';
+import { AnswerInfo } from '../view/player.progress';
 
 @Entity()
 export class Quiz {

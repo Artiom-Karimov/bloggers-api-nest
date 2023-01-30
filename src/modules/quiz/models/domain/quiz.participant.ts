@@ -11,8 +11,8 @@ import { Quiz } from './quiz';
 import { User } from '../../../users/typeorm/models/user';
 import { QuizAnswer } from './quiz.answer';
 import * as config from '../../../../config/quiz';
-import { AnswerInfo } from '../view/quiz.view.model';
 import IdGenerator from '../../../../common/utils/id.generator';
+import { AnswerInfo } from '../view/player.progress';
 
 @Entity()
 @Index(['quizId', 'userId'], { unique: true })

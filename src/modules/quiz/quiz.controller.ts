@@ -4,7 +4,7 @@ import { BearerAuthGuard } from '../auth/guards/bearer.auth.guard';
 import { User } from '../auth/guards/user.decorator';
 import TokenPayload from '../auth/models/jwt/token.payload';
 import { GetCurrentGameQuery } from './usecases/queries/get.current.game.query';
-import { AnswerInfo, QuizViewModel } from './models/view/quiz.view.model';
+import { QuizViewModel } from './models/view/quiz.view.model';
 import { GetGameQuery } from './usecases/queries/get.game.query';
 import IdParams from '../../common/models/id.param';
 import { ConnectToQuizCommand } from './usecases/commands/connect.to.quiz.command';
@@ -17,6 +17,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger/dist/decorators';
+import { AnswerInfo } from './models/view/player.progress';
 
 @Controller('pair-game-quiz/pairs')
 @UseGuards(BearerAuthGuard)

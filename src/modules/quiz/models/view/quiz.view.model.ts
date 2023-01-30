@@ -1,30 +1,7 @@
-export class AnswerInfo {
-  public questionId: string;
-  public answerStatus: 'Correct' | 'Incorrect';
-  public addedAt: string;
+import { PlayerProgress } from './player.progress';
 
-  constructor(
-    questionId: string,
-    answerStatus: 'Correct' | 'Incorrect',
-    addedAt: string,
-  ) {
-    this.questionId = questionId;
-    this.answerStatus = answerStatus;
-    this.addedAt = addedAt;
-  }
-}
-export class PlayerInfo {
-  constructor(public id: string, public login: string) { }
-}
 export class QuestionInfo {
   constructor(public id: string, public body: string) { }
-}
-export class PlayerProgress {
-  constructor(
-    public answers: AnswerInfo[],
-    public player: PlayerInfo,
-    public score: number,
-  ) { }
 }
 export enum QuizStatus {
   PendingSecondPlayer = 'PendingSecondPlayer',
