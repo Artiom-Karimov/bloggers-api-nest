@@ -3,9 +3,9 @@ import { ApiProperty } from '@nestjs/swagger';
 export class BanInfo {
   @ApiProperty()
   isBanned: boolean;
-  @ApiProperty({ required: false })
+  @ApiProperty({ nullable: true })
   banDate?: string;
-  @ApiProperty({ required: false })
+  @ApiProperty({ nullable: true })
   banReason?: string;
 }
 
