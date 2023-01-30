@@ -1,17 +1,34 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export class PlayerInfo {
-  constructor(public id: string, public login: string) { }
+  @ApiProperty()
+  public id: string;
+
+  @ApiProperty()
+  public login: string;
+
+  constructor(id: string, login: string) {
+    this.id = id;
+    this.login = login;
+  }
+}
+
+export enum AnswerStatus {
+  Correct = 'Correct',
+  Incorrect = 'Incorrect',
 }
 
 export class AnswerInfo {
+  @ApiProperty()
   public questionId: string;
-  public answerStatus: 'Correct' | 'Incorrect';
+
+  @ApiProperty({ enum: AnswerStatus })
+  public answerStatus: AnswerStatus;
+
+  @ApiProperty()
   public addedAt: string;
 
-  constructor(
-    questionId: string,
-    answerStatus: 'Correct' | 'Incorrect',
-    addedAt: string,
-  ) {
+  constructor(questionId: string, answerStatus: AnswerStatus, addedAt: string) {
     this.questionId = questionId;
     this.answerStatus = answerStatus;
     this.addedAt = addedAt;
@@ -19,9 +36,18 @@ export class AnswerInfo {
 }
 
 export class PlayerProgress {
-  constructor(
-    public answers: AnswerInfo[],
-    public player: PlayerInfo,
-    public score: number,
-  ) { }
+  @ApiProperty({ type: AnswerInfo, isArray: true })
+  public answers: AnswerInfo[];
+
+  @ApiProperty()
+  public player: PlayerInfo;
+
+  @ApiProperty()
+  public score: number;
+
+  constructor(answers: AnswerInfo[], player: PlayerInfo, score: number) {
+    this.answers = answers;
+    this.player = player;
+    this.score = score;
+  }
 }

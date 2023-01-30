@@ -1,7 +1,17 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { PlayerProgress } from './player.progress';
 
 export class QuestionInfo {
-  constructor(public id: string, public body: string) { }
+  @ApiProperty()
+  public id: string;
+
+  @ApiProperty()
+  public body: string;
+
+  constructor(id: string, body: string) {
+    this.id = id;
+    this.body = body;
+  }
 }
 export enum QuizStatus {
   PendingSecondPlayer = 'PendingSecondPlayer',
@@ -10,13 +20,28 @@ export enum QuizStatus {
 }
 
 export class QuizViewModel {
+  @ApiProperty()
   public id: string;
+
+  @ApiProperty()
   public firstPlayerProgress: PlayerProgress;
+
+  @ApiProperty({ nullable: true })
   public secondPlayerProgress: PlayerProgress | null;
+
+  @ApiProperty({ nullable: true, type: QuestionInfo, isArray: true })
   public questions: QuestionInfo[] | null;
+
+  @ApiProperty({ enum: QuizStatus })
   public status: QuizStatus;
+
+  @ApiProperty()
   public pairCreatedDate: string;
+
+  @ApiProperty({ nullable: true })
   public startGameDate: string | null;
+
+  @ApiProperty({ nullable: true })
   public finishGameDate: string | null;
 
   constructor(
