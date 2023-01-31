@@ -6,6 +6,8 @@ import { Quiz } from '../models/domain/quiz';
 import { IsNull, Repository } from 'typeorm';
 import { QuizMapper } from './quiz.mapper';
 import { QuizParticipant } from '../models/domain/quiz.participant';
+import { GetGamesQueryParams } from '../models/input/get.games.query.params';
+import PageViewModel from '../../../common/models/page.view.model';
 
 @Injectable()
 export class OrmQuizQueryRepository extends QuizQueryRepository {
@@ -18,6 +20,12 @@ export class OrmQuizQueryRepository extends QuizQueryRepository {
     super();
   }
 
+  public async getUserGames(
+    userId: string,
+    params: GetGamesQueryParams,
+  ): Promise<PageViewModel<QuizViewModel>> {
+    throw new Error('not implemented');
+  }
   public async getGame(quizId: string): Promise<QuizViewModel> {
     const game = await this.repo.findOne({ where: { id: quizId } });
     return game ? QuizMapper.toView(game) : undefined;

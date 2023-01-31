@@ -8,6 +8,7 @@ import BlogUserBanViewModel from '../../blogs/blogs/models/view/blog.user.ban.vi
 import AdminBlogViewModel from '../../blogs/blogs/models/view/admin.blog.view.model';
 import UserViewModel from '../../users/models/view/user.view.model';
 import { QuestionViewModel } from '../../quiz/models/view/question.view.model';
+import { QuizViewModel } from '../../quiz/models/view/quiz.view.model';
 
 export class BlogPage extends PageViewModel<BlogViewModel> {
   @ApiProperty({ type: BlogViewModel, isArray: true })
@@ -40,4 +41,8 @@ export class AdminUserPage extends PageViewModel<UserViewModel> {
 export class AdminQuestionPage extends PageViewModel<QuestionViewModel> {
   @ApiProperty({ type: QuestionViewModel, isArray: true })
   public items: QuestionViewModel[];
+}
+export class QuizPage extends PageViewModel<QuizViewModel> {
+  @ApiProperty({ type: QuizViewModel, isArray: true })
+  public items: QuizViewModel[];
 }

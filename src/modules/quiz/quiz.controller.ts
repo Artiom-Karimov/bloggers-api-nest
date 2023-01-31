@@ -10,15 +10,20 @@ import IdParams from '../../common/models/id.param';
 import { ConnectToQuizCommand } from './usecases/commands/connect.to.quiz.command';
 import { AnswerInputModel } from './models/input/answer.input.model';
 import { SendQuizAnswerCommand } from './usecases/commands/send.quiz.answer.command';
-import { HttpCode } from '@nestjs/common/decorators';
+import { HttpCode, Query } from '@nestjs/common/decorators';
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger/dist/decorators';
 import { AnswerInfo } from './models/view/player.progress';
+import { QuizPage } from '../swagger/models/pages';
+import { GetUserGamesQuery } from './usecases/queries/get.user.games.query';
+import PageViewModel from '../../common/models/page.view.model';
+import { GetGamesQueryParams } from './models/input/get.games.query.params';
 
 @Controller('pair-game-quiz/pairs')
 @UseGuards(BearerAuthGuard)
@@ -29,6 +34,19 @@ export class QuizController {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) { }
+
+  @Get('my')
+  @ApiOperation({ summary: 'Get all games of current user' })
+  @ApiQuery({ type: GetGamesQueryParams })
+  @ApiResponse({ status: 200, description: 'Success', type: QuizPage })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getAll(
+    @User() user: TokenPayload,
+    @Query() reqQuery: any,
+  ): Promise<PageViewModel<QuizViewModel>> {
+    const params = new GetGamesQueryParams(reqQuery);
+    return this.queryBus.execute(new GetUserGamesQuery(user.userId, params));
+  }
 
   @Get('my-current')
   @ApiOperation({ summary: 'Get current (not finished) game' })
