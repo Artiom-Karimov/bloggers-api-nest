@@ -24,6 +24,7 @@ import { SendQuizAnswerHandler } from './usecases/handlers/send.quiz.answer.hand
 import { GetGameHandler } from './usecases/handlers/get.game.handler';
 import { QuizController } from './quiz.controller';
 import { UsersModule } from '../users/users.module';
+import { GetUserGamesHandler } from './usecases/handlers/get.user.games.handler';
 
 const commandHandlers = [
   CreateQuestionHandler,
@@ -33,6 +34,7 @@ const commandHandlers = [
   ConnectToQuizHandler,
   SendQuizAnswerHandler,
   GetCurrentGameHandler,
+  GetUserGamesHandler,
   GetGameHandler,
 ];
 
