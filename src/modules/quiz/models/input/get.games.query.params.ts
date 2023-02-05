@@ -3,8 +3,9 @@ import PageQueryParams from '../../../../common/models/page.query.params';
 export class GetGamesQueryParams extends PageQueryParams {
   protected override sortByValues = [
     'createdAt',
-    'startedAt',
-    'endedAt',
+    'pairCreatedDate',
+    'startGameDate',
+    'finishGameDate',
     'status',
   ];
 
