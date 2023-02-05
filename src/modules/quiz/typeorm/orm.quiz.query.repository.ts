@@ -66,11 +66,13 @@ export class OrmQuizQueryRepository extends QuizQueryRepository {
       .offset(page.calculateSkip())
       .getManyAndCount();
 
-    console.log(JSON.stringify(games));
     page.setTotalCount(count);
 
     await this.loadQuestions(games);
     await this.loadPlayers(games);
+
+    console.log(JSON.stringify(games));
+
     return page.add(...games.map((q) => QuizMapper.toView(q)));
   }
 
