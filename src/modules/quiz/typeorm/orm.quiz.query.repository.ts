@@ -74,13 +74,33 @@ export class OrmQuizQueryRepository extends QuizQueryRepository {
     userId: string,
     params: GetGamesQueryParams,
   ): SelectQueryBuilder<Quiz> {
-    return this.repo
+    const builder = this.repo
       .createQueryBuilder('quiz')
       .leftJoinAndSelect('quiz.questions', 'q')
       .leftJoinAndSelect('q.question', 'qq')
       .leftJoin('quiz.participants', 'p')
-      .where('p."userId" = :userId', { userId })
-      .orderBy(`quiz."${params.sortBy}"`, params.sortDirection);
+      .where('p."userId" = :userId', { userId });
+
+    return this.addOrderBy(builder, params);
+  }
+
+  private addOrderBy(
+    builder: SelectQueryBuilder<Quiz>,
+    params: GetGamesQueryParams,
+  ): SelectQueryBuilder<Quiz> {
+    const { sortBy, sortDirection } = params;
+
+    if (sortBy === 'status') {
+      const nulls = sortDirection === 'ASC' ? 'NULLS FIRST' : 'NULLS LAST';
+
+      builder
+        .orderBy(`quiz."endedAt"`, sortDirection, nulls)
+        .addOrderBy(`quiz."startedAt"`, sortDirection, nulls)
+        .addOrderBy(`quiz."createdAt"`, sortDirection);
+      return builder;
+    }
+    builder.orderBy(`quiz."${params.sortBy}"`, params.sortDirection);
+    return builder;
   }
 
   private async loadPlayers(games: Quiz[]): Promise<void> {
