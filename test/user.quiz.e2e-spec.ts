@@ -452,7 +452,7 @@ describe('QuizController (e2e)', () => {
 
   it('user1 should get his own games list', async () => {
     const result = await request(app.getHttpServer())
-      .get(`${base}/my`)
+      .get(`${base}/my?sortBy=status`)
       .set('Authorization', `Bearer ${users[0].access}`);
 
     expect(result.statusCode).toBe(200);
