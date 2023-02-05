@@ -1,11 +1,8 @@
 import { Quiz } from '../models/domain/quiz';
 import { QuizParticipant } from '../models/domain/quiz.participant';
-import {
-  QuestionInfo,
-  QuizStatus,
-  QuizViewModel,
-} from '../models/view/quiz.view.model';
+import { QuestionInfo, QuizViewModel } from '../models/view/quiz.view.model';
 import { PlayerInfo, PlayerProgress } from '../models/view/player.progress';
+import { QuizStatus } from '../models/domain/quiz.status';
 
 export class QuizMapper {
   public static toView(quiz: Quiz): QuizViewModel {
