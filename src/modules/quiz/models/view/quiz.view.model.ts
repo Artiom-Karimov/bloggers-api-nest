@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PlayerProgress } from './player.progress';
+import { QuizStatus } from '../domain/quiz.status';
 
 export class QuestionInfo {
   @ApiProperty()
@@ -12,11 +13,6 @@ export class QuestionInfo {
     this.id = id;
     this.body = body;
   }
-}
-export enum QuizStatus {
-  PendingSecondPlayer = 'PendingSecondPlayer',
-  Active = 'Active',
-  Finished = 'Finished',
 }
 
 export class QuizViewModel {

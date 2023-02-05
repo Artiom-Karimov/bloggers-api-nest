@@ -6,6 +6,7 @@ import { Question } from './question';
 import IdGenerator from '../../../../common/utils/id.generator';
 import * as config from '../../../../config/quiz';
 import { AnswerInfo } from '../view/player.progress';
+import { QuizStatus } from './quiz.status';
 
 @Entity()
 export class Quiz {
@@ -21,6 +22,14 @@ export class Quiz {
   @Column({ type: 'timestamptz', nullable: true })
   endedAt: Date | null;
 
+  @Column({
+    type: 'character varying',
+    length: 20,
+    nullable: false,
+    default: 'PendingSecondPlayer',
+  })
+  status: QuizStatus;
+
   @OneToMany(() => QuizQuestion, (qn) => qn.quiz, {
     eager: true,
   })
@@ -35,6 +44,7 @@ export class Quiz {
     const quiz = new Quiz();
     quiz.id = IdGenerator.generate();
     quiz.createdAt = new Date();
+    quiz.status = QuizStatus.PendingSecondPlayer;
     quiz.addParticipant(firstParticipant);
     quiz.mapQuestions(questions);
     return quiz;
@@ -63,6 +73,7 @@ export class Quiz {
     this.participants.push(QuizParticipant.create(user, this));
     if (this.participants.length === config.playerAmount) {
       this.startedAt = new Date();
+      this.status = QuizStatus.Active;
     }
   }
   public acceptAnswer(userId: string, answer: string): AnswerInfo {
@@ -95,6 +106,7 @@ export class Quiz {
     }
 
     this.endedAt = new Date();
+    this.status = QuizStatus.Finished;
     this.assignTimeBonus();
     this.assignWinner();
   }

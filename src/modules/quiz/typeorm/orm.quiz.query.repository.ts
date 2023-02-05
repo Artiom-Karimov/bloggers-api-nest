@@ -93,10 +93,8 @@ export class OrmQuizQueryRepository extends QuizQueryRepository {
     const { sortBy, sortDirection } = params;
 
     if (sortBy === 'status') {
-      const nulls = sortDirection === 'ASC' ? 'NULLS FIRST' : 'NULLS LAST';
       return builder
-        .orderBy(`quiz."endedAt"`, sortDirection, nulls)
-        .addOrderBy(`quiz."startedAt"`, sortDirection, nulls)
+        .orderBy(`quiz."status"`, sortDirection)
         .addOrderBy(`quiz."createdAt"`, 'DESC');
     }
     if (sortBy === 'startGameDate') {
