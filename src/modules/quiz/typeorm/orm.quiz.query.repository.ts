@@ -8,6 +8,7 @@ import { QuizMapper } from './quiz.mapper';
 import { QuizParticipant } from '../models/domain/quiz.participant';
 import { GetGamesQueryParams } from '../models/input/get.games.query.params';
 import PageViewModel from '../../../common/models/page.view.model';
+import { QuizQuestion } from '../models/domain/quiz.question';
 
 @Injectable()
 export class OrmQuizQueryRepository extends QuizQueryRepository {
@@ -16,6 +17,8 @@ export class OrmQuizQueryRepository extends QuizQueryRepository {
     private readonly repo: Repository<Quiz>,
     @InjectRepository(QuizParticipant)
     private readonly participantRepo: Repository<QuizParticipant>,
+    @InjectRepository(QuizQuestion)
+    private readonly questionRepo: Repository<QuizQuestion>,
   ) {
     super();
   }
@@ -57,15 +60,16 @@ export class OrmQuizQueryRepository extends QuizQueryRepository {
     );
 
     const builder = this.getQuizQueryBuilder(userId, params);
-    console.log(builder.getSql());
 
     const [games, count] = await builder
       .limit(page.pageSize)
       .offset(page.calculateSkip())
       .getManyAndCount();
 
+    console.log(JSON.stringify(games));
     page.setTotalCount(count);
 
+    await this.loadQuestions(games);
     await this.loadPlayers(games);
     return page.add(...games.map((q) => QuizMapper.toView(q)));
   }
@@ -76,8 +80,6 @@ export class OrmQuizQueryRepository extends QuizQueryRepository {
   ): SelectQueryBuilder<Quiz> {
     const builder = this.repo
       .createQueryBuilder('quiz')
-      .leftJoinAndSelect('quiz.questions', 'q')
-      .leftJoinAndSelect('q.question', 'qq')
       .leftJoin('quiz.participants', 'p')
       .where('p."userId" = :userId', { userId });
 
@@ -103,6 +105,24 @@ export class OrmQuizQueryRepository extends QuizQueryRepository {
     return builder;
   }
 
+  private async loadQuestions(games: Quiz[]): Promise<void> {
+    const ids = games.map((g) => g.id);
+    const result = await this.questionRepo.find({
+      where: { quizId: In(ids) },
+      loadEagerRelations: true,
+    });
+
+    for (const q of result) {
+      const game = games.find((g) => g.id === q.quizId);
+      if (!game)
+        throw new Error(
+          "retrieving game list from db: wrong question's quizId",
+        );
+      if (!game.questions) game.questions = [];
+
+      game.questions.push(q);
+    }
+  }
   private async loadPlayers(games: Quiz[]): Promise<void> {
     const ids = games.map((g) => g.id);
     const result = await this.participantRepo.find({
