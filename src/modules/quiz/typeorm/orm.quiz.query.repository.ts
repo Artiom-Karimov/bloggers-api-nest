@@ -71,8 +71,6 @@ export class OrmQuizQueryRepository extends QuizQueryRepository {
     await this.loadQuestions(games);
     await this.loadPlayers(games);
 
-    console.log(JSON.stringify(games));
-
     return page.add(...games.map((q) => QuizMapper.toView(q)));
   }
 
@@ -96,15 +94,22 @@ export class OrmQuizQueryRepository extends QuizQueryRepository {
 
     if (sortBy === 'status') {
       const nulls = sortDirection === 'ASC' ? 'NULLS FIRST' : 'NULLS LAST';
-
-      builder
+      return builder
         .orderBy(`quiz."endedAt"`, sortDirection, nulls)
         .addOrderBy(`quiz."startedAt"`, sortDirection, nulls)
-        .addOrderBy(`quiz."createdAt"`, sortDirection);
-      return builder;
+        .addOrderBy(`quiz."createdAt"`, 'DESC');
     }
-    builder.orderBy(`quiz."${params.sortBy}"`, params.sortDirection);
-    return builder;
+    if (sortBy === 'startGameDate') {
+      return builder
+        .orderBy(`quiz."startedAt"`, sortDirection)
+        .addOrderBy(`quiz."createdAt"`, 'DESC');
+    }
+    if (sortBy === 'finishGameDate') {
+      return builder
+        .orderBy(`quiz."endedAt"`, sortDirection)
+        .addOrderBy(`quiz."createdAt"`, 'DESC');
+    }
+    return builder.orderBy(`quiz."createdAt"`, params.sortDirection);
   }
 
   private async loadQuestions(games: Quiz[]): Promise<void> {
