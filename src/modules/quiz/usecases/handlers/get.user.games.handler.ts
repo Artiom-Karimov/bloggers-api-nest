@@ -5,7 +5,7 @@ import { GetUserGamesQuery } from '../queries/get.user.games.query';
 import PageViewModel from '../../../../common/models/page.view.model';
 
 @QueryHandler(GetUserGamesQuery)
-export class GetGameHandler implements IQueryHandler<GetUserGamesQuery> {
+export class GetUserGamesHandler implements IQueryHandler<GetUserGamesQuery> {
   constructor(private readonly repo: QuizQueryRepository) { }
 
   async execute(

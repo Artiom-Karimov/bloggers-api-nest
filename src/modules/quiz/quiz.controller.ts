@@ -36,7 +36,7 @@ export class QuizController {
   ) { }
 
   @Get('my')
-  @ApiOperation({ summary: 'Get all games of current user' })
+  @ApiOperation({ summary: 'Get all games by current user' })
   @ApiQuery({ type: GetGamesQueryParams })
   @ApiResponse({ status: 200, description: 'Success', type: QuizPage })
   @ApiResponse({ status: 401, description: 'Unauthorized' })

@@ -10,6 +10,7 @@ import * as config from '../src/config/admin';
 import { QuestionViewModel } from '../src/modules/quiz/models/view/question.view.model';
 import { QuestionSampleGenerator } from './utils/question.sample.generator';
 import { AnswerInfo } from '../src/modules/quiz/models/view/player.progress';
+import PageViewModel from '../src/common/models/page.view.model';
 
 jest.useRealTimers();
 
@@ -49,6 +50,7 @@ describe('QuizController (e2e)', () => {
   it('unauthorized access', async () => {
     const noAuth = [
       request(app.getHttpServer()).get(`${base}/my-current`),
+      request(app.getHttpServer()).get(`${base}/my`),
       request(app.getHttpServer()).get(`${base}/${IdGenerator.generate()}`),
       request(app.getHttpServer()).post(`${base}/connection`).send('poop!'),
       request(app.getHttpServer())
@@ -446,5 +448,22 @@ describe('QuizController (e2e)', () => {
       .set('Authorization', `Bearer ${users[2].access}`);
 
     expect(result.statusCode).toBe(403);
+  });
+
+  it('user1 should get his own games list', async () => {
+    const result = await request(app.getHttpServer())
+      .get(`${base}/my`)
+      .set('Authorization', `Bearer ${users[0].access}`);
+
+    expect(result.statusCode).toBe(200);
+    const body = result.body as PageViewModel<QuizViewModel>;
+
+    expect(body).toEqual({
+      pagesCount: 1,
+      page: 1,
+      pageSize: 10,
+      totalCount: 1,
+      items: [game],
+    });
   });
 });
