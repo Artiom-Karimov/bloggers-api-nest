@@ -85,7 +85,7 @@ export class Quiz {
     if (!user) throw new Error('user is not in current game');
     const result = user.acceptAnswer(answer);
 
-    this.checkIfGameEnded();
+    this.endGameIfNeeded();
 
     return result;
   }
@@ -101,7 +101,7 @@ export class Quiz {
       this.questions.push(QuizQuestion.create(this, q, i + 1));
     });
   }
-  protected checkIfGameEnded() {
+  protected endGameIfNeeded() {
     for (const p of this.participants) {
       if (!p.allAnswersMade()) return;
     }
