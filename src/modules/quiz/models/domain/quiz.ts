@@ -79,13 +79,16 @@ export class Quiz {
   }
   public acceptAnswer(userId: string, answer: string): AnswerInfo | null {
     if (this.participants.length !== config.playerAmount) return null;
-    const user = this.participants.find((p) => p.userId === userId);
+    const user = this.getParticipant(userId);
     if (!user) return null;
     const result = user.acceptAnswer(answer);
 
     this.endGameIfNeeded();
 
     return result;
+  }
+  public getParticipant(userId: string): QuizParticipant | null {
+    return this.participants.find((p) => p.userId === userId);
   }
 
   protected initialize(): Quiz {

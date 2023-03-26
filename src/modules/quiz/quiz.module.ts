@@ -26,6 +26,8 @@ import { QuizController } from './quiz.controller';
 import { UsersModule } from '../users/users.module';
 import { GetUserGamesHandler } from './usecases/handlers/get.user.games.handler';
 import { QuizStats } from './models/domain/quiz.stats';
+import { QuizStatsRepository } from './interfaces/quiz.stats.repository';
+import { OrmQuizStatsRepository } from './typeorm/orm.quiz.stats.repository';
 
 const commandHandlers = [
   CreateQuestionHandler,
@@ -68,6 +70,10 @@ const commandHandlers = [
     {
       provide: QuizQueryRepository,
       useClass: OrmQuizQueryRepository,
+    },
+    {
+      provide: QuizStatsRepository,
+      useClass: OrmQuizStatsRepository,
     },
     ...commandHandlers,
   ],

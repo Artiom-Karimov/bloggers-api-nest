@@ -8,6 +8,8 @@ import {
 import { SendQuizAnswerCommand } from '../commands/send.quiz.answer.command';
 import { QueryRunner } from 'typeorm';
 import { AnswerInfo } from '../../models/view/player.progress';
+import { QuizStatus } from '../../models/domain/quiz.status';
+import { Quiz } from '../../models/domain/quiz';
 
 @CommandHandler(SendQuizAnswerCommand)
 export class SendQuizAnswerHandler
@@ -20,17 +22,13 @@ export class SendQuizAnswerHandler
     if (!quizId)
       throw new ForbiddenException("user doesn't have an active game");
 
-    try {
-      const result = await this.commitAnswer(
-        quizId,
-        command.userId,
-        command.data.answer,
-      );
-      return result;
-    } catch (error) {
-      if (error instanceof HttpException) throw error;
-      throw new ForbiddenException('cannot commit the answer');
-    }
+    const result = await this.commitAnswer(
+      quizId,
+      command.userId,
+      command.data.answer,
+    );
+
+    return result;
   }
 
   protected async commitAnswer(
@@ -48,15 +46,22 @@ export class SendQuizAnswerHandler
       if (!result) throw new ForbiddenException('answer was not accepted');
 
       await this.repo.save(game, qr);
+      await this.updateStatsIfEnded(game);
+
       await qr.commitTransaction();
+      await qr.release();
 
       return result;
     } catch (error) {
       console.error(error);
       if (qr) await qr.rollbackTransaction();
-      throw error;
-    } finally {
       if (qr) await qr.release();
+      throw error;
     }
+  }
+
+  protected async updateStatsIfEnded(game: Quiz): Promise<void> {
+    if (game?.status !== QuizStatus.Finished) return;
+    // TODO: create or update stats for all players
   }
 }
