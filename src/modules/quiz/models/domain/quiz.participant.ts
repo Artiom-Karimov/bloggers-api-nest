@@ -67,11 +67,9 @@ export class QuizParticipant {
     return qp;
   }
 
-  public acceptAnswer(answer: string): AnswerInfo {
+  public acceptAnswer(answer: string): AnswerInfo | null {
     if (!this.answers) this.answers = [];
-    if (this.allAnswersMade()) {
-      throw new Error('all the answers were already sent');
-    }
+    if (this.allAnswersMade()) return null;
     const question = this.quiz.questions[this.answers.length];
     const ans = QuizAnswer.create(this, question, answer);
     this.answers.push(ans);

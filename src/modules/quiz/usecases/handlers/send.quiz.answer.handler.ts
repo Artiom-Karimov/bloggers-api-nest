@@ -45,6 +45,8 @@ export class SendQuizAnswerHandler
       if (!game) throw new NotFoundException('game not found');
 
       const result = game.acceptAnswer(userId, answer);
+      if (!result) throw new ForbiddenException('answer was not accepted');
+
       await this.repo.save(game, qr);
       await qr.commitTransaction();
 

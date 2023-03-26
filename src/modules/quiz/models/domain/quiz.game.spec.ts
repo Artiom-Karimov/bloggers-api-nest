@@ -1,6 +1,8 @@
 import IdGenerator from '../../../../common/utils/id.generator';
 import { regex } from '../../../../common/utils/validation.regex';
 import { User } from '../../../users/typeorm/models/user';
+import { AnswerInfo } from '../view/player.progress';
+import { ParticipantStatus } from './participant.status';
 import { Question } from './question';
 import { Quiz } from './quiz';
 import { QuizAnswer } from './quiz.answer';
@@ -39,18 +41,17 @@ describe('Quiz game tests', () => {
   });
 
   it('Answers should not be accepted without second player', () => {
-    const illegalActivity = () => {
-      quiz.acceptAnswer(player1.id, 'Here you go, backend');
-    };
-
-    expect(illegalActivity).toThrow(Error);
+    const result = quiz.acceptAnswer(player1.id, 'Here you go, backend');
+    expect(result).toBeNull();
+    expect(quiz.participants[0].answers).toBeFalsy();
   });
 
   it('second player should be added', () => {
-    quiz.addParticipant(player2);
+    const result = quiz.addParticipant(player2);
 
-    expect(quiz.startedAt).toBeInstanceOf(Date);
-    expect(quiz.endedAt).toBeFalsy();
+    expect(result).not.toBeNull();
+    expect(result.startedAt).toBeInstanceOf(Date);
+    expect(result.endedAt).toBeFalsy();
 
     const firstParticipant = QuizParticipant.create(player1, quiz);
     const secondParticipant = QuizParticipant.create(player2, quiz);
@@ -69,12 +70,13 @@ describe('Quiz game tests', () => {
     ]);
   });
 
-  it('answers from non-participating user should make error', () => {
-    const illegalActivity = () => {
-      quiz.acceptAnswer(IdGenerator.generate(), 'Here you go, backend');
-    };
+  it('answers from non-participating user should not be accepted', () => {
+    const result = quiz.acceptAnswer(
+      IdGenerator.generate(),
+      'Here you go, backend',
+    );
 
-    expect(illegalActivity).toThrow(Error);
+    expect(result).toBeNull();
   });
 
   it('player2 should be able to send answers', () => {
@@ -136,26 +138,23 @@ describe('Quiz game tests', () => {
     }
 
     const p1 = quiz.participants.find((p) => p.userId === player1.id);
-    expect(p1.isWinner).toBe(true);
+    expect(p1.status).toBe(ParticipantStatus.Win);
     expect(p1.score).toBe(questionAmount + 1); // Time bonus
 
     const p2 = quiz.participants.find((p) => p.userId === player2.id);
-    expect(p2.isWinner).toBe(false);
+    expect(p2.status).toBe(ParticipantStatus.Lose);
     expect(p2.score).toBe(questionAmount - 1);
   });
 
   it('no more answers should be accepted', () => {
-    const illegalActivity = (player: User) => {
-      quiz.acceptAnswer(player.id, 'Here you go, backend');
-    };
-    const p1 = () => {
-      illegalActivity(player1);
-    };
-    const p2 = () => {
-      illegalActivity(player2);
+    const illegalActivity = (player: User): AnswerInfo | null => {
+      return quiz.acceptAnswer(player.id, 'Here you go, backend');
     };
 
-    expect(p1).toThrow(Error);
-    expect(p2).toThrow(Error);
+    const p1 = illegalActivity(player1);
+    const p2 = illegalActivity(player2);
+
+    expect(p1).toBeNull();
+    expect(p2).toBeNull();
   });
 });
