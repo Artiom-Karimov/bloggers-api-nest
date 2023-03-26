@@ -13,6 +13,7 @@ import { QuizAnswer } from './quiz.answer';
 import * as config from '../../../../config/quiz';
 import IdGenerator from '../../../../common/utils/id.generator';
 import { AnswerInfo } from '../view/player.progress';
+import { ParticipantStatus } from './participant.status';
 
 @Entity()
 @Index(['quizId', 'userId'], { unique: true })
@@ -36,8 +37,14 @@ export class QuizParticipant {
   @Column({ type: 'int', nullable: false, default: 0 })
   score: number;
 
-  @Column({ type: 'boolean', nullable: true })
-  isWinner: boolean | null;
+  @Column({
+    type: 'character varying',
+    length: 32,
+    collation: 'C',
+    enum: ParticipantStatus,
+    nullable: true,
+  })
+  status: ParticipantStatus | null;
 
   @Column({ type: 'timestamptz', nullable: false })
   addedAt: Date;
@@ -56,6 +63,7 @@ export class QuizParticipant {
     qp.userId = user.id;
     qp.score = 0;
     qp.addedAt = new Date();
+    qp.status = ParticipantStatus.Unknown;
     return qp;
   }
 

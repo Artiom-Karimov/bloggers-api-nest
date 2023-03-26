@@ -6,6 +6,7 @@ import { DataSource, IsNull, QueryRunner, SelectQueryBuilder } from 'typeorm';
 import { QuizParticipant } from '../models/domain/quiz.participant';
 import { QuizAnswer } from '../models/domain/quiz.answer';
 import { QuizQuestion } from '../models/domain/quiz.question';
+import { ParticipantStatus } from '../models/domain/participant.status';
 
 @Injectable()
 export class OrmQuizRepository extends QuizRepository {
@@ -18,7 +19,10 @@ export class OrmQuizRepository extends QuizRepository {
   public async getCurrentGameId(userId: string): Promise<string> {
     const result = await this.db.getRepository(QuizParticipant).findOne({
       select: { quizId: true },
-      where: { userId, isWinner: IsNull() },
+      where: [
+        { userId, status: IsNull() },
+        { userId, status: ParticipantStatus.Unknown },
+      ],
       loadEagerRelations: false,
     });
     return result ? result.quizId : undefined;

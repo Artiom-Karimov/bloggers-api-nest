@@ -19,6 +19,7 @@ import { Quiz } from './src/modules/quiz/models/domain/quiz';
 import { QuizQuestion } from './src/modules/quiz/models/domain/quiz.question';
 import { QuizAnswer } from './src/modules/quiz/models/domain/quiz.answer';
 import { QuizParticipant } from './src/modules/quiz/models/domain/quiz.participant';
+import { QuizStats } from './src/modules/quiz/models/domain/quiz.stats';
 
 export default new DataSource({
   ...sql.config,
@@ -42,6 +43,7 @@ export default new DataSource({
     QuizParticipant,
     QuizQuestion,
     QuizAnswer,
+    QuizStats,
   ],
   migrations: [__dirname + '/src/migrations/*.ts'],
 } as DataSourceOptions);
