@@ -25,6 +25,7 @@ import { GetGameHandler } from './usecases/handlers/get.game.handler';
 import { QuizController } from './quiz.controller';
 import { UsersModule } from '../users/users.module';
 import { GetUserGamesHandler } from './usecases/handlers/get.user.games.handler';
+import { QuizStats } from './models/domain/quiz.stats';
 
 const commandHandlers = [
   CreateQuestionHandler,
@@ -46,6 +47,7 @@ const commandHandlers = [
       QuizQuestion,
       QuizParticipant,
       QuizAnswer,
+      QuizStats,
     ]),
     CqrsModule,
     UsersModule,
