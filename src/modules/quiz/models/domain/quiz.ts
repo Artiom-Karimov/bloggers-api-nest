@@ -7,6 +7,7 @@ import IdGenerator from '../../../../common/utils/id.generator';
 import * as config from '../../../../config/quiz';
 import { AnswerInfo } from '../view/player.progress';
 import { QuizStatus } from './quiz.status';
+import { ParticipantStatus } from './participant.status';
 
 @Entity()
 export class Quiz {
@@ -108,23 +109,39 @@ export class Quiz {
     this.endedAt = new Date();
     this.status = QuizStatus.Finished;
     this.assignTimeBonus();
-    this.assignWinner();
+    this.assignWinners();
   }
-  protected assignWinner() {
-    let winner: QuizParticipant;
+  protected assignWinners() {
+    const winnerScore = this.getWinnerScore();
+    const winnerStatus = this.winOrDraw(winnerScore);
+    this.fillParticipantStatuses(winnerScore, winnerStatus);
+  }
+  protected getWinnerScore(): number {
+    let score = 0;
     for (const p of this.participants) {
-      if (!winner) {
-        winner = p;
+      if (p.score > score) {
+        score = p.score;
         continue;
       }
-      if (p.score > winner.score) {
-        winner = p;
-      }
     }
-
+    return score;
+  }
+  protected winOrDraw(score: number): ParticipantStatus {
+    let winnersTotal = 0;
     for (const p of this.participants) {
-      if (p.id === winner.id) p.isWinner = true;
-      else p.isWinner = false;
+      if (p.score === score) winnersTotal++;
+      if (winnersTotal > 1) break;
+    }
+    if (winnersTotal === 1) return ParticipantStatus.Win;
+    return ParticipantStatus.Draw;
+  }
+  protected fillParticipantStatuses(
+    winnerScore: number,
+    winnerStatus: ParticipantStatus,
+  ): void {
+    for (const p of this.participants) {
+      if (p.score === winnerScore) p.status = winnerStatus;
+      else p.status = ParticipantStatus.Lose;
     }
   }
   protected assignTimeBonus() {

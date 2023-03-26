@@ -9,6 +9,7 @@ import { QuizParticipant } from '../models/domain/quiz.participant';
 import { GetGamesQueryParams } from '../models/input/get.games.query.params';
 import PageViewModel from '../../../common/models/page.view.model';
 import { QuizQuestion } from '../models/domain/quiz.question';
+import { ParticipantStatus } from '../models/domain/participant.status';
 
 @Injectable()
 export class OrmQuizQueryRepository extends QuizQueryRepository {
@@ -41,7 +42,10 @@ export class OrmQuizQueryRepository extends QuizQueryRepository {
   }
   public async getCurrentGame(userId: string): Promise<QuizViewModel> {
     const participant = await this.participantRepo.findOne({
-      where: { userId, isWinner: IsNull() },
+      where: [
+        { userId, status: IsNull() },
+        { userId, status: ParticipantStatus.Unknown },
+      ],
       loadEagerRelations: false,
     });
 
