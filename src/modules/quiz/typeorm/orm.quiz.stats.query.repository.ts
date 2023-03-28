@@ -16,7 +16,7 @@ export class OrmQuizStatsQueryRepository extends QuizStatsQueryRepository {
       const stats = await this.repo.findOne({
         where: { userId },
       });
-      return stats ? new QuizStatsViewModel(stats) : undefined;
+      return new QuizStatsViewModel(stats);
     } catch (error) {
       console.error(error);
       return undefined;

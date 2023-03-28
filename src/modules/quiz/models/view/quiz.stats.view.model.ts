@@ -3,24 +3,25 @@ import { QuizStats } from '../domain/quiz.stats';
 
 export class QuizStatsViewModel {
   @ApiProperty()
-  sumScore: number;
+  sumScore = 0;
 
   @ApiProperty()
-  avgScores: number;
+  avgScores = 0;
 
   @ApiProperty()
-  gamesCount: number;
+  gamesCount = 0;
 
   @ApiProperty()
-  winsCount: number;
+  winsCount = 0;
 
   @ApiProperty()
-  lossesCount: number;
+  lossesCount = 0;
 
   @ApiProperty()
-  drawsCount: number;
+  drawsCount = 0;
 
-  constructor(model: QuizStats) {
+  constructor(model?: QuizStats) {
+    if (!model) return;
     this.sumScore = model.sumScore;
     this.gamesCount = model.gamesCount;
     this.winsCount = model.winsCount;
