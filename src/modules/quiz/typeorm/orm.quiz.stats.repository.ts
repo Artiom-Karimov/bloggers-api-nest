@@ -34,7 +34,7 @@ export class OrmQuizStatsRepository extends QuizStatsRepository {
       return undefined;
     }
   }
-  public async create(stats: QuizStats): Promise<string> {
+  public async createOrUpdate(stats: QuizStats): Promise<string> {
     try {
       const result = await this.repo.save(stats);
       return result.userId;
@@ -43,7 +43,13 @@ export class OrmQuizStatsRepository extends QuizStatsRepository {
       return undefined;
     }
   }
-  public async update(stats: QuizStats): Promise<boolean> {
-    return !!(await this.create(stats));
+  public async createOrUpdateMany(stats: QuizStats[]): Promise<boolean> {
+    try {
+      await this.repo.save(stats);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 }

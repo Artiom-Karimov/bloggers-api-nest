@@ -5,7 +5,7 @@ export abstract class QuizStatsRepository {
 
   public abstract getMany(userIds: string[]): Promise<QuizStats[] | undefined>;
 
-  public abstract create(stats: QuizStats): Promise<string>;
+  public abstract createOrUpdate(stats: QuizStats): Promise<string>;
 
-  public abstract update(stats: QuizStats): Promise<boolean>;
+  public abstract createOrUpdateMany(stats: QuizStats[]): Promise<boolean>;
 }

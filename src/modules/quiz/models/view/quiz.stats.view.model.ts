@@ -22,10 +22,10 @@ export class QuizStatsViewModel {
 
   constructor(model: QuizStats) {
     this.sumScore = model.sumScore;
-    this.avgScores = model.avgScores;
     this.gamesCount = model.gamesCount;
     this.winsCount = model.winsCount;
     this.lossesCount = model.lossesCount;
     this.drawsCount = model.drawsCount;
+    this.avgScores = this.sumScore / this.gamesCount;
   }
 }

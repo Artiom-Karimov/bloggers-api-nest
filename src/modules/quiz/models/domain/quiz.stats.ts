@@ -18,9 +18,6 @@ export class QuizStats {
   sumScore: number;
 
   @Column('integer')
-  avgScores: number;
-
-  @Column('integer')
   gamesCount: number;
 
   @Column('integer')
@@ -37,13 +34,40 @@ export class QuizStats {
     return quiz.participants.map((p) => QuizStats.fromParticipant(p));
   }
 
-  public static fromParticipant(participant: QuizParticipant): QuizStats {
+  public static mergeManyWithExisting(
+    fromDb: QuizStats[],
+    fromQuiz: QuizStats[],
+  ): QuizStats[] {
+    const result = new Array<QuizStats>();
+
+    for (const stats of fromQuiz) {
+      const oldStats = fromDb.find((s) => s.userId === stats.userId);
+      if (!oldStats) {
+        result.push(stats);
+        continue;
+      }
+      oldStats.appendNewGame(stats);
+      result.push(oldStats);
+    }
+    return result;
+  }
+
+  private appendNewGame(newGameStats: QuizStats): QuizStats {
+    this.sumScore += newGameStats.sumScore;
+    this.gamesCount += newGameStats.gamesCount;
+    this.winsCount += newGameStats.winsCount;
+    this.lossesCount += newGameStats.lossesCount;
+    this.drawsCount += newGameStats.drawsCount;
+
+    return this;
+  }
+
+  private static fromParticipant(participant: QuizParticipant): QuizStats {
     const stats = new QuizStats();
     stats.user = participant.user;
+    stats.userId = participant.userId;
 
     stats.sumScore =
-      participant.status === ParticipantStatus.Lose ? 0 : participant.score;
-    stats.avgScores =
       participant.status === ParticipantStatus.Lose ? 0 : participant.score;
 
     stats.gamesCount = 1;
@@ -53,16 +77,5 @@ export class QuizStats {
     stats.drawsCount = participant.status === ParticipantStatus.Draw ? 1 : 0;
 
     return stats;
-  }
-
-  public appendNewGame(newGameStats: QuizStats): QuizStats {
-    this.sumScore += newGameStats.sumScore;
-    this.gamesCount += newGameStats.gamesCount;
-    this.avgScores = this.sumScore / this.gamesCount;
-    this.winsCount += newGameStats.winsCount;
-    this.lossesCount += newGameStats.lossesCount;
-    this.drawsCount += newGameStats.drawsCount;
-
-    return this;
   }
 }

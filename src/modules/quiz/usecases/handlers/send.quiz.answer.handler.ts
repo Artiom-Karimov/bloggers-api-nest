@@ -1,21 +1,23 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { QuizRepository } from '../../interfaces/quiz.repository';
 import {
   ForbiddenException,
-  HttpException,
   NotFoundException,
 } from '@nestjs/common/exceptions';
 import { SendQuizAnswerCommand } from '../commands/send.quiz.answer.command';
 import { QueryRunner } from 'typeorm';
 import { AnswerInfo } from '../../models/view/player.progress';
-import { QuizStatus } from '../../models/domain/quiz.status';
 import { Quiz } from '../../models/domain/quiz';
+import { SaveQuizStatsCommand } from '../commands/save.quiz.stats.command';
 
 @CommandHandler(SendQuizAnswerCommand)
 export class SendQuizAnswerHandler
   implements ICommandHandler<SendQuizAnswerCommand>
 {
-  constructor(private readonly repo: QuizRepository) { }
+  constructor(
+    private readonly repo: QuizRepository,
+    private readonly commandBus: CommandBus,
+  ) { }
 
   async execute(command: SendQuizAnswerCommand): Promise<AnswerInfo> {
     const quizId = await this.repo.getCurrentGameId(command.userId);
@@ -61,7 +63,6 @@ export class SendQuizAnswerHandler
   }
 
   protected async updateStatsIfEnded(game: Quiz): Promise<void> {
-    if (game?.status !== QuizStatus.Finished) return;
-    // TODO: create or update stats for all players
+    await this.commandBus.execute(new SaveQuizStatsCommand(game));
   }
 }
