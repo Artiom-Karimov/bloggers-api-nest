@@ -27,7 +27,7 @@ import { GetGamesQueryParams } from './models/input/get.games.query.params';
 import { QuizStatsViewModel } from './models/view/quiz.stats.view.model';
 import { GetUserStatsQuery } from './usecases/queries/get.user.stats.query';
 
-@Controller('pair-game-quiz/pairs')
+@Controller('pair-game-quiz')
 @UseGuards(BearerAuthGuard)
 @ApiTags('Quiz (for user)')
 @ApiBearerAuth()
@@ -38,7 +38,7 @@ export class QuizController {
     private readonly queryBus: QueryBus,
   ) { }
 
-  @Get('my')
+  @Get('pairs/my')
   @ApiOperation({ summary: 'Get all games by current user' })
   @ApiQuery({ type: GetGamesQueryParams })
   @ApiResponse({ status: 200, description: 'Success', type: QuizPage })
@@ -50,7 +50,7 @@ export class QuizController {
     return this.queryBus.execute(new GetUserGamesQuery(user.userId, params));
   }
 
-  @Get('my-statistic')
+  @Get('users/my-statistic')
   @ApiOperation({ summary: 'Get current user sstatistics' })
   @ApiResponse({
     status: 200,
@@ -61,7 +61,7 @@ export class QuizController {
     return this.queryBus.execute(new GetUserStatsQuery(user.userId));
   }
 
-  @Get('my-current')
+  @Get('pairs/my-current')
   @ApiOperation({ summary: 'Get current (not finished) game' })
   @ApiResponse({ status: 200, description: 'Success', type: QuizViewModel })
   @ApiResponse({ status: 404, description: 'User does not have current game' })
@@ -69,7 +69,7 @@ export class QuizController {
     return this.queryBus.execute(new GetCurrentGameQuery(user.userId));
   }
 
-  @Get(':id')
+  @Get('pairs/:id')
   @ApiOperation({ summary: 'Get game by id' })
   @ApiParam({ name: 'id' })
   @ApiResponse({ status: 200, description: 'Success', type: QuizViewModel })
@@ -85,7 +85,7 @@ export class QuizController {
     return this.queryBus.execute(new GetGameQuery(params.id, user.userId));
   }
 
-  @Post('connection')
+  @Post('pairs/connection')
   @HttpCode(200)
   @ApiOperation({ summary: 'Create new game or connect to existing one' })
   @ApiResponse({ status: 200, description: 'Success', type: QuizViewModel })
@@ -94,7 +94,7 @@ export class QuizController {
     return this.commandBus.execute(new ConnectToQuizCommand(user.userId));
   }
 
-  @Post('my-current/answers')
+  @Post('pairs/my-current/answers')
   @HttpCode(200)
   @ApiOperation({ summary: 'Send an answer to the next question' })
   @ApiResponse({ status: 200, description: 'Success', type: AnswerInfo })
