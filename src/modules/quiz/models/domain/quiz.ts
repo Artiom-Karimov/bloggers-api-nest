@@ -166,7 +166,7 @@ export class Quiz {
         fastest = p;
       }
     }
-    fastest.score++;
+    if (fastest.score > 0) fastest.score++;
   }
   protected sortChildren() {
     this.questions?.sort((a, b) => {
