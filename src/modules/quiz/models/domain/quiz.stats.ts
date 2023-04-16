@@ -67,9 +67,7 @@ export class QuizStats {
     stats.user = participant.user;
     stats.userId = participant.userId;
 
-    stats.sumScore =
-      participant.status === ParticipantStatus.Lose ? 0 : participant.score;
-
+    stats.sumScore = participant.score;
     stats.gamesCount = 1;
 
     stats.winsCount = participant.status === ParticipantStatus.Win ? 1 : 0;

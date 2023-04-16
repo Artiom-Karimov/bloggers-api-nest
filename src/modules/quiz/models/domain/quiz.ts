@@ -50,6 +50,7 @@ export class Quiz {
       .addParticipant(firstParticipant)
       ?.mapQuestions(questions);
   }
+
   public fixRelations(): Quiz {
     for (const q of this.questions) {
       q.fixRelations(this);
@@ -77,6 +78,7 @@ export class Quiz {
 
     return this;
   }
+
   public acceptAnswer(userId: string, answer: string): AnswerInfo | null {
     if (this.participants.length !== config.playerAmount) return null;
     const user = this.getParticipant(userId);
