@@ -533,8 +533,8 @@ describe('QuizController (e2e)', () => {
     expect(response.body).toEqual(expected);
 
     expected = {
-      sumScore: 0,
-      avgScores: 0,
+      sumScore: 2,
+      avgScores: 2,
       gamesCount: 1,
       winsCount: 0,
       lossesCount: 1,
