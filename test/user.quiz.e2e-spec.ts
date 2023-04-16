@@ -11,6 +11,7 @@ import { QuestionViewModel } from '../src/modules/quiz/models/view/question.view
 import { QuestionSampleGenerator } from './utils/question.sample.generator';
 import { AnswerInfo } from '../src/modules/quiz/models/view/player.progress';
 import PageViewModel from '../src/common/models/page.view.model';
+import { QuizStatsViewModel } from '../src/modules/quiz/models/view/quiz.stats.view.model';
 
 jest.useRealTimers();
 
@@ -51,6 +52,7 @@ describe('QuizController (e2e)', () => {
     const noAuth = [
       request(app.getHttpServer()).get(`${base}/my-current`),
       request(app.getHttpServer()).get(`${base}/my`),
+      request(app.getHttpServer()).get(`${base}/my-statistic`),
       request(app.getHttpServer()).get(`${base}/${IdGenerator.generate()}`),
       request(app.getHttpServer()).post(`${base}/connection`).send('poop!'),
       request(app.getHttpServer())
@@ -68,6 +70,31 @@ describe('QuizController (e2e)', () => {
       .get(`${base}/my-current`)
       .set('Authorization', `Bearer ${users[0].access}`)
       .expect(404);
+  });
+
+  it('users should get empty stats', async () => {
+    const expected: QuizStatsViewModel = {
+      sumScore: 0,
+      avgScores: 0,
+      gamesCount: 0,
+      winsCount: 0,
+      lossesCount: 0,
+      drawsCount: 0,
+    };
+
+    let response = await request(app.getHttpServer())
+      .get(`${base}/my-statistic`)
+      .set('Authorization', `Bearer ${users[0].access}`)
+      .expect(200);
+
+    expect(response.body).toEqual(expected);
+
+    response = await request(app.getHttpServer())
+      .get(`${base}/my-statistic`)
+      .set('Authorization', `Bearer ${users[1].access}`)
+      .expect(200);
+
+    expect(response.body).toEqual(expected);
   });
 
   let game: QuizViewModel;
@@ -374,6 +401,24 @@ describe('QuizController (e2e)', () => {
     game = status.body as QuizViewModel;
   });
 
+  it('Users should still get empty stats', async () => {
+    const expected: QuizStatsViewModel = {
+      sumScore: 0,
+      avgScores: 0,
+      gamesCount: 0,
+      winsCount: 0,
+      lossesCount: 0,
+      drawsCount: 0,
+    };
+
+    const response = await request(app.getHttpServer())
+      .get(`${base}/my-statistic`)
+      .set('Authorization', `Bearer ${users[0].access}`)
+      .expect(200);
+
+    expect(response.body).toEqual(expected);
+  });
+
   it('user1 should not be able to send more answers', async () => {
     const u1 = await request(app.getHttpServer())
       .post(`${base}/my-current/answers`)
@@ -465,5 +510,39 @@ describe('QuizController (e2e)', () => {
       totalCount: 1,
       items: [game],
     });
+  });
+
+  it('users should get new stats', async () => {
+    let expected: QuizStatsViewModel = {
+      sumScore: 3,
+      avgScores: 3,
+      gamesCount: 1,
+      winsCount: 1,
+      lossesCount: 0,
+      drawsCount: 0,
+    };
+
+    let response = await request(app.getHttpServer())
+      .get(`${base}/my-statistic`)
+      .set('Authorization', `Bearer ${users[0].access}`)
+      .expect(200);
+
+    expect(response.body).toEqual(expected);
+
+    expected = {
+      sumScore: 0,
+      avgScores: 0,
+      gamesCount: 1,
+      winsCount: 0,
+      lossesCount: 1,
+      drawsCount: 0,
+    };
+
+    response = await request(app.getHttpServer())
+      .get(`${base}/my-statistic`)
+      .set('Authorization', `Bearer ${users[1].access}`)
+      .expect(200);
+
+    expect(response.body).toEqual(expected);
   });
 });
