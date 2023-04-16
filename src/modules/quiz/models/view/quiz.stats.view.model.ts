@@ -27,6 +27,17 @@ export class QuizStatsViewModel {
     this.winsCount = model.winsCount;
     this.lossesCount = model.lossesCount;
     this.drawsCount = model.drawsCount;
-    this.avgScores = this.sumScore / this.gamesCount;
+    this.calcAverage();
+  }
+
+  private calcAverage(): void {
+    if (this.gamesCount === 0) return;
+    const avg = this.sumScore / this.gamesCount;
+    if (avg % 1 === 0) {
+      this.avgScores = Math.floor(avg);
+    } else {
+      const temp = avg.toFixed(2);
+      this.avgScores = +temp;
+    }
   }
 }
