@@ -1,36 +1,36 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { QuizRepository } from '../../interfaces/quiz.repository';
 import {
   ForbiddenException,
-  HttpException,
   NotFoundException,
 } from '@nestjs/common/exceptions';
 import { SendQuizAnswerCommand } from '../commands/send.quiz.answer.command';
 import { QueryRunner } from 'typeorm';
 import { AnswerInfo } from '../../models/view/player.progress';
+import { Quiz } from '../../models/domain/quiz';
+import { SaveQuizStatsCommand } from '../commands/save.quiz.stats.command';
 
 @CommandHandler(SendQuizAnswerCommand)
 export class SendQuizAnswerHandler
   implements ICommandHandler<SendQuizAnswerCommand>
 {
-  constructor(private readonly repo: QuizRepository) { }
+  constructor(
+    private readonly repo: QuizRepository,
+    private readonly commandBus: CommandBus,
+  ) { }
 
   async execute(command: SendQuizAnswerCommand): Promise<AnswerInfo> {
     const quizId = await this.repo.getCurrentGameId(command.userId);
     if (!quizId)
       throw new ForbiddenException("user doesn't have an active game");
 
-    try {
-      const result = await this.commitAnswer(
-        quizId,
-        command.userId,
-        command.data.answer,
-      );
-      return result;
-    } catch (error) {
-      if (error instanceof HttpException) throw error;
-      throw new ForbiddenException('cannot commit the answer');
-    }
+    const result = await this.commitAnswer(
+      quizId,
+      command.userId,
+      command.data.answer,
+    );
+
+    return result;
   }
 
   protected async commitAnswer(
@@ -45,16 +45,24 @@ export class SendQuizAnswerHandler
       if (!game) throw new NotFoundException('game not found');
 
       const result = game.acceptAnswer(userId, answer);
+      if (!result) throw new ForbiddenException('answer was not accepted');
+
       await this.repo.save(game, qr);
+      await this.updateStatsIfEnded(game);
+
       await qr.commitTransaction();
+      await qr.release();
 
       return result;
     } catch (error) {
       console.error(error);
       if (qr) await qr.rollbackTransaction();
-      throw error;
-    } finally {
       if (qr) await qr.release();
+      throw error;
     }
+  }
+
+  protected async updateStatsIfEnded(game: Quiz): Promise<void> {
+    await this.commandBus.execute(new SaveQuizStatsCommand(game));
   }
 }

@@ -26,6 +26,12 @@ import { QuizController } from './quiz.controller';
 import { UsersModule } from '../users/users.module';
 import { GetUserGamesHandler } from './usecases/handlers/get.user.games.handler';
 import { QuizStats } from './models/domain/quiz.stats';
+import { QuizStatsRepository } from './interfaces/quiz.stats.repository';
+import { OrmQuizStatsRepository } from './typeorm/orm.quiz.stats.repository';
+import { QuizStatsQueryRepository } from './interfaces/quiz.stats.query.repository';
+import { OrmQuizStatsQueryRepository } from './typeorm/orm.quiz.stats.query.repository';
+import { GetUserStatsHandler } from './usecases/handlers/get.user.stats.handler';
+import { SaveQuizStatsHandler } from './usecases/handlers/save.quiz.stats.handler';
 
 const commandHandlers = [
   CreateQuestionHandler,
@@ -37,6 +43,8 @@ const commandHandlers = [
   GetCurrentGameHandler,
   GetUserGamesHandler,
   GetGameHandler,
+  SaveQuizStatsHandler,
+  GetUserStatsHandler,
 ];
 
 @Module({
@@ -68,6 +76,14 @@ const commandHandlers = [
     {
       provide: QuizQueryRepository,
       useClass: OrmQuizQueryRepository,
+    },
+    {
+      provide: QuizStatsRepository,
+      useClass: OrmQuizStatsRepository,
+    },
+    {
+      provide: QuizStatsQueryRepository,
+      useClass: OrmQuizStatsQueryRepository,
     },
     ...commandHandlers,
   ],

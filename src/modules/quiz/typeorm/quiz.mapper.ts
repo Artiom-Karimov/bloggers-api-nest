@@ -2,7 +2,6 @@ import { Quiz } from '../models/domain/quiz';
 import { QuizParticipant } from '../models/domain/quiz.participant';
 import { QuestionInfo, QuizViewModel } from '../models/view/quiz.view.model';
 import { PlayerInfo, PlayerProgress } from '../models/view/player.progress';
-import { QuizStatus } from '../models/domain/quiz.status';
 
 export class QuizMapper {
   public static toView(quiz: Quiz): QuizViewModel {
@@ -12,7 +11,7 @@ export class QuizMapper {
       QuizMapper.getPlayer(quiz.participants[0]),
       QuizMapper.getPlayer(quiz.participants[1] ?? null),
       QuizMapper.getQuestions(quiz),
-      QuizMapper.getStatus(quiz),
+      quiz.status,
       quiz.createdAt.toISOString(),
       quiz.startedAt ? quiz.startedAt.toISOString() : null,
       quiz.endedAt ? quiz.endedAt.toISOString() : null,
@@ -34,10 +33,5 @@ export class QuizMapper {
     return quiz.questions.map((q) => {
       return new QuestionInfo(q.question.id, q.question.body);
     });
-  }
-  private static getStatus(quiz: Quiz): QuizStatus {
-    if (quiz.endedAt) return QuizStatus.Finished;
-    if (quiz.startedAt) return QuizStatus.Active;
-    return QuizStatus.PendingSecondPlayer;
   }
 }

@@ -41,14 +41,14 @@ export class Quiz {
   })
   participants: QuizParticipant[];
 
-  public static create(firstParticipant: User, questions: Question[]): Quiz {
-    const quiz = new Quiz();
-    quiz.id = IdGenerator.generate();
-    quiz.createdAt = new Date();
-    quiz.status = QuizStatus.PendingSecondPlayer;
-    quiz.addParticipant(firstParticipant);
-    quiz.mapQuestions(questions);
-    return quiz;
+  public static create(
+    firstParticipant: User,
+    questions: Question[],
+  ): Quiz | null {
+    return new Quiz()
+      .initialize()
+      .addParticipant(firstParticipant)
+      ?.mapQuestions(questions);
   }
   public fixRelations(): Quiz {
     for (const q of this.questions) {
@@ -62,13 +62,11 @@ export class Quiz {
     return this;
   }
 
-  public addParticipant(user: User) {
-    if (!user) throw new Error('quiz should be created with a user');
+  public addParticipant(user: User): Quiz | null {
+    if (!user) return null;
     if (!this.participants) this.participants = [];
     if (this.participants.length === config.playerAmount) {
-      throw new Error(
-        `quiz cannot take more than ${config.playerAmount} users`,
-      );
+      return null;
     }
 
     this.participants.push(QuizParticipant.create(user, this));
@@ -76,30 +74,41 @@ export class Quiz {
       this.startedAt = new Date();
       this.status = QuizStatus.Active;
     }
+
+    return this;
   }
-  public acceptAnswer(userId: string, answer: string): AnswerInfo {
-    if (this.participants.length !== config.playerAmount) {
-      throw new Error('there is not enough players in game');
-    }
-    const user = this.participants.find((p) => p.userId === userId);
-    if (!user) throw new Error('user is not in current game');
+  public acceptAnswer(userId: string, answer: string): AnswerInfo | null {
+    if (this.participants.length !== config.playerAmount) return null;
+    const user = this.getParticipant(userId);
+    if (!user) return null;
     const result = user.acceptAnswer(answer);
 
     this.endGameIfNeeded();
 
     return result;
   }
+  public getParticipant(userId: string): QuizParticipant | null {
+    return this.participants.find((p) => p.userId === userId);
+  }
 
-  protected mapQuestions(questions: Question[]) {
-    if (!questions) throw new Error('quiz should contain questions');
+  protected initialize(): Quiz {
+    this.id = IdGenerator.generate();
+    this.createdAt = new Date();
+    this.status = QuizStatus.PendingSecondPlayer;
+    return this;
+  }
+  protected mapQuestions(questions: Question[]): Quiz | null {
+    if (!questions) return null;
     if (!this.questions) this.questions = [];
     if (questions.length !== config.questionAmount) {
-      throw new Error(`quiz should contain ${config.questionAmount} questions`);
+      return null;
     }
 
     questions.forEach((q, i) => {
       this.questions.push(QuizQuestion.create(this, q, i + 1));
     });
+
+    return this;
   }
   protected endGameIfNeeded() {
     for (const p of this.participants) {

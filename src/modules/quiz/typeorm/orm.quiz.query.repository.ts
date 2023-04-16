@@ -3,7 +3,7 @@ import { QuizViewModel } from '../models/view/quiz.view.model';
 import { QuizQueryRepository } from '../interfaces/quiz.query.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Quiz } from '../models/domain/quiz';
-import { In, IsNull, Not, Repository, SelectQueryBuilder } from 'typeorm';
+import { In, IsNull, Repository, SelectQueryBuilder } from 'typeorm';
 import { QuizMapper } from './quiz.mapper';
 import { QuizParticipant } from '../models/domain/quiz.participant';
 import { GetGamesQueryParams } from '../models/input/get.games.query.params';

@@ -24,11 +24,14 @@ import { QuizPage } from '../swagger/models/pages';
 import { GetUserGamesQuery } from './usecases/queries/get.user.games.query';
 import PageViewModel from '../../common/models/page.view.model';
 import { GetGamesQueryParams } from './models/input/get.games.query.params';
+import { QuizStatsViewModel } from './models/view/quiz.stats.view.model';
+import { GetUserStatsQuery } from './usecases/queries/get.user.stats.query';
 
 @Controller('pair-game-quiz/pairs')
 @UseGuards(BearerAuthGuard)
 @ApiTags('Quiz (for user)')
 @ApiBearerAuth()
+@ApiResponse({ status: 401, description: 'Unauthorized' })
 export class QuizController {
   constructor(
     private readonly commandBus: CommandBus,
@@ -39,7 +42,6 @@ export class QuizController {
   @ApiOperation({ summary: 'Get all games by current user' })
   @ApiQuery({ type: GetGamesQueryParams })
   @ApiResponse({ status: 200, description: 'Success', type: QuizPage })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async getAll(
     @User() user: TokenPayload,
     @Query() reqQuery: any,
@@ -48,10 +50,20 @@ export class QuizController {
     return this.queryBus.execute(new GetUserGamesQuery(user.userId, params));
   }
 
+  @Get('my-statistic')
+  @ApiOperation({ summary: 'Get current user sstatistics' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success',
+    type: QuizStatsViewModel,
+  })
+  async geetStats(@User() user: TokenPayload) {
+    return this.queryBus.execute(new GetUserStatsQuery(user.userId));
+  }
+
   @Get('my-current')
   @ApiOperation({ summary: 'Get current (not finished) game' })
   @ApiResponse({ status: 200, description: 'Success', type: QuizViewModel })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'User does not have current game' })
   async getCurrent(@User() user: TokenPayload): Promise<QuizViewModel> {
     return this.queryBus.execute(new GetCurrentGameQuery(user.userId));
@@ -61,7 +73,6 @@ export class QuizController {
   @ApiOperation({ summary: 'Get game by id' })
   @ApiParam({ name: 'id' })
   @ApiResponse({ status: 200, description: 'Success', type: QuizViewModel })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({
     status: 403,
     description: 'User did not participate in this game',
@@ -78,7 +89,6 @@ export class QuizController {
   @HttpCode(200)
   @ApiOperation({ summary: 'Create new game or connect to existing one' })
   @ApiResponse({ status: 200, description: 'Success', type: QuizViewModel })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'User already has current game' })
   async connect(@User() user: TokenPayload): Promise<QuizViewModel> {
     return this.commandBus.execute(new ConnectToQuizCommand(user.userId));
@@ -88,7 +98,6 @@ export class QuizController {
   @HttpCode(200)
   @ApiOperation({ summary: 'Send an answer to the next question' })
   @ApiResponse({ status: 200, description: 'Success', type: AnswerInfo })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({
     status: 403,
     description: 'User already answered all questions or has no current game',
